@@ -1,0 +1,6 @@
+@IndieGameZone.API_HostAddress = http://localhost:5259
+
+GET {{IndieGameZone.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.API", "IndieGameZone.API\IndieGameZone.API.csproj", "{AA8A3B33-41CA-4D35-A8D1-03466E16EE70}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.Service", "IndieGameZone.Service\IndieGameZone.Service.csproj", "{37532F34-CDB1-453F-9494-501DC1C9FB04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.Domain", "IndieGameZone.Domain\IndieGameZone.Domain.csproj", "{CB504D0A-A70D-4D19-8F8A-188AA854383B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.Infrastructure", "IndieGameZone.Infrastructure\IndieGameZone.Infrastructure.csproj", "{28845834-F752-451D-BEE2-E0F95E651964}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.AppHost", "IndieGameZone.AppHost\IndieGameZone.AppHost.csproj", "{ADCCE45B-648C-4AB2-9584-1487B3755665}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.ServiceDefaults", "IndieGameZone.ServiceDefaults\IndieGameZone.ServiceDefaults.csproj", "{F8681277-E31B-653E-BDAE-631772D26C11}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AA8A3B33-41CA-4D35-A8D1-03466E16EE70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA8A3B33-41CA-4D35-A8D1-03466E16EE70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA8A3B33-41CA-4D35-A8D1-03466E16EE70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA8A3B33-41CA-4D35-A8D1-03466E16EE70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37532F34-CDB1-453F-9494-501DC1C9FB04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37532F34-CDB1-453F-9494-501DC1C9FB04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37532F34-CDB1-453F-9494-501DC1C9FB04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37532F34-CDB1-453F-9494-501DC1C9FB04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB504D0A-A70D-4D19-8F8A-188AA854383B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB504D0A-A70D-4D19-8F8A-188AA854383B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB504D0A-A70D-4D19-8F8A-188AA854383B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB504D0A-A70D-4D19-8F8A-188AA854383B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28845834-F752-451D-BEE2-E0F95E651964}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28845834-F752-451D-BEE2-E0F95E651964}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28845834-F752-451D-BEE2-E0F95E651964}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28845834-F752-451D-BEE2-E0F95E651964}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADCCE45B-648C-4AB2-9584-1487B3755665}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADCCE45B-648C-4AB2-9584-1487B3755665}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADCCE45B-648C-4AB2-9584-1487B3755665}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADCCE45B-648C-4AB2-9584-1487B3755665}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8681277-E31B-653E-BDAE-631772D26C11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8681277-E31B-653E-BDAE-631772D26C11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8681277-E31B-653E-BDAE-631772D26C11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8681277-E31B-653E-BDAE-631772D26C11}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {41C4F8EC-4381-44FD-A624-1CD17643838E}
+	EndGlobalSection
+EndGlobal
