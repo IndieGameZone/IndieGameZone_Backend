@@ -1,8 +1,10 @@
-﻿using IndieGameZone.Domain.Repositories;
+﻿using IndieGameZone.Domain.Entities;
+using IndieGameZone.Domain.Repositories;
 using IndieGameZone.Infrastructure.Persistence;
 using IndieGameZone.Infrastructure.Repositories;
 using IndieGameZone.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -18,6 +20,21 @@ namespace IndieGameZone.API.Extensions
 		{
 			services.AddDbContext<RepositoryContext>(options =>
 				options.UseSqlServer(configuration.GetSection("DbString").Value));
+		}
+
+		public static void ConfigureIdentity(this IServiceCollection services)
+		{
+			services.AddIdentity<Users, IdentityRole>(o =>
+			{
+				o.Password.RequireDigit = false;
+				o.Password.RequireLowercase = false;
+				o.Password.RequireUppercase = false;
+				o.Password.RequireNonAlphanumeric = false;
+				o.Password.RequiredLength = 5;
+				o.User.RequireUniqueEmail = true;
+			})
+				.AddEntityFrameworkStores<RepositoryContext>()
+				.AddDefaultTokenProviders();
 		}
 
 		public static void ConfigureCors(this IServiceCollection services) => services.AddCors(options =>

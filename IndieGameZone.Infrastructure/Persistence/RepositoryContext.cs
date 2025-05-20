@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Infrastructure.Persistence
 {
-	public class RepositoryContext : DbContext
+	public class RepositoryContext : IdentityDbContext
 	{
 		public RepositoryContext(DbContextOptions<RepositoryContext> options) : base(options)
 		{

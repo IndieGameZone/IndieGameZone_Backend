@@ -30,6 +30,7 @@ builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.ConfigureManager();
 builder.Services.ConfigureGlobalException();
 builder.Services.ConfigureMapsters();
+builder.Services.ConfigureIdentity();
 
 var app = builder.Build();
 
