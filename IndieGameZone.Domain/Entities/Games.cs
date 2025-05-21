@@ -1,0 +1,28 @@
+﻿namespace IndieGameZone.Domain.Entities
+{
+	public class Games
+	{
+		public Guid Id { get; set; }
+		public string Name { get; set; } = string.Empty;
+		public string CoverImage { get; set; } = string.Empty;
+		public string VideoLink { get; set; } = string.Empty;
+		public bool IsActive { get; set; }
+		public double Price { get; set; }
+		public DateTime ReleasedDate { get; set; }
+		public DateTime UpdatedAt { get; set; }
+		public double AverageSession { get; set; }
+		public Guid AgeRestrictionId { get; set; }
+		public Guid DeveloperId { get; set; }
+
+		// Navigation properties
+		public virtual ICollection<Languages> Languages { get; set; } = new List<Languages>();
+		public virtual ICollection<Tags> Tags { get; set; } = new List<Tags>();
+		public virtual ICollection<Categories> Categories { get; set; } = new List<Categories>();
+		public virtual ICollection<Platforms> Platforms { get; set; } = new List<Platforms>();
+		public virtual ICollection<GameInfos> GameInfos { get; set; } = new List<GameInfos>();
+		public virtual AgeRestrictions AgeRestriction { get; set; } = null!;
+		public virtual Users Developers { get; set; } = null!;
+		public virtual ICollection<Reviews> Reviews { get; set; } = new List<Reviews>();
+
+	}
+}

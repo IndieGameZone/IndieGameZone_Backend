@@ -24,7 +24,7 @@ namespace IndieGameZone.API.Extensions
 
 		public static void ConfigureIdentity(this IServiceCollection services)
 		{
-			services.AddIdentity<Users, IdentityRole>(o =>
+			services.AddIdentity<Users, Roles>(o =>
 			{
 				o.Password.RequireDigit = false;
 				o.Password.RequireLowercase = false;
