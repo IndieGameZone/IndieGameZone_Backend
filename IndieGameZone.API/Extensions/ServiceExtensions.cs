@@ -18,8 +18,10 @@ namespace IndieGameZone.API.Extensions
 	{
 		public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
 		{
+			//services.AddDbContext<RepositoryContext>(options =>
+			//	options.UseSqlServer(configuration.GetSection("DbString").Value));
 			services.AddDbContext<RepositoryContext>(options =>
-				options.UseSqlServer(configuration.GetSection("DbString").Value));
+				options.UseSqlServer(configuration.GetConnectionString("DbString")));
 		}
 
 		public static void ConfigureIdentity(this IServiceCollection services)

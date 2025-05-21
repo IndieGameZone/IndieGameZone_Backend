@@ -10,6 +10,11 @@ namespace IndieGameZone.Infrastructure.Configurations
 		{
 			builder.HasKey(w => w.UserId);
 			builder.Property(w => w.Balance);
+
+			builder.HasOne(w => w.User)
+				.WithOne(u => u.Wallet)
+				.HasForeignKey<Wallets>(w => w.UserId)
+				.OnDelete(DeleteBehavior.NoAction);
 		}
 	}
 }

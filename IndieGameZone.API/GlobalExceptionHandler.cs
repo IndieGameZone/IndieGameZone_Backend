@@ -17,9 +17,10 @@ namespace IndieGameZone.API
 			httpContext.Response.ContentType = "application/json";
 			httpContext.Response.StatusCode = exception switch
 			{
-				NotFoundException => StatusCodes.Status404NotFound,
 				BadRequestException => StatusCodes.Status400BadRequest,
 				NotAuthenticatedException => StatusCodes.Status401Unauthorized,
+				NotEnoughCreditException => StatusCodes.Status402PaymentRequired,
+				NotFoundException => StatusCodes.Status404NotFound,
 				_ => StatusCodes.Status500InternalServerError
 			};
 			var result = await problemDetailsService.TryWriteAsync(new ProblemDetailsContext

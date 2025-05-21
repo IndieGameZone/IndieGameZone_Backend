@@ -42,6 +42,38 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithMany(d => d.Games)
 				.HasForeignKey(g => g.DeveloperId)
 				.OnDelete(DeleteBehavior.NoAction);
+			builder.HasMany(g => g.Reviews)
+				.WithOne(r => r.Game)
+				.HasForeignKey(r => r.GameId)
+				.OnDelete(DeleteBehavior.NoAction);
+			builder.HasMany(g => g.Discounts)
+				.WithOne(d => d.Game)
+				.HasForeignKey(d => d.GameId)
+				.OnDelete(DeleteBehavior.NoAction);
+			builder.HasMany(g => g.CommercialRegistration)
+				.WithOne(cr => cr.Game)
+				.HasForeignKey(cr => cr.GameId)
+				.OnDelete(DeleteBehavior.NoAction);
+			builder.HasMany(g => g.Wishlists)
+				.WithOne(w => w.Game)
+				.HasForeignKey(w => w.GameId)
+				.OnDelete(DeleteBehavior.NoAction);
+			builder.HasMany(g => g.Libraries)
+				.WithOne(l => l.Game)
+				.HasForeignKey(l => l.GameId)
+				.OnDelete(DeleteBehavior.NoAction);
+			builder.HasMany(g => g.Posts)
+				.WithOne(p => p.Game)
+				.HasForeignKey(p => p.GameId)
+				.OnDelete(DeleteBehavior.NoAction);
+			builder.HasMany(g => g.Reports)
+				.WithOne(r => r.Game)
+				.HasForeignKey(r => r.GameId)
+				.OnDelete(DeleteBehavior.NoAction);
+			builder.HasMany(g => g.GameRecommendations)
+				.WithOne(gr => gr.Game)
+				.HasForeignKey(gr => gr.GameId)
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

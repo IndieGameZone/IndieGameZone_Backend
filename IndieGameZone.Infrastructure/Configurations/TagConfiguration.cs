@@ -14,6 +14,9 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(t => t.Games)
 				.WithMany(g => g.Tags)
 				.UsingEntity<GameTags>();
+			builder.HasMany(t => t.Posts)
+				.WithMany(p => p.Tags)
+				.UsingEntity<PostTags>();
 		}
 	}
 }
