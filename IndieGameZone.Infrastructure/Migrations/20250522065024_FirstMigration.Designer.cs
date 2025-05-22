@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IndieGameZone.Infrastructure.Migrations
 {
     [DbContext(typeof(RepositoryContext))]
-    [Migration("20250522042920_FirstMigration")]
+    [Migration("20250522065024_FirstMigration")]
     partial class FirstMigration
     {
         /// <inheritdoc />
@@ -840,19 +840,19 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6a669aa9-ed3f-4951-879e-68731812c2d3"),
+                            Id = new Guid("b86a5b00-0393-4524-9f56-fa7ca800e79c"),
                             Name = "Developer",
                             NormalizedName = "DEVELOPER"
                         },
                         new
                         {
-                            Id = new Guid("567bdbb3-1f7c-4781-ae82-ef58dbe0fb37"),
+                            Id = new Guid("51999f00-0f63-4236-8c81-94c43fcf7586"),
                             Name = "Player",
                             NormalizedName = "PLAYER"
                         },
                         new
                         {
-                            Id = new Guid("6caa6e4b-4eea-4215-b4e3-e358a7d47e64"),
+                            Id = new Guid("7211a346-6e23-431c-a6bd-2f02aa5de68a"),
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         });
@@ -1082,36 +1082,54 @@ namespace IndieGameZone.Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Avatar")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BankAccount")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("BankName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Bio")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateOnly>("Birthday")
                         .HasColumnType("date");
 
                     b.Property<string>("FacebookLink")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Fullname")
-                        .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
                     b.HasKey("UserId");
 
                     b.ToTable("UserProfiles");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"),
+                            Avatar = "https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=6&m=1223671392&s=170667a&w=0&h=zP3l7WJinOFaGb2i1F4g8IS2ylw0FlIaa6x3tP9sebU=",
+                            BankAccount = "",
+                            BankName = "",
+                            Bio = "",
+                            Birthday = new DateOnly(2002, 1, 23),
+                            FacebookLink = "",
+                            Fullname = "Admin"
+                        },
+                        new
+                        {
+                            UserId = new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"),
+                            Avatar = "https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=6&m=1223671392&s=170667a&w=0&h=zP3l7WJinOFaGb2i1F4g8IS2ylw0FlIaa6x3tP9sebU=",
+                            BankAccount = "",
+                            BankName = "",
+                            Bio = "",
+                            Birthday = new DateOnly(2002, 1, 23),
+                            FacebookLink = "",
+                            Fullname = "Moderator"
+                        });
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Users", b =>
@@ -1187,6 +1205,36 @@ namespace IndieGameZone.Infrastructure.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3f94f205-7ad7-466e-863a-c3a7e471812e",
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = true,
+                            IsActive = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFcesHtDnvn4gniKWsCYGI827aX42X3gyfZL7mn7alb0kYulyqKgsW5+8E3eb2DM2A==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false
+                        },
+                        new
+                        {
+                            Id = new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "20a3a07c-5cf1-4a17-85b7-9cf5d06af63f",
+                            Email = "moderator@gmail.com",
+                            EmailConfirmed = true,
+                            IsActive = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MODERATOR@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAELuQx7gt3+6Ow5YGBiP9hAu3Gmx97is34BcB97pvfZKf7mo69DjSnycMhK/r+jLrqQ==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false
+                        });
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Wallets", b =>
@@ -1200,6 +1248,18 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasKey("UserId");
 
                     b.ToTable("Wallets");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"),
+                            Balance = 0.0
+                        },
+                        new
+                        {
+                            UserId = new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"),
+                            Balance = 0.0
+                        });
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Wishlists", b =>
@@ -1271,6 +1331,18 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"),
+                            RoleId = new Guid("6f7b3f0c-3f54-4fb8-a215-33cd496c3be7")
+                        },
+                        new
+                        {
+                            UserId = new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"),
+                            RoleId = new Guid("7211a346-6e23-431c-a6bd-2f02aa5de68a")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<System.Guid>", b =>

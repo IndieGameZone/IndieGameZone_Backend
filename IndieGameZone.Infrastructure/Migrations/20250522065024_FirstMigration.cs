@@ -357,13 +357,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Fullname = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Fullname = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Birthday = table.Column<DateOnly>(type: "date", nullable: false),
-                    FacebookLink = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BankName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BankAccount = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    FacebookLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BankName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BankAccount = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -844,10 +844,19 @@ namespace IndieGameZone.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("567bdbb3-1f7c-4781-ae82-ef58dbe0fb37"), null, "Player", "PLAYER" },
-                    { new Guid("6a669aa9-ed3f-4951-879e-68731812c2d3"), null, "Developer", "DEVELOPER" },
-                    { new Guid("6caa6e4b-4eea-4215-b4e3-e358a7d47e64"), null, "Moderator", "MODERATOR" },
-                    { new Guid("6f7b3f0c-3f54-4fb8-a215-33cd496c3be7"), null, "Admin", "ADMIN" }
+                    { new Guid("51999f00-0f63-4236-8c81-94c43fcf7586"), null, "Player", "PLAYER" },
+                    { new Guid("6f7b3f0c-3f54-4fb8-a215-33cd496c3be7"), null, "Admin", "ADMIN" },
+                    { new Guid("7211a346-6e23-431c-a6bd-2f02aa5de68a"), null, "Moderator", "MODERATOR" },
+                    { new Guid("b86a5b00-0393-4524-9f56-fa7ca800e79c"), null, "Developer", "DEVELOPER" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsActive", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "RefreshTokenExpiryTime", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"), 0, "20a3a07c-5cf1-4a17-85b7-9cf5d06af63f", "moderator@gmail.com", true, true, false, null, "MODERATOR@GMAIL.COM", null, "AQAAAAIAAYagAAAAELuQx7gt3+6Ow5YGBiP9hAu3Gmx97is34BcB97pvfZKf7mo69DjSnycMhK/r+jLrqQ==", null, false, null, null, null, false, null },
+                    { new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"), 0, "3f94f205-7ad7-466e-863a-c3a7e471812e", "admin@gmail.com", true, true, false, null, "ADMIN@GMAIL.COM", null, "AQAAAAIAAYagAAAAEFcesHtDnvn4gniKWsCYGI827aX42X3gyfZL7mn7alb0kYulyqKgsW5+8E3eb2DM2A==", null, false, null, null, null, false, null }
                 });
 
             migrationBuilder.InsertData(
@@ -929,6 +938,33 @@ namespace IndieGameZone.Infrastructure.Migrations
                     { new Guid("cd543d0f-1761-4874-945b-53863f00942b"), "Adventure" },
                     { new Guid("e4cc8cbe-9b71-416d-967c-b88ad852be45"), "Singleplayer" },
                     { new Guid("fcf4e928-dc77-405c-a13e-1d1d5e308d6b"), "2D" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[,]
+                {
+                    { new Guid("7211a346-6e23-431c-a6bd-2f02aa5de68a"), new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037") },
+                    { new Guid("6f7b3f0c-3f54-4fb8-a215-33cd496c3be7"), new Guid("e5d8947f-6794-42b6-ba67-201f366128b8") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "UserProfiles",
+                columns: new[] { "UserId", "Avatar", "BankAccount", "BankName", "Bio", "Birthday", "FacebookLink", "Fullname" },
+                values: new object[,]
+                {
+                    { new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"), "https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=6&m=1223671392&s=170667a&w=0&h=zP3l7WJinOFaGb2i1F4g8IS2ylw0FlIaa6x3tP9sebU=", "", "", "", new DateOnly(2002, 1, 23), "", "Moderator" },
+                    { new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"), "https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=6&m=1223671392&s=170667a&w=0&h=zP3l7WJinOFaGb2i1F4g8IS2ylw0FlIaa6x3tP9sebU=", "", "", "", new DateOnly(2002, 1, 23), "", "Admin" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Wallets",
+                columns: new[] { "UserId", "Balance" },
+                values: new object[,]
+                {
+                    { new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"), 0.0 },
+                    { new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"), 0.0 }
                 });
 
             migrationBuilder.CreateIndex(

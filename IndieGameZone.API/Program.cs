@@ -1,5 +1,7 @@
 using IndieGameZone.API.Extensions;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Service.Extensions;
+using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -30,6 +32,7 @@ builder.Services.ConfigureManager();
 builder.Services.ConfigureGlobalException();
 builder.Services.ConfigureMapsters();
 builder.Services.ConfigureIdentity();
+builder.Services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
 
 var app = builder.Build();
 

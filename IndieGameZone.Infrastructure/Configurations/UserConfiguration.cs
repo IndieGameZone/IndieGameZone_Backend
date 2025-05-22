@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -6,7 +7,13 @@ namespace IndieGameZone.Infrastructure.Configurations
 {
 	public class UserConfiguration : IEntityTypeConfiguration<Users>
 	{
-		public void Configure(EntityTypeBuilder<Users> builder)
+		private readonly IPasswordHasher<Users> passwordHasher;
+
+		public UserConfiguration(IPasswordHasher<Users> passwordHasher)
+		{
+			this.passwordHasher = passwordHasher;
+		}
+		public async void Configure(EntityTypeBuilder<Users> builder)
 		{
 			builder.Property(u => u.IsActive);
 			builder.Property(u => u.RefreshToken);
@@ -75,6 +82,28 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(gr => gr.User)
 				.HasForeignKey(gr => gr.UserId)
 				.OnDelete(DeleteBehavior.NoAction);
+
+			var admin = new Users
+			{
+				Id = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
+				Email = "admin@gmail.com",
+				NormalizedEmail = "ADMIN@GMAIL.COM",
+				EmailConfirmed = true,
+				IsActive = true
+			};
+			admin.PasswordHash = passwordHasher.HashPassword(admin, "admin");
+
+			var moderator = new Users
+			{
+				Id = Guid.Parse("3fe77296-fdb3-4d71-8b99-ef8380c32037"),
+				Email = "moderator@gmail.com",
+				NormalizedEmail = "MODERATOR@GMAIL.COM",
+				EmailConfirmed = true,
+				IsActive = true
+			};
+			moderator.PasswordHash = passwordHasher.HashPassword(moderator, "moderator");
+
+			builder.HasData(admin, moderator);
 		}
 	}
 }

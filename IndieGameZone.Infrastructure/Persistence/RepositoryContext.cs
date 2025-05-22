@@ -8,9 +8,11 @@ namespace IndieGameZone.Infrastructure.Persistence
 {
 	public class RepositoryContext : IdentityDbContext<Users, Roles, Guid>
 	{
-		public RepositoryContext(DbContextOptions<RepositoryContext> options) : base(options)
-		{
+		private readonly IPasswordHasher<Users> passwordHasher;
 
+		public RepositoryContext(DbContextOptions<RepositoryContext> options, IPasswordHasher<Users> passwordHasher) : base(options)
+		{
+			this.passwordHasher = passwordHasher;
 		}
 
 		public DbSet<Achievements> Achievements { get; set; } = null!;
@@ -79,12 +81,13 @@ namespace IndieGameZone.Infrastructure.Persistence
 			modelBuilder.ApplyConfiguration(new RoleConfiguration());
 			modelBuilder.ApplyConfiguration(new TagConfiguration());
 			modelBuilder.ApplyConfiguration(new TransactionConfiguration());
-			modelBuilder.ApplyConfiguration(new UserConfiguration());
+			modelBuilder.ApplyConfiguration(new UserConfiguration(passwordHasher));
 			modelBuilder.ApplyConfiguration(new UserFollowConfiguration());
 			modelBuilder.ApplyConfiguration(new UserProfileConfiguration());
 			modelBuilder.ApplyConfiguration(new WalletConfiguration());
 			modelBuilder.ApplyConfiguration(new WishlistConfiguration());
 			modelBuilder.ApplyConfiguration(new WithdrawRequestConfiguration());
+			modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
 		}
 	}
 }

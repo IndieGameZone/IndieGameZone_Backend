@@ -18,19 +18,19 @@ namespace IndieGameZone.Infrastructure.Configurations
 				},
 				new Roles
 				{
-					Id = Guid.NewGuid(),
+					Id = Guid.Parse("b86a5b00-0393-4524-9f56-fa7ca800e79c"),
 					Name = RoleEnum.Developer.ToString(),
 					NormalizedName = RoleEnum.Developer.ToString().ToUpper()
 				},
 				new Roles
 				{
-					Id = Guid.NewGuid(),
+					Id = Guid.Parse("51999f00-0f63-4236-8c81-94c43fcf7586"),
 					Name = RoleEnum.Player.ToString(),
 					NormalizedName = RoleEnum.Player.ToString().ToUpper()
 				},
 				new Roles
 				{
-					Id = Guid.NewGuid(),
+					Id = Guid.Parse("7211a346-6e23-431c-a6bd-2f02aa5de68a"),
 					Name = RoleEnum.Moderator.ToString(),
 					NormalizedName = RoleEnum.Moderator.ToString().ToUpper()
 				}
