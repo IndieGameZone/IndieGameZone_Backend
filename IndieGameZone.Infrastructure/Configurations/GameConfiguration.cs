@@ -24,9 +24,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(g => g.Tags)
 				.WithMany(t => t.Games)
 				.UsingEntity<GameTags>();
-			builder.HasMany(g => g.Categories)
+			builder.HasOne(g => g.Category)
 				.WithMany(c => c.Games)
-				.UsingEntity<GameCategories>();
+				.HasForeignKey(g => g.CategoryId)
+				.OnDelete(DeleteBehavior.NoAction);
 			builder.HasMany(g => g.Platforms)
 				.WithMany(p => p.Games)
 				.UsingEntity<GamePlatforms>();

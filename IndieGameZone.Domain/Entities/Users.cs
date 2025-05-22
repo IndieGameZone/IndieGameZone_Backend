@@ -23,10 +23,10 @@ namespace IndieGameZone.Domain.Entities
 		public virtual ICollection<Posts> Posts { get; set; } = new List<Posts>();
 		public virtual ICollection<PostReactions> PostReactions { get; set; } = new List<PostReactions>();
 		public virtual ICollection<PostComments> PostComments { get; set; } = new List<PostComments>();
-		public virtual ICollection<Reports> Reports { get; set; } = new List<Reports>();
-		public virtual ICollection<Reports> Reported { get; set; } = new List<Reports>();
-		public virtual ICollection<UserFollows> Followers { get; set; } = new List<UserFollows>();
-		public virtual ICollection<UserFollows> Followeds { get; set; } = new List<UserFollows>();
+		public virtual ICollection<Reports> ReportingUsers { get; set; } = new List<Reports>();
+		public virtual ICollection<Reports> ReportedUsers { get; set; } = new List<Reports>();
+		public virtual ICollection<UserFollows> FollowingUsers { get; set; } = new List<UserFollows>();
+		public virtual ICollection<UserFollows> FollowedUsers { get; set; } = new List<UserFollows>();
 		public virtual ICollection<GameRecommendations> GameRecommendations { get; set; } = new List<GameRecommendations>();
 
 	}

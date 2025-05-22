@@ -12,13 +12,13 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(r => r.Message);
 			builder.Property(r => r.CreatedAt);
 
-			builder.HasOne(r => r.UserReport)
-				.WithMany(u => u.Reports)
-				.HasForeignKey(r => r.UserReportId)
+			builder.HasOne(r => r.ReportingUser)
+				.WithMany(u => u.ReportingUsers)
+				.HasForeignKey(r => r.ReportingUserId)
 				.OnDelete(DeleteBehavior.NoAction);
-			builder.HasOne(r => r.UserReported)
-				.WithMany(u => u.Reported)
-				.HasForeignKey(r => r.UserReportedId)
+			builder.HasOne(r => r.ReportedUser)
+				.WithMany(u => u.ReportedUsers)
+				.HasForeignKey(r => r.ReportedUserId)
 				.OnDelete(DeleteBehavior.NoAction);
 			builder.HasOne(r => r.ReportType)
 				.WithMany(rt => rt.Reports)

@@ -13,11 +13,12 @@
 		public double AverageSession { get; set; }
 		public Guid AgeRestrictionId { get; set; }
 		public Guid DeveloperId { get; set; }
+		public Guid CategoryId { get; set; }
 
 		// Navigation properties
 		public virtual ICollection<Languages> Languages { get; set; } = new List<Languages>();
 		public virtual ICollection<Tags> Tags { get; set; } = new List<Tags>();
-		public virtual ICollection<Categories> Categories { get; set; } = new List<Categories>();
+		public virtual Categories Category { get; set; } = null!;
 		public virtual ICollection<Platforms> Platforms { get; set; } = new List<Platforms>();
 		public virtual ICollection<GameInfos> GameInfos { get; set; } = new List<GameInfos>();
 		public virtual AgeRestrictions AgeRestriction { get; set; } = null!;

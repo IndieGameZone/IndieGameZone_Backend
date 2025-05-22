@@ -98,6 +98,83 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
+                            Name = "Action"
+                        },
+                        new
+                        {
+                            Id = new Guid("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
+                            Name = "Adventure"
+                        },
+                        new
+                        {
+                            Id = new Guid("89a4e6d2-2cfe-4474-9b96-6d3595ad4705"),
+                            Name = "Role-Playing"
+                        },
+                        new
+                        {
+                            Id = new Guid("2d740ce2-a803-4b32-8df8-ab5139203742"),
+                            Name = "Simulation"
+                        },
+                        new
+                        {
+                            Id = new Guid("929c6ef0-41e5-4bc5-9ef9-86f0703b9c20"),
+                            Name = "Strategy"
+                        },
+                        new
+                        {
+                            Id = new Guid("3623f541-4b87-4174-bfce-dd2b027c7a33"),
+                            Name = "Sports"
+                        },
+                        new
+                        {
+                            Id = new Guid("bca8721b-c323-44a1-afcf-876e206ab035"),
+                            Name = "Puzzle"
+                        },
+                        new
+                        {
+                            Id = new Guid("3ef51667-ff8d-4873-979b-a3b9a5dbe1b1"),
+                            Name = "Horror"
+                        },
+                        new
+                        {
+                            Id = new Guid("88fd3b90-179a-4c18-8c3a-5f3929992e0a"),
+                            Name = "Racing"
+                        },
+                        new
+                        {
+                            Id = new Guid("b277ba85-f89b-4617-a464-49cda6e8d387"),
+                            Name = "Fighting"
+                        },
+                        new
+                        {
+                            Id = new Guid("4d84bb23-8644-4720-8344-d4a9d0433d35"),
+                            Name = "Shooter"
+                        },
+                        new
+                        {
+                            Id = new Guid("fcb43570-6859-41f4-8d72-ce59a31f5858"),
+                            Name = "Stealth"
+                        },
+                        new
+                        {
+                            Id = new Guid("dcf41a71-dd69-43db-af34-a8ca8592b079"),
+                            Name = "Open World"
+                        },
+                        new
+                        {
+                            Id = new Guid("ab34908d-20dc-43bd-b80d-eac5b59d6238"),
+                            Name = "Survival"
+                        },
+                        new
+                        {
+                            Id = new Guid("592e7334-c896-46f6-ad6c-a781a2ab7219"),
+                            Name = "BoardGame"
+                        });
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.CommercialPackages", b =>
@@ -206,27 +283,6 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasIndex("GameId");
 
                     b.ToTable("Discounts");
-                });
-
-            modelBuilder.Entity("IndieGameZone.Domain.Entities.GameCategories", b =>
-                {
-                    b.Property<Guid>("CategoriesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("GamesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("GameId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("CategoriesId", "GamesId");
-
-                    b.HasIndex("GamesId");
-
-                    b.ToTable("GameCategories");
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.GameInfos", b =>
@@ -348,6 +404,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Property<double>("AverageSession")
                         .HasColumnType("float");
 
+                    b.Property<Guid>("CategoryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("CoverImage")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -380,6 +439,8 @@ namespace IndieGameZone.Infrastructure.Migrations
 
                     b.HasIndex("AgeRestrictionId");
 
+                    b.HasIndex("CategoryId");
+
                     b.HasIndex("DeveloperId");
 
                     b.ToTable("Games");
@@ -399,6 +460,58 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Languages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("80e3581d-3836-4921-a838-b7d917b5e11f"),
+                            Name = "Vietnamese"
+                        },
+                        new
+                        {
+                            Id = new Guid("8f29f2a5-146d-44df-95ba-a972e36b7527"),
+                            Name = "English"
+                        },
+                        new
+                        {
+                            Id = new Guid("2f98f2c8-2640-4cff-a8eb-ed61d9179dcb"),
+                            Name = "Spanish"
+                        },
+                        new
+                        {
+                            Id = new Guid("ae4f3cfb-6dd6-473b-a1c6-695f9edce11e"),
+                            Name = "French"
+                        },
+                        new
+                        {
+                            Id = new Guid("73b3d9d2-ecbf-4d91-95ad-e9a48b7e54cd"),
+                            Name = "German"
+                        },
+                        new
+                        {
+                            Id = new Guid("11a64feb-23f6-41ad-a55f-a9f487d04a85"),
+                            Name = "Chinese"
+                        },
+                        new
+                        {
+                            Id = new Guid("04adfb56-cb77-4209-8fc3-a7b96b768784"),
+                            Name = "Japanese"
+                        },
+                        new
+                        {
+                            Id = new Guid("3ec80948-8c1a-46aa-9fd6-01feeb273c22"),
+                            Name = "Russian"
+                        },
+                        new
+                        {
+                            Id = new Guid("149615f6-6214-4e42-a016-1dba7d248c0f"),
+                            Name = "Korean"
+                        },
+                        new
+                        {
+                            Id = new Guid("ca29265a-4bab-4aa1-a819-9636878b50da"),
+                            Name = "Portuguese"
+                        });
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Libraries", b =>
@@ -462,6 +575,23 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Platforms");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("574cb883-e637-4f18-9518-269e4d22312c"),
+                            Name = "MacOS"
+                        },
+                        new
+                        {
+                            Id = new Guid("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+                            Name = "Windows"
+                        },
+                        new
+                        {
+                            Id = new Guid("db498cbb-c76f-4166-9836-8ecb462419e6"),
+                            Name = "Linux"
+                        });
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.PostComments", b =>
@@ -617,10 +747,10 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Property<Guid?>("ReportTypeId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserReportId")
+                    b.Property<Guid?>("ReportedUserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("UserReportedId")
+                    b.Property<Guid>("ReportingUserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -633,9 +763,9 @@ namespace IndieGameZone.Infrastructure.Migrations
 
                     b.HasIndex("ReportTypeId");
 
-                    b.HasIndex("UserReportId");
+                    b.HasIndex("ReportedUserId");
 
-                    b.HasIndex("UserReportedId");
+                    b.HasIndex("ReportingUserId");
 
                     b.ToTable("Reports");
                 });
@@ -707,19 +837,19 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("9c5890ad-7f78-487f-9f11-30773b403f6f"),
+                            Id = new Guid("6a669aa9-ed3f-4951-879e-68731812c2d3"),
                             Name = "Developer",
                             NormalizedName = "DEVELOPER"
                         },
                         new
                         {
-                            Id = new Guid("19044c77-a162-43b6-b13c-cf30a640a806"),
+                            Id = new Guid("567bdbb3-1f7c-4781-ae82-ef58dbe0fb37"),
                             Name = "Player",
                             NormalizedName = "PLAYER"
                         },
                         new
                         {
-                            Id = new Guid("06f8a29e-9eb6-41a4-a564-dee040fbd834"),
+                            Id = new Guid("6caa6e4b-4eea-4215-b4e3-e358a7d47e64"),
                             Name = "Moderator",
                             NormalizedName = "MODERATOR"
                         });
@@ -739,6 +869,133 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tags");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("1c175c84-379e-43dc-a95a-aafd910d6a00"),
+                            Name = "Action"
+                        },
+                        new
+                        {
+                            Id = new Guid("cd543d0f-1761-4874-945b-53863f00942b"),
+                            Name = "Adventure"
+                        },
+                        new
+                        {
+                            Id = new Guid("4d1a6086-ed27-4767-8fb6-4c4af12c384c"),
+                            Name = "Role-Playing"
+                        },
+                        new
+                        {
+                            Id = new Guid("b9e9a223-25b3-491b-ba92-e185a74d82ab"),
+                            Name = "Simulation"
+                        },
+                        new
+                        {
+                            Id = new Guid("c7cee309-8f38-43fd-8512-e40e4d6f1ccd"),
+                            Name = "Strategy"
+                        },
+                        new
+                        {
+                            Id = new Guid("3d76f55a-a3c8-4f51-a959-6a36c90ba4bd"),
+                            Name = "Sports"
+                        },
+                        new
+                        {
+                            Id = new Guid("71918e61-bb0b-4ca1-975a-616d869769bf"),
+                            Name = "Puzzle"
+                        },
+                        new
+                        {
+                            Id = new Guid("b92d60b0-0447-4ef2-9233-088b4d91cce5"),
+                            Name = "Horror"
+                        },
+                        new
+                        {
+                            Id = new Guid("aa592c96-400a-4c67-bf18-3b82823e9ef9"),
+                            Name = "Racing"
+                        },
+                        new
+                        {
+                            Id = new Guid("41c1f4f5-4cf0-411b-bb15-e59f15b04762"),
+                            Name = "Fighting"
+                        },
+                        new
+                        {
+                            Id = new Guid("c04cba4a-a827-4a49-b61b-f02798ef17c9"),
+                            Name = "Shooter"
+                        },
+                        new
+                        {
+                            Id = new Guid("9f3617ec-c56d-4423-ad07-43c904ef6542"),
+                            Name = "Stealth"
+                        },
+                        new
+                        {
+                            Id = new Guid("78530cfe-1488-49ab-befb-0ee332cfe7a1"),
+                            Name = "Open World"
+                        },
+                        new
+                        {
+                            Id = new Guid("46c0001e-beb3-4291-885a-f076e53f40fd"),
+                            Name = "Survival"
+                        },
+                        new
+                        {
+                            Id = new Guid("a137e663-30d5-4ed9-8aa3-b9b500f18de7"),
+                            Name = "BoardGame"
+                        },
+                        new
+                        {
+                            Id = new Guid("a39f8614-3936-48cf-bb4a-01c590486bdc"),
+                            Name = "Indie"
+                        },
+                        new
+                        {
+                            Id = new Guid("510d85f4-c8dc-4228-93cb-311809751bed"),
+                            Name = "Multiplayer"
+                        },
+                        new
+                        {
+                            Id = new Guid("e4cc8cbe-9b71-416d-967c-b88ad852be45"),
+                            Name = "Singleplayer"
+                        },
+                        new
+                        {
+                            Id = new Guid("72229e67-bba2-41ae-9fee-84c97d01d1fb"),
+                            Name = "MacOS Game"
+                        },
+                        new
+                        {
+                            Id = new Guid("c620e06f-49b2-4cc7-8be5-19d63e8d915a"),
+                            Name = "Linux Game"
+                        },
+                        new
+                        {
+                            Id = new Guid("cb631ff7-d19b-40a5-b948-a3b138703e19"),
+                            Name = "Windows Game"
+                        },
+                        new
+                        {
+                            Id = new Guid("fcf4e928-dc77-405c-a13e-1d1d5e308d6b"),
+                            Name = "2D"
+                        },
+                        new
+                        {
+                            Id = new Guid("3ef686ac-5e11-45d8-afab-223d2d149f6f"),
+                            Name = "3D"
+                        },
+                        new
+                        {
+                            Id = new Guid("37223e27-41ad-44cb-9332-d985dbc9f708"),
+                            Name = "Pixel Art"
+                        },
+                        new
+                        {
+                            Id = new Guid("83f90ed3-38f1-40a9-88e5-8ce4a728a4a4"),
+                            Name = "Kungfu"
+                        });
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Transactions", b =>
@@ -800,18 +1057,18 @@ namespace IndieGameZone.Infrastructure.Migrations
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.UserFollows", b =>
                 {
-                    b.Property<Guid>("FollowerId")
+                    b.Property<Guid>("FollowingUserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("FollowedId")
+                    b.Property<Guid>("FollowedUserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("FollowedAt")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("FollowerId", "FollowedId");
+                    b.HasKey("FollowingUserId", "FollowedUserId");
 
-                    b.HasIndex("FollowedId");
+                    b.HasIndex("FollowedUserId");
 
                     b.ToTable("UserFollows");
                 });
@@ -1084,21 +1341,6 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("IndieGameZone.Domain.Entities.GameCategories", b =>
-                {
-                    b.HasOne("IndieGameZone.Domain.Entities.Categories", null)
-                        .WithMany()
-                        .HasForeignKey("CategoriesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("IndieGameZone.Domain.Entities.Games", null)
-                        .WithMany()
-                        .HasForeignKey("GamesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("IndieGameZone.Domain.Entities.GameInfos", b =>
                 {
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Games")
@@ -1182,6 +1424,12 @@ namespace IndieGameZone.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("IndieGameZone.Domain.Entities.Categories", "Category")
+                        .WithMany("Games")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "Developers")
                         .WithMany("Games")
                         .HasForeignKey("DeveloperId")
@@ -1189,6 +1437,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("AgeRestriction");
+
+                    b.Navigation("Category");
 
                     b.Navigation("Developers");
                 });
@@ -1317,16 +1567,16 @@ namespace IndieGameZone.Infrastructure.Migrations
                         .HasForeignKey("ReportTypeId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("IndieGameZone.Domain.Entities.Users", "UserReport")
-                        .WithMany("Reports")
-                        .HasForeignKey("UserReportId")
+                    b.HasOne("IndieGameZone.Domain.Entities.Users", "ReportedUser")
+                        .WithMany("ReportedUsers")
+                        .HasForeignKey("ReportedUserId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("IndieGameZone.Domain.Entities.Users", "ReportingUser")
+                        .WithMany("ReportingUsers")
+                        .HasForeignKey("ReportingUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
-
-                    b.HasOne("IndieGameZone.Domain.Entities.Users", "UserReported")
-                        .WithMany("Reported")
-                        .HasForeignKey("UserReportedId")
-                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Game");
 
@@ -1336,9 +1586,9 @@ namespace IndieGameZone.Infrastructure.Migrations
 
                     b.Navigation("ReportType");
 
-                    b.Navigation("UserReport");
+                    b.Navigation("ReportedUser");
 
-                    b.Navigation("UserReported");
+                    b.Navigation("ReportingUser");
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Reviews", b =>
@@ -1388,21 +1638,21 @@ namespace IndieGameZone.Infrastructure.Migrations
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.UserFollows", b =>
                 {
-                    b.HasOne("IndieGameZone.Domain.Entities.Users", "Followed")
-                        .WithMany("Followeds")
-                        .HasForeignKey("FollowedId")
+                    b.HasOne("IndieGameZone.Domain.Entities.Users", "FollowedUser")
+                        .WithMany("FollowedUsers")
+                        .HasForeignKey("FollowedUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("IndieGameZone.Domain.Entities.Users", "Follower")
-                        .WithMany("Followers")
-                        .HasForeignKey("FollowerId")
+                    b.HasOne("IndieGameZone.Domain.Entities.Users", "FollowingUser")
+                        .WithMany("FollowingUsers")
+                        .HasForeignKey("FollowingUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Followed");
+                    b.Navigation("FollowedUser");
 
-                    b.Navigation("Follower");
+                    b.Navigation("FollowingUser");
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.UserProfiles", b =>
@@ -1495,6 +1745,11 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Navigation("Games");
                 });
 
+            modelBuilder.Entity("IndieGameZone.Domain.Entities.Categories", b =>
+                {
+                    b.Navigation("Games");
+                });
+
             modelBuilder.Entity("IndieGameZone.Domain.Entities.CommercialPackages", b =>
                 {
                     b.Navigation("CommercialRegistrations");
@@ -1552,9 +1807,9 @@ namespace IndieGameZone.Infrastructure.Migrations
 
                     b.Navigation("Coupons");
 
-                    b.Navigation("Followeds");
+                    b.Navigation("FollowedUsers");
 
-                    b.Navigation("Followers");
+                    b.Navigation("FollowingUsers");
 
                     b.Navigation("GameRecommendations");
 
@@ -1570,9 +1825,9 @@ namespace IndieGameZone.Infrastructure.Migrations
 
                     b.Navigation("Posts");
 
-                    b.Navigation("Reported");
+                    b.Navigation("ReportedUsers");
 
-                    b.Navigation("Reports");
+                    b.Navigation("ReportingUsers");
 
                     b.Navigation("Reviews");
 

@@ -21,7 +21,6 @@ namespace IndieGameZone.Infrastructure.Persistence
 		public DbSet<CommercialRegistration> CommercialRegistration { get; set; } = null!;
 		public DbSet<Coupons> Coupons { get; set; } = null!;
 		public DbSet<Discounts> Discounts { get; set; } = null!;
-		public DbSet<GameCategories> GameCategories { get; set; } = null!;
 		public DbSet<GameInfos> GameInfos { get; set; } = null!;
 		public DbSet<GameLanguages> GameLanguages { get; set; } = null!;
 		public DbSet<GamePlatforms> GamePlatforms { get; set; } = null!;

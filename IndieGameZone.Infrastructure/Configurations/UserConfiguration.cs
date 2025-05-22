@@ -55,21 +55,21 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(pc => pc.User)
 				.HasForeignKey(pc => pc.UserId)
 				.OnDelete(DeleteBehavior.NoAction);
-			builder.HasMany(u => u.Reports)
-				.WithOne(r => r.UserReport)
-				.HasForeignKey(r => r.UserReportId)
+			builder.HasMany(u => u.ReportingUsers)
+				.WithOne(r => r.ReportingUser)
+				.HasForeignKey(r => r.ReportingUserId)
 				.OnDelete(DeleteBehavior.NoAction);
-			builder.HasMany(u => u.Reported)
-				.WithOne(r => r.UserReported)
-				.HasForeignKey(r => r.UserReportedId)
+			builder.HasMany(u => u.ReportedUsers)
+				.WithOne(r => r.ReportedUser)
+				.HasForeignKey(r => r.ReportedUserId)
 				.OnDelete(DeleteBehavior.NoAction);
-			builder.HasMany(u => u.Followers)
-				.WithOne(f => f.Follower)
-				.HasForeignKey(f => f.FollowedId)
+			builder.HasMany(u => u.FollowingUsers)
+				.WithOne(f => f.FollowingUser)
+				.HasForeignKey(f => f.FollowingUserId)
 				.OnDelete(DeleteBehavior.NoAction);
-			builder.HasMany(u => u.Followeds)
-				.WithOne(f => f.Followed)
-				.HasForeignKey(f => f.FollowerId)
+			builder.HasMany(u => u.FollowedUsers)
+				.WithOne(f => f.FollowedUser)
+				.HasForeignKey(f => f.FollowedUserId)
 				.OnDelete(DeleteBehavior.NoAction);
 			builder.HasMany(u => u.GameRecommendations)
 				.WithOne(gr => gr.User)

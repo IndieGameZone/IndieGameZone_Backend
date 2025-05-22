@@ -5,16 +5,16 @@
 		public Guid Id { get; set; }
 		public string Message { get; set; } = string.Empty;
 		public DateTime CreatedAt { get; set; }
-		public Guid UserReportId { get; set; }
-		public Guid? UserReportedId { get; set; }
+		public Guid ReportingUserId { get; set; }
+		public Guid? ReportedUserId { get; set; }
 		public Guid? PostId { get; set; }
 		public Guid? ReportTypeId { get; set; }
 		public Guid? GameId { get; set; }
 		public Guid? CommentId { get; set; }
 
 		//Navigation properties
-		public virtual Users UserReport { get; set; } = null!;
-		public virtual Users UserReported { get; set; } = null!;
+		public virtual Users ReportingUser { get; set; } = null!;
+		public virtual Users ReportedUser { get; set; } = null!;
 		public virtual ReportTypes ReportType { get; set; } = null!;
 		public virtual Posts Post { get; set; } = null!;
 		public virtual Games Game { get; set; } = null!;
