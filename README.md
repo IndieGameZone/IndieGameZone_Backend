@@ -14,12 +14,12 @@ A modern, scalable backend API for indie game distribution platforms (inspired b
 - **Onion Architecture** with separated layers:
   - `Domain` (Domain models)
   - `Infrastructure` (Repositories, DbContext)
-  - `Application` (Business logic)
+  - `Service` (Business logic)
   - `API` (REST endpoints)
 - **.NET Aspire** for cloud-native orchestration
 - **Docker** container support
 - Repository Pattern + Unit of Work
-- JWT Authentication (planned)
+- JWT Authentication
 
 ## 📂 Solution Structure
 
@@ -27,7 +27,7 @@ IndieGameZone_Backend/ <br>
 ├── IndieGameZone.API/ # Web API (Entry Point) <br>
 ├── IndieGameZone.Domain/ # Domain Models/Entities <br>
 ├── IndieGameZone.Infrastructure/ # Data Access (EF Core) <br>
-├── IndieGameZone.Application/ # Business Logic <br>
+├── IndieGameZone.Service/ # Business Logic <br>
 └── IndieGameZone.AppHost/ # .NET Aspire Orchestration <br>
 
 ## 🛠️ Prerequisites
