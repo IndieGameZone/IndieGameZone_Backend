@@ -1,3 +1,4 @@
+using Azure.Identity;
 using IndieGameZone.API.Extensions;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Service.Extensions;
@@ -19,9 +20,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Azure Key Vault
-//var keyVaultUrl = new Uri(builder.Configuration.GetSection("KeyVaultUrl").Value!);
-//var azureCredential = new DefaultAzureCredential();
-//builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);
+var keyVaultUrl = new Uri(builder.Configuration.GetSection("KeyVaultUrl").Value!);
+var azureCredential = new DefaultAzureCredential();
+builder.Configuration.AddAzureKeyVault(keyVaultUrl, azureCredential);
 
 builder.Services.ConfigureQuartz();
 builder.Services.ConfigureSwaggerForAuthentication();

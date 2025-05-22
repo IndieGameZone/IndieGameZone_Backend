@@ -1,8 +1,10 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using Azure.Storage.Blobs;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Repositories;
 using IndieGameZone.Infrastructure.Persistence;
 using IndieGameZone.Infrastructure.Repositories;
 using IndieGameZone.Service;
+using IndieGameZone.Service.BlobService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -18,10 +20,14 @@ namespace IndieGameZone.API.Extensions
 	{
 		public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
 		{
-			//services.AddDbContext<RepositoryContext>(options =>
-			//	options.UseSqlServer(configuration.GetSection("DbString").Value));
 			services.AddDbContext<RepositoryContext>(options =>
-				options.UseSqlServer(configuration.GetConnectionString("DbString")));
+				options.UseSqlServer(configuration.GetSection("DbString").Value));
+		}
+
+		public static void ConfigureBlobService(this IServiceCollection services, IConfiguration configuration)
+		{
+			services.AddSingleton(u => new BlobServiceClient(configuration.GetSection("StorageAccount").Value));
+			services.AddSingleton<IBlobService, BlobService>();
 		}
 
 		public static void ConfigureIdentity(this IServiceCollection services)
