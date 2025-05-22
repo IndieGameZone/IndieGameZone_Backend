@@ -88,6 +88,9 @@ namespace IndieGameZone.Infrastructure.Persistence
 			modelBuilder.ApplyConfiguration(new WishlistConfiguration());
 			modelBuilder.ApplyConfiguration(new WithdrawRequestConfiguration());
 			modelBuilder.ApplyConfiguration(new UserRoleConfiguration());
+			modelBuilder.ApplyConfiguration(new GameLanguageConfiguration());
+			modelBuilder.ApplyConfiguration(new GamePlatformConfiguration());
+			modelBuilder.ApplyConfiguration(new GameTagConfiguration());
 		}
 	}
 }

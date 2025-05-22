@@ -11,9 +11,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasKey(p => p.Id);
 			builder.Property(p => p.Name).HasMaxLength(100);
 
-			builder.HasMany(p => p.Games)
-				.WithMany(g => g.Platforms)
-				.UsingEntity<GamePlatforms>();
+			builder.HasMany(p => p.GamePlatforms)
+				.WithOne(gp => gp.Platform)
+				.HasForeignKey(gp => gp.PlatformId)
+				.OnDelete(DeleteBehavior.NoAction);
 
 			builder.HasData(
 				new Platforms { Id = Guid.Parse("574cb883-e637-4f18-9518-269e4d22312c"), Name = "MacOS" },

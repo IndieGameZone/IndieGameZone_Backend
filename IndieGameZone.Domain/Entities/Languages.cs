@@ -6,6 +6,6 @@
 		public string Name { get; set; } = string.Empty;
 
 		// Navigation properties
-		public virtual ICollection<Games> Games { get; set; } = new List<Games>();
+		public virtual ICollection<GameLanguages> GameLanguages { get; set; } = new List<GameLanguages>();
 	}
 }

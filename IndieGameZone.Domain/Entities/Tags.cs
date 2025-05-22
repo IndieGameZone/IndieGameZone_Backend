@@ -6,7 +6,7 @@
 		public string Name { get; set; } = string.Empty;
 
 		// Navigation property
-		public ICollection<Games> Games { get; set; } = new List<Games>();
+		public ICollection<GameTags> GameTags { get; set; } = new List<GameTags>();
 		public ICollection<Posts> Posts { get; set; } = new List<Posts>();
 	}
 }

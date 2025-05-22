@@ -16,6 +16,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 		public async void Configure(EntityTypeBuilder<Users> builder)
 		{
 			builder.Property(u => u.IsActive);
+			builder.Property(u => u.JoinedDate);
+			builder.Property(u => u.LastLogin);
 			builder.Property(u => u.RefreshToken);
 			builder.Property(u => u.RefreshTokenExpiryTime);
 
@@ -89,7 +91,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Email = "admin@gmail.com",
 				NormalizedEmail = "ADMIN@GMAIL.COM",
 				EmailConfirmed = true,
-				IsActive = true
+				IsActive = true,
+				JoinedDate = DateTime.Now,
 			};
 			admin.PasswordHash = passwordHasher.HashPassword(admin, "admin");
 
@@ -99,11 +102,32 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Email = "moderator@gmail.com",
 				NormalizedEmail = "MODERATOR@GMAIL.COM",
 				EmailConfirmed = true,
-				IsActive = true
+				IsActive = true,
+				JoinedDate = DateTime.Now,
 			};
 			moderator.PasswordHash = passwordHasher.HashPassword(moderator, "moderator");
 
-			builder.HasData(admin, moderator);
+			var developer = new Users
+			{
+				Id = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
+				Email = "developer@gmail.com",
+				NormalizedEmail = "DEVELOPER@GMAIL.COM",
+				EmailConfirmed = true,
+				IsActive = true
+			};
+			developer.PasswordHash = passwordHasher.HashPassword(developer, "developer");
+
+			var player = new Users
+			{
+				Id = Guid.Parse("23879117-e09e-40f1-b78f-1493d81baf49"),
+				Email = "player@gmail.com",
+				NormalizedEmail = "PLAYER@GMAIL.COM",
+				EmailConfirmed = true,
+				IsActive = true
+			};
+			player.PasswordHash = passwordHasher.HashPassword(player, "player");
+
+			builder.HasData(admin, moderator, developer, player);
 		}
 	}
 }

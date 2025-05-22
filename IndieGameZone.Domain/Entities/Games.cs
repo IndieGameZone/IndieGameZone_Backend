@@ -9,17 +9,17 @@
 		public bool IsActive { get; set; }
 		public double Price { get; set; }
 		public DateTime ReleasedDate { get; set; }
-		public DateTime UpdatedAt { get; set; }
+		public DateTime? UpdatedAt { get; set; }
 		public double AverageSession { get; set; }
 		public Guid AgeRestrictionId { get; set; }
 		public Guid DeveloperId { get; set; }
 		public Guid CategoryId { get; set; }
 
 		// Navigation properties
-		public virtual ICollection<Languages> Languages { get; set; } = new List<Languages>();
-		public virtual ICollection<Tags> Tags { get; set; } = new List<Tags>();
+		public virtual ICollection<GameLanguages> GameLanguages { get; set; } = new List<GameLanguages>();
+		public virtual ICollection<GameTags> GameTags { get; set; } = new List<GameTags>();
 		public virtual Categories Category { get; set; } = null!;
-		public virtual ICollection<Platforms> Platforms { get; set; } = new List<Platforms>();
+		public virtual ICollection<GamePlatforms> GamePlatforms { get; set; } = new List<GamePlatforms>();
 		public virtual ICollection<GameInfos> GameInfos { get; set; } = new List<GameInfos>();
 		public virtual AgeRestrictions AgeRestriction { get; set; } = null!;
 		public virtual Users Developers { get; set; } = null!;

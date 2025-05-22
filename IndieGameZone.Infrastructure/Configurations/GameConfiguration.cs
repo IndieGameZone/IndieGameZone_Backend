@@ -18,19 +18,22 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(g => g.UpdatedAt);
 			builder.Property(g => g.AverageSession);
 
-			builder.HasMany(g => g.Languages)
-				.WithMany(l => l.Games)
-				.UsingEntity<GameLanguages>();
-			builder.HasMany(g => g.Tags)
-				.WithMany(t => t.Games)
-				.UsingEntity<GameTags>();
+			builder.HasMany(g => g.GameLanguages)
+				.WithOne(gl => gl.Game)
+				.HasForeignKey(gl => gl.GameId)
+				.OnDelete(DeleteBehavior.NoAction);
+			builder.HasMany(g => g.GameTags)
+				.WithOne(gt => gt.Game)
+				.HasForeignKey(gt => gt.GameId)
+				.OnDelete(DeleteBehavior.NoAction);
 			builder.HasOne(g => g.Category)
 				.WithMany(c => c.Games)
 				.HasForeignKey(g => g.CategoryId)
 				.OnDelete(DeleteBehavior.NoAction);
-			builder.HasMany(g => g.Platforms)
-				.WithMany(p => p.Games)
-				.UsingEntity<GamePlatforms>();
+			builder.HasMany(g => g.GamePlatforms)
+				.WithOne(gp => gp.Game)
+				.HasForeignKey(gp => gp.GameId)
+				.OnDelete(DeleteBehavior.NoAction);
 			builder.HasMany(g => g.GameInfos)
 				.WithOne(gi => gi.Games)
 				.HasForeignKey(gi => gi.GameId)
@@ -75,6 +78,24 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(gr => gr.Game)
 				.HasForeignKey(gr => gr.GameId)
 				.OnDelete(DeleteBehavior.Cascade);
+
+			builder.HasData(
+				new Games
+				{
+					Id = Guid.Parse("65745560-c7e9-48c3-bc36-8c88d66458c7"),
+					Name = "The Deadseat",
+					CoverImage = "https://cdn.cloudflare.steamstatic.com/steam/apps/2380880/header.jpg?t=1698238821",
+					VideoLink = "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s",
+					IsActive = true,
+					Price = 100000,
+					ReleasedDate = DateTime.Now,
+					UpdatedAt = DateTime.Now,
+					AverageSession = 0.5,
+					CategoryId = Guid.Parse("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
+					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
+					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f")
+				}
+			);
 		}
 	}
 }

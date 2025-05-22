@@ -11,9 +11,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasKey(t => t.Id);
 			builder.Property(t => t.Name).HasMaxLength(100);
 
-			builder.HasMany(t => t.Games)
-				.WithMany(g => g.Tags)
-				.UsingEntity<GameTags>();
+			builder.HasMany(t => t.GameTags)
+				.WithOne(gt => gt.Tag)
+				.HasForeignKey(gt => gt.TagId)
+				.OnDelete(DeleteBehavior.NoAction);
 			builder.HasMany(t => t.Posts)
 				.WithMany(p => p.Tags)
 				.UsingEntity<PostTags>();

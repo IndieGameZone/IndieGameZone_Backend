@@ -6,6 +6,6 @@
 		public string Name { get; set; } = string.Empty;
 
 		//Navigation property
-		public virtual ICollection<Games> Games { get; set; } = new HashSet<Games>();
+		public virtual ICollection<GamePlatforms> GamePlatforms { get; set; } = new HashSet<GamePlatforms>();
 	}
 }

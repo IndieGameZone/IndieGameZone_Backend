@@ -58,6 +58,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    JoinedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastLogin = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RefreshToken = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     RefreshTokenExpiryTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -267,7 +269,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Message = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ReadAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ReadAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsRead = table.Column<bool>(type: "bit", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -404,7 +406,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     ReleasedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     AverageSession = table.Column<double>(type: "float", nullable: false),
                     AgeRestrictionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DeveloperId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -498,9 +500,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
@@ -517,52 +519,45 @@ namespace IndieGameZone.Infrastructure.Migrations
                 name: "GameLanguages",
                 columns: table => new
                 {
-                    GamesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    LanguagesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     LanguageId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameLanguages", x => new { x.GamesId, x.LanguagesId });
+                    table.PrimaryKey("PK_GameLanguages", x => new { x.GameId, x.LanguageId });
                     table.ForeignKey(
-                        name: "FK_GameLanguages_Games_GamesId",
-                        column: x => x.GamesId,
+                        name: "FK_GameLanguages_Games_GameId",
+                        column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_GameLanguages_Languages_LanguagesId",
-                        column: x => x.LanguagesId,
+                        name: "FK_GameLanguages_Languages_LanguageId",
+                        column: x => x.LanguageId,
                         principalTable: "Languages",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "GamePlatforms",
                 columns: table => new
                 {
-                    GamesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PlatformsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PlatformId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    PlatformId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    File = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GamePlatforms", x => new { x.GamesId, x.PlatformsId });
+                    table.PrimaryKey("PK_GamePlatforms", x => new { x.GameId, x.PlatformId });
                     table.ForeignKey(
-                        name: "FK_GamePlatforms_Games_GamesId",
-                        column: x => x.GamesId,
+                        name: "FK_GamePlatforms_Games_GameId",
+                        column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_GamePlatforms_Platforms_PlatformsId",
-                        column: x => x.PlatformsId,
+                        name: "FK_GamePlatforms_Platforms_PlatformId",
+                        column: x => x.PlatformId,
                         principalTable: "Platforms",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -591,26 +586,22 @@ namespace IndieGameZone.Infrastructure.Migrations
                 name: "GameTags",
                 columns: table => new
                 {
-                    GamesId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TagsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GameTags", x => new { x.GamesId, x.TagsId });
+                    table.PrimaryKey("PK_GameTags", x => new { x.GameId, x.TagId });
                     table.ForeignKey(
-                        name: "FK_GameTags_Games_GamesId",
-                        column: x => x.GamesId,
+                        name: "FK_GameTags_Games_GameId",
+                        column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_GameTags_Tags_TagsId",
-                        column: x => x.TagsId,
+                        name: "FK_GameTags_Tags_TagId",
+                        column: x => x.TagId,
                         principalTable: "Tags",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -645,7 +636,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     GameId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
@@ -721,7 +712,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
@@ -840,6 +831,18 @@ namespace IndieGameZone.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AgeRestrictions",
+                columns: new[] { "Id", "Code", "Description" },
+                values: new object[,]
+                {
+                    { new Guid("32d6d768-d670-4ef5-acaa-fcfe4c8167d3"), "PEGI 12", "May contain violence of a more graphic nature towards fantasy characters, or mild bad language." },
+                    { new Guid("3df25298-5f31-4639-a3a0-425ae4db72ca"), "PEGI 16", "More realistic violence, sexual activity, use of tobacco or alcohol, and stronger language." },
+                    { new Guid("92ca7f1e-94c3-4c48-a468-61d3bab8f0b9"), "PEGI 18", "Depictions of gross violence, sexual violence, or content that glamorizes illegal drug use." },
+                    { new Guid("c48f1c63-f301-44e9-8766-3d4b60134b5f"), "PEGI 7", "May contain some frightening scenes or sounds." },
+                    { new Guid("c91901a1-1b27-4e42-9b6f-869c920b1b1c"), "PEGI 3", "Suitable for all age groups. No sounds or pictures likely to frighten young children." }
+                });
+
+            migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
@@ -852,11 +855,13 @@ namespace IndieGameZone.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsActive", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "RefreshTokenExpiryTime", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsActive", "JoinedDate", "LastLogin", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "RefreshTokenExpiryTime", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"), 0, "20a3a07c-5cf1-4a17-85b7-9cf5d06af63f", "moderator@gmail.com", true, true, false, null, "MODERATOR@GMAIL.COM", null, "AQAAAAIAAYagAAAAELuQx7gt3+6Ow5YGBiP9hAu3Gmx97is34BcB97pvfZKf7mo69DjSnycMhK/r+jLrqQ==", null, false, null, null, null, false, null },
-                    { new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"), 0, "3f94f205-7ad7-466e-863a-c3a7e471812e", "admin@gmail.com", true, true, false, null, "ADMIN@GMAIL.COM", null, "AQAAAAIAAYagAAAAEFcesHtDnvn4gniKWsCYGI827aX42X3gyfZL7mn7alb0kYulyqKgsW5+8E3eb2DM2A==", null, false, null, null, null, false, null }
+                    { new Guid("23879117-e09e-40f1-b78f-1493d81baf49"), 0, "bcdfd22a-beff-49fa-addd-dee47dc4cc34", "player@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "PLAYER@GMAIL.COM", null, "AQAAAAIAAYagAAAAED0Hu5DXfEG5TpEE6hIRWcJI/qKm1ZvASJyGRZjnYF4eOcrlRHk/retNv1vD44kNwQ==", null, false, null, null, null, false, null },
+                    { new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"), 0, "06737d96-e83a-498f-a838-240df0924cba", "developer@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "DEVELOPER@GMAIL.COM", null, "AQAAAAIAAYagAAAAEJ9wKx5xvtAJIhtWpoLF6NeghKQZg6VzLy7LDTGShl+Xy5QsuDOqzK4zdefiXcofBg==", null, false, null, null, null, false, null },
+                    { new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"), 0, "3326f960-a6db-4480-923a-a223639115a5", "moderator@gmail.com", true, true, new DateTime(2025, 5, 22, 21, 58, 19, 574, DateTimeKind.Local).AddTicks(5375), null, false, null, "MODERATOR@GMAIL.COM", null, "AQAAAAIAAYagAAAAECwbQRcLMgAn8sAKKJXhTZKm56uGREP3unD6c2vKhp0rR2Q0mxYhUZhtmDJUeA14BQ==", null, false, null, null, null, false, null },
+                    { new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"), 0, "8fc72df9-cc6e-4ee3-91e9-0bc0f7aa59ac", "admin@gmail.com", true, true, new DateTime(2025, 5, 22, 21, 58, 19, 517, DateTimeKind.Local).AddTicks(1230), null, false, null, "ADMIN@GMAIL.COM", null, "AQAAAAIAAYagAAAAEFPa19t9e/Ai0M7i/tAcQVp/yWEntvqlLS2o5hC4t8IGz/MZhbQqnu4ZBbEIQU8mJA==", null, false, null, null, null, false, null }
                 });
 
             migrationBuilder.InsertData(
@@ -945,9 +950,16 @@ namespace IndieGameZone.Infrastructure.Migrations
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[,]
                 {
+                    { new Guid("51999f00-0f63-4236-8c81-94c43fcf7586"), new Guid("23879117-e09e-40f1-b78f-1493d81baf49") },
+                    { new Guid("b86a5b00-0393-4524-9f56-fa7ca800e79c"), new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f") },
                     { new Guid("7211a346-6e23-431c-a6bd-2f02aa5de68a"), new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037") },
                     { new Guid("6f7b3f0c-3f54-4fb8-a215-33cd496c3be7"), new Guid("e5d8947f-6794-42b6-ba67-201f366128b8") }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Games",
+                columns: new[] { "Id", "AgeRestrictionId", "AverageSession", "CategoryId", "CoverImage", "DeveloperId", "IsActive", "Name", "Price", "ReleasedDate", "UpdatedAt", "VideoLink" },
+                values: new object[] { new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), new Guid("c48f1c63-f301-44e9-8766-3d4b60134b5f"), 0.5, new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"), "https://cdn.cloudflare.steamstatic.com/steam/apps/2380880/header.jpg?t=1698238821", new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"), true, "The Deadseat", 100000.0, new DateTime(2025, 5, 22, 21, 58, 19, 502, DateTimeKind.Local).AddTicks(227), new DateTime(2025, 5, 22, 21, 58, 19, 502, DateTimeKind.Local).AddTicks(239), "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s" });
 
             migrationBuilder.InsertData(
                 table: "UserProfiles",
@@ -965,6 +977,39 @@ namespace IndieGameZone.Infrastructure.Migrations
                 {
                     { new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"), 0.0 },
                     { new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"), 0.0 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "GameInfos",
+                columns: new[] { "Id", "Description", "GameId", "Image", "Title" },
+                values: new object[,]
+                {
+                    { new Guid("2212b056-b7e1-4bd4-a258-aae3e24f9a87"), "You are in the backseat of your parent's car during a long drive. As your parents begin fighting, your hand-held game is your only source of entertainment. But the game begins to mirror real life... Collect items on your hand-held game to send them to the backseat and use them to defend against the monstrosity that's trying to make its way into the backseat with you.", new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage1.png", "Steam release features Hard Mode, as well as double the story!" },
+                    { new Guid("396cf491-b737-4983-a65e-42ecd36080d7"), "Your drive home from grandma's is interrupted by an unexpected detour. Play a hand-held game in the backseat as your parent's drive.", new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage2.png", "SURVIVE THE NIGHT DRIVE" },
+                    { new Guid("81738026-cd42-482c-a692-f080a6fe9240"), "A deadly monstrosity wants to join you in the backseat. Juggle your supplies and defend all sides. In this car, there’s only onwards to drive, and nowhere to run.", new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage4.png", "TRAPPED IN THE DEADSEAT" },
+                    { new Guid("d3e36747-a19a-41ff-b8a1-1c274e378dab"), "Your parents can't get along, and you can’t ignore it, no matter how deep you immerse yourself in your game. If only you could get away from it all and escape to somewhere better. And seemingly, the voice in your game says you can.", new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage5.png", "THE STORY" },
+                    { new Guid("dc5e81ec-24b6-4109-ba9f-e9de4ad9a855"), "Your hand-held game is beginning to mirror reality... Supplies you collect in the game will be sent to the backseat.", new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage3.png", "RETRO GAMING" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "GameLanguages",
+                columns: new[] { "GameId", "LanguageId" },
+                values: new object[] { new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), new Guid("8f29f2a5-146d-44df-95ba-a972e36b7527") });
+
+            migrationBuilder.InsertData(
+                table: "GamePlatforms",
+                columns: new[] { "GameId", "PlatformId", "File" },
+                values: new object[] { new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), new Guid("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"), "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseat_Window.zip" });
+
+            migrationBuilder.InsertData(
+                table: "GameTags",
+                columns: new[] { "GameId", "TagId" },
+                values: new object[,]
+                {
+                    { new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), new Guid("1c175c84-379e-43dc-a95a-aafd910d6a00") },
+                    { new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), new Guid("37223e27-41ad-44cb-9332-d985dbc9f708") },
+                    { new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), new Guid("3ef686ac-5e11-45d8-afab-223d2d149f6f") },
+                    { new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), new Guid("fcf4e928-dc77-405c-a13e-1d1d5e308d6b") }
                 });
 
             migrationBuilder.CreateIndex(
@@ -1027,14 +1072,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameLanguages_LanguagesId",
+                name: "IX_GameLanguages_LanguageId",
                 table: "GameLanguages",
-                column: "LanguagesId");
+                column: "LanguageId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GamePlatforms_PlatformsId",
+                name: "IX_GamePlatforms_PlatformId",
                 table: "GamePlatforms",
-                column: "PlatformsId");
+                column: "PlatformId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GameRecommendations_UserId",
@@ -1057,9 +1102,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                 column: "DeveloperId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_GameTags_TagsId",
+                name: "IX_GameTags_TagId",
                 table: "GameTags",
-                column: "TagsId");
+                column: "TagId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Libraries_GameId",

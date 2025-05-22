@@ -4,5 +4,10 @@
 	{
 		public Guid GameId { get; set; }
 		public Guid PlatformId { get; set; }
+		public string File = string.Empty;
+
+		// Navigation properties
+		public virtual Games Game { get; set; } = null!;
+		public virtual Platforms Platform { get; set; } = null!;
 	}
 }

@@ -5,6 +5,8 @@ namespace IndieGameZone.Domain.Entities
 	public class Users : IdentityUser<Guid>
 	{
 		public bool IsActive { get; set; }
+		public DateTime JoinedDate { get; set; }
+		public DateTime? LastLogin { get; set; }
 		public string? RefreshToken { get; set; }
 		public DateTime? RefreshTokenExpiryTime { get; set; }
 
