@@ -10,5 +10,11 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.15" />
   </ItemGroup>
-
-</Project>
+	
+	<ItemGroup>
+		<Folder Include="RequestsAndResponses\" />
+		<Folder Include="Utils\" />
+		<Folder Include="Entities\Identities" />
+	</ItemGroup>
+	
+	</Project>

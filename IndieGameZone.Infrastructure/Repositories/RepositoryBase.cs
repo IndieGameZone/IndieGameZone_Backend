@@ -1,4 +1,4 @@
-﻿using IndieGameZone.Domain.Repositories;
+﻿using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;

@@ -3,7 +3,7 @@ using Azure.AI.ContentSafety;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace IndieGameZone.Service.AIService
+namespace IndieGameZone.Application.AIService
 {
 	public sealed class AIService : IAIService
 	{

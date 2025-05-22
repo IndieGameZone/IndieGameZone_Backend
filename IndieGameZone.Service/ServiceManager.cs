@@ -1,10 +1,10 @@
 ﻿using IndieGameZone.Domain.Entities;
-using IndieGameZone.Domain.Repositories;
+using IndieGameZone.Domain.IRepositories;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
-namespace IndieGameZone.Service
+namespace IndieGameZone.Application
 {
 	public class ServiceManager : IServiceManager
 	{

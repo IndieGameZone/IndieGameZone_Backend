@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace IndieGameZone.Service.BlobService
+namespace IndieGameZone.Application.BlobService
 {
 	public interface IBlobService
 	{

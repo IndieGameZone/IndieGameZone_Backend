@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace IndieGameZone.Domain.Repositories
+namespace IndieGameZone.Domain.IRepositories
 {
 	public interface IRepositoryManager
 	{

@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace IndieGameZone.Domain.Repositories
+namespace IndieGameZone.Domain.IRepositories
 {
 	public interface IRepositoryBase<T>
 	{

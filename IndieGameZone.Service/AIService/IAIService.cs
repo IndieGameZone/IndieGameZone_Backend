@@ -1,4 +1,4 @@
-﻿namespace IndieGameZone.Service.AIService
+﻿namespace IndieGameZone.Application.AIService
 {
 	public interface IAIService
 	{

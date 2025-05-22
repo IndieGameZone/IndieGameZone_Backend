@@ -2,7 +2,7 @@
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace IndieGameZone.Service.BlobService
+namespace IndieGameZone.Application.BlobService
 {
 	public sealed class BlobService : IBlobService
 	{

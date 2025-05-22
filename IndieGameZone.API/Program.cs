@@ -1,8 +1,8 @@
 using Azure.Identity;
 using IndieGameZone.API.Extensions;
 using IndieGameZone.Domain.Entities;
-using IndieGameZone.Service.AIService;
-using IndieGameZone.Service.Extensions;
+using IndieGameZone.Application.AIService;
+using IndieGameZone.Application.Extensions;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
 

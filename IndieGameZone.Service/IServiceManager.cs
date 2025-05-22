@@ -1,4 +1,4 @@
-﻿namespace IndieGameZone.Service
+﻿namespace IndieGameZone.Application
 {
 	public interface IServiceManager
 	{

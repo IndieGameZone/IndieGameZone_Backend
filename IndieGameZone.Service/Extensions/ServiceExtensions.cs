@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace IndieGameZone.Service.Extensions
+namespace IndieGameZone.Application.Extensions
 {
 	public static class ServiceExtensions
 	{

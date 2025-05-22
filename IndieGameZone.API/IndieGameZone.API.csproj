@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -22,7 +22,11 @@
   <ItemGroup>
     <ProjectReference Include="..\IndieGameZone.Infrastructure\IndieGameZone.Infrastructure.csproj" />
     <ProjectReference Include="..\IndieGameZone.ServiceDefaults\IndieGameZone.ServiceDefaults.csproj" />
-    <ProjectReference Include="..\IndieGameZone.Service\IndieGameZone.Service.csproj" />
+    <ProjectReference Include="..\IndieGameZone.Service\IndieGameZone.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
