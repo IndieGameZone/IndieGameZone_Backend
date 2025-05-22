@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Infrastructure.Persistence
 {
-	public class RepositoryContext : IdentityDbContext<Users, Roles, Guid>
+	public class AppDbContext : IdentityDbContext<Users, Roles, Guid>
 	{
 		private readonly IPasswordHasher<Users> passwordHasher;
 
-		public RepositoryContext(DbContextOptions<RepositoryContext> options, IPasswordHasher<Users> passwordHasher) : base(options)
+		public AppDbContext(DbContextOptions<AppDbContext> options, IPasswordHasher<Users> passwordHasher) : base(options)
 		{
 			this.passwordHasher = passwordHasher;
 		}

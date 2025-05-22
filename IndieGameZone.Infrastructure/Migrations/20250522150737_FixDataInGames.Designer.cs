@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IndieGameZone.Infrastructure.Migrations
 {
-    [DbContext(typeof(RepositoryContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20250522150737_FixDataInGames")]
     partial class FixDataInGames
     {

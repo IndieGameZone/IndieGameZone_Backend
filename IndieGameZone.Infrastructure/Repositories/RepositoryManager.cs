@@ -7,18 +7,18 @@ namespace IndieGameZone.Infrastructure.Repositories
 {
 	public sealed class RepositoryManager : IRepositoryManager
 	{
-		private readonly RepositoryContext repositoryContext;
+		private readonly AppDbContext appDbContext;
 
-		public RepositoryManager(RepositoryContext repositoryContext)
+		public RepositoryManager(AppDbContext appDbContext)
 		{
-			this.repositoryContext = repositoryContext;
+			this.appDbContext = appDbContext;
 		}
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{
-			var transaction = await repositoryContext.Database.BeginTransactionAsync(ct);
+			var transaction = await appDbContext.Database.BeginTransactionAsync(ct);
 			return transaction.GetDbTransaction();
 		}
 
-		public Task SaveAsync(CancellationToken ct = default) => repositoryContext.SaveChangesAsync(ct);
+		public Task SaveAsync(CancellationToken ct = default) => appDbContext.SaveChangesAsync(ct);
 	}
 }

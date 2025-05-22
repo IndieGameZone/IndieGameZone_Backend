@@ -20,7 +20,7 @@ namespace IndieGameZone.API.Extensions
 	{
 		public static void ConfigureDatabase(this IServiceCollection services, IConfiguration configuration)
 		{
-			services.AddDbContext<RepositoryContext>(options =>
+			services.AddDbContext<AppDbContext>(options =>
 				options.UseSqlServer(configuration.GetSection("DbString").Value));
 		}
 
@@ -41,7 +41,7 @@ namespace IndieGameZone.API.Extensions
 				o.Password.RequiredLength = 5;
 				o.User.RequireUniqueEmail = true;
 			})
-				.AddEntityFrameworkStores<RepositoryContext>()
+				.AddEntityFrameworkStores<AppDbContext>()
 				.AddDefaultTokenProviders();
 		}
 
