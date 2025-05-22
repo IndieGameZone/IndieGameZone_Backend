@@ -84,7 +84,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				{
 					Id = Guid.Parse("65745560-c7e9-48c3-bc36-8c88d66458c7"),
 					Name = "The Deadseat",
-					CoverImage = "https://cdn.cloudflare.steamstatic.com/steam/apps/2380880/header.jpg?t=1698238821",
+					CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatCoverImage.png",
 					VideoLink = "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s",
 					IsActive = true,
 					Price = 100000,
