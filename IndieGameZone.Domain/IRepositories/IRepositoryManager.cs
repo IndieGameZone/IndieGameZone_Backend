@@ -12,5 +12,6 @@ namespace IndieGameZone.Domain.IRepositories
 		IPlatformRepository PlatformRepository { get; }
 		IGameStatusRepository GameStatusRepository { get; }
 		IAgeRestrictionRepository AgeRestrictionRepository { get; }
+		IGameRepository GameRepository { get; }
 	}
 }

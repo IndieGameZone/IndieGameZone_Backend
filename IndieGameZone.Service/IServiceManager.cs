@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application.AgeRestrictionServices;
 using IndieGameZone.Application.CategoryServices;
+using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.GameStatusServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.PlatformServices;
@@ -15,6 +16,7 @@ namespace IndieGameZone.Application
 		IPlatformService PlatformService { get; }
 		IGameStatusService GameStatusService { get; }
 		IAgeRestrictionService AgeRestrictionService { get; }
+		IGameService GameService { get; }
 
 	}
 }
