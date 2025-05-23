@@ -16,7 +16,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(n => n.User)
 				.WithMany(u => u.Notifications)
 				.HasForeignKey(n => n.UserId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

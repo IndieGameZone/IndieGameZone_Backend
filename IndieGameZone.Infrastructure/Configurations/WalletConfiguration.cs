@@ -14,7 +14,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(w => w.User)
 				.WithOne(u => u.Wallet)
 				.HasForeignKey<Wallets>(w => w.UserId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasData(
 				new Wallets

@@ -14,7 +14,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(rt => rt.Reports)
 				.WithOne(r => r.ReportType)
 				.HasForeignKey(r => r.ReportTypeId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

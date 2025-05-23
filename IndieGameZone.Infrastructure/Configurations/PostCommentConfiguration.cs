@@ -17,12 +17,12 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(b => b.User)
 				.WithMany(b => b.PostComments)
 				.HasForeignKey(b => b.UserId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasOne(b => b.Post)
 				.WithMany(b => b.PostComments)
 				.HasForeignKey(b => b.PostId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

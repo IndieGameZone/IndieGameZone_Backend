@@ -21,63 +21,67 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(g => g.GameLanguages)
 				.WithOne(gl => gl.Game)
 				.HasForeignKey(gl => gl.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.GameTags)
 				.WithOne(gt => gt.Game)
 				.HasForeignKey(gt => gt.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(g => g.Category)
 				.WithMany(c => c.Games)
 				.HasForeignKey(g => g.CategoryId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.GamePlatforms)
 				.WithOne(gp => gp.Game)
 				.HasForeignKey(gp => gp.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.GameInfos)
 				.WithOne(gi => gi.Games)
 				.HasForeignKey(gi => gi.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(g => g.AgeRestriction)
 				.WithMany(ar => ar.Games)
 				.HasForeignKey(g => g.AgeRestrictionId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(g => g.Developers)
 				.WithMany(d => d.Games)
 				.HasForeignKey(g => g.DeveloperId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.Reviews)
 				.WithOne(r => r.Game)
 				.HasForeignKey(r => r.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.Discounts)
 				.WithOne(d => d.Game)
 				.HasForeignKey(d => d.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.CommercialRegistration)
 				.WithOne(cr => cr.Game)
 				.HasForeignKey(cr => cr.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.Wishlists)
 				.WithOne(w => w.Game)
 				.HasForeignKey(w => w.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.Libraries)
 				.WithOne(l => l.Game)
 				.HasForeignKey(l => l.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.Posts)
 				.WithOne(p => p.Game)
 				.HasForeignKey(p => p.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.Reports)
 				.WithOne(r => r.Game)
 				.HasForeignKey(r => r.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.GameRecommendations)
 				.WithOne(gr => gr.Game)
 				.HasForeignKey(gr => gr.GameId)
-				.OnDelete(DeleteBehavior.Cascade);
+				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne(g => g.GameStatus)
+				.WithMany(gs => gs.Games)
+				.HasForeignKey(g => g.GameStatusId)
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasData(
 				new Games
@@ -93,7 +97,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					AverageSession = 0.5,
 					CategoryId = Guid.Parse("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
-					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f")
+					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
+					GameStatusId = Guid.Parse("92f9b646-d1db-4bd1-93ed-e5dc73ccd37e"),
 				}
 			);
 		}

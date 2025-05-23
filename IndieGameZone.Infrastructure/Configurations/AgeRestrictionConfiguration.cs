@@ -15,7 +15,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(a => a.Games)
 				.WithOne(g => g.AgeRestriction)
 				.HasForeignKey(g => g.AgeRestrictionId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasData(
 				new AgeRestrictions

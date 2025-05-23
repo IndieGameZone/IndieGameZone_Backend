@@ -14,7 +14,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(l => l.GameLanguages)
 				.WithOne(l => l.Language)
 				.HasForeignKey(l => l.LanguageId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasData(
 				new Languages

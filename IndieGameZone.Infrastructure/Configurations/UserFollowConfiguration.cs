@@ -14,12 +14,12 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(uf => uf.FollowingUser)
 				.WithMany(u => u.FollowingUsers)
 				.HasForeignKey(uf => uf.FollowingUserId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasOne(uf => uf.FollowedUser)
 				.WithMany(u => u.FollowedUsers)
 				.HasForeignKey(uf => uf.FollowedUserId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

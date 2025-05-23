@@ -11,9 +11,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasKey(a => a.Id);
 			builder.Property(a => a.Name);
 
-			builder.HasMany(a => a.Users)
-				.WithMany(u => u.Achievements)
-				.UsingEntity<UserAchievements>();
+			builder.HasMany(a => a.UserAchievements)
+				.WithOne(ua => ua.Achievement)
+				.HasForeignKey(ua => ua.AchievementId)
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

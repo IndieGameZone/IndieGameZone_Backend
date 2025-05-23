@@ -20,7 +20,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(u => u.User)
 				.WithOne(u => u.UserProfile)
 				.HasForeignKey<UserProfiles>(u => u.UserId)
-				.OnDelete(DeleteBehavior.Cascade);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasData(
 				new UserProfiles

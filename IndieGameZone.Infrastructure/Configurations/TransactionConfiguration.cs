@@ -22,11 +22,11 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(t => t.User)
 				.WithMany(u => u.Transactions)
 				.HasForeignKey(t => t.UserId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(t => t.WithdrawRequest)
 				.WithOne(w => w.Transaction)
 				.HasForeignKey<WithdrawRequests>(w => w.TransactionId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

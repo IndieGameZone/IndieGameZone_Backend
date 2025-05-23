@@ -16,11 +16,11 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(r => r.User)
 				.WithMany(u => u.Reviews)
 				.HasForeignKey(r => r.UserId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(r => r.Game)
 				.WithMany(g => g.Reviews)
 				.HasForeignKey(r => r.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

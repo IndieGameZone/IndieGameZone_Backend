@@ -14,7 +14,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(w => w.Transaction)
 				.WithOne(t => t.WithdrawRequest)
 				.HasForeignKey<WithdrawRequests>(w => w.TransactionId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

@@ -14,7 +14,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(c => c.Games)
 				.WithOne(g => g.Category)
 				.HasForeignKey(g => g.CategoryId)
-				.OnDelete(DeleteBehavior.Cascade);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasData(
 				new Categories { Id = Guid.Parse("7a03afa3-2635-43bd-a58c-daeb80d3cef7"), Name = "Action" },

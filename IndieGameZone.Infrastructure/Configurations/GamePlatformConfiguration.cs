@@ -13,11 +13,11 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(gp => gp.Game)
 				.WithMany(g => g.GamePlatforms)
 				.HasForeignKey(gp => gp.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(gp => gp.Platform)
 				.WithMany(p => p.GamePlatforms)
 				.HasForeignKey(gp => gp.PlatformId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasData(
 				new GamePlatforms
 				{

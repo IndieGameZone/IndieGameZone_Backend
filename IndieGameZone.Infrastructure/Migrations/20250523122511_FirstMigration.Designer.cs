@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IndieGameZone.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250522150737_FixDataInGames")]
-    partial class FixDataInGames
+    [Migration("20250523122511_FirstMigration")]
+    partial class FirstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -452,6 +452,44 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.ToTable("GameRecommendations");
                 });
 
+            modelBuilder.Entity("IndieGameZone.Domain.Entities.GameStatuses", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("GameStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("92f9b646-d1db-4bd1-93ed-e5dc73ccd37e"),
+                            Name = "Paid"
+                        },
+                        new
+                        {
+                            Id = new Guid("5fde9b6a-ddda-4833-a744-7fbb4d8efb3f"),
+                            Name = "Free"
+                        },
+                        new
+                        {
+                            Id = new Guid("8097fd8b-f4ad-4fb9-93f3-6f8598cf6a4f"),
+                            Name = "Alpha"
+                        },
+                        new
+                        {
+                            Id = new Guid("5fef12e9-ad13-4707-ae74-7ecc23a43d5b"),
+                            Name = "Demo"
+                        });
+                });
+
             modelBuilder.Entity("IndieGameZone.Domain.Entities.GameTags", b =>
                 {
                     b.Property<Guid>("GameId")
@@ -511,6 +549,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Property<Guid>("DeveloperId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("GameStatusId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
@@ -540,6 +581,8 @@ namespace IndieGameZone.Infrastructure.Migrations
 
                     b.HasIndex("DeveloperId");
 
+                    b.HasIndex("GameStatusId");
+
                     b.ToTable("Games");
 
                     b.HasData(
@@ -551,11 +594,12 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatCoverImage.png",
                             DeveloperId = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
+                            GameStatusId = new Guid("92f9b646-d1db-4bd1-93ed-e5dc73ccd37e"),
                             IsActive = true,
                             Name = "The Deadseat",
                             Price = 100000.0,
-                            ReleasedDate = new DateTime(2025, 5, 22, 22, 7, 36, 711, DateTimeKind.Local).AddTicks(3234),
-                            UpdatedAt = new DateTime(2025, 5, 22, 22, 7, 36, 711, DateTimeKind.Local).AddTicks(3256),
+                            ReleasedDate = new DateTime(2025, 5, 23, 19, 25, 10, 325, DateTimeKind.Local).AddTicks(7269),
+                            UpdatedAt = new DateTime(2025, 5, 23, 19, 25, 10, 325, DateTimeKind.Local).AddTicks(7281),
                             VideoLink = "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s"
                         });
                 });
@@ -759,21 +803,15 @@ namespace IndieGameZone.Infrastructure.Migrations
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.PostTags", b =>
                 {
-                    b.Property<Guid>("PostsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TagsId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("PostId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("TagId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("PostsId", "TagsId");
+                    b.HasKey("PostId", "TagId");
 
-                    b.HasIndex("TagsId");
+                    b.HasIndex("TagId");
 
                     b.ToTable("PostTags");
                 });
@@ -1150,21 +1188,15 @@ namespace IndieGameZone.Infrastructure.Migrations
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.UserAchievements", b =>
                 {
-                    b.Property<Guid>("AchievementsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("UsersId")
+                    b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AchievementId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
+                    b.HasKey("UserId", "AchievementId");
 
-                    b.HasKey("AchievementsId", "UsersId");
-
-                    b.HasIndex("UsersId");
+                    b.HasIndex("AchievementId");
 
                     b.ToTable("UserAchievements");
                 });
@@ -1328,14 +1360,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1e5ce9d4-1f2b-4232-a0ea-a56049d8898a",
+                            ConcurrencyStamp = "b185cd29-cb9f-4976-8b78-3bf8c3676c3c",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 22, 22, 7, 36, 726, DateTimeKind.Local).AddTicks(9140),
+                            JoinedDate = new DateTime(2025, 5, 23, 19, 25, 10, 339, DateTimeKind.Local).AddTicks(6809),
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEAk3Brpc1ZB4LDDjkIQ2ZocBhxLzEQJA4sWQqRe3N26uC+3/xeqrWNWHlP/8GDlBqQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMU2ky1e7lsBH7zl1IGw2iWxqSw3zNIr71w+dCuIdo02WfWS4AIPpANEEnVZHSBh0w==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         },
@@ -1343,14 +1375,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "892235a3-dbad-424b-b9de-f0a3417fd941",
+                            ConcurrencyStamp = "1649cbaf-a16d-47f8-931e-a01e232942ec",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 22, 22, 7, 36, 782, DateTimeKind.Local).AddTicks(7054),
+                            JoinedDate = new DateTime(2025, 5, 23, 19, 25, 10, 400, DateTimeKind.Local).AddTicks(1710),
                             LockoutEnabled = false,
                             NormalizedEmail = "MODERATOR@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHrNRqc8v4EExgrDQoArBnfDm7HWLUp2ua/vHS+SE7ub9B20Zd06g5uS+2hzXmjeFA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKyXXiqJf9MKEhFhidixGuBE2FO6/k+kF/mbo90OT51IbrDU21LEbWcgLQZPck62sA==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         },
@@ -1358,14 +1390,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d435b5f6-cf6e-4063-8f97-093ad15d2614",
+                            ConcurrencyStamp = "37670a2a-cbe8-486d-beda-24c26cf5cd80",
                             Email = "developer@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
                             JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LockoutEnabled = false,
                             NormalizedEmail = "DEVELOPER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPw4Y7WqBmMydGQJnCH80LcjuxQX0U4dFQ31jJcT1nPmH/Jbx0/ohU7fHUT4mLrGGA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIW48I0KGdQ8ViJOkAl5uVQSdJ31OGZyt+tM7BV36aFwwP5c0kPXJTfD7WIYS297jQ==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         },
@@ -1373,14 +1405,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("23879117-e09e-40f1-b78f-1493d81baf49"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "617ed98c-63fe-464d-9b80-289997b340d5",
+                            ConcurrencyStamp = "71da9681-738b-471f-82b8-d5a5832152d9",
                             Email = "player@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
                             JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LockoutEnabled = false,
                             NormalizedEmail = "PLAYER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBomYz0Wa7elCQ9LtjseWIlHLLDbCxnwwZGZivBqtO0CWl7AoVKzfm1YJnMfcDDJXA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMTL586wv41t7FvG0snFnE8aBTZaHW9xdmYg+opoWkp38qKbKUp0WVz3sXlMDZtgOg==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         });
@@ -1528,7 +1560,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithMany("BanHistories")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1539,13 +1571,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.CommercialPackages", "CommercialPackage")
                         .WithMany("CommercialRegistrations")
                         .HasForeignKey("CommercialPackageId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("CommercialRegistration")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("CommercialPackage");
@@ -1558,7 +1590,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithMany("Coupons")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1569,7 +1601,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("Discounts")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Game");
@@ -1580,7 +1612,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Games")
                         .WithMany("GameInfos")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Games");
@@ -1591,13 +1623,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("GameLanguages")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Languages", "Language")
                         .WithMany("GameLanguages")
                         .HasForeignKey("LanguageId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Game");
@@ -1610,13 +1642,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("GamePlatforms")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Platforms", "Platform")
                         .WithMany("GamePlatforms")
                         .HasForeignKey("PlatformId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Game");
@@ -1629,13 +1661,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("GameRecommendations")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithMany("GameRecommendations")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Game");
@@ -1648,13 +1680,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("GameTags")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Tags", "Tag")
                         .WithMany("GameTags")
                         .HasForeignKey("TagId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Game");
@@ -1667,19 +1699,25 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.AgeRestrictions", "AgeRestriction")
                         .WithMany("Games")
                         .HasForeignKey("AgeRestrictionId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Categories", "Category")
                         .WithMany("Games")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "Developers")
                         .WithMany("Games")
                         .HasForeignKey("DeveloperId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("IndieGameZone.Domain.Entities.GameStatuses", "GameStatus")
+                        .WithMany("Games")
+                        .HasForeignKey("GameStatusId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("AgeRestriction");
@@ -1687,6 +1725,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Developers");
+
+                    b.Navigation("GameStatus");
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Libraries", b =>
@@ -1694,13 +1734,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("Libraries")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithMany("Libraries")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Game");
@@ -1713,7 +1753,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithMany("Notifications")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1724,13 +1764,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Posts", "Post")
                         .WithMany("PostComments")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithMany("PostComments")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Post");
@@ -1743,13 +1783,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Posts", "Post")
                         .WithMany("PostReactions")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithMany("PostReactions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Post");
@@ -1759,17 +1799,21 @@ namespace IndieGameZone.Infrastructure.Migrations
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.PostTags", b =>
                 {
-                    b.HasOne("IndieGameZone.Domain.Entities.Posts", null)
-                        .WithMany()
-                        .HasForeignKey("PostsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("IndieGameZone.Domain.Entities.Posts", "Post")
+                        .WithMany("PostTags")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("IndieGameZone.Domain.Entities.Tags", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                    b.HasOne("IndieGameZone.Domain.Entities.Tags", "Tag")
+                        .WithMany("PostTags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Posts", b =>
@@ -1777,13 +1821,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("Posts")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Game");
@@ -1796,32 +1840,32 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.PostComments", "PostComment")
                         .WithMany("Reports")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("Reports")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("IndieGameZone.Domain.Entities.Posts", "Post")
                         .WithMany("Reports")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("IndieGameZone.Domain.Entities.ReportTypes", "ReportType")
                         .WithMany("Reports")
                         .HasForeignKey("ReportTypeId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "ReportedUser")
                         .WithMany("ReportedUsers")
                         .HasForeignKey("ReportedUserId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "ReportingUser")
                         .WithMany("ReportingUsers")
                         .HasForeignKey("ReportingUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Game");
@@ -1842,13 +1886,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("Reviews")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithMany("Reviews")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Game");
@@ -1861,7 +1905,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithMany("Transactions")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1869,17 +1913,21 @@ namespace IndieGameZone.Infrastructure.Migrations
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.UserAchievements", b =>
                 {
-                    b.HasOne("IndieGameZone.Domain.Entities.Achievements", null)
-                        .WithMany()
-                        .HasForeignKey("AchievementsId")
+                    b.HasOne("IndieGameZone.Domain.Entities.Achievements", "Achievement")
+                        .WithMany("UserAchievements")
+                        .HasForeignKey("AchievementId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("IndieGameZone.Domain.Entities.Users", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
+                    b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
+                        .WithMany("UserAchievements")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Achievement");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.UserFollows", b =>
@@ -1887,13 +1935,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "FollowedUser")
                         .WithMany("FollowedUsers")
                         .HasForeignKey("FollowedUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "FollowingUser")
                         .WithMany("FollowingUsers")
                         .HasForeignKey("FollowingUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("FollowedUser");
@@ -1906,7 +1954,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithOne("UserProfile")
                         .HasForeignKey("IndieGameZone.Domain.Entities.UserProfiles", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1917,7 +1965,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithOne("Wallet")
                         .HasForeignKey("IndieGameZone.Domain.Entities.Wallets", "UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("User");
@@ -1928,13 +1976,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("Wishlists")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
                         .WithMany("Wishlists")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Game");
@@ -1947,7 +1995,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Transactions", "Transaction")
                         .WithOne("WithdrawRequest")
                         .HasForeignKey("IndieGameZone.Domain.Entities.WithdrawRequests", "TransactionId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Transaction");
@@ -1986,6 +2034,11 @@ namespace IndieGameZone.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("IndieGameZone.Domain.Entities.Achievements", b =>
+                {
+                    b.Navigation("UserAchievements");
+                });
+
             modelBuilder.Entity("IndieGameZone.Domain.Entities.AgeRestrictions", b =>
                 {
                     b.Navigation("Games");
@@ -1999,6 +2052,11 @@ namespace IndieGameZone.Infrastructure.Migrations
             modelBuilder.Entity("IndieGameZone.Domain.Entities.CommercialPackages", b =>
                 {
                     b.Navigation("CommercialRegistrations");
+                });
+
+            modelBuilder.Entity("IndieGameZone.Domain.Entities.GameStatuses", b =>
+                {
+                    b.Navigation("Games");
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Games", b =>
@@ -2049,6 +2107,8 @@ namespace IndieGameZone.Infrastructure.Migrations
 
                     b.Navigation("PostReactions");
 
+                    b.Navigation("PostTags");
+
                     b.Navigation("Reports");
                 });
 
@@ -2060,6 +2120,8 @@ namespace IndieGameZone.Infrastructure.Migrations
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Tags", b =>
                 {
                     b.Navigation("GameTags");
+
+                    b.Navigation("PostTags");
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Transactions", b =>
@@ -2099,6 +2161,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("Transactions");
+
+                    b.Navigation("UserAchievements");
 
                     b.Navigation("UserProfile")
                         .IsRequired();

@@ -12,12 +12,12 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(gl => gl.Game)
 				.WithMany(g => g.GameLanguages)
 				.HasForeignKey(gl => gl.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasOne(gl => gl.Language)
 				.WithMany(l => l.GameLanguages)
 				.HasForeignKey(gl => gl.LanguageId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasData(
 				new GameLanguages

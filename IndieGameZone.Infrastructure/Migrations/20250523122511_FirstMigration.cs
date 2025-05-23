@@ -110,6 +110,18 @@ namespace IndieGameZone.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GameStatuses",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameStatuses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Languages",
                 columns: table => new
                 {
@@ -238,7 +250,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_BanHistories_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -259,7 +272,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_Coupons_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -280,7 +294,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_Notifications_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -302,30 +317,29 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_Transactions_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "UserAchievements",
                 columns: table => new
                 {
-                    AchievementsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UsersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     AchievementId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserAchievements", x => new { x.AchievementsId, x.UsersId });
+                    table.PrimaryKey("PK_UserAchievements", x => new { x.UserId, x.AchievementId });
                     table.ForeignKey(
-                        name: "FK_UserAchievements_Achievements_AchievementsId",
-                        column: x => x.AchievementsId,
+                        name: "FK_UserAchievements_Achievements_AchievementId",
+                        column: x => x.AchievementId,
                         principalTable: "Achievements",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserAchievements_AspNetUsers_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_UserAchievements_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -346,12 +360,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_UserFollows_AspNetUsers_FollowedUserId",
                         column: x => x.FollowedUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_UserFollows_AspNetUsers_FollowingUserId",
                         column: x => x.FollowingUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -375,7 +391,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -392,7 +408,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_Wallets_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -410,7 +427,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                     AverageSession = table.Column<double>(type: "float", nullable: false),
                     AgeRestrictionId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DeveloperId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GameStatusId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -419,17 +437,26 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_Games_AgeRestrictions_AgeRestrictionId",
                         column: x => x.AgeRestrictionId,
                         principalTable: "AgeRestrictions",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Games_AspNetUsers_DeveloperId",
                         column: x => x.DeveloperId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Games_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Games_GameStatuses_GameStatusId",
+                        column: x => x.GameStatusId,
+                        principalTable: "GameStatuses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -447,7 +474,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_WithdrawRequests_Transactions_TransactionId",
                         column: x => x.TransactionId,
                         principalTable: "Transactions",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -467,12 +495,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_CommercialRegistration_CommercialPackages_CommercialPackageId",
                         column: x => x.CommercialPackageId,
                         principalTable: "CommercialPackages",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_CommercialRegistration_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -492,7 +522,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_Discounts_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -512,7 +543,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_GameInfos_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -529,12 +561,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_GameLanguages_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_GameLanguages_Languages_LanguageId",
                         column: x => x.LanguageId,
                         principalTable: "Languages",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -552,12 +586,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_GamePlatforms_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_GamePlatforms_Platforms_PlatformId",
                         column: x => x.PlatformId,
                         principalTable: "Platforms",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -574,12 +610,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_GameRecommendations_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_GameRecommendations_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -596,12 +634,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_GameTags_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_GameTags_Tags_TagId",
                         column: x => x.TagId,
                         principalTable: "Tags",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -619,12 +659,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_Libraries_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Libraries_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -648,12 +690,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_Posts_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Posts_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -674,12 +718,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_Reviews_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Reviews_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -697,12 +743,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_Wishlists_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Wishlists_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -724,12 +772,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_PostComments_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_PostComments_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -746,39 +796,38 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_PostReactions_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_PostReactions_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "PostTags",
                 columns: table => new
                 {
-                    PostsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TagsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     PostId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     TagId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PostTags", x => new { x.PostsId, x.TagsId });
+                    table.PrimaryKey("PK_PostTags", x => new { x.PostId, x.TagId });
                     table.ForeignKey(
-                        name: "FK_PostTags_Posts_PostsId",
-                        column: x => x.PostsId,
+                        name: "FK_PostTags_Posts_PostId",
+                        column: x => x.PostId,
                         principalTable: "Posts",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_PostTags_Tags_TagsId",
-                        column: x => x.TagsId,
+                        name: "FK_PostTags_Tags_TagId",
+                        column: x => x.TagId,
                         principalTable: "Tags",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -802,32 +851,38 @@ namespace IndieGameZone.Infrastructure.Migrations
                         name: "FK_Reports_AspNetUsers_ReportedUserId",
                         column: x => x.ReportedUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Reports_AspNetUsers_ReportingUserId",
                         column: x => x.ReportingUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Reports_Games_GameId",
                         column: x => x.GameId,
                         principalTable: "Games",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Reports_PostComments_CommentId",
                         column: x => x.CommentId,
                         principalTable: "PostComments",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Reports_Posts_PostId",
                         column: x => x.PostId,
                         principalTable: "Posts",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Reports_ReportTypes_ReportTypeId",
                         column: x => x.ReportTypeId,
                         principalTable: "ReportTypes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -858,10 +913,10 @@ namespace IndieGameZone.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsActive", "JoinedDate", "LastLogin", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "RefreshTokenExpiryTime", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("23879117-e09e-40f1-b78f-1493d81baf49"), 0, "bcdfd22a-beff-49fa-addd-dee47dc4cc34", "player@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "PLAYER@GMAIL.COM", null, "AQAAAAIAAYagAAAAED0Hu5DXfEG5TpEE6hIRWcJI/qKm1ZvASJyGRZjnYF4eOcrlRHk/retNv1vD44kNwQ==", null, false, null, null, null, false, null },
-                    { new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"), 0, "06737d96-e83a-498f-a838-240df0924cba", "developer@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "DEVELOPER@GMAIL.COM", null, "AQAAAAIAAYagAAAAEJ9wKx5xvtAJIhtWpoLF6NeghKQZg6VzLy7LDTGShl+Xy5QsuDOqzK4zdefiXcofBg==", null, false, null, null, null, false, null },
-                    { new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"), 0, "3326f960-a6db-4480-923a-a223639115a5", "moderator@gmail.com", true, true, new DateTime(2025, 5, 22, 21, 58, 19, 574, DateTimeKind.Local).AddTicks(5375), null, false, null, "MODERATOR@GMAIL.COM", null, "AQAAAAIAAYagAAAAECwbQRcLMgAn8sAKKJXhTZKm56uGREP3unD6c2vKhp0rR2Q0mxYhUZhtmDJUeA14BQ==", null, false, null, null, null, false, null },
-                    { new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"), 0, "8fc72df9-cc6e-4ee3-91e9-0bc0f7aa59ac", "admin@gmail.com", true, true, new DateTime(2025, 5, 22, 21, 58, 19, 517, DateTimeKind.Local).AddTicks(1230), null, false, null, "ADMIN@GMAIL.COM", null, "AQAAAAIAAYagAAAAEFPa19t9e/Ai0M7i/tAcQVp/yWEntvqlLS2o5hC4t8IGz/MZhbQqnu4ZBbEIQU8mJA==", null, false, null, null, null, false, null }
+                    { new Guid("23879117-e09e-40f1-b78f-1493d81baf49"), 0, "71da9681-738b-471f-82b8-d5a5832152d9", "player@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "PLAYER@GMAIL.COM", null, "AQAAAAIAAYagAAAAEMTL586wv41t7FvG0snFnE8aBTZaHW9xdmYg+opoWkp38qKbKUp0WVz3sXlMDZtgOg==", null, false, null, null, null, false, null },
+                    { new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"), 0, "37670a2a-cbe8-486d-beda-24c26cf5cd80", "developer@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "DEVELOPER@GMAIL.COM", null, "AQAAAAIAAYagAAAAEIW48I0KGdQ8ViJOkAl5uVQSdJ31OGZyt+tM7BV36aFwwP5c0kPXJTfD7WIYS297jQ==", null, false, null, null, null, false, null },
+                    { new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"), 0, "1649cbaf-a16d-47f8-931e-a01e232942ec", "moderator@gmail.com", true, true, new DateTime(2025, 5, 23, 19, 25, 10, 400, DateTimeKind.Local).AddTicks(1710), null, false, null, "MODERATOR@GMAIL.COM", null, "AQAAAAIAAYagAAAAEKyXXiqJf9MKEhFhidixGuBE2FO6/k+kF/mbo90OT51IbrDU21LEbWcgLQZPck62sA==", null, false, null, null, null, false, null },
+                    { new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"), 0, "b185cd29-cb9f-4976-8b78-3bf8c3676c3c", "admin@gmail.com", true, true, new DateTime(2025, 5, 23, 19, 25, 10, 339, DateTimeKind.Local).AddTicks(6809), null, false, null, "ADMIN@GMAIL.COM", null, "AQAAAAIAAYagAAAAEMU2ky1e7lsBH7zl1IGw2iWxqSw3zNIr71w+dCuIdo02WfWS4AIPpANEEnVZHSBh0w==", null, false, null, null, null, false, null }
                 });
 
             migrationBuilder.InsertData(
@@ -884,6 +939,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                     { new Guid("dcf41a71-dd69-43db-af34-a8ca8592b079"), "Open World" },
                     { new Guid("dfeeb47a-7e69-4927-a65b-b803a8befe9f"), "Adventure" },
                     { new Guid("fcb43570-6859-41f4-8d72-ce59a31f5858"), "Stealth" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "GameStatuses",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { new Guid("5fde9b6a-ddda-4833-a744-7fbb4d8efb3f"), "Free" },
+                    { new Guid("5fef12e9-ad13-4707-ae74-7ecc23a43d5b"), "Demo" },
+                    { new Guid("8097fd8b-f4ad-4fb9-93f3-6f8598cf6a4f"), "Alpha" },
+                    { new Guid("92f9b646-d1db-4bd1-93ed-e5dc73ccd37e"), "Paid" }
                 });
 
             migrationBuilder.InsertData(
@@ -958,8 +1024,8 @@ namespace IndieGameZone.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Games",
-                columns: new[] { "Id", "AgeRestrictionId", "AverageSession", "CategoryId", "CoverImage", "DeveloperId", "IsActive", "Name", "Price", "ReleasedDate", "UpdatedAt", "VideoLink" },
-                values: new object[] { new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), new Guid("c48f1c63-f301-44e9-8766-3d4b60134b5f"), 0.5, new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"), "https://cdn.cloudflare.steamstatic.com/steam/apps/2380880/header.jpg?t=1698238821", new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"), true, "The Deadseat", 100000.0, new DateTime(2025, 5, 22, 21, 58, 19, 502, DateTimeKind.Local).AddTicks(227), new DateTime(2025, 5, 22, 21, 58, 19, 502, DateTimeKind.Local).AddTicks(239), "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s" });
+                columns: new[] { "Id", "AgeRestrictionId", "AverageSession", "CategoryId", "CoverImage", "DeveloperId", "GameStatusId", "IsActive", "Name", "Price", "ReleasedDate", "UpdatedAt", "VideoLink" },
+                values: new object[] { new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), new Guid("c48f1c63-f301-44e9-8766-3d4b60134b5f"), 0.5, new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"), "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatCoverImage.png", new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"), new Guid("92f9b646-d1db-4bd1-93ed-e5dc73ccd37e"), true, "The Deadseat", 100000.0, new DateTime(2025, 5, 23, 19, 25, 10, 325, DateTimeKind.Local).AddTicks(7269), new DateTime(2025, 5, 23, 19, 25, 10, 325, DateTimeKind.Local).AddTicks(7281), "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s" });
 
             migrationBuilder.InsertData(
                 table: "UserProfiles",
@@ -1102,6 +1168,11 @@ namespace IndieGameZone.Infrastructure.Migrations
                 column: "DeveloperId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Games_GameStatusId",
+                table: "Games",
+                column: "GameStatusId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GameTags_TagId",
                 table: "GameTags",
                 column: "TagId");
@@ -1142,9 +1213,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PostTags_TagsId",
+                name: "IX_PostTags_TagId",
                 table: "PostTags",
-                column: "TagsId");
+                column: "TagId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reports_CommentId",
@@ -1192,9 +1263,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserAchievements_UsersId",
+                name: "IX_UserAchievements_AchievementId",
                 table: "UserAchievements",
-                column: "UsersId");
+                column: "AchievementId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserFollows_FollowedUserId",
@@ -1323,6 +1394,9 @@ namespace IndieGameZone.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "GameStatuses");
         }
     }
 }

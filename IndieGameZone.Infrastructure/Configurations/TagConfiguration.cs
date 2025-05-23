@@ -14,10 +14,11 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(t => t.GameTags)
 				.WithOne(gt => gt.Tag)
 				.HasForeignKey(gt => gt.TagId)
-				.OnDelete(DeleteBehavior.NoAction);
-			builder.HasMany(t => t.Posts)
-				.WithMany(p => p.Tags)
-				.UsingEntity<PostTags>();
+				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasMany(pt => pt.PostTags)
+				.WithOne(pt => pt.Tag)
+				.HasForeignKey(pt => pt.TagId)
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasData(
 				new Tags { Id = Guid.Parse("1c175c84-379e-43dc-a95a-aafd910d6a00"), Name = "Action" },

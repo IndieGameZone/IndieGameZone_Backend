@@ -15,7 +15,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(builder => builder.User)
 				.WithMany(user => user.BanHistories)
 				.HasForeignKey(b => b.UserId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

@@ -17,7 +17,7 @@
 		public virtual Games Game { get; set; } = null!;
 		public virtual ICollection<PostReactions> PostReactions { get; set; } = new List<PostReactions>();
 		public virtual ICollection<PostComments> PostComments { get; set; } = new List<PostComments>();
-		public virtual ICollection<Tags> Tags { get; set; } = new List<Tags>();
+		public virtual ICollection<PostTags> PostTags { get; set; } = new List<PostTags>();
 		public virtual ICollection<Reports> Reports { get; set; } = new List<Reports>();
 	}
 }

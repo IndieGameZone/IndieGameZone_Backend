@@ -7,6 +7,6 @@
 
 		// Navigation property
 		public ICollection<GameTags> GameTags { get; set; } = new List<GameTags>();
-		public ICollection<Posts> Posts { get; set; } = new List<Posts>();
+		public ICollection<PostTags> PostTags { get; set; } = new List<PostTags>();
 	}
 }

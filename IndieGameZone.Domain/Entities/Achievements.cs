@@ -6,6 +6,6 @@
 		public string Name { get; set; } = string.Empty;
 
 		//Navigation properties
-		public virtual ICollection<Users> Users { get; set; } = new List<Users>();
+		public virtual ICollection<UserAchievements> UserAchievements { get; set; } = new List<UserAchievements>();
 	}
 }

@@ -12,11 +12,11 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasOne(gt => gt.Game)
 				.WithMany(g => g.GameTags)
 				.HasForeignKey(gt => gt.GameId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(gt => gt.Tag)
 				.WithMany(t => t.GameTags)
 				.HasForeignKey(gt => gt.TagId)
-				.OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasData(
 				new GameTags
 				{
