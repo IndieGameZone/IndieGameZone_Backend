@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Application.CategoryServices;
+﻿using IndieGameZone.Application.AgeRestrictionServices;
+using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.GameStatusServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.PlatformServices;
@@ -18,6 +19,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<ICategoryService> categoryService;
 		private readonly Lazy<IPlatformService> platformService;
 		private readonly Lazy<IGameStatusService> gameStatusService;
+		private readonly Lazy<IAgeRestrictionService> ageRestrictionService;
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, IConfiguration configuration)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
@@ -25,6 +27,7 @@ namespace IndieGameZone.Application
 			categoryService = new Lazy<ICategoryService>(() => new CategoryService(repositoryManager, mapper));
 			platformService = new Lazy<IPlatformService>(() => new PlatformService(repositoryManager, mapper));
 			gameStatusService = new Lazy<IGameStatusService>(() => new GameStatusService(repositoryManager, mapper));
+			ageRestrictionService = new Lazy<IAgeRestrictionService>(() => new AgeRestrictionService(repositoryManager, mapper));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -36,5 +39,7 @@ namespace IndieGameZone.Application
 		public IPlatformService PlatformService => platformService.Value;
 
 		public IGameStatusService GameStatusService => gameStatusService.Value;
+
+		public IAgeRestrictionService AgeRestrictionService => ageRestrictionService.Value;
 	}
 }
