@@ -10,5 +10,6 @@ namespace IndieGameZone.Domain.IRepositories
 		ITagRepository TagRepository { get; }
 		ICategoryRepository CategoryRepository { get; }
 		IPlatformRepository PlatformRepository { get; }
+		IGameStatusRepository GameStatusRepository { get; }
 	}
 }

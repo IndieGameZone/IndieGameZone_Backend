@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application.CategoryServices;
+using IndieGameZone.Application.GameStatusServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.PlatformServices;
 using IndieGameZone.Application.TagServices;
@@ -11,6 +12,7 @@ namespace IndieGameZone.Application
 		ITagService TagService { get; }
 		ICategoryService CategoryService { get; }
 		IPlatformService PlatformService { get; }
+		IGameStatusService GameStatusService { get; }
 
 	}
 }

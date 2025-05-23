@@ -12,6 +12,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<ITagRepository> tagRepository;
 		private readonly Lazy<ICategoryRepository> categoryRepository;
 		private readonly Lazy<IPlatformRepository> platformRepository;
+		private readonly Lazy<IGameStatusRepository> gameStatusRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -20,6 +21,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			tagRepository = new Lazy<ITagRepository>(() => new TagRepository(appDbContext));
 			categoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(appDbContext));
 			platformRepository = new Lazy<IPlatformRepository>(() => new PlatformRepository(appDbContext));
+			gameStatusRepository = new Lazy<IGameStatusRepository>(() => new GameStatusRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
@@ -29,6 +31,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public ICategoryRepository CategoryRepository => categoryRepository.Value;
 
 		public IPlatformRepository PlatformRepository => platformRepository.Value;
+
+		public IGameStatusRepository GameStatusRepository => gameStatusRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{

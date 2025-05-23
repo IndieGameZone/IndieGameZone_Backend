@@ -22,7 +22,7 @@ namespace IndieGameZone.API.Controllers
 			return Ok(languages);
 		}
 
-		[HttpGet("{id}")]
+		[HttpGet("{id:guid}")]
 		public async Task<IActionResult> GetLanguage(Guid id, CancellationToken ct)
 		{
 			var language = await serviceManager.LanguageService.GetLanguageById(id, ct);
@@ -36,14 +36,14 @@ namespace IndieGameZone.API.Controllers
 			return StatusCode(201);
 		}
 
-		[HttpPut("{id}")]
+		[HttpPut("{id:guid}")]
 		public async Task<IActionResult> UpdateLanguage(Guid id, [FromBody] LanguageForUpdateDto languageDto, CancellationToken ct)
 		{
 			await serviceManager.LanguageService.UpdateLanguage(id, languageDto, ct);
 			return NoContent();
 		}
 
-		[HttpDelete("{id}")]
+		[HttpDelete("{id:guid}")]
 		public async Task<IActionResult> DeleteLanguage(Guid id, CancellationToken ct)
 		{
 			await serviceManager.LanguageService.DeleteLanguage(id, ct);
