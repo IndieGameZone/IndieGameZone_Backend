@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Tags
+namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Categories
 {
-	public class TagForCreationDto
+	public class CategoryForUpdateDto
 	{
 		[Required]
 		public string Name { get; init; }

@@ -8,5 +8,6 @@ namespace IndieGameZone.Domain.IRepositories
 		Task<IDbTransaction> BeginTransaction(CancellationToken ct = default);
 		ILanguageRepository LanguageRepository { get; }
 		ITagRepository TagRepository { get; }
+		ICategoryRepository CategoryRepository { get; }
 	}
 }
