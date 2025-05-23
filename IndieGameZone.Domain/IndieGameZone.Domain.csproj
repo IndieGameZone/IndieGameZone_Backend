@@ -12,7 +12,6 @@
   </ItemGroup>
 	
 	<ItemGroup>
-		<Folder Include="RequestsAndResponses\" />
 		<Folder Include="Utils\" />
 		<Folder Include="Entities\Identities" />
 	</ItemGroup>

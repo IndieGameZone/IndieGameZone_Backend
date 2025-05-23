@@ -6,5 +6,6 @@ namespace IndieGameZone.Domain.IRepositories
 	{
 		Task SaveAsync(CancellationToken ct = default);
 		Task<IDbTransaction> BeginTransaction(CancellationToken ct = default);
+		ILanguageRepository LanguageRepository { get; }
 	}
 }

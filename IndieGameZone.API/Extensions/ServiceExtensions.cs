@@ -1,10 +1,10 @@
 ﻿using Azure.Storage.Blobs;
+using IndieGameZone.Application;
+using IndieGameZone.Application.BlobService;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Infrastructure.Persistence;
 using IndieGameZone.Infrastructure.Repositories;
-using IndieGameZone.Application;
-using IndieGameZone.Application.BlobService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
