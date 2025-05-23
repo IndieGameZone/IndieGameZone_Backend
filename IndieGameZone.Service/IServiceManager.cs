@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.LanguageServices;
+using IndieGameZone.Application.PlatformServices;
 using IndieGameZone.Application.TagServices;
 
 namespace IndieGameZone.Application
@@ -9,6 +10,7 @@ namespace IndieGameZone.Application
 		ILanguageService LanguageService { get; }
 		ITagService TagService { get; }
 		ICategoryService CategoryService { get; }
+		IPlatformService PlatformService { get; }
 
 	}
 }
