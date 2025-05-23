@@ -33,7 +33,7 @@ namespace IndieGameZone.API.Controllers
 		public async Task<IActionResult> CreateLanguage([FromBody] LanguageForCreationDto languageDto, CancellationToken ct)
 		{
 			await serviceManager.LanguageService.CreateLanguage(languageDto, ct);
-			return StatusCode(201, "Created Successfully");
+			return StatusCode(201);
 		}
 
 		[HttpPut("{id}")]

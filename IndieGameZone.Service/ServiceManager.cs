@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application.LanguageServices;
+using IndieGameZone.Application.TagServices;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using MapsterMapper;
@@ -10,12 +11,15 @@ namespace IndieGameZone.Application
 	public class ServiceManager : IServiceManager
 	{
 		private readonly Lazy<ILanguageService> languageService;
+		private readonly Lazy<ITagService> tagService;
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, IConfiguration configuration)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
+			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
 
+		public ITagService TagService => tagService.Value;
 	}
 }

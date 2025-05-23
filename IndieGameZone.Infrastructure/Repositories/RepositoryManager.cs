@@ -9,14 +9,18 @@ namespace IndieGameZone.Infrastructure.Repositories
 	{
 		private readonly AppDbContext appDbContext;
 		private readonly Lazy<ILanguageRepository> languageRepository;
+		private readonly Lazy<ITagRepository> tagRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
 			this.appDbContext = appDbContext;
 			languageRepository = new Lazy<ILanguageRepository>(() => new LanguageRepository(appDbContext));
+			tagRepository = new Lazy<ITagRepository>(() => new TagRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
+
+		public ITagRepository TagRepository => tagRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{
