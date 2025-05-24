@@ -23,7 +23,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
-		public async Task<IActionResult> GetGameStatus(Guid id, CancellationToken ct)
+		public async Task<IActionResult> GetGameStatus([FromRoute] Guid id, CancellationToken ct)
 		{
 			var gameStatus = await serviceManager.GameStatusService.GetGameStatusById(id, ct);
 			return Ok(gameStatus);
@@ -37,14 +37,14 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
-		public async Task<IActionResult> UpdateGameStatus(Guid id, [FromBody] GameStatusForUpdateDto gameStatusDto, CancellationToken ct)
+		public async Task<IActionResult> UpdateGameStatus([FromRoute] Guid id, [FromBody] GameStatusForUpdateDto gameStatusDto, CancellationToken ct)
 		{
 			await serviceManager.GameStatusService.UpdateGameStatus(id, gameStatusDto, ct);
 			return NoContent();
 		}
 
 		[HttpDelete("{id:guid}")]
-		public async Task<IActionResult> DeleteGameStatus(Guid id, CancellationToken ct)
+		public async Task<IActionResult> DeleteGameStatus([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.GameStatusService.DeleteGameStatus(id, ct);
 			return NoContent();

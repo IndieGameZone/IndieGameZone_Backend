@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Exceptions;
+﻿using IndieGameZone.Domain.Entities;
+using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Achievements;
@@ -19,7 +20,8 @@ namespace IndieGameZone.Application.AchievementServices
 		}
 		public async Task CreateAchievement(AchievementForCreationDto achievementForCreationDto, CancellationToken ct = default)
 		{
-			var achievementEntity = mapper.Map<Domain.Entities.Achievements>(achievementForCreationDto);
+			var achievementEntity = mapper.Map<Achievements>(achievementForCreationDto);
+			achievementEntity.Id = Guid.NewGuid();
 			repositoryManager.AchievementRepository.CreateAchievement(achievementEntity);
 			await repositoryManager.SaveAsync(ct);
 		}

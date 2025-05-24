@@ -20,23 +20,21 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<Games?> GetGameById(Guid id, bool trackChange, CancellationToken ct = default)
 		{
 			return await FindByCondition(x => x.Id.Equals(id), trackChange)
-				.Include(x => x.Category)
-				.Include(x => x.AgeRestriction)
-				.Include(x => x.Developers)
-				.Include(x => x.GameStatus)
-				.Include(x => x.GamePlatforms).ThenInclude(x => x.Platform)
-				.Include(x => x.GameTags).ThenInclude(x => x.Tag)
-				.Include(x => x.GameLanguages).ThenInclude(x => x.Language)
-				.Include(x => x.GameInfos)
+				.Include(x => x.Category).AsSplitQuery()
+				.Include(x => x.AgeRestriction).AsSplitQuery()
+				.Include(x => x.Developers).AsSplitQuery()
+				.Include(x => x.GameStatus).AsSplitQuery()
+				.Include(x => x.GamePlatforms).ThenInclude(x => x.Platform).AsSplitQuery()
+				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
+				.Include(x => x.GameLanguages).ThenInclude(x => x.Language).AsSplitQuery()
+				.Include(x => x.GameInfos).AsSplitQuery()
 				.FirstOrDefaultAsync(ct);
 		}
 
 		public async Task<PagedList<Games>> GetGames(GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var gameEntities = FindAll(trackChange)
-				.Sort()
-				.Include(x => x.Category)
-				.Include(x => x.GameTags).ThenInclude(x => x.Tag);
+				.Sort();
 
 			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);
 

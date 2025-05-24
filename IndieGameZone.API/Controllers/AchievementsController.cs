@@ -26,7 +26,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
-		public async Task<IActionResult> GetAchievementById(Guid id, CancellationToken ct)
+		public async Task<IActionResult> GetAchievementById([FromRoute] Guid id, CancellationToken ct)
 		{
 			var achievement = await serviceManager.AchievementService.GetAchievementById(id, ct);
 			return Ok(achievement);
@@ -40,14 +40,14 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
-		public async Task<IActionResult> UpdateAchievement(Guid id, [FromBody] AchievementForUpdateDto achievementForUpdateDto, CancellationToken ct)
+		public async Task<IActionResult> UpdateAchievement([FromRoute] Guid id, [FromBody] AchievementForUpdateDto achievementForUpdateDto, CancellationToken ct)
 		{
 			await serviceManager.AchievementService.UpdateAchievement(id, achievementForUpdateDto, ct);
 			return NoContent();
 		}
 
 		[HttpDelete("{id:guid}")]
-		public async Task<IActionResult> DeleteAchievement(Guid id, CancellationToken ct)
+		public async Task<IActionResult> DeleteAchievement([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.AchievementService.DeleteAchievement(id, ct);
 			return NoContent();

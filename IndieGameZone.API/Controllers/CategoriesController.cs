@@ -23,7 +23,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
-		public async Task<IActionResult> GetCategory(Guid id, CancellationToken ct)
+		public async Task<IActionResult> GetCategory([FromRoute] Guid id, CancellationToken ct)
 		{
 			var category = await serviceManager.CategoryService.GetCategoryById(id, ct);
 			return Ok(category);
@@ -37,14 +37,14 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
-		public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] CategoryForUpdateDto categoryDto, CancellationToken ct)
+		public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] CategoryForUpdateDto categoryDto, CancellationToken ct)
 		{
 			await serviceManager.CategoryService.UpdateCategory(id, categoryDto, ct);
 			return NoContent();
 		}
 
 		[HttpDelete("{id:guid}")]
-		public async Task<IActionResult> DeleteCategory(Guid id, CancellationToken ct)
+		public async Task<IActionResult> DeleteCategory([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.CategoryService.DeleteCategory(id, ct);
 			return NoContent();

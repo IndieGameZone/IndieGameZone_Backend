@@ -20,6 +20,7 @@ namespace IndieGameZone.Application.TagServices
 		public async Task CreateTag(TagForCreationDto tagDto, CancellationToken ct = default)
 		{
 			var tagEntity = mapper.Map<Tags>(tagDto);
+			tagEntity.Id = Guid.NewGuid();
 			repositoryManager.TagRepository.CreateTag(tagEntity);
 			await repositoryManager.SaveAsync(ct);
 		}

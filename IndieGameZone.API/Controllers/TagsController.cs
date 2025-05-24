@@ -23,7 +23,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
-		public async Task<IActionResult> GetTag(Guid id, CancellationToken ct)
+		public async Task<IActionResult> GetTag([FromRoute] Guid id, CancellationToken ct)
 		{
 			var tag = await serviceManager.TagService.GetTagById(id, ct);
 			return Ok(tag);
@@ -37,14 +37,14 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
-		public async Task<IActionResult> UpdateTag(Guid id, [FromBody] TagForUpdateDto tagDto, CancellationToken ct)
+		public async Task<IActionResult> UpdateTag([FromRoute] Guid id, [FromBody] TagForUpdateDto tagDto, CancellationToken ct)
 		{
 			await serviceManager.TagService.UpdateTag(id, tagDto, ct);
 			return NoContent();
 		}
 
 		[HttpDelete("{id:guid}")]
-		public async Task<IActionResult> DeleteTag(Guid id, CancellationToken ct)
+		public async Task<IActionResult> DeleteTag([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.TagService.DeleteTag(id, ct);
 			return NoContent();

@@ -21,6 +21,7 @@ namespace IndieGameZone.Application.GameStatusServices
 		public async Task CreateGameStatus(GameStatusForCreationDto gameStatusForCreationDto, CancellationToken ct = default)
 		{
 			var gameStatusEntity = mapper.Map<GameStatuses>(gameStatusForCreationDto);
+			gameStatusEntity.Id = Guid.NewGuid();
 			repositoryManager.GameStatusRepository.CreateGameStatus(gameStatusEntity);
 			await repositoryManager.SaveAsync(ct);
 		}

@@ -23,7 +23,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
-		public async Task<IActionResult> GetPlatform(Guid id, CancellationToken ct)
+		public async Task<IActionResult> GetPlatform([FromRoute] Guid id, CancellationToken ct)
 		{
 			var platform = await serviceManager.PlatformService.GetPlatformById(id, ct);
 			return Ok(platform);
@@ -37,14 +37,14 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
-		public async Task<IActionResult> UpdatePlatform(Guid id, [FromBody] PlatformForUpdateDto platformDto, CancellationToken ct)
+		public async Task<IActionResult> UpdatePlatform([FromRoute] Guid id, [FromBody] PlatformForUpdateDto platformDto, CancellationToken ct)
 		{
 			await serviceManager.PlatformService.UpdatePlatform(id, platformDto, ct);
 			return NoContent();
 		}
 
 		[HttpDelete("{id:guid}")]
-		public async Task<IActionResult> DeletePlatform(Guid id, CancellationToken ct)
+		public async Task<IActionResult> DeletePlatform([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.PlatformService.DeletePlatform(id, ct);
 			return NoContent();

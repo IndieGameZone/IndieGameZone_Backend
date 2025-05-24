@@ -19,6 +19,7 @@ namespace IndieGameZone.Application.CategoryServices
 		public async Task CreateCategory(CategoryForCreationDto categoryForCreationDto, CancellationToken ct = default)
 		{
 			var categoryEntity = mapper.Map<Domain.Entities.Categories>(categoryForCreationDto);
+			categoryEntity.Id = Guid.NewGuid();
 			repositoryManager.CategoryRepository.CreateCategory(categoryEntity);
 			await repositoryManager.SaveAsync(ct);
 		}

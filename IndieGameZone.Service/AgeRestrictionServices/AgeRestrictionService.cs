@@ -19,6 +19,7 @@ namespace IndieGameZone.Application.AgeRestrictionServices
 		public async Task CreateAgeRestriction(AgeRestrictionForCreationDto ageRestrictionForCreationDto, CancellationToken ct = default)
 		{
 			var ageRestrictionEntity = mapper.Map<Domain.Entities.AgeRestrictions>(ageRestrictionForCreationDto);
+			ageRestrictionEntity.Id = Guid.NewGuid();
 			repositoryManager.AgeRestrictionRepository.CreateAgeRestriction(ageRestrictionEntity);
 			await repositoryManager.SaveAsync(ct);
 		}

@@ -20,6 +20,7 @@ namespace IndieGameZone.Application.LanguageServices
 		public async Task CreateLanguage(LanguageForCreationDto languageForCreationDto, CancellationToken ct = default)
 		{
 			var languageEntity = mapper.Map<Languages>(languageForCreationDto);
+			languageEntity.Id = Guid.NewGuid();
 			repositoryManager.LanguageRepository.CreateLanguage(languageEntity);
 			await repositoryManager.SaveAsync(ct);
 		}

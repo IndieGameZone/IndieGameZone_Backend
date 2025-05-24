@@ -23,7 +23,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
-		public async Task<IActionResult> GetAgeRestriction(Guid id, CancellationToken ct)
+		public async Task<IActionResult> GetAgeRestriction([FromRoute] Guid id, CancellationToken ct)
 		{
 			var ageRestriction = await serviceManager.AgeRestrictionService.GetAgeRestrictionById(id, ct);
 			return Ok(ageRestriction);
@@ -37,14 +37,14 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
-		public async Task<IActionResult> UpdateAgeRestriction(Guid id, [FromBody] AgeRestrictionForUpdateDto ageRestrictionDto, CancellationToken ct)
+		public async Task<IActionResult> UpdateAgeRestriction([FromRoute] Guid id, [FromBody] AgeRestrictionForUpdateDto ageRestrictionDto, CancellationToken ct)
 		{
 			await serviceManager.AgeRestrictionService.UpdateAgeRestriction(id, ageRestrictionDto, ct);
 			return NoContent();
 		}
 
 		[HttpDelete("{id:guid}")]
-		public async Task<IActionResult> DeleteAgeRestriction(Guid id, CancellationToken ct)
+		public async Task<IActionResult> DeleteAgeRestriction([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.AgeRestrictionService.DeleteAgeRestriction(id, ct);
 			return NoContent();

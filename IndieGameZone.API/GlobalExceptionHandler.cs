@@ -20,6 +20,7 @@ namespace IndieGameZone.API
 				BadRequestException => StatusCodes.Status400BadRequest,
 				NotAuthenticatedException => StatusCodes.Status401Unauthorized,
 				NotEnoughCreditException => StatusCodes.Status402PaymentRequired,
+				ForbiddenException => StatusCodes.Status403Forbidden,
 				NotFoundException => StatusCodes.Status404NotFound,
 				_ => StatusCodes.Status500InternalServerError
 			};

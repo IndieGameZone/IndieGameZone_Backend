@@ -20,6 +20,7 @@ namespace IndieGameZone.Application.PlatformServices
 		public async Task CreatePlatform(PlatformForCreationDto platformForCreationDto, CancellationToken ct = default)
 		{
 			var platformEntity = mapper.Map<Domain.Entities.Platforms>(platformForCreationDto);
+			platformEntity.Id = Guid.NewGuid();
 			repositoryManager.PlatformRepository.CreatePlatform(platformEntity);
 			await repositoryManager.SaveAsync(ct);
 		}
