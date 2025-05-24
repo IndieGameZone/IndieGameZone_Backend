@@ -126,7 +126,15 @@ namespace IndieGameZone.API.Extensions
 					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
 				};
 			});
-		}
+
+			services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("Moderator", policy => policy.RequireRole("Moderator"));
+                options.AddPolicy("Developer", policy => policy.RequireRole("Developer"));
+                options.AddPolicy("Player", policy => policy.RequireRole("Player"));
+            });
+        }
 
 		public static void ConfigureQuartz(this IServiceCollection services)
 		{
