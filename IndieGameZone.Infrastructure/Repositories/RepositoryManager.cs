@@ -16,6 +16,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IAgeRestrictionRepository> ageRestrictionRepository;
 		private readonly Lazy<IGameRepository> gameRepository;
 		private readonly Lazy<IAchievementRepository> achievementRepository;
+		private readonly Lazy<IGamePlatformRepository> gamePlatformRepository;
+		private readonly Lazy<IGameInfoRepository> gameInfoRepository;
+		private readonly Lazy<IGameLanguageRepository> gameLanguageRepository;
+		private readonly Lazy<IGameTagRepository> gameTagRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -28,6 +32,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 			ageRestrictionRepository = new Lazy<IAgeRestrictionRepository>(() => new AgeRestrictionRepository(appDbContext));
 			gameRepository = new Lazy<IGameRepository>(() => new GameRepository(appDbContext));
 			achievementRepository = new Lazy<IAchievementRepository>(() => new AchievementRepository(appDbContext));
+			gamePlatformRepository = new Lazy<IGamePlatformRepository>(() => new GamePlatformRepository(appDbContext));
+			gameInfoRepository = new Lazy<IGameInfoRepository>(() => new GameInfoRepository(appDbContext));
+			gameLanguageRepository = new Lazy<IGameLanguageRepository>(() => new GameLanguageRepository(appDbContext));
+			gameTagRepository = new Lazy<IGameTagRepository>(() => new GameTagRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
@@ -45,6 +53,14 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public IGameRepository GameRepository => gameRepository.Value;
 
 		public IAchievementRepository AchievementRepository => achievementRepository.Value;
+
+		public IGamePlatformRepository GamePlatformRepository => gamePlatformRepository.Value;
+
+		public IGameInfoRepository GameInfoRepository => gameInfoRepository.Value;
+
+		public IGameLanguageRepository GameLanguageRepository => gameLanguageRepository.Value;
+
+		public IGameTagRepository GameTagRepository => gameTagRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{

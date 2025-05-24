@@ -12,6 +12,7 @@ namespace IndieGameZone.Application.BlobService
 		{
 			this.blobServiceClient = blobServiceClient;
 		}
+
 		public async Task<bool> DeleteBlob(string blobName, string containerName)
 		{
 			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);

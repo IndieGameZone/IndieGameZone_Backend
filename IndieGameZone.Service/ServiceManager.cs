@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application.AchievementServices;
 using IndieGameZone.Application.AgeRestrictionServices;
+using IndieGameZone.Application.BlobService;
 using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.GameStatusServices;
@@ -24,7 +25,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IAgeRestrictionService> ageRestrictionService;
 		private readonly Lazy<IGameService> gameService;
 		private readonly Lazy<IAchievementService> achievementService;
-		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, IConfiguration configuration)
+		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, IConfiguration configuration, IBlobService blobService)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
@@ -32,7 +33,7 @@ namespace IndieGameZone.Application
 			platformService = new Lazy<IPlatformService>(() => new PlatformService(repositoryManager, mapper));
 			gameStatusService = new Lazy<IGameStatusService>(() => new GameStatusService(repositoryManager, mapper));
 			ageRestrictionService = new Lazy<IAgeRestrictionService>(() => new AgeRestrictionService(repositoryManager, mapper));
-			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper));
+			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService));
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
 		}
 

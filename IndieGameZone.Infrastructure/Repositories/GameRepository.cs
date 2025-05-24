@@ -39,5 +39,13 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);
 
 		}
+
+		public async Task<PagedList<Games>> GetGamesByDeveloperId(Guid developerId, GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
+		{
+			var gameEntities = FindByCondition(g => g.DeveloperId == developerId, trackChange)
+				.Sort();
+
+			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);
+		}
 	}
 }

@@ -1,8 +1,8 @@
 using Azure.Identity;
 using IndieGameZone.API.Extensions;
-using IndieGameZone.Domain.Entities;
 using IndieGameZone.Application.AIService;
 using IndieGameZone.Application.Extensions;
+using IndieGameZone.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
 
@@ -34,6 +34,7 @@ builder.Services.ConfigureManager();
 builder.Services.ConfigureGlobalException();
 builder.Services.ConfigureMapsters();
 builder.Services.ConfigureIdentity();
+builder.Services.ConfigureBlobService(builder.Configuration);
 builder.Services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
 builder.Services.AddScoped<IAIService, AIService>();
 
