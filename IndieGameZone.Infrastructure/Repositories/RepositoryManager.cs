@@ -15,6 +15,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IGameStatusRepository> gameStatusRepository;
 		private readonly Lazy<IAgeRestrictionRepository> ageRestrictionRepository;
 		private readonly Lazy<IGameRepository> gameRepository;
+		private readonly Lazy<IAchievementRepository> achievementRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -26,6 +27,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			gameStatusRepository = new Lazy<IGameStatusRepository>(() => new GameStatusRepository(appDbContext));
 			ageRestrictionRepository = new Lazy<IAgeRestrictionRepository>(() => new AgeRestrictionRepository(appDbContext));
 			gameRepository = new Lazy<IGameRepository>(() => new GameRepository(appDbContext));
+			achievementRepository = new Lazy<IAchievementRepository>(() => new AchievementRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
@@ -41,6 +43,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public IAgeRestrictionRepository AgeRestrictionRepository => ageRestrictionRepository.Value;
 
 		public IGameRepository GameRepository => gameRepository.Value;
+
+		public IAchievementRepository AchievementRepository => achievementRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{

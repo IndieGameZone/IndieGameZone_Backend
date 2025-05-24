@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Application.AgeRestrictionServices;
+﻿using IndieGameZone.Application.AchievementServices;
+using IndieGameZone.Application.AgeRestrictionServices;
 using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.GameStatusServices;
@@ -17,6 +18,7 @@ namespace IndieGameZone.Application
 		IGameStatusService GameStatusService { get; }
 		IAgeRestrictionService AgeRestrictionService { get; }
 		IGameService GameService { get; }
+		IAchievementService AchievementService { get; }
 
 	}
 }
