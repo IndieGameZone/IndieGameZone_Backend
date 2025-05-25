@@ -18,5 +18,6 @@ namespace IndieGameZone.Domain.IRepositories
 		IGameInfoRepository GameInfoRepository { get; }
 		IGameLanguageRepository GameLanguageRepository { get; }
 		IGameTagRepository GameTagRepository { get; }
+		IDiscountRepository DiscountRepository { get; }
 	}
 }

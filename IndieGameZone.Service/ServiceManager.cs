@@ -2,6 +2,7 @@
 using IndieGameZone.Application.AgeRestrictionServices;
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Application.CategoryServices;
+using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.GameStatusServices;
 using IndieGameZone.Application.LanguageServices;
@@ -25,6 +26,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IAgeRestrictionService> ageRestrictionService;
 		private readonly Lazy<IGameService> gameService;
 		private readonly Lazy<IAchievementService> achievementService;
+		private readonly Lazy<IDiscountService> discountService;
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, IConfiguration configuration, IBlobService blobService)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
@@ -35,6 +37,7 @@ namespace IndieGameZone.Application
 			ageRestrictionService = new Lazy<IAgeRestrictionService>(() => new AgeRestrictionService(repositoryManager, mapper));
 			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService));
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
+			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -52,5 +55,7 @@ namespace IndieGameZone.Application
 		public IGameService GameService => gameService.Value;
 
 		public IAchievementService AchievementService => achievementService.Value;
+
+		public IDiscountService DiscountService => discountService.Value;
 	}
 }

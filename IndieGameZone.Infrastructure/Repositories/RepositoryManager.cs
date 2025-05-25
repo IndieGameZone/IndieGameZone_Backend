@@ -20,6 +20,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IGameInfoRepository> gameInfoRepository;
 		private readonly Lazy<IGameLanguageRepository> gameLanguageRepository;
 		private readonly Lazy<IGameTagRepository> gameTagRepository;
+		private readonly Lazy<IDiscountRepository> discountRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -36,6 +37,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			gameInfoRepository = new Lazy<IGameInfoRepository>(() => new GameInfoRepository(appDbContext));
 			gameLanguageRepository = new Lazy<IGameLanguageRepository>(() => new GameLanguageRepository(appDbContext));
 			gameTagRepository = new Lazy<IGameTagRepository>(() => new GameTagRepository(appDbContext));
+			discountRepository = new Lazy<IDiscountRepository>(() => new DiscountRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
@@ -61,6 +63,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public IGameLanguageRepository GameLanguageRepository => gameLanguageRepository.Value;
 
 		public IGameTagRepository GameTagRepository => gameTagRepository.Value;
+
+		public IDiscountRepository DiscountRepository => discountRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{

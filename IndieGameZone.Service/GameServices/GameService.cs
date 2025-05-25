@@ -61,7 +61,6 @@ namespace IndieGameZone.Application.GameServices
 					await blobService.DeleteBlob(platform.File.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
 				}
 			}
-			repositoryManager.GamePlatformRepository.DeleteGamePlatform(existingGamePlatforms);
 
 			//Handle Game Info Entities
 			var existingGameInfos = await repositoryManager.GameInfoRepository.GetGameInfosByGameId(gameId, false, ct);
@@ -75,14 +74,6 @@ namespace IndieGameZone.Application.GameServices
 					}
 				}
 			}
-			repositoryManager.GameInfoRepository.DeleteGameInfo(existingGameInfos);
-
-			//Handle Game Language
-			repositoryManager.GameLanguageRepository.DeleteGameLanguage(await repositoryManager.GameLanguageRepository.GetGameLanguagesByGameId(gameId, false, ct));
-
-			//Handle Game Tags
-			repositoryManager.GameTagRepository.DeleteGameTag(await repositoryManager.GameTagRepository.GetGameTagsByGameId(gameId, false, ct));
-			await repositoryManager.SaveAsync(ct);
 
 			repositoryManager.GameRepository.DeleteGame(gameEntity);
 			await repositoryManager.SaveAsync(ct);
