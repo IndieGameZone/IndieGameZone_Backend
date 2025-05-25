@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Infrastructure.Repositories
 {
@@ -14,5 +15,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 		}
 
 		public void CreateGamePlatform(IEnumerable<GamePlatforms> gamePlatforms) => appDbContext.GamePlatforms.AddRange(gamePlatforms);
+
+		public void DeleteGamePlatform(IEnumerable<GamePlatforms> gamePlatforms) => appDbContext.GamePlatforms.RemoveRange(gamePlatforms);
+
+		public async Task<IEnumerable<GamePlatforms>> GetGamePlatformsByGameId(Guid gameId, bool trackChanges, CancellationToken ct = default) => await
+			FindByCondition(gp => gp.GameId.Equals(gameId), trackChanges).ToListAsync(ct);
 	}
 }

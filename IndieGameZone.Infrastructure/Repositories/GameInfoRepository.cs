@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Infrastructure.Repositories
 {
@@ -14,5 +15,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 		}
 
 		public void CreateGameInfo(IEnumerable<GameInfos> gameInfos) => appDbContext.GameInfos.AddRange(gameInfos);
+
+		public void DeleteGameInfo(IEnumerable<GameInfos> gameInfos) => appDbContext.GameInfos.RemoveRange(gameInfos);
+
+		public async Task<IEnumerable<GameInfos>> GetGameInfosByGameId(Guid gameId, bool trackChanges, CancellationToken ct = default) => await
+			FindByCondition(x => x.GameId == gameId, trackChanges)
+				.ToListAsync(ct);
 	}
 }

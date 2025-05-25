@@ -21,11 +21,11 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(g => g.GameLanguages)
 				.WithOne(gl => gl.Game)
 				.HasForeignKey(gl => gl.GameId)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.Cascade);
 			builder.HasMany(g => g.GameTags)
 				.WithOne(gt => gt.Game)
 				.HasForeignKey(gt => gt.GameId)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.Cascade);
 			builder.HasOne(g => g.Category)
 				.WithMany(c => c.Games)
 				.HasForeignKey(g => g.CategoryId)
@@ -33,15 +33,15 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(g => g.GamePlatforms)
 				.WithOne(gp => gp.Game)
 				.HasForeignKey(gp => gp.GameId)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.Cascade);
 			builder.HasMany(g => g.GameInfos)
 				.WithOne(gi => gi.Games)
 				.HasForeignKey(gi => gi.GameId)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.Cascade);
 			builder.HasOne(g => g.AgeRestriction)
 				.WithMany(ar => ar.Games)
 				.HasForeignKey(g => g.AgeRestrictionId)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.Cascade);
 			builder.HasOne(g => g.Developers)
 				.WithMany(d => d.Games)
 				.HasForeignKey(g => g.DeveloperId)

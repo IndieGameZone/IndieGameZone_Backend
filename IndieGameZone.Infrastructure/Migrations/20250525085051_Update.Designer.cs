@@ -4,6 +4,7 @@ using IndieGameZone.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IndieGameZone.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250525085051_Update")]
+    partial class Update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -595,8 +598,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                             IsActive = true,
                             Name = "The Deadseat",
                             Price = 100000.0,
-                            ReleasedDate = new DateTime(2025, 5, 25, 15, 54, 52, 596, DateTimeKind.Local).AddTicks(9084),
-                            UpdatedAt = new DateTime(2025, 5, 25, 15, 54, 52, 596, DateTimeKind.Local).AddTicks(9100),
+                            ReleasedDate = new DateTime(2025, 5, 25, 15, 50, 50, 493, DateTimeKind.Local).AddTicks(1416),
+                            UpdatedAt = new DateTime(2025, 5, 25, 15, 50, 50, 493, DateTimeKind.Local).AddTicks(1432),
                             VideoLink = "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s"
                         });
                 });
@@ -1357,14 +1360,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d158855c-f1e8-4a70-9cf3-834d9183a93f",
+                            ConcurrencyStamp = "4d3ea10a-e66a-4097-9509-820e3c9dae1c",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 25, 15, 54, 52, 611, DateTimeKind.Local).AddTicks(2291),
+                            JoinedDate = new DateTime(2025, 5, 25, 15, 50, 50, 505, DateTimeKind.Local).AddTicks(8600),
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA9nozeDQXQBMsjdyfYjh4jQ2kEvb+YQLsBxDbJh+xJFp7MFIVwVjxrs3yIPoaW+ng==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOpx9qFh9qviEXrBxF+2lCkK/TB7yaMCod2ihbhWdnuFmutDJmYwnP2A0/1KFZYgWg==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         },
@@ -1372,14 +1375,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "c5968285-ba3d-4658-a890-01301b0337f7",
+                            ConcurrencyStamp = "fa64c6be-00b8-4d57-bb79-0239b39d7167",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 25, 15, 54, 52, 672, DateTimeKind.Local).AddTicks(7490),
+                            JoinedDate = new DateTime(2025, 5, 25, 15, 50, 50, 563, DateTimeKind.Local).AddTicks(31),
                             LockoutEnabled = false,
                             NormalizedEmail = "MODERATOR@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKmIJaMO6SL93hiqqGVsxYnOQlW0qbr0F0zCz7ogC3+tGf8XnlnZ1hiXtSKnW27foQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKyk+rTJXqobSxv/ij+PrXJAWYCpRn7+wEskvd5G2epiSH8f//WuIFYJcFt9Y7ldow==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         },
@@ -1387,14 +1390,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f00ea67e-6b8e-4fe9-81ea-db3425bbd001",
+                            ConcurrencyStamp = "9f6c1cf1-3377-40bd-ab02-e323628bbd52",
                             Email = "developer@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
                             JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LockoutEnabled = false,
                             NormalizedEmail = "DEVELOPER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDV9vQiJhNVSOdZYDYcw/YvEakDBLeo7GXhOQFM6am9jvLxHv12xPVzjupW9VakPow==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPkcPeFcwcq27/3d2Uqw5dTRMexD4799PoDUYDf05k6BrpHc3cXGDjBVEmG1elMdYQ==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         },
@@ -1402,14 +1405,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("23879117-e09e-40f1-b78f-1493d81baf49"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9c062f75-7d54-469f-a427-e614209358bf",
+                            ConcurrencyStamp = "a0424f3b-5ed7-40bb-bd8c-c6f1b1c80333",
                             Email = "player@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
                             JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LockoutEnabled = false,
                             NormalizedEmail = "PLAYER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHHUiSkzRznkuZ/6fP5epzLNPVBSnbswB3WLxaY+kRfEbxvHFW7ktCVVTUStqkuVcQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF2EwesYBrs4rPZqAZ27hkkU/SRfhNyHRgRkXQblvD9eWnUlKehdqUT+9xaGkG1xEQ==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         });
@@ -1609,7 +1612,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Games")
                         .WithMany("GameInfos")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Games");
@@ -1620,7 +1623,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("GameLanguages")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Languages", "Language")
@@ -1639,7 +1642,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("GamePlatforms")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Platforms", "Platform")
@@ -1677,7 +1680,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("GameTags")
                         .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Tags", "Tag")
@@ -1702,7 +1705,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasOne("IndieGameZone.Domain.Entities.Categories", "Category")
                         .WithMany("Games")
                         .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "Developers")

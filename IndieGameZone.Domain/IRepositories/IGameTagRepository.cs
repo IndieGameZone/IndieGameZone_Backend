@@ -5,5 +5,7 @@ namespace IndieGameZone.Domain.IRepositories
 	public interface IGameTagRepository
 	{
 		void CreateGameTag(IEnumerable<GameTags> gameTags);
+		void DeleteGameTag(IEnumerable<GameTags> gameTags);
+		Task<IEnumerable<GameTags>> GetGameTagsByGameId(Guid gameId, bool trackChanges, CancellationToken ct = default);
 	}
 }
