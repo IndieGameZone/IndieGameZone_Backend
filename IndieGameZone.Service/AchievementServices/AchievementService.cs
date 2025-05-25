@@ -23,7 +23,7 @@ namespace IndieGameZone.Application.AchievementServices
 			var achievementEntity = mapper.Map<Achievements>(achievementForCreationDto);
 			achievementEntity.Id = Guid.NewGuid();
 			repositoryManager.AchievementRepository.CreateAchievement(achievementEntity);
-			await repositoryManager.SaveAsync(ct);
+            await repositoryManager.SaveAsync(ct);
 		}
 
 		public async Task DeleteAchievement(Guid id, CancellationToken ct = default)

@@ -16,6 +16,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IAgeRestrictionRepository> ageRestrictionRepository;
 		private readonly Lazy<IGameRepository> gameRepository;
 		private readonly Lazy<IAchievementRepository> achievementRepository;
+		private readonly Lazy<IUserRepository> userRepository;
+		private readonly Lazy<IUserProfileRepository> userProfileRepository;
+		private readonly Lazy<IWalletRepository> walletRepository;
 		private readonly Lazy<IGamePlatformRepository> gamePlatformRepository;
 		private readonly Lazy<IGameInfoRepository> gameInfoRepository;
 		private readonly Lazy<IGameLanguageRepository> gameLanguageRepository;
@@ -33,6 +36,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 			ageRestrictionRepository = new Lazy<IAgeRestrictionRepository>(() => new AgeRestrictionRepository(appDbContext));
 			gameRepository = new Lazy<IGameRepository>(() => new GameRepository(appDbContext));
 			achievementRepository = new Lazy<IAchievementRepository>(() => new AchievementRepository(appDbContext));
+			userRepository = new Lazy<IUserRepository>(() => new UserRepository(appDbContext));
+			userProfileRepository = new Lazy<IUserProfileRepository>(() => new UserProfileRepository(appDbContext));
+			walletRepository = new Lazy<IWalletRepository>(() => new WalletRepository(appDbContext));
 			gamePlatformRepository = new Lazy<IGamePlatformRepository>(() => new GamePlatformRepository(appDbContext));
 			gameInfoRepository = new Lazy<IGameInfoRepository>(() => new GameInfoRepository(appDbContext));
 			gameLanguageRepository = new Lazy<IGameLanguageRepository>(() => new GameLanguageRepository(appDbContext));
@@ -56,6 +62,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public IAchievementRepository AchievementRepository => achievementRepository.Value;
 
+		public IUserRepository UserRepository => userRepository.Value;
+
+		public IUserProfileRepository UserProfileRepository => userProfileRepository.Value;
+
+		public IWalletRepository WalletRepository => walletRepository.Value;
 		public IGamePlatformRepository GamePlatformRepository => gamePlatformRepository.Value;
 
 		public IGameInfoRepository GameInfoRepository => gameInfoRepository.Value;
@@ -66,12 +77,13 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public IDiscountRepository DiscountRepository => discountRepository.Value;
 
-		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
+        public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{
 			var transaction = await appDbContext.Database.BeginTransactionAsync(ct);
 			return transaction.GetDbTransaction();
 		}
 
 		public Task SaveAsync(CancellationToken ct = default) => appDbContext.SaveChangesAsync(ct);
-	}
+
+	} 
 }

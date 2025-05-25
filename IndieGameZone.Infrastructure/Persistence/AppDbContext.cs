@@ -40,13 +40,13 @@ namespace IndieGameZone.Infrastructure.Persistence
 		public DbSet<Reports> Reports { get; set; } = null!;
 		public DbSet<ReportTypes> ReportTypes { get; set; } = null!;
 		public DbSet<Reviews> Reviews { get; set; } = null!;
-		public DbSet<Roles> Roles { get; set; } = null!;
+		public new DbSet<Roles> Roles { get; set; } = null!;
 		public DbSet<Tags> Tags { get; set; } = null!;
 		public DbSet<Transactions> Transactions { get; set; } = null!;
 		public DbSet<UserAchievements> UserAchievements { get; set; } = null!;
 		public DbSet<UserFollows> UserFollows { get; set; } = null!;
 		public DbSet<UserProfiles> UserProfiles { get; set; } = null!;
-		public DbSet<Users> Users { get; set; } = null!;
+		public new DbSet<Users> Users { get; set; } = null!;
 		public DbSet<Wallets> Wallets { get; set; } = null!;
 		public DbSet<Wishlists> Wishlists { get; set; } = null!;
 		public DbSet<WithdrawRequests> WithdrawRequests { get; set; } = null!;

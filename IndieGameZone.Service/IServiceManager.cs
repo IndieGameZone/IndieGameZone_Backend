@@ -7,6 +7,7 @@ using IndieGameZone.Application.GameStatusServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.PlatformServices;
 using IndieGameZone.Application.TagServices;
+using IndieGameZone.Application.UserServices;
 
 namespace IndieGameZone.Application
 {
@@ -20,6 +21,7 @@ namespace IndieGameZone.Application
 		IAgeRestrictionService AgeRestrictionService { get; }
 		IGameService GameService { get; }
 		IAchievementService AchievementService { get; }
+        IUserService UserService { get; }
 		IDiscountService DiscountService { get; }
 
 	}
