@@ -90,7 +90,13 @@ namespace IndieGameZone.Application.GameServices
 			var gameInfoEntitys = (mapper.Map<IEnumerable<GameInfos>>(game.GameInfos)).ToList();
 			for (int i = 0; i < gameInfoEntitys.Count(); i++)
 			{
+				gameInfoEntitys[i].Id = Guid.NewGuid();
 				gameInfoEntitys[i].GameId = gameEntity.Id;
+				if (game.GameInfos.ElementAt(i).Image is not null && game.GameInfos.ElementAt(i).Image.Length > 0)
+				{
+					string infoImageFilename = $"{game.Name}Image{i + 1}{Path.GetExtension(game.GameInfos.ElementAt(i).Image.FileName)}";
+					gameInfoEntitys[i].Image = await blobService.UploadBlob(infoImageFilename, StorageContainer.STORAGE_CONTAINER, game.GameInfos.ElementAt(i).Image);
+				}
 			}
 			repositoryManager.GameInfoRepository.CreateGameInfo(gameInfoEntitys);
 

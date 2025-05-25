@@ -3,6 +3,7 @@ using IndieGameZone.API.Extensions;
 using IndieGameZone.Application.AIService;
 using IndieGameZone.Application.Extensions;
 using IndieGameZone.Domain.Entities;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using System.Text.Json.Serialization;
 
@@ -37,6 +38,10 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureBlobService(builder.Configuration);
 builder.Services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
 builder.Services.AddScoped<IAIService, AIService>();
+builder.Services.Configure<FormOptions>(options =>
+{
+	options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // 100MB
+});
 
 var app = builder.Build();
 
