@@ -76,12 +76,15 @@ namespace IndieGameZone.Application.GameServices
 			}
 
 			// Handle Game Platforms
-			var gamePlatformEntitys = (mapper.Map<IEnumerable<GamePlatforms>>(game.GamePlatforms)).ToList();
+			var gamePlatformEntitys = game.GamePlatforms.Select(gp => new GamePlatforms
+			{
+				GameId = gameEntity.Id,
+				PlatformId = gp.PlatformId,
+				File = string.Empty
+			}).ToList();
 			for (int i = 0; i < gamePlatformEntitys.Count(); i++)
 			{
-				gamePlatformEntitys[i].GameId = gameEntity.Id;
-				var platformName = repositoryManager.PlatformRepository.GetPlatformById(gamePlatformEntitys[i].PlatformId, false, ct);
-				string filename = $"{game.Name}_{platformName}{Path.GetExtension(game.GamePlatforms.ElementAt(i).File.FileName)}";
+				string filename = $"{Guid.NewGuid()}{Path.GetExtension(game.GamePlatforms.ElementAt(i).File.FileName)}";
 				gamePlatformEntitys[i].File = await blobService.UploadBlob(filename, StorageContainer.STORAGE_CONTAINER, game.GamePlatforms.ElementAt(i).File);
 			}
 			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatformEntitys);
