@@ -10,7 +10,7 @@ namespace IndieGameZone.Application.GameServices
 		Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetGamesByDeveloperId(Guid developerId, GameParameters gameParameters, CancellationToken ct = default);
 		Task<GameForSingleReturnDto> GetGameById(Guid gameId, CancellationToken ct = default);
 		Task DeleteGame(Guid developerId, Guid gameId, CancellationToken ct = default);
-		Task CreateGame(Guid developerId, GameForCreationDto game, CancellationToken ct = default);
+		Task<Guid> CreateGame(Guid developerId, GameForCreationDto game, CancellationToken ct = default);
 		Task UpdateGame(Guid developerId, Guid gameId, GameForUpdateDto game, CancellationToken ct = default);
 	}
 }

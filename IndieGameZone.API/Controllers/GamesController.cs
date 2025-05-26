@@ -51,8 +51,8 @@ namespace IndieGameZone.API.Controllers
 		[RequestSizeLimit(104857600)]
 		public async Task<IActionResult> CreateGame([FromRoute] Guid developerId, [FromForm] GameForCreationDto game, CancellationToken ct)
 		{
-			await serviceManager.GameService.CreateGame(developerId, game, ct);
-			return StatusCode(201);
+			var gameid = await serviceManager.GameService.CreateGame(developerId, game, ct);
+			return StatusCode(201, gameid);
 		}
 
 		[HttpPut("Users/{developerId:guid}/Games/{gameId:guid}")]
