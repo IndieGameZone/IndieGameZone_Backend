@@ -17,6 +17,15 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void DeleteGame(Games game) => Delete(game);
 
+		public async Task<PagedList<Games>> GetActiveGames(ActiveGameParameters activeGameParameters, bool trackChange, CancellationToken ct = default)
+		{
+			var gameEntities = FindByCondition(g => g.IsActive, trackChange)
+				.Include(x => x.Discounts).AsSplitQuery()
+				.Sort();
+
+			return await PagedList<Games>.ToPagedList(gameEntities, activeGameParameters.PageNumber, activeGameParameters.PageSize, ct);
+		}
+
 		public async Task<Games?> GetGameById(Guid id, bool trackChange, CancellationToken ct = default)
 		{
 			return await FindByCondition(x => x.Id.Equals(id), trackChange)
