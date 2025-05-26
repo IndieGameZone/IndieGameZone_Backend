@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IndieGameZone.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250526085906_First-Migration")]
+    [Migration("20250526145556_FirstMigration")]
     partial class FirstMigration
     {
         /// <inheritdoc />
@@ -279,6 +279,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Property<DateOnly>("EndDate")
                         .HasColumnType("date");
 
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
                     b.Property<double>("Percentage")
                         .HasColumnType("float");
 
@@ -318,6 +321,16 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasIndex("GameId");
 
                     b.ToTable("Discounts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("02e6a0ab-2720-4368-8b80-9eb3f46eece0"),
+                            EndDate = new DateOnly(2025, 6, 5),
+                            GameId = new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"),
+                            Percentage = 10.0,
+                            StartDate = new DateOnly(2025, 5, 26)
+                        });
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.GameInfos", b =>
@@ -598,8 +611,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                             IsActive = true,
                             Name = "The Deadseat",
                             Price = 100000.0,
-                            ReleasedDate = new DateTime(2025, 5, 26, 15, 59, 6, 163, DateTimeKind.Local).AddTicks(1224),
-                            UpdatedAt = new DateTime(2025, 5, 26, 15, 59, 6, 163, DateTimeKind.Local).AddTicks(1240),
+                            ReleasedDate = new DateTime(2025, 5, 26, 21, 55, 55, 719, DateTimeKind.Local).AddTicks(585),
+                            UpdatedAt = new DateTime(2025, 5, 26, 21, 55, 55, 719, DateTimeKind.Local).AddTicks(592),
                             VideoLink = "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s"
                         });
                 });
@@ -1360,14 +1373,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d9a05fc1-b0a5-442b-b81d-97ad2772e310",
+                            ConcurrencyStamp = "35cf0360-4c0e-4072-9375-1951a5d51a77",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 26, 15, 59, 6, 176, DateTimeKind.Local).AddTicks(9739),
+                            JoinedDate = new DateTime(2025, 5, 26, 21, 55, 55, 735, DateTimeKind.Local).AddTicks(2834),
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEG1Bmrc8fV2wadkMyN+Kif/fh12z+e8+ozJXhomxZDF4zewFqRnS4KuTHibFC4J+BA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF9k917m0Fi+YMtPIxYuaiY+jHuyEfXHWQvv5LClJPM/rIQs4eD2MZZPaO/mTWflLw==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         },
@@ -1375,14 +1388,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d7ec7cf2-d014-482f-b239-085427fe724c",
+                            ConcurrencyStamp = "1cb98a61-bacf-4067-bf37-b677fea9c750",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 26, 15, 59, 6, 231, DateTimeKind.Local).AddTicks(5609),
+                            JoinedDate = new DateTime(2025, 5, 26, 21, 55, 55, 795, DateTimeKind.Local).AddTicks(7851),
                             LockoutEnabled = false,
                             NormalizedEmail = "MODERATOR@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKUvli2BPzH0aJVHYdcKYJPiTbIoFHD8ZHIgAmEHcys69eFEqipdWlhOsURQU2H9ZA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEFEbD6hyERhvS3aPm0FSp1AjlIBBpL4H6kcGfsnoEgO/TWr6GHrBRGAonunLqRCrgA==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         },
@@ -1390,14 +1403,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "32ed7a54-e472-4339-87b6-76a8d5583e79",
-                            Email = "developer@gmail.com",
+                            ConcurrencyStamp = "0716dfc2-eb76-44a2-b73b-6492d112a615",
+                            Email = "developer1@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
                             JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LockoutEnabled = false,
-                            NormalizedEmail = "DEVELOPER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBXgaRLRTKamAoPr3wlihcXsGsBn6fABdcboPPgaNJu40cB5hUpHytviMStBEwbg4Q==",
+                            NormalizedEmail = "DEVELOPER1@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOn2rReJqgazyqpKZTzZDDOh7mAaFyxia1NTYjl9pNr98KIkptxnp0yCRsBuMVObfg==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         },
@@ -1405,14 +1418,44 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("23879117-e09e-40f1-b78f-1493d81baf49"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4f0b3bc3-cb6b-40eb-89f3-6bb7f979faac",
+                            ConcurrencyStamp = "6e296b74-89e4-45ed-819d-de2f2eed30d4",
                             Email = "player@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
                             JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             LockoutEnabled = false,
                             NormalizedEmail = "PLAYER@GMAIL.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGL7InfAZHfDfQZuTMuWDjwgQAprK0y/e0QWwJQNVqOXw0gyCjV8L1onCyRG+NV3/Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENk7BzLLBUvAx59XqY5mWdttXURPsIc3xTNG5ZwvA/YwRSuKuoOyWobZ1pYP5RQydQ==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false
+                        },
+                        new
+                        {
+                            Id = new Guid("34670beb-a794-4419-adf8-0465eea22a78"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "2c51e357-4785-4fb3-9f8b-505dfaf818fc",
+                            Email = "developer2@gmail.com",
+                            EmailConfirmed = true,
+                            IsActive = true,
+                            JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LockoutEnabled = false,
+                            NormalizedEmail = "DEVELOPER2@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMGVr1O6mmdTU3dvemM+fv6/VRt8WnFBTBEoRHWWfZEpxvk2utHZbPhV1sNBC7d4Hw==",
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false
+                        },
+                        new
+                        {
+                            Id = new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "b32f2135-d6e9-47ea-99b0-b050b0eab33d",
+                            Email = "developer3@gmail.com",
+                            EmailConfirmed = true,
+                            IsActive = true,
+                            JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LockoutEnabled = false,
+                            NormalizedEmail = "DEVELOPER3@GMAIL.COM",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL/Jv9lQ7+e2E1EHY+pLutFUtjH4dpaqg+xHuYQiC7G95/Uq3zLeNsmFQkWnNuH8aQ==",
                             PhoneNumberConfirmed = false,
                             TwoFactorEnabled = false
                         });
@@ -1527,6 +1570,16 @@ namespace IndieGameZone.Infrastructure.Migrations
                         new
                         {
                             UserId = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
+                            RoleId = new Guid("b86a5b00-0393-4524-9f56-fa7ca800e79c")
+                        },
+                        new
+                        {
+                            UserId = new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
+                            RoleId = new Guid("b86a5b00-0393-4524-9f56-fa7ca800e79c")
+                        },
+                        new
+                        {
+                            UserId = new Guid("34670beb-a794-4419-adf8-0465eea22a78"),
                             RoleId = new Guid("b86a5b00-0393-4524-9f56-fa7ca800e79c")
                         },
                         new

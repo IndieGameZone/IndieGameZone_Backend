@@ -26,7 +26,12 @@ namespace IndieGameZone.Application.GameServices
 		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetGames(GameParameters gameParameters, CancellationToken ct = default)
 		{
 			var gamesWithMetaData = await repositoryManager.GameRepository.GetGames(gameParameters, false, ct);
-			var games = mapper.Map<IEnumerable<GameForListReturnDto>>(gamesWithMetaData);
+			var games = (mapper.Map<IEnumerable<GameForListReturnDto>>(gamesWithMetaData)).ToList();
+			for (int i = 0; i < games.Count; i++)
+			{
+				var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gamesWithMetaData[i].Id, false, ct);
+				games[i].PriceAfterDiscount = discount is not null ? games[i].Price - (games[i].Price * discount.Percentage / 100) : games[i].Price;
+			}
 			return (games, gamesWithMetaData.MetaData);
 		}
 
