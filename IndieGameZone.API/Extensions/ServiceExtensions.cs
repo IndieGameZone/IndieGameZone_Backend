@@ -105,7 +105,7 @@ namespace IndieGameZone.API.Extensions
 		public static void ConfigureJWT(this IServiceCollection services, IConfiguration configuration)
 		{
 			var jwtSettings = configuration.GetSection("JwtSettings");
-			var secretKey = jwtSettings["secretKey"];
+			var secretKey = configuration.GetSection("SecretKey").Value;
             if (string.IsNullOrWhiteSpace(secretKey))
                 throw new InvalidOperationException("JWT secret key is not configured.");
 
