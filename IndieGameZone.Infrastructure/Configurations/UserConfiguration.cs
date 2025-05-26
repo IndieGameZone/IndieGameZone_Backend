@@ -108,16 +108,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 			};
 			moderator.PasswordHash = passwordHasher.HashPassword(moderator, "moderator");
 
-			var developer = new Users
-			{
-				Id = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-				Email = "developer@gmail.com",
-				NormalizedEmail = "DEVELOPER@GMAIL.COM",
-				EmailConfirmed = true,
-				IsActive = true
-			};
-			developer.PasswordHash = passwordHasher.HashPassword(developer, "developer");
-
 			var player = new Users
 			{
 				Id = Guid.Parse("23879117-e09e-40f1-b78f-1493d81baf49"),
@@ -128,7 +118,39 @@ namespace IndieGameZone.Infrastructure.Configurations
 			};
 			player.PasswordHash = passwordHasher.HashPassword(player, "player");
 
-			builder.HasData(admin, moderator, developer, player);
+			var developer1 = new Users
+			{
+				Id = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
+				Email = "developer1@gmail.com",
+				NormalizedEmail = "DEVELOPER1@GMAIL.COM",
+				EmailConfirmed = true,
+				IsActive = true
+			};
+			developer1.PasswordHash = passwordHasher.HashPassword(developer1, "developer1");
+
+			var developer2 = new Users
+			{
+				Id = Guid.Parse("34670beb-a794-4419-adf8-0465eea22a78"),
+				Email = "developer2@gmail.com",
+				NormalizedEmail = "DEVELOPER2@GMAIL.COM",
+				EmailConfirmed = true,
+				IsActive = true
+			};
+			developer2.PasswordHash = passwordHasher.HashPassword(developer2, "developer2");
+
+			var developer3 = new Users
+			{
+				Id = Guid.Parse("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
+				Email = "developer3@gmail.com",
+				NormalizedEmail = "DEVELOPER3@GMAIL.COM",
+				EmailConfirmed = true,
+				IsActive = true
+			};
+			developer3.PasswordHash = passwordHasher.HashPassword(developer3, "developer3");
+
+
+
+			builder.HasData(admin, moderator, developer1, player, developer2, developer3);
 		}
 	}
 }

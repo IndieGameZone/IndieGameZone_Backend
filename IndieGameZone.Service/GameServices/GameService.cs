@@ -26,7 +26,12 @@ namespace IndieGameZone.Application.GameServices
 		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetGames(GameParameters gameParameters, CancellationToken ct = default)
 		{
 			var gamesWithMetaData = await repositoryManager.GameRepository.GetGames(gameParameters, false, ct);
-			var games = mapper.Map<IEnumerable<GameForListReturnDto>>(gamesWithMetaData);
+			var games = (mapper.Map<IEnumerable<GameForListReturnDto>>(gamesWithMetaData)).ToList();
+			for (int i = 0; i < games.Count; i++)
+			{
+				var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gamesWithMetaData[i].Id, false, ct);
+				games[i].PriceAfterDiscount = discount is not null ? games[i].Price - (games[i].Price * discount.Percentage / 100) : games[i].Price;
+			}
 			return (games, gamesWithMetaData.MetaData);
 		}
 
@@ -40,7 +45,7 @@ namespace IndieGameZone.Application.GameServices
 			var gameDto = mapper.Map<GameForSingleReturnDto>(gameEntity);
 			var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gameId, false, ct);
 			gameDto.PriceAfterDiscount = discount is not null ? gameDto.Price - (gameDto.Price * discount.Percentage / 100) : gameDto.Price;
-			return mapper.Map<GameForSingleReturnDto>(gameEntity);
+			return gameDto;
 		}
 
 		public async Task DeleteGame(Guid developerId, Guid gameId, CancellationToken ct = default)
@@ -150,6 +155,29 @@ namespace IndieGameZone.Application.GameServices
 			var gameTagEntitys = game.TagIds.Select(id => new GameTags { TagId = id, GameId = gameEntity.Id });
 			repositoryManager.GameTagRepository.CreateGameTag(gameTagEntitys);
 
+			await repositoryManager.SaveAsync(ct);
+		}
+
+		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetActiveGames(ActiveGameParameters activeGameParameters, CancellationToken ct = default)
+		{
+			var gamesWithMetaData = await repositoryManager.GameRepository.GetActiveGames(activeGameParameters, false, ct);
+			var games = (mapper.Map<IEnumerable<GameForListReturnDto>>(gamesWithMetaData)).ToList();
+			for (int i = 0; i < games.Count; i++)
+			{
+				var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gamesWithMetaData[i].Id, false, ct);
+				games[i].PriceAfterDiscount = discount is not null ? games[i].Price - (games[i].Price * discount.Percentage / 100) : games[i].Price;
+			}
+			return (games, gamesWithMetaData.MetaData);
+		}
+
+		public async Task UpdateActiveStatus(Guid gameId, CancellationToken ct = default)
+		{
+			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, true, ct);
+			if (gameEntity is null)
+			{
+				throw new NotFoundException($"Game not found.");
+			}
+			gameEntity.IsActive = !gameEntity.IsActive;
 			await repositoryManager.SaveAsync(ct);
 		}
 	}

@@ -61,5 +61,20 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.GameService.UpdateGame(developerId, gameId, game, ct);
 			return NoContent();
 		}
+
+		[HttpGet("ActiveGames")]
+		public async Task<IActionResult> GetActiveGames([FromQuery] ActiveGameParameters activeGameParameters, CancellationToken ct)
+		{
+			var pagedResult = await serviceManager.GameService.GetActiveGames(activeGameParameters, ct);
+			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+			return Ok(pagedResult.games);
+		}
+
+		[HttpPut("Games/{gameId:guid}/Activation")]
+		public async Task<IActionResult> ActivateGame([FromRoute] Guid gameId, CancellationToken ct)
+		{
+			await serviceManager.GameService.UpdateActiveStatus(gameId, ct);
+			return NoContent();
+		}
 	}
 }

@@ -261,6 +261,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
                     Percentage = table.Column<double>(type: "float", nullable: false),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
                     StartDate = table.Column<DateOnly>(type: "date", nullable: false),
                     EndDate = table.Column<DateOnly>(type: "date", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
@@ -913,10 +914,12 @@ namespace IndieGameZone.Infrastructure.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "IsActive", "JoinedDate", "LastLogin", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "RefreshToken", "RefreshTokenExpiryTime", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("23879117-e09e-40f1-b78f-1493d81baf49"), 0, "4f0b3bc3-cb6b-40eb-89f3-6bb7f979faac", "player@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "PLAYER@GMAIL.COM", null, "AQAAAAIAAYagAAAAEGL7InfAZHfDfQZuTMuWDjwgQAprK0y/e0QWwJQNVqOXw0gyCjV8L1onCyRG+NV3/Q==", null, false, null, null, null, false, null },
-                    { new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"), 0, "32ed7a54-e472-4339-87b6-76a8d5583e79", "developer@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "DEVELOPER@GMAIL.COM", null, "AQAAAAIAAYagAAAAEBXgaRLRTKamAoPr3wlihcXsGsBn6fABdcboPPgaNJu40cB5hUpHytviMStBEwbg4Q==", null, false, null, null, null, false, null },
-                    { new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"), 0, "d7ec7cf2-d014-482f-b239-085427fe724c", "moderator@gmail.com", true, true, new DateTime(2025, 5, 26, 15, 59, 6, 231, DateTimeKind.Local).AddTicks(5609), null, false, null, "MODERATOR@GMAIL.COM", null, "AQAAAAIAAYagAAAAEKUvli2BPzH0aJVHYdcKYJPiTbIoFHD8ZHIgAmEHcys69eFEqipdWlhOsURQU2H9ZA==", null, false, null, null, null, false, null },
-                    { new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"), 0, "d9a05fc1-b0a5-442b-b81d-97ad2772e310", "admin@gmail.com", true, true, new DateTime(2025, 5, 26, 15, 59, 6, 176, DateTimeKind.Local).AddTicks(9739), null, false, null, "ADMIN@GMAIL.COM", null, "AQAAAAIAAYagAAAAEG1Bmrc8fV2wadkMyN+Kif/fh12z+e8+ozJXhomxZDF4zewFqRnS4KuTHibFC4J+BA==", null, false, null, null, null, false, null }
+                    { new Guid("23879117-e09e-40f1-b78f-1493d81baf49"), 0, "6e296b74-89e4-45ed-819d-de2f2eed30d4", "player@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "PLAYER@GMAIL.COM", null, "AQAAAAIAAYagAAAAENk7BzLLBUvAx59XqY5mWdttXURPsIc3xTNG5ZwvA/YwRSuKuoOyWobZ1pYP5RQydQ==", null, false, null, null, null, false, null },
+                    { new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"), 0, "0716dfc2-eb76-44a2-b73b-6492d112a615", "developer1@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "DEVELOPER1@GMAIL.COM", null, "AQAAAAIAAYagAAAAEOn2rReJqgazyqpKZTzZDDOh7mAaFyxia1NTYjl9pNr98KIkptxnp0yCRsBuMVObfg==", null, false, null, null, null, false, null },
+                    { new Guid("34670beb-a794-4419-adf8-0465eea22a78"), 0, "2c51e357-4785-4fb3-9f8b-505dfaf818fc", "developer2@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "DEVELOPER2@GMAIL.COM", null, "AQAAAAIAAYagAAAAEMGVr1O6mmdTU3dvemM+fv6/VRt8WnFBTBEoRHWWfZEpxvk2utHZbPhV1sNBC7d4Hw==", null, false, null, null, null, false, null },
+                    { new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"), 0, "1cb98a61-bacf-4067-bf37-b677fea9c750", "moderator@gmail.com", true, true, new DateTime(2025, 5, 26, 21, 55, 55, 795, DateTimeKind.Local).AddTicks(7851), null, false, null, "MODERATOR@GMAIL.COM", null, "AQAAAAIAAYagAAAAEFEbD6hyERhvS3aPm0FSp1AjlIBBpL4H6kcGfsnoEgO/TWr6GHrBRGAonunLqRCrgA==", null, false, null, null, null, false, null },
+                    { new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"), 0, "b32f2135-d6e9-47ea-99b0-b050b0eab33d", "developer3@gmail.com", true, true, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, null, "DEVELOPER3@GMAIL.COM", null, "AQAAAAIAAYagAAAAEL/Jv9lQ7+e2E1EHY+pLutFUtjH4dpaqg+xHuYQiC7G95/Uq3zLeNsmFQkWnNuH8aQ==", null, false, null, null, null, false, null },
+                    { new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"), 0, "35cf0360-4c0e-4072-9375-1951a5d51a77", "admin@gmail.com", true, true, new DateTime(2025, 5, 26, 21, 55, 55, 735, DateTimeKind.Local).AddTicks(2834), null, false, null, "ADMIN@GMAIL.COM", null, "AQAAAAIAAYagAAAAEF9k917m0Fi+YMtPIxYuaiY+jHuyEfXHWQvv5LClJPM/rIQs4eD2MZZPaO/mTWflLw==", null, false, null, null, null, false, null }
                 });
 
             migrationBuilder.InsertData(
@@ -1018,14 +1021,16 @@ namespace IndieGameZone.Infrastructure.Migrations
                 {
                     { new Guid("51999f00-0f63-4236-8c81-94c43fcf7586"), new Guid("23879117-e09e-40f1-b78f-1493d81baf49") },
                     { new Guid("b86a5b00-0393-4524-9f56-fa7ca800e79c"), new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f") },
+                    { new Guid("b86a5b00-0393-4524-9f56-fa7ca800e79c"), new Guid("34670beb-a794-4419-adf8-0465eea22a78") },
                     { new Guid("7211a346-6e23-431c-a6bd-2f02aa5de68a"), new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037") },
+                    { new Guid("b86a5b00-0393-4524-9f56-fa7ca800e79c"), new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe") },
                     { new Guid("6f7b3f0c-3f54-4fb8-a215-33cd496c3be7"), new Guid("e5d8947f-6794-42b6-ba67-201f366128b8") }
                 });
 
             migrationBuilder.InsertData(
                 table: "Games",
                 columns: new[] { "Id", "AgeRestrictionId", "AverageSession", "CategoryId", "CoverImage", "DeveloperId", "GameStatusId", "IsActive", "Name", "Price", "ReleasedDate", "UpdatedAt", "VideoLink" },
-                values: new object[] { new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), new Guid("c48f1c63-f301-44e9-8766-3d4b60134b5f"), 0.5, new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"), "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatCoverImage.png", new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"), new Guid("92f9b646-d1db-4bd1-93ed-e5dc73ccd37e"), true, "The Deadseat", 100000.0, new DateTime(2025, 5, 26, 15, 59, 6, 163, DateTimeKind.Local).AddTicks(1224), new DateTime(2025, 5, 26, 15, 59, 6, 163, DateTimeKind.Local).AddTicks(1240), "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s" });
+                values: new object[] { new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), new Guid("c48f1c63-f301-44e9-8766-3d4b60134b5f"), 0.5, new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"), "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatCoverImage.png", new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"), new Guid("92f9b646-d1db-4bd1-93ed-e5dc73ccd37e"), true, "The Deadseat", 100000.0, new DateTime(2025, 5, 26, 21, 55, 55, 719, DateTimeKind.Local).AddTicks(585), new DateTime(2025, 5, 26, 21, 55, 55, 719, DateTimeKind.Local).AddTicks(592), "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s" });
 
             migrationBuilder.InsertData(
                 table: "UserProfiles",
@@ -1044,6 +1049,11 @@ namespace IndieGameZone.Infrastructure.Migrations
                     { new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"), 0.0 },
                     { new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"), 0.0 }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Discounts",
+                columns: new[] { "Id", "EndDate", "GameId", "Percentage", "StartDate" },
+                values: new object[] { new Guid("02e6a0ab-2720-4368-8b80-9eb3f46eece0"), new DateOnly(2025, 6, 5), new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"), 10.0, new DateOnly(2025, 5, 26) });
 
             migrationBuilder.InsertData(
                 table: "GameInfos",
