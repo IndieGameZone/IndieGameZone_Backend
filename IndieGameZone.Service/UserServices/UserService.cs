@@ -1,8 +1,10 @@
-﻿using IndieGameZone.Domain.Constants;
+﻿using IndieGameZone.Application.EmailServices;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Users;
+using IndieGameZone.Domain.Utils;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -22,13 +24,17 @@ namespace IndieGameZone.Application.UserServices
         private readonly IMapper mapper;
         private readonly UserManager<Users> userManager;
         private readonly RoleManager<Roles> roleManager;
+        private readonly IEmailSender emailSender;
+        private readonly IHttpContextAccessor httpContextAccessor;
 
-        public UserService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager)
+        public UserService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
         {
             this.repositoryManager = repositoryManager;
             this.mapper = mapper;
             this.userManager = userManager;
             this.roleManager = roleManager;
+            this.emailSender = emailSender;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         private async Task CheckUserExistWhenRegister(string userName, string email, CancellationToken ct = default)
@@ -104,6 +110,38 @@ namespace IndieGameZone.Application.UserServices
             repositoryManager.UserProfileRepository.CreateUserProfile(userProfile);
             repositoryManager.WalletRepository.CreateWallet(wallet);
             await repositoryManager.SaveAsync(ct);
+
+            string token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            var request = httpContextAccessor.HttpContext?.Request;
+            var param = new Dictionary<string, string?>
+            {
+                { "token", token },
+                { "email", user.Email }
+            };
+            var uri = $"{request?.Scheme}://{request?.Host}/api/auth/email-confirm";
+            var callbackUrl = QueryHelpers.AddQueryString(uri, param);
+
+            var emailBody = $@"
+        <p>Hi {user.UserName},</p>
+        <p>Welcome to Indie Game Zone!</p>
+        <p>Please confirm your email by clicking the link below:</p>
+        <p><a href='{callbackUrl}'>Confirm Email</a></p>
+        <p>If you didn’t register, please ignore this email.</p>";
+
+            var mail = new Mail(user.Email!, "Email Confirmation – Indie Game Zone", emailBody);
+            emailSender.SendEmail(mail);
+        }
+        public async Task ConfirmEmail(string token, string email, CancellationToken ct = default)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null) throw new RequestTokenBadRequest();
+
+            var result = await userManager.ConfirmEmailAsync(user, token);
+            if (!result.Succeeded)
+            {
+                throw new RequestTokenBadRequest();
+            }
         }
     }
 }

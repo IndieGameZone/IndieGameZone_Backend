@@ -3,6 +3,7 @@ using IndieGameZone.Application.AgeRestrictionServices;
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.DiscountServices;
+using IndieGameZone.Application.EmailServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.GameStatusServices;
 using IndieGameZone.Application.LanguageServices;
@@ -12,6 +13,7 @@ using IndieGameZone.Application.UserServices;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using MapsterMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 
@@ -29,7 +31,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IAchievementService> achievementService;
 		private readonly Lazy<IUserService> userService;
 		private readonly Lazy<IDiscountService> discountService;
-		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService)
+		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
@@ -39,7 +41,7 @@ namespace IndieGameZone.Application
 			ageRestrictionService = new Lazy<IAgeRestrictionService>(() => new AgeRestrictionService(repositoryManager, mapper));
 			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService));
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
-            userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager));
+            userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
 		}
 

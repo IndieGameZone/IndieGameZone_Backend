@@ -13,7 +13,6 @@
   </ItemGroup>
 	
 	<ItemGroup>
-		<Folder Include="Utils\" />
 		<Folder Include="Entities\Identities" />
 	</ItemGroup>
 	

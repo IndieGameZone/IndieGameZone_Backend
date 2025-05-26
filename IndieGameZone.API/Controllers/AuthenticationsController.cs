@@ -25,5 +25,12 @@ namespace IndieGameZone.API.Controllers
             await serviceManager.UserService.CreateUser(userForCreationDto, ct);
             return StatusCode(201);
         }
+
+        [HttpGet("email-confirm")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string token, [FromQuery] string email, CancellationToken ct)
+        {
+            await serviceManager.UserService.ConfirmEmail(token, email, ct);
+            return Ok("Email Confirmation Success");
+        }
     }
 }

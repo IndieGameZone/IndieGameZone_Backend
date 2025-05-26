@@ -106,8 +106,10 @@ namespace IndieGameZone.API.Extensions
 		{
 			var jwtSettings = configuration.GetSection("JwtSettings");
 			var secretKey = jwtSettings["secretKey"];
+            if (string.IsNullOrWhiteSpace(secretKey))
+                throw new InvalidOperationException("JWT secret key is not configured.");
 
-			services.AddAuthentication(opt =>
+            services.AddAuthentication(opt =>
 			{
 				opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 				opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;

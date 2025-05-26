@@ -1,6 +1,7 @@
 using Azure.Identity;
 using IndieGameZone.API.Extensions;
 using IndieGameZone.Application.AIService;
+using IndieGameZone.Application.EmailServices;
 using IndieGameZone.Application.Extensions;
 using IndieGameZone.Domain.Entities;
 using Microsoft.AspNetCore.Http.Features;
@@ -38,6 +39,7 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureBlobService(builder.Configuration);
 builder.Services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
 builder.Services.AddScoped<IAIService, AIService>();
+builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.Configure<FormOptions>(options =>
 {
 	options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // 100MB

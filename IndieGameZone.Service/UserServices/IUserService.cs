@@ -10,5 +10,6 @@ namespace IndieGameZone.Application.UserServices
     public interface IUserService
     {
         Task CreateUser(UserForCreationDto userForCreationDto, CancellationToken ct = default);
+        Task ConfirmEmail(string token, string email, CancellationToken ct = default);
     }
 }
