@@ -13,7 +13,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 		{
 			this.passwordHasher = passwordHasher;
 		}
-		public async void Configure(EntityTypeBuilder<Users> builder)
+		public void Configure(EntityTypeBuilder<Users> builder)
 		{
 			builder.Property(u => u.IsActive);
 			builder.Property(u => u.JoinedDate);

@@ -25,8 +25,12 @@ namespace IndieGameZone.Application.BlobService
 		{
 			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
 			BlobClient blobClient = containerClient.GetBlobClient(blobName);
-
-			return blobClient.Uri.AbsoluteUri;
+            var exists = await blobClient.ExistsAsync();
+            if (!exists.Value)
+            {
+                throw new FileNotFoundException($"Blob '{blobName}' not found.");
+            }
+            return blobClient.Uri.AbsoluteUri;
 		}
 
 		public async Task<string> UploadBlob(string blobName, string containerName, IFormFile file)
