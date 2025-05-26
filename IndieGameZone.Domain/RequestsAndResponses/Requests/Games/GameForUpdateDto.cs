@@ -1,6 +1,4 @@
-﻿using IndieGameZone.Domain.RequestsAndResponses.Requests.GameInfos;
-using IndieGameZone.Domain.RequestsAndResponses.Requests.GamePlatforms;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
 {
@@ -16,7 +14,5 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
 		public Guid GameStatusId { get; init; }
 		public ICollection<Guid> LanguageIds { get; init; }
 		public ICollection<Guid> TagIds { get; init; }
-		public ICollection<GameInfoForCreationDto> GameInfos { get; init; }
-		public ICollection<GamePlatformForCreationDto> GamePlatforms { get; init; }
 	}
 }

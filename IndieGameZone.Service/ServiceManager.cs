@@ -3,6 +3,8 @@ using IndieGameZone.Application.AgeRestrictionServices;
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.DiscountServices;
+using IndieGameZone.Application.GameInfoServices;
+using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.EmailServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.GameStatusServices;
@@ -31,6 +33,8 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IAchievementService> achievementService;
 		private readonly Lazy<IUserService> userService;
 		private readonly Lazy<IDiscountService> discountService;
+		private readonly Lazy<IGameInfoService> gameInfoService;
+		private readonly Lazy<IGamePlatformService> gamePlatformService;
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
@@ -43,6 +47,8 @@ namespace IndieGameZone.Application
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
             userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
+			gameInfoService = new Lazy<IGameInfoService>(() => new GameInfoService(repositoryManager, mapper, blobService));
+			gamePlatformService = new Lazy<IGamePlatformService>(() => new GamePlatformService(repositoryManager, mapper, blobService));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -61,8 +67,12 @@ namespace IndieGameZone.Application
 
 		public IAchievementService AchievementService => achievementService.Value;
 
-        public IUserService UserService => userService.Value;
+		public IUserService UserService => userService.Value;
 
 		public IDiscountService DiscountService => discountService.Value;
+
+		public IGameInfoService GameInfoService => gameInfoService.Value;
+
+		public IGamePlatformService GamePlatformService => gamePlatformService.Value;
 	}
 }

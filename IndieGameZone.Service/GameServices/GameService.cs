@@ -37,6 +37,9 @@ namespace IndieGameZone.Application.GameServices
 			{
 				throw new NotFoundException($"Game not found.");
 			}
+			var gameDto = mapper.Map<GameForSingleReturnDto>(gameEntity);
+			var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gameId, false, ct);
+			gameDto.PriceAfterDiscount = discount is not null ? gameDto.Price - (gameDto.Price * discount.Percentage / 100) : gameDto.Price;
 			return mapper.Map<GameForSingleReturnDto>(gameEntity);
 		}
 
@@ -68,12 +71,14 @@ namespace IndieGameZone.Application.GameServices
 			{
 				foreach (var info in existingGameInfos)
 				{
-					if (info.Image is not null)
+					if (info.Image != null)
 					{
 						await blobService.DeleteBlob(info.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
 					}
 				}
 			}
+
+			await blobService.DeleteBlob(gameEntity.CoverImage.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
 
 			repositoryManager.GameRepository.DeleteGame(gameEntity);
 			await repositoryManager.SaveAsync(ct);
@@ -86,7 +91,7 @@ namespace IndieGameZone.Application.GameServices
 			return (games, gamesWithMetaData.MetaData);
 		}
 
-		public async Task CreateGame(Guid developerId, GameForCreationDto game, CancellationToken ct = default)
+		public async Task<Guid> CreateGame(Guid developerId, GameForCreationDto game, CancellationToken ct = default)
 		{
 			var gameEntity = mapper.Map<Games>(game);
 			gameEntity.Id = Guid.NewGuid();
@@ -98,30 +103,6 @@ namespace IndieGameZone.Application.GameServices
 				string coverImageFilename = $"{game.Name}CoverImage{Path.GetExtension(game.CoverImage.FileName)}";
 				gameEntity.CoverImage = await blobService.UploadBlob(coverImageFilename, StorageContainer.STORAGE_CONTAINER, game.CoverImage);
 			}
-
-			// Handle Game Platforms
-			var gamePlatformEntitys = (mapper.Map<IEnumerable<GamePlatforms>>(game.GamePlatforms)).ToList();
-			for (int i = 0; i < gamePlatformEntitys.Count(); i++)
-			{
-				gamePlatformEntitys[i].GameId = gameEntity.Id;
-				string filename = $"{Guid.NewGuid()}{Path.GetExtension(game.GamePlatforms.ElementAt(i).File.FileName)}";
-				gamePlatformEntitys[i].File = await blobService.UploadBlob(filename, StorageContainer.STORAGE_CONTAINER, game.GamePlatforms.ElementAt(i).File);
-			}
-			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatformEntitys);
-
-			//Handle Game Info Entities
-			var gameInfoEntitys = (mapper.Map<IEnumerable<GameInfos>>(game.GameInfos)).ToList();
-			for (int i = 0; i < gameInfoEntitys.Count(); i++)
-			{
-				gameInfoEntitys[i].Id = Guid.NewGuid();
-				gameInfoEntitys[i].GameId = gameEntity.Id;
-				if (game.GameInfos.ElementAt(i).Image is not null && game.GameInfos.ElementAt(i).Image.Length > 0)
-				{
-					string infoImageFilename = $"{game.Name}Image{i + 1}{Path.GetExtension(game.GameInfos.ElementAt(i).Image.FileName)}";
-					gameInfoEntitys[i].Image = await blobService.UploadBlob(infoImageFilename, StorageContainer.STORAGE_CONTAINER, game.GameInfos.ElementAt(i).Image);
-				}
-			}
-			repositoryManager.GameInfoRepository.CreateGameInfo(gameInfoEntitys);
 
 			//Handle Game Language
 			var gameLanguageEntitys = game.LanguageIds.Select(id => new GameLanguages { LanguageId = id, GameId = gameEntity.Id });
@@ -136,6 +117,8 @@ namespace IndieGameZone.Application.GameServices
 			repositoryManager.GameRepository.CreateGame(gameEntity);
 
 			await repositoryManager.SaveAsync(ct);
+
+			return gameEntity.Id;
 		}
 
 		public async Task UpdateGame(Guid developerId, Guid gameId, GameForUpdateDto game, CancellationToken ct = default)
@@ -156,55 +139,6 @@ namespace IndieGameZone.Application.GameServices
 				string coverImageFilename = $"{game.Name}CoverImage{Path.GetExtension(game.CoverImage.FileName)}";
 				gameEntity.CoverImage = await blobService.UploadBlob(coverImageFilename, StorageContainer.STORAGE_CONTAINER, game.CoverImage);
 			}
-
-			// Handle Game Platforms
-			var existingGamePlatforms = await repositoryManager.GamePlatformRepository.GetGamePlatformsByGameId(gameId, false, ct);
-			if (existingGamePlatforms is not null && existingGamePlatforms.Any())
-			{
-				foreach (var platform in existingGamePlatforms)
-				{
-					await blobService.DeleteBlob(platform.File.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-				}
-			}
-			repositoryManager.GamePlatformRepository.DeleteGamePlatform(existingGamePlatforms);
-			var gamePlatformEntitys = (mapper.Map<IEnumerable<GamePlatforms>>(game.GamePlatforms)).ToList();
-			for (int i = 0; i < gamePlatformEntitys.Count(); i++)
-			{
-				gamePlatformEntitys[i].GameId = gameEntity.Id;
-				if (game.GamePlatforms.ElementAt(i).File is not null && game.GamePlatforms.ElementAt(i).File.Length > 0)
-				{
-					string filename = $"{Guid.NewGuid()}{Path.GetExtension(game.GamePlatforms.ElementAt(i).File.FileName)}";
-					gamePlatformEntitys[i].File = await blobService.UploadBlob(filename, StorageContainer.STORAGE_CONTAINER, game.GamePlatforms.ElementAt(i).File);
-				}
-			}
-			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatformEntitys);
-
-			//Handle Game Info Entities
-			var existingGameInfos = await repositoryManager.GameInfoRepository.GetGameInfosByGameId(gameEntity.Id, false, ct);
-			if (existingGameInfos is not null && existingGameInfos.Any())
-			{
-				foreach (var info in existingGameInfos)
-				{
-					if (info.Image is not null)
-					{
-						await blobService.DeleteBlob(info.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-					}
-				}
-			}
-			repositoryManager.GameInfoRepository.DeleteGameInfo(existingGameInfos);
-			var gameInfoEntitys = (mapper.Map<IEnumerable<GameInfos>>(game.GameInfos)).ToList();
-			for (int i = 0; i < gameInfoEntitys.Count(); i++)
-			{
-				gameInfoEntitys[i].Id = Guid.NewGuid();
-				gameInfoEntitys[i].GameId = gameEntity.Id;
-				if (game.GameInfos.ElementAt(i).Image is not null && game.GameInfos.ElementAt(i).Image.Length > 0)
-				{
-					//await blobService.DeleteBlob(gameEntity.GamePlatforms.ElementAt(i).File.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-					string infoImageFilename = $"{game.Name}Image{i + 1}{Path.GetExtension(game.GameInfos.ElementAt(i).Image.FileName)}";
-					gameInfoEntitys[i].Image = await blobService.UploadBlob(infoImageFilename, StorageContainer.STORAGE_CONTAINER, game.GameInfos.ElementAt(i).Image);
-				}
-			}
-			repositoryManager.GameInfoRepository.CreateGameInfo(gameInfoEntitys);
 
 			//Handle Game Language
 			repositoryManager.GameLanguageRepository.DeleteGameLanguage(await repositoryManager.GameLanguageRepository.GetGameLanguagesByGameId(gameId, false, ct));

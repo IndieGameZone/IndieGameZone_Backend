@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Infrastructure.Repositories
 {
@@ -11,5 +12,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 		}
 
 		public void CreateDiscount(Discounts discount) => Create(discount);
+
+		public async Task<Discounts?> GetActiveDiscountByGameId(Guid gameId, bool trackChange, CancellationToken ct = default) => await
+			FindByCondition(d => d.GameId == gameId && d.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= d.EndDate, trackChange)
+			.FirstOrDefaultAsync(ct);
 	}
 }

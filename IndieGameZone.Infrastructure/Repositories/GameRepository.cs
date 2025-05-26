@@ -28,12 +28,14 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
 				.Include(x => x.GameLanguages).ThenInclude(x => x.Language).AsSplitQuery()
 				.Include(x => x.GameInfos).AsSplitQuery()
+				.Include(x => x.Discounts).AsSplitQuery()
 				.FirstOrDefaultAsync(ct);
 		}
 
 		public async Task<PagedList<Games>> GetGames(GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var gameEntities = FindAll(trackChange)
+				.Include(x => x.Discounts).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);
@@ -43,6 +45,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<PagedList<Games>> GetGamesByDeveloperId(Guid developerId, GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var gameEntities = FindByCondition(g => g.DeveloperId == developerId, trackChange)
+				.Include(x => x.Discounts).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);
