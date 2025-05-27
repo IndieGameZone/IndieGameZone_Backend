@@ -43,14 +43,19 @@ namespace IndieGameZone.API.Controllers
             return Unauthorized();
         }
 
-
-        [HttpGet("email-confirm")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery] string token, [FromQuery] string email, CancellationToken ct)
+        [HttpPost("resend-confirmation")]
+        public async Task<IActionResult> ResendEmailConfirmation([FromBody] ResendEmailDto dto, CancellationToken ct)
         {
-            await serviceManager.UserService.ConfirmEmail(token, email, ct);
-            return Ok("Email Confirmation Success");
+            await serviceManager.UserService.ResendConfirmationEmail(dto.Email, ct);
+            return Ok("Confirmation email resent.");
         }
 
+        [HttpGet("email-confirm")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] string token, [FromQuery] string userId, CancellationToken ct)
+        {
+            await serviceManager.UserService.ConfirmEmail(token, userId, ct);
+            return Ok("Email confirmation success");
+        }
 
         [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] TokenDto tokenDto, CancellationToken ct)

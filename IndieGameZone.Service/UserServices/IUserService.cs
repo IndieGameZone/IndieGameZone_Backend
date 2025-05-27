@@ -12,7 +12,8 @@ namespace IndieGameZone.Application.UserServices
     public interface IUserService
     {
         Task CreateUser(UserForCreationDto userForCreationDto, CancellationToken ct = default);
-        Task ConfirmEmail(string token, string email, CancellationToken ct = default);
+        Task ResendConfirmationEmail(string email, CancellationToken ct = default);
+        Task ConfirmEmail(string token, string userId, CancellationToken ct = default);
         Task<Users> ValidateUser(UserForAuthenticationDto userForAuth, CancellationToken ct = default);
         Task<TokenDto> CreateToken(Users user, bool setRefreshExpiry, CancellationToken ct = default);
         Task<TokenDto> RefreshToken(TokenDto tokenDto, CancellationToken ct = default);

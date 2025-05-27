@@ -53,9 +53,9 @@ namespace IndieGameZone.Application.UserServices
                 throw new UserBadRequestException("Email already exists");
         }
 
-        private async Task<Users?> CheckUserExistById(Guid userId, CancellationToken ct = default)
+        private async Task<Users?> GetUserById(string userId, CancellationToken ct = default)
         {
-            var user = await userManager.FindByIdAsync(userId.ToString());
+            var user = await userManager.FindByIdAsync(userId);
             if (user == null) throw new UserNotFoundException();
             return user;
         }
@@ -117,16 +117,31 @@ namespace IndieGameZone.Application.UserServices
             repositoryManager.UserProfileRepository.CreateUserProfile(userProfile);
             repositoryManager.WalletRepository.CreateWallet(wallet);
             await repositoryManager.SaveAsync(ct);
+            await SendConfirmationEmailAsync(user, ct);
+        }
 
+        public async Task ResendConfirmationEmail(string email, CancellationToken ct = default)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null || user.EmailConfirmed)
+                throw new UserBadRequestException("Invalid or already confirmed email.");
+
+            await SendConfirmationEmailAsync(user, ct);
+        }
+
+        private async Task SendConfirmationEmailAsync(Users user, CancellationToken ct = default)
+        {
             string token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
             var request = httpContextAccessor.HttpContext?.Request;
             var param = new Dictionary<string, string?>
             {
-                { "token", token },
-                { "email", user.Email }
+                { "token", encodedToken },
+                { "id", user.Id.ToString() }
             };
-            var uri = $"{request?.Scheme}://{request?.Host}/api/auth/email-confirm";
+
+            var uri = $"{request?.Scheme}://indie-game-zone.vercel.app/verify-email";
             var callbackUrl = QueryHelpers.AddQueryString(uri, param);
 
             var emailBody = $@"
@@ -139,12 +154,14 @@ namespace IndieGameZone.Application.UserServices
             var mail = new Mail(user.Email!, "Email Confirmation – Indie Game Zone", emailBody);
             emailSender.SendEmail(mail);
         }
-        public async Task ConfirmEmail(string token, string email, CancellationToken ct = default)
-        {
-            var user = await userManager.FindByEmailAsync(email);
-            if (user == null) throw new RequestTokenBadRequest();
 
-            var result = await userManager.ConfirmEmailAsync(user, token);
+        public async Task ConfirmEmail(string token, string userId, CancellationToken ct = default)
+        {
+            var user = await GetUserById(userId, ct);
+            if (user == null) throw new RequestTokenBadRequest();
+            
+            string decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            var result = await userManager.ConfirmEmailAsync(user, decodedToken);
             if (!result.Succeeded)
             {
                 throw new RequestTokenBadRequest();
@@ -288,10 +305,14 @@ namespace IndieGameZone.Application.UserServices
             var username = principal.Identity!.Name!;
 
             var user = await userManager.FindByNameAsync(username);
-            if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-                throw new SecurityTokenException("Invalid refresh token");
+            if (user == null ||
+                user.RefreshToken != tokenDto.RefreshToken ||
+                user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                throw new SecurityTokenException("Invalid or expired refresh token");
+            }
 
-            return await CreateToken(user, false, ct);
+            return await CreateToken(user, setRefreshExpiry: true, ct);
         }
     }
 }
