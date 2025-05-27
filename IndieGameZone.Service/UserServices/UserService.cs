@@ -187,7 +187,7 @@ namespace IndieGameZone.Application.UserServices
             user.RefreshToken = GenerateToken();
 
             if (setRefreshExpiry)
-                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(Convert.ToDouble(jwtSettings["accessTokenExpires"]));
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(Convert.ToDouble(jwtSettings["refreshTokenExpires"]));
 
             await userManager.UpdateAsync(user);
 
