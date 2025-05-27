@@ -9,5 +9,7 @@ namespace IndieGameZone.Domain.IRepositories
 		void Create(T entity);
 		void Update(T entity);
 		void Delete(T entity);
+		void DeleteRange(IEnumerable<T> entities);
+		void CreateRange(IEnumerable<T> entities);
 	}
 }

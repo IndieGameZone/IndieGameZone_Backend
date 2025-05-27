@@ -10,6 +10,7 @@ using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.PlatformServices;
 using IndieGameZone.Application.TagServices;
 using IndieGameZone.Application.UserServices;
+using IndieGameZone.Application.WishlistServices;
 
 namespace IndieGameZone.Application
 {
@@ -27,6 +28,7 @@ namespace IndieGameZone.Application
 		IDiscountService DiscountService { get; }
 		IGameInfoService GameInfoService { get; }
 		IGamePlatformService GamePlatformService { get; }
+		IWishlistService WishlistService { get; }
 
 	}
 }

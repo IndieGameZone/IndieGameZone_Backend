@@ -24,6 +24,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IGameLanguageRepository> gameLanguageRepository;
 		private readonly Lazy<IGameTagRepository> gameTagRepository;
 		private readonly Lazy<IDiscountRepository> discountRepository;
+		private readonly Lazy<IWishlistRepository> wishlistRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -44,6 +45,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			gameLanguageRepository = new Lazy<IGameLanguageRepository>(() => new GameLanguageRepository(appDbContext));
 			gameTagRepository = new Lazy<IGameTagRepository>(() => new GameTagRepository(appDbContext));
 			discountRepository = new Lazy<IDiscountRepository>(() => new DiscountRepository(appDbContext));
+			wishlistRepository = new Lazy<IWishlistRepository>(() => new WishlistRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
@@ -77,7 +79,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public IDiscountRepository DiscountRepository => discountRepository.Value;
 
-        public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
+		public IWishlistRepository WishlistRepository => wishlistRepository.Value;
+
+		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{
 			var transaction = await appDbContext.Database.BeginTransactionAsync(ct);
 			return transaction.GetDbTransaction();
@@ -85,5 +89,5 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public Task SaveAsync(CancellationToken ct = default) => appDbContext.SaveChangesAsync(ct);
 
-	} 
+	}
 }

@@ -28,5 +28,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public void Create(T entity) => AppDbContext.Set<T>().Add(entity);
 		public void Update(T entity) => AppDbContext.Set<T>().Update(entity);
 		public void Delete(T entity) => AppDbContext.Set<T>().Remove(entity);
+
+		public void DeleteRange(IEnumerable<T> entities) => AppDbContext.Set<T>().RemoveRange(entities);
+
+		public void CreateRange(IEnumerable<T> entities) => AppDbContext.Set<T>().AddRange(entities);
 	}
 }

@@ -14,13 +14,14 @@ namespace IndieGameZone.Domain.IRepositories
 		IAgeRestrictionRepository AgeRestrictionRepository { get; }
 		IGameRepository GameRepository { get; }
 		IAchievementRepository AchievementRepository { get; }
-        IUserRepository UserRepository { get; }
-        IUserProfileRepository UserProfileRepository { get; }
-        IWalletRepository WalletRepository { get; }
+		IUserRepository UserRepository { get; }
+		IUserProfileRepository UserProfileRepository { get; }
+		IWalletRepository WalletRepository { get; }
 		IGamePlatformRepository GamePlatformRepository { get; }
 		IGameInfoRepository GameInfoRepository { get; }
 		IGameLanguageRepository GameLanguageRepository { get; }
 		IGameTagRepository GameTagRepository { get; }
 		IDiscountRepository DiscountRepository { get; }
+		IWishlistRepository WishlistRepository { get; }
 	}
 }
