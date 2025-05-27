@@ -94,6 +94,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				EmailConfirmed = true,
 				IsActive = true,
 				JoinedDate = DateTime.Now,
+				SecurityStamp = Guid.NewGuid().ToString()
 			};
 			admin.PasswordHash = passwordHasher.HashPassword(admin, "admin");
 
@@ -105,6 +106,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				EmailConfirmed = true,
 				IsActive = true,
 				JoinedDate = DateTime.Now,
+				SecurityStamp = Guid.NewGuid().ToString()
 			};
 			moderator.PasswordHash = passwordHasher.HashPassword(moderator, "moderator");
 
@@ -114,7 +116,9 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Email = "player@gmail.com",
 				NormalizedEmail = "PLAYER@GMAIL.COM",
 				EmailConfirmed = true,
-				IsActive = true
+				IsActive = true,
+				JoinedDate = DateTime.Now,
+				SecurityStamp = Guid.NewGuid().ToString()
 			};
 			player.PasswordHash = passwordHasher.HashPassword(player, "player");
 
@@ -124,7 +128,9 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Email = "developer1@gmail.com",
 				NormalizedEmail = "DEVELOPER1@GMAIL.COM",
 				EmailConfirmed = true,
-				IsActive = true
+				IsActive = true,
+				JoinedDate = DateTime.Now,
+				SecurityStamp = Guid.NewGuid().ToString()
 			};
 			developer1.PasswordHash = passwordHasher.HashPassword(developer1, "developer1");
 
@@ -134,7 +140,9 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Email = "developer2@gmail.com",
 				NormalizedEmail = "DEVELOPER2@GMAIL.COM",
 				EmailConfirmed = true,
-				IsActive = true
+				IsActive = true,
+				JoinedDate = DateTime.Now,
+				SecurityStamp = Guid.NewGuid().ToString()
 			};
 			developer2.PasswordHash = passwordHasher.HashPassword(developer2, "developer2");
 
@@ -144,7 +152,9 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Email = "developer3@gmail.com",
 				NormalizedEmail = "DEVELOPER3@GMAIL.COM",
 				EmailConfirmed = true,
-				IsActive = true
+				IsActive = true,
+				JoinedDate = DateTime.Now,
+				SecurityStamp = Guid.NewGuid().ToString()
 			};
 			developer3.PasswordHash = passwordHasher.HashPassword(developer3, "developer3");
 
