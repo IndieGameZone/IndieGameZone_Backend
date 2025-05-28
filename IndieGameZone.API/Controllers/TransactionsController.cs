@@ -42,6 +42,8 @@ namespace IndieGameZone.API.Controllers
 			return StatusCode(201);
 		}
 
+		public record Responses(int error, string message, object? data);
+
 		[HttpPost("transactions/hook-receiving")]
 		public async Task<IActionResult> IPN([FromBody] WebhookType webhookBody, CancellationToken ct)
 		{
@@ -53,7 +55,7 @@ namespace IndieGameZone.API.Controllers
 			WebhookData data = payOS.verifyPaymentWebhookData(webhookBody);
 
 			await serviceManager.TransactionService.IPNAsync(data, ct);
-			return StatusCode(201);
+			return Ok(new Responses(0, "Success", null));
 		}
 
 		[HttpGet("users/{userId}/transactions")]
