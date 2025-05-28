@@ -6,7 +6,7 @@ namespace IndieGameZone.Infrastructure.Extensions
 	{
 		public static IQueryable<Games> Sort(this IQueryable<Games> source)
 		{
-			return source.OrderByDescending(x => x.ReleasedDate);
+			return source.OrderByDescending(x => x.CreatedAt);
 		}
 	}
 }

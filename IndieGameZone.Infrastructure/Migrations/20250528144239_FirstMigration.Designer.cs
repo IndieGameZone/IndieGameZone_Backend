@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IndieGameZone.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250528064431_FirstMigration")]
+    [Migration("20250528144239_FirstMigration")]
     partial class FirstMigration
     {
         /// <inheritdoc />
@@ -333,24 +333,18 @@ namespace IndieGameZone.Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("IndieGameZone.Domain.Entities.GameInfos", b =>
+            modelBuilder.Entity("IndieGameZone.Domain.Entities.GameImages", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("GameId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Image")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
 
@@ -362,42 +356,32 @@ namespace IndieGameZone.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("2212b056-b7e1-4bd4-a258-aae3e24f9a87"),
-                            Description = "You are in the backseat of your parent's car during a long drive. As your parents begin fighting, your hand-held game is your only source of entertainment. But the game begins to mirror real life... Collect items on your hand-held game to send them to the backseat and use them to defend against the monstrosity that's trying to make its way into the backseat with you.",
                             GameId = new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"),
-                            Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage1.png",
-                            Title = "Steam release features Hard Mode, as well as double the story!"
+                            Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage1.png"
                         },
                         new
                         {
                             Id = new Guid("396cf491-b737-4983-a65e-42ecd36080d7"),
-                            Description = "Your drive home from grandma's is interrupted by an unexpected detour. Play a hand-held game in the backseat as your parent's drive.",
                             GameId = new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"),
-                            Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage2.png",
-                            Title = "SURVIVE THE NIGHT DRIVE"
+                            Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage2.png"
                         },
                         new
                         {
                             Id = new Guid("dc5e81ec-24b6-4109-ba9f-e9de4ad9a855"),
-                            Description = "Your hand-held game is beginning to mirror reality... Supplies you collect in the game will be sent to the backseat.",
                             GameId = new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"),
-                            Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage3.png",
-                            Title = "RETRO GAMING"
+                            Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage3.png"
                         },
                         new
                         {
                             Id = new Guid("81738026-cd42-482c-a692-f080a6fe9240"),
-                            Description = "A deadly monstrosity wants to join you in the backseat. Juggle your supplies and defend all sides. In this car, there’s only onwards to drive, and nowhere to run.",
                             GameId = new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"),
-                            Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage4.png",
-                            Title = "TRAPPED IN THE DEADSEAT"
+                            Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage4.png"
                         },
                         new
                         {
                             Id = new Guid("d3e36747-a19a-41ff-b8a1-1c274e378dab"),
-                            Description = "Your parents can't get along, and you can’t ignore it, no matter how deep you immerse yourself in your game. If only you could get away from it all and escape to somewhere better. And seemingly, the voice in your game says you can.",
                             GameId = new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"),
-                            Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage5.png",
-                            Title = "THE STORY"
+                            Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage5.png"
                         });
                 });
 
@@ -555,7 +539,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Property<Guid>("CategoryId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("CensoredAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("CoverImage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -568,6 +562,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsCensoredByAI")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -575,9 +572,6 @@ namespace IndieGameZone.Infrastructure.Migrations
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
-
-                    b.Property<DateTime>("ReleasedDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -606,13 +600,14 @@ namespace IndieGameZone.Infrastructure.Migrations
                             AverageSession = 0.5,
                             CategoryId = new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatCoverImage.png",
+                            CreatedAt = new DateTime(2025, 5, 28, 21, 42, 38, 663, DateTimeKind.Local).AddTicks(3644),
+                            Description = "",
                             DeveloperId = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             GameStatusId = new Guid("92f9b646-d1db-4bd1-93ed-e5dc73ccd37e"),
                             IsActive = true,
+                            IsCensoredByAI = true,
                             Name = "The Deadseat",
                             Price = 100000.0,
-                            ReleasedDate = new DateTime(2025, 5, 28, 13, 44, 30, 659, DateTimeKind.Local).AddTicks(3356),
-                            UpdatedAt = new DateTime(2025, 5, 28, 13, 44, 30, 659, DateTimeKind.Local).AddTicks(3360),
                             VideoLink = "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s"
                         });
                 });
@@ -835,6 +830,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<DateTime?>("CensoredAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -850,6 +848,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsCensoredByAI")
                         .HasColumnType("bit");
 
                     b.Property<string>("Title")
@@ -1182,6 +1183,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Property<Guid?>("GameId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<long>("OrderCode")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -1198,6 +1202,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("GameId");
+
+                    b.HasIndex("OrderCode")
+                        .IsUnique();
 
                     b.HasIndex("UserId");
 
@@ -1378,17 +1385,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "81afba36-fcf9-4d91-ad67-5c439facf374",
+                            ConcurrencyStamp = "38bef736-aee6-4a01-a991-ffbb0938cef6",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 28, 13, 44, 30, 672, DateTimeKind.Local).AddTicks(8825),
+                            JoinedDate = new DateTime(2025, 5, 28, 21, 42, 38, 678, DateTimeKind.Local).AddTicks(5537),
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHsqHATbKP9r+u3psuHTrVp+AddQA8XwZnxJwMi6YufKrlK5bERAGvXk3anMhPxooA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMOloYxwY56KQYbQC8OCd68i6jNWOgWWdJX6q74IRxE6FfahXv27vK4qd6lXCAvEMA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "705ae7b4-1af6-49d9-9e7e-a9ab0cb3c8dd",
+                            SecurityStamp = "e2729ca3-5f93-443b-a69e-f93b83c4ad21",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -1396,17 +1403,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ccb83edf-9c49-4406-935a-dbed144fd032",
+                            ConcurrencyStamp = "63fad390-42b5-42ec-9d66-cc9d9bbb39e0",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 28, 13, 44, 30, 728, DateTimeKind.Local).AddTicks(8773),
+                            JoinedDate = new DateTime(2025, 5, 28, 21, 42, 38, 803, DateTimeKind.Local).AddTicks(7231),
                             LockoutEnabled = false,
                             NormalizedEmail = "MODERATOR@GMAIL.COM",
                             NormalizedUserName = "MODERATOR",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHUl1+1A58/kKI0+KqmXaDf5rmJpE8sbDDolBj4VINT7CLHSgJrk+dGzKARUu/Nsrw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENZT+RjpA64eKInbQi7QL8EetBFqOXUMXgCk+l9elV8/AcHR9MEj4ySRjYDHx5AsSQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "fd43e7d4-3476-4124-aa23-48bbc8edfbf0",
+                            SecurityStamp = "07712a85-f256-4a69-8d9e-4f499ee8a4b8",
                             TwoFactorEnabled = false,
                             UserName = "moderator"
                         },
@@ -1414,17 +1421,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "491309ac-908d-4ff9-82f9-70fbe84896a0",
+                            ConcurrencyStamp = "9f6c68f2-de9d-4bc3-afa7-1fd93ccf7eda",
                             Email = "developer1@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 28, 13, 44, 30, 847, DateTimeKind.Local).AddTicks(3529),
+                            JoinedDate = new DateTime(2025, 5, 28, 21, 42, 38, 963, DateTimeKind.Local).AddTicks(9112),
                             LockoutEnabled = false,
                             NormalizedEmail = "DEVELOPER1@GMAIL.COM",
                             NormalizedUserName = "DEVELOPER1",
-                            PasswordHash = "AQAAAAIAAYagAAAAELtJq4HmSmjela6tZglXfdncgkuGvQBkLUaF6s6Zn+UvNcRCY882AyzeAL9fbbWQ3w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEK2hKPy8sIdNYUxlrdEZWDa3256LGkUDvQOvxIpiilA/8NnJ+uuMUSRp5zG9KEsbpg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "59df949c-86da-4db1-bc32-5ec0d34e3793",
+                            SecurityStamp = "26dd4cb9-73eb-4070-a26b-409081f2bf69",
                             TwoFactorEnabled = false,
                             UserName = "developer1"
                         },
@@ -1432,17 +1439,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("23879117-e09e-40f1-b78f-1493d81baf49"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1d84a140-1e68-45ae-8f35-9c04fb61c686",
+                            ConcurrencyStamp = "66603482-a9c1-4d3b-8b11-7af5647523d9",
                             Email = "player@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 28, 13, 44, 30, 788, DateTimeKind.Local).AddTicks(3097),
+                            JoinedDate = new DateTime(2025, 5, 28, 21, 42, 38, 898, DateTimeKind.Local).AddTicks(7856),
                             LockoutEnabled = false,
                             NormalizedEmail = "PLAYER@GMAIL.COM",
                             NormalizedUserName = "PLAYER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA7eZltWEA6YkdxUVVHBH666fNDRu4KtCp6z/Wc4GnIAN8BK72JECUYPZpGMu8ulPw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEASwNrPvgFx8EPQQ9pNF3fJmIAvKnxgOOlf2rQqXNVFQMCo9MoA7rpxiwKk8Nd26lg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "203f08e6-66ab-480d-84e4-f9583b442495",
+                            SecurityStamp = "8b412446-0f4e-4db6-861c-1b0bbb16a131",
                             TwoFactorEnabled = false,
                             UserName = "player"
                         },
@@ -1450,17 +1457,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("34670beb-a794-4419-adf8-0465eea22a78"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6e363e7c-04ab-4d78-bd4f-0d85c6969dfe",
+                            ConcurrencyStamp = "9c3c53af-6f9e-4b09-ba20-48ad1835aadc",
                             Email = "developer2@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 28, 13, 44, 30, 904, DateTimeKind.Local).AddTicks(162),
+                            JoinedDate = new DateTime(2025, 5, 28, 21, 42, 39, 27, DateTimeKind.Local).AddTicks(9716),
                             LockoutEnabled = false,
                             NormalizedEmail = "DEVELOPER2@GMAIL.COM",
                             NormalizedUserName = "DEVELOPER2",
-                            PasswordHash = "AQAAAAIAAYagAAAAEEsYb5qKvC+9SSDkRSkYU9V4GpW7MHbwCiHFLSSuqVHr0POGnX/qjkvX1hNpv0rRJw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEBSCkaITsokEF2N2Ct/wPv91Ejbfwjqbg0ZBjinCTvX/yL2g7EEhfAYpOBBHieq3Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "201cbfe6-f087-45e0-bf01-68bb3ba127e3",
+                            SecurityStamp = "36eec191-83bf-4a8a-ab9d-917d5a6a543e",
                             TwoFactorEnabled = false,
                             UserName = "developer2"
                         },
@@ -1468,17 +1475,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4eecb6e9-31aa-4ccd-896c-1b990d3cd1b2",
+                            ConcurrencyStamp = "2caa0869-0a27-44ea-9b67-dbc5ee77f11e",
                             Email = "developer3@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 5, 28, 13, 44, 30, 959, DateTimeKind.Local).AddTicks(9407),
+                            JoinedDate = new DateTime(2025, 5, 28, 21, 42, 39, 110, DateTimeKind.Local).AddTicks(935),
                             LockoutEnabled = false,
                             NormalizedEmail = "DEVELOPER3@GMAIL.COM",
                             NormalizedUserName = "DEVELOPER3",
-                            PasswordHash = "AQAAAAIAAYagAAAAEImIUKViS3DYRwPy3ZqL+rpAGrmGXzMX5d+H20DDUMv4KvnnU/0tuZKpcpBmWKxFCw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEKT8gNj12ZOUeGxu0ctC7ZbR2r84xhhYRFliIx1RwsZW4VljjHSP4ro0Qr8ZHF31LQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "01f0dda7-8789-4dea-8bd4-1a4062ef81cf",
+                            SecurityStamp = "349aca66-a563-42bf-b1ee-42db3d952be1",
                             TwoFactorEnabled = false,
                             UserName = "developer3"
                         });
@@ -1683,10 +1690,10 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("IndieGameZone.Domain.Entities.GameInfos", b =>
+            modelBuilder.Entity("IndieGameZone.Domain.Entities.GameImages", b =>
                 {
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Games")
-                        .WithMany("GameInfos")
+                        .WithMany("GameImages")
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -2148,7 +2155,7 @@ namespace IndieGameZone.Infrastructure.Migrations
 
                     b.Navigation("Discounts");
 
-                    b.Navigation("GameInfos");
+                    b.Navigation("GameImages");
 
                     b.Navigation("GameLanguages");
 

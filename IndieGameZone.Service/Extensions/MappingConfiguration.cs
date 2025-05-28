@@ -18,15 +18,15 @@ namespace IndieGameZone.Application.Extensions
 			config.NewConfig<GameForCreationDto, Games>()
 				.Ignore(dest => dest.CoverImage)
 				.Ignore(dest => dest.GamePlatforms)
-				.Ignore(dest => dest.GameInfos);
+				.Ignore(dest => dest.GameImages);
 			config.NewConfig<GameForUpdateDto, Games>()
 				.Ignore(dest => dest.CoverImage)
 				.Ignore(dest => dest.GamePlatforms)
-				.Ignore(dest => dest.GameInfos);
+				.Ignore(dest => dest.GameImages);
 
-			config.NewConfig<GameInfoForCreationDto, GameInfos>()
+			config.NewConfig<GameInfoForCreationDto, GameImages>()
 				.Ignore(dest => dest.Image);
-			config.NewConfig<GameInfoForUpdateDto, GameInfos>()
+			config.NewConfig<GameInfoForUpdateDto, GameImages>()
 				.Ignore(dest => dest.Image);
 		}
 	}

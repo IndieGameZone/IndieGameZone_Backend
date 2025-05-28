@@ -12,9 +12,12 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(g => g.Name).HasMaxLength(100);
 			builder.Property(g => g.CoverImage);
 			builder.Property(g => g.VideoLink);
+			builder.Property(g => g.Description);
+			builder.Property(g => g.IsCensoredByAI);
 			builder.Property(g => g.IsActive);
 			builder.Property(g => g.Price);
-			builder.Property(g => g.ReleasedDate);
+			builder.Property(g => g.CreatedAt);
+			builder.Property(g => g.CensoredAt);
 			builder.Property(g => g.UpdatedAt);
 			builder.Property(g => g.AverageSession);
 
@@ -34,7 +37,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(gp => gp.Game)
 				.HasForeignKey(gp => gp.GameId)
 				.OnDelete(DeleteBehavior.Cascade);
-			builder.HasMany(g => g.GameInfos)
+			builder.HasMany(g => g.GameImages)
 				.WithOne(gi => gi.Games)
 				.HasForeignKey(gi => gi.GameId)
 				.OnDelete(DeleteBehavior.Cascade);
@@ -94,10 +97,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "The Deadseat",
 					CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatCoverImage.png",
 					VideoLink = "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s",
+					IsCensoredByAI = true,
 					IsActive = true,
 					Price = 100000,
-					ReleasedDate = DateTime.Now,
-					UpdatedAt = DateTime.Now,
+					CreatedAt = DateTime.Now,
 					AverageSession = 0.5,
 					CategoryId = Guid.Parse("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),

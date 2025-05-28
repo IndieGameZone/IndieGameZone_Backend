@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Infrastructure.Repositories
 {
-	internal sealed class GameInfoRepository : RepositoryBase<GameInfos>, IGameInfoRepository
+	internal sealed class GameInfoRepository : RepositoryBase<GameImages>, IGameInfoRepository
 	{
 		private readonly AppDbContext appDbContext;
 
@@ -14,11 +14,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 			this.appDbContext = appDbContext;
 		}
 
-		public void CreateGameInfo(IEnumerable<GameInfos> gameInfos) => appDbContext.GameInfos.AddRange(gameInfos);
+		public void CreateGameInfo(IEnumerable<GameImages> gameInfos) => appDbContext.GameInfos.AddRange(gameInfos);
 
-		public void DeleteGameInfo(IEnumerable<GameInfos> gameInfos) => appDbContext.GameInfos.RemoveRange(gameInfos);
+		public void DeleteGameInfo(IEnumerable<GameImages> gameInfos) => appDbContext.GameInfos.RemoveRange(gameInfos);
 
-		public async Task<IEnumerable<GameInfos>> GetGameInfosByGameId(Guid gameId, bool trackChanges, CancellationToken ct = default) => await
+		public async Task<IEnumerable<GameImages>> GetGameInfosByGameId(Guid gameId, bool trackChanges, CancellationToken ct = default) => await
 			FindByCondition(x => x.GameId == gameId, trackChanges)
 				.ToListAsync(ct);
 	}

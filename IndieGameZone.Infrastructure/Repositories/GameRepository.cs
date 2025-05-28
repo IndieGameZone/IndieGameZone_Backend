@@ -36,7 +36,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.GamePlatforms).ThenInclude(x => x.Platform).AsSplitQuery()
 				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
 				.Include(x => x.GameLanguages).ThenInclude(x => x.Language).AsSplitQuery()
-				.Include(x => x.GameInfos).AsSplitQuery()
+				.Include(x => x.GameImages).AsSplitQuery()
 				.Include(x => x.Discounts).AsSplitQuery()
 				.FirstOrDefaultAsync(ct);
 		}

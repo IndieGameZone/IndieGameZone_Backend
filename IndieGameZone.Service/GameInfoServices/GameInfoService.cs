@@ -22,7 +22,7 @@ namespace IndieGameZone.Application.GameInfoServices
 		}
 		public async Task CreateGameInfo(Guid gameId, IEnumerable<GameInfoForCreationDto> gameInfoForCreationDtos, CancellationToken ct = default)
 		{
-			var gameInfoEntities = (mapper.Map<IEnumerable<GameInfos>>(gameInfoForCreationDtos)).ToList();
+			var gameInfoEntities = (mapper.Map<IEnumerable<GameImages>>(gameInfoForCreationDtos)).ToList();
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
 			for (int i = 0; i < gameInfoEntities.Count; i++)
 			{
@@ -60,7 +60,7 @@ namespace IndieGameZone.Application.GameInfoServices
 			}
 			repositoryManager.GameInfoRepository.DeleteGameInfo(existingGameInfos);
 
-			var newGameInfoEntities = mapper.Map<IEnumerable<GameInfos>>(gameInfoForUpdateDtos).ToList();
+			var newGameInfoEntities = mapper.Map<IEnumerable<GameImages>>(gameInfoForUpdateDtos).ToList();
 			for (int i = 0; i < newGameInfoEntities.Count; i++)
 			{
 				newGameInfoEntities[i].Id = Guid.NewGuid();

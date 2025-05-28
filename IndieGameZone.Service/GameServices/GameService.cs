@@ -101,7 +101,7 @@ namespace IndieGameZone.Application.GameServices
 			var gameEntity = mapper.Map<Games>(game);
 			gameEntity.Id = Guid.NewGuid();
 			gameEntity.DeveloperId = developerId;
-			gameEntity.ReleasedDate = DateTime.Now;
+			gameEntity.CreatedAt = DateTime.Now;
 			gameEntity.IsActive = true;
 			if (game.CoverImage is not null && game.CoverImage.Length > 0)
 			{
