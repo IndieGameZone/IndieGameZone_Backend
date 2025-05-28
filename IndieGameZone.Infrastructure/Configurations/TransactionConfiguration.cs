@@ -9,6 +9,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 		public void Configure(EntityTypeBuilder<Transactions> builder)
 		{
 			builder.HasKey(t => t.Id);
+			builder.Property(t => t.OrderCode);
 			builder.Property(t => t.Amount);
 			builder.Property(t => t.Description);
 			builder.Property(t => t.Status)

@@ -23,5 +23,6 @@ namespace IndieGameZone.Domain.IRepositories
 		IGameTagRepository GameTagRepository { get; }
 		IDiscountRepository DiscountRepository { get; }
 		IWishlistRepository WishlistRepository { get; }
+		ITransactionRepository TransactionRepository { get; }
 	}
 }
