@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/categories")]
 	[ApiController]
 	public class CategoriesController : ControllerBase
 	{

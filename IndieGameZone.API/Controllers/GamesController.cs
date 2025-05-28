@@ -17,7 +17,7 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
-		[HttpGet("Games")]
+		[HttpGet("games")]
 		public async Task<IActionResult> GetGames([FromQuery] GameParameters gameParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.GameService.GetGames(gameParameters, ct);
@@ -25,14 +25,14 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.games);
 		}
 
-		[HttpGet("Games/{gameId:guid}")]
+		[HttpGet("games/{gameId:guid}")]
 		public async Task<IActionResult> GetGame([FromRoute] Guid gameId, CancellationToken ct)
 		{
 			var game = await serviceManager.GameService.GetGameById(gameId, ct);
 			return Ok(game);
 		}
 
-		[HttpGet("Users/{developerId:guid}/Games")]
+		[HttpGet("users/{developerId:guid}/games")]
 		public async Task<IActionResult> GetGamesByDeveloperId([FromRoute] Guid developerId, [FromQuery] GameParameters gameParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.GameService.GetGamesByDeveloperId(developerId, gameParameters, ct);
@@ -40,14 +40,14 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.games);
 		}
 
-		[HttpDelete("Users/{developerId:guid}/Games/{gameId:guid}")]
+		[HttpDelete("users/{developerId:guid}/games/{gameId:guid}")]
 		public async Task<IActionResult> DeleteGame([FromRoute] Guid developerId, [FromRoute] Guid gameId, CancellationToken ct)
 		{
 			await serviceManager.GameService.DeleteGame(developerId, gameId, ct);
 			return NoContent();
 		}
 
-		[HttpPost("Users/{developerId:guid}/Games")]
+		[HttpPost("users/{developerId:guid}/games")]
 		[RequestSizeLimit(104857600)]
 		public async Task<IActionResult> CreateGame([FromRoute] Guid developerId, [FromForm] GameForCreationDto game, CancellationToken ct)
 		{
@@ -55,14 +55,14 @@ namespace IndieGameZone.API.Controllers
 			return StatusCode(201, gameid);
 		}
 
-		[HttpPut("Users/{developerId:guid}/Games/{gameId:guid}")]
+		[HttpPut("users/{developerId:guid}/games/{gameId:guid}")]
 		public async Task<IActionResult> UpdateGame([FromRoute] Guid developerId, [FromRoute] Guid gameId, [FromForm] GameForUpdateDto game, CancellationToken ct)
 		{
 			await serviceManager.GameService.UpdateGame(developerId, gameId, game, ct);
 			return NoContent();
 		}
 
-		[HttpGet("ActiveGames")]
+		[HttpGet("active-games")]
 		public async Task<IActionResult> GetActiveGames([FromQuery] ActiveGameParameters activeGameParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.GameService.GetActiveGames(activeGameParameters, ct);
@@ -70,7 +70,7 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.games);
 		}
 
-		[HttpPut("Games/{gameId:guid}/Activation")]
+		[HttpPut("games/{gameId:guid}/activation")]
 		public async Task<IActionResult> ActivateGame([FromRoute] Guid gameId, CancellationToken ct)
 		{
 			await serviceManager.GameService.UpdateActiveStatus(gameId, ct);

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api")]
 	[ApiController]
 	public class GameInfosController : ControllerBase
 	{
@@ -15,21 +15,21 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
-		[HttpPost("Games/{gameId:guid}/GameInfos")]
+		[HttpPost("games/{gameId:guid}/game-infos")]
 		public async Task<IActionResult> CreateGameInfo([FromRoute] Guid gameId, [FromForm] List<GameInfoForCreationDto> gameInfo, CancellationToken ct)
 		{
 			await serviceManager.GameInfoService.CreateGameInfo(gameId, gameInfo, ct);
 			return StatusCode(201);
 		}
 
-		[HttpPut("Games/{gameId:guid}/GameInfos")]
+		[HttpPut("games/{gameId:guid}/game-infos")]
 		public async Task<IActionResult> UpdateGameInfo([FromRoute] Guid gameId, [FromForm] List<GameInfoForUpdateDto> gameInfo, CancellationToken ct)
 		{
 			await serviceManager.GameInfoService.UpdateGameInfosByGameId(gameId, gameInfo, ct);
 			return NoContent();
 		}
 
-		[HttpGet("Games/{gameId:guid}/GameInfos")]
+		[HttpGet("games/{gameId:guid}/game-infos")]
 		public async Task<IActionResult> GetGameInfosByGameId([FromRoute] Guid gameId, CancellationToken ct)
 		{
 			var gameInfos = await serviceManager.GameInfoService.GetGameInfosByGameId(gameId, ct);

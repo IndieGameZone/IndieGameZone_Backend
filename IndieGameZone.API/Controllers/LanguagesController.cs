@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/languages")]
 	[ApiController]
 	public class LanguagesController : ControllerBase
 	{

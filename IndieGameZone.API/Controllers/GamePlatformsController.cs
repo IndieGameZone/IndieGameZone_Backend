@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api")]
 	[ApiController]
 	public class GamePlatformsController : ControllerBase
 	{
@@ -15,21 +15,21 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
-		[HttpPost("Games/{gameId:guid}/GamePlatforms")]
+		[HttpPost("games/{gameId:guid}/game-platforms")]
 		public async Task<IActionResult> CreateGamePlatforms([FromRoute] Guid gameId, [FromForm] List<GamePlatformForCreationDto> gamePlatforms, CancellationToken ct)
 		{
 			await serviceManager.GamePlatformService.CreateGamePlatforms(gameId, gamePlatforms, ct);
 			return StatusCode(201);
 		}
 
-		[HttpPut("Games/{gameId:guid}/GamePlatforms")]
+		[HttpPut("games/{gameId:guid}/game-platforms")]
 		public async Task<IActionResult> UpdateGamePlatforms([FromRoute] Guid gameId, [FromForm] List<GamePlatformForUpdateDto> gamePlatforms, CancellationToken ct)
 		{
 			await serviceManager.GamePlatformService.UpdateGamePlatformsByGameId(gameId, gamePlatforms, ct);
 			return NoContent();
 		}
 
-		[HttpGet("Games/{gameId:guid}/GamePlatforms")]
+		[HttpGet("games/{gameId:guid}/game-platforms")]
 		public async Task<IActionResult> GetGamePlatformsByGameId([FromRoute] Guid gameId, CancellationToken ct)
 		{
 			var gamePlatforms = await serviceManager.GamePlatformService.GetGamePlatformsByGameId(gameId, ct);

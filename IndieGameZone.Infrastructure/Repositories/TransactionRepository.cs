@@ -19,7 +19,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			FindByCondition(x => x.Id == id, trackChange).FirstOrDefaultAsync(ct);
 
 		public Task<Transactions?> GetTransactionById(long orderCode, bool trackChange, CancellationToken ct = default) =>
-			FindByCondition(x => x.OrderCode == orderCode, trackChange).FirstOrDefaultAsync(ct);
+			FindByCondition(x => x.OrderCode == orderCode, trackChange).Include(t => t.Game).FirstOrDefaultAsync(ct);
 
 		public Task<PagedList<Transactions>> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
 		{

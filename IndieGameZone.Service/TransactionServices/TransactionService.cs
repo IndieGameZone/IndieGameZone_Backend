@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
+using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Transactions;
@@ -24,7 +25,7 @@ namespace IndieGameZone.Application.TransactionServices
 			this.configuration = configuration;
 		}
 
-		public async Task<string> CreateTransactionForDeposit(TransactionForCreationDto transaction)
+		public async Task<string> CreateTransactionForDeposit(TransactionForCreationDto transaction, CancellationToken ct = default)
 		{
 			Random random = new Random();
 			var transactionEntity = mapper.Map<Transactions>(transaction);
@@ -56,7 +57,7 @@ namespace IndieGameZone.Application.TransactionServices
 			return response.checkoutUrl;
 		}
 
-		public async Task<string> CreateTransactionForDonation(TransactionForCreationDto transaction)
+		public async Task<string> CreateTransactionForDonation(TransactionForCreationDto transaction, CancellationToken ct = default)
 		{
 			Random random = new Random();
 			var transactionEntity = mapper.Map<Transactions>(transaction);
@@ -88,25 +89,53 @@ namespace IndieGameZone.Application.TransactionServices
 			return response.checkoutUrl;
 		}
 
-		public Task<string> CreateTransactionForPurchase(TransactionForCreationDto transaction)
+		public async Task CreateTransactionForPurchase(TransactionForCreationDto transaction, CancellationToken ct = default)
 		{
-			throw new NotImplementedException();
+			Random random = new Random();
+			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(transaction.UserId, true, ct);
+			if (wallet.Balance < transaction.Amount)
+			{
+				throw new NotEnoughCreditException("You don't have enough credits to buy this game");
+			}
+			var transactionEntity = mapper.Map<Transactions>(transaction);
+			transactionEntity.Id = Guid.NewGuid();
+			transactionEntity.OrderCode = random.Next(100000, 999999);
+			transactionEntity.CreatedAt = DateTime.Now;
+			transactionEntity.Type = TransactionType.Purchase;
+			transactionEntity.Status = TransactionStatus.Success;
+
+			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
+
+			wallet.Balance -= transactionEntity.Amount;
+
+			var developerId = (await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId, false, ct)).DeveloperId;
+
+			var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
+
+			developerWallet.Balance += transactionEntity.Amount * 0.8; // 80% to developer
+
+			await repositoryManager.SaveAsync(ct);
+
 		}
 
-		public Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactions(TransactionParameters transactionParameters, bool trackChange)
+		public async Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
 		{
-			throw new NotImplementedException();
+			var transactionsWithMetaData = await repositoryManager.TransactionRepository.GetTransactions(transactionParameters, trackChange, ct);
+			var transactions = mapper.Map<IEnumerable<TransactionForReturnDto>>(transactionsWithMetaData);
+			return (transactions, transactionsWithMetaData.MetaData);
 		}
 
-		public Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactionsByUserId(string userId, TransactionParameters transactionParameters, bool trackChange)
+		public async Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactionsByUserId(Guid userId, TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
 		{
-			throw new NotImplementedException();
+			var transactionsWithMetaData = await repositoryManager.TransactionRepository.GetTransactionsByUserId(userId, transactionParameters, trackChange, ct);
+			var transactions = mapper.Map<IEnumerable<TransactionForReturnDto>>(transactionsWithMetaData);
+			return (transactions, transactionsWithMetaData.MetaData);
 		}
 
-		public async Task IPNAsync(WebhookData webhookData)
+		public async Task IPNAsync(WebhookData webhookData, CancellationToken ct = default)
 		{
 			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(webhookData.orderCode, true);
-			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(transaction.UserId, true);
+
 			var clientId = configuration.GetSection("PayOSClientID").Value;
 			var apiKey = configuration.GetSection("PayOSAPIKey").Value;
 			var checksumKey = configuration.GetSection("PayOSChecksumKey").Value;
@@ -114,7 +143,18 @@ namespace IndieGameZone.Application.TransactionServices
 			var payOS = new PayOS(clientId, apiKey, checksumKey);
 			if (webhookData.code == "00")
 			{
-				wallet.Balance += transaction.Amount;
+				if (transaction.Type == TransactionType.Deposit)
+				{
+					var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(transaction.UserId, true);
+					wallet.Balance += transaction.Amount;
+				}
+				else if (transaction.Type == TransactionType.Donation)
+				{
+					var developerId = transaction.Game.DeveloperId;
+					var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
+					developerWallet.Balance += transaction.Amount;
+				}
+
 				transaction.Status = TransactionStatus.Success;
 			}
 			else

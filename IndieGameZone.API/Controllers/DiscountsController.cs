@@ -15,7 +15,7 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
-		[HttpPost("Games/{gameId:guid}/Discounts")]
+		[HttpPost("games/{gameId:guid}/discounts")]
 		public async Task<IActionResult> CreateDiscount(Guid gameId, [FromBody] DiscountForCreationDto createDiscountDto, CancellationToken ct)
 		{
 			await serviceManager.DiscountService.CreateDiscount(gameId, createDiscountDto, ct);

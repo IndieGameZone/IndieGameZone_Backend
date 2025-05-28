@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace IndieGameZone.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/achievements")]
 	[ApiController]
 	public class AchievementsController : ControllerBase
 	{

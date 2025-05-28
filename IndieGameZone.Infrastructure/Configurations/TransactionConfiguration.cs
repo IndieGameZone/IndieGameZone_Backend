@@ -10,6 +10,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 		{
 			builder.HasKey(t => t.Id);
 			builder.Property(t => t.OrderCode);
+			builder.HasIndex(x => x.OrderCode).IsUnique();
 			builder.Property(t => t.Amount);
 			builder.Property(t => t.Description);
 			builder.Property(t => t.Status)

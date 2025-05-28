@@ -16,21 +16,21 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
-		[HttpPost("Users/{userId:guid}/Games/{gameId:guid}/Wishlists")]
+		[HttpPost("users/{userId:guid}/games/{gameId:guid}/wishlists")]
 		public async Task<IActionResult> AddGameToWishlist([FromRoute] Guid userId, [FromRoute] Guid gameId, CancellationToken ct)
 		{
 			await serviceManager.WishlistService.AddToWishlist(userId, gameId, ct);
 			return StatusCode(201);
 		}
 
-		[HttpDelete("Users/{userId:guid}/Games/{gameId:guid}/Wishlists")]
+		[HttpDelete("users/{userId:guid}/games/{gameId:guid}/wishlists")]
 		public async Task<IActionResult> RemoveGameFromWishlist([FromRoute] Guid userId, [FromRoute] Guid gameId, CancellationToken ct)
 		{
 			await serviceManager.WishlistService.RemoveFromWishlist(userId, gameId, ct);
 			return NoContent();
 		}
 
-		[HttpGet("Users/{userId:guid}/Wishlists")]
+		[HttpGet("users/{userId:guid}/wishlists")]
 		public async Task<IActionResult> GetUserWishlist([FromQuery] WishlistParameters wishlistParameters, [FromRoute] Guid userId, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.WishlistService.GetWishlistsFromUserId(wishlistParameters, userId, ct);
