@@ -48,12 +48,12 @@ namespace IndieGameZone.Application.UserServices
 				throw new UserBadRequestException("Email already exists");
 		}
 
-        private async Task<Users?> GetUserById(string userId, CancellationToken ct = default)
-        {
-            var user = await userManager.FindByIdAsync(userId);
-            if (user == null) throw new UserNotFoundException();
-            return user;
-        }
+		private async Task<Users?> GetUserById(string userId, CancellationToken ct = default)
+		{
+			var user = await userManager.FindByIdAsync(userId);
+			if (user == null) throw new UserNotFoundException();
+			return user;
+		}
 
 		public async Task CreateUser(UserForCreationDto userForCreationDto, CancellationToken ct = default)
 		{
@@ -103,27 +103,27 @@ namespace IndieGameZone.Application.UserServices
 				Birthday = userForCreationDto.Birthday,
 			};
 
-            var wallet = new Wallets
-            {
-                UserId = user.Id,
-                Balance = 0,
-            };
-            
-            repositoryManager.UserProfileRepository.CreateUserProfile(userProfile);
-            repositoryManager.WalletRepository.CreateWallet(wallet);
-            await repositoryManager.SaveAsync(ct);
+			var wallet = new Wallets
+			{
+				UserId = user.Id,
+				Balance = 0,
+			};
 
-            string token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-            string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+			repositoryManager.UserProfileRepository.CreateUserProfile(userProfile);
+			repositoryManager.WalletRepository.CreateWallet(wallet);
+			await repositoryManager.SaveAsync(ct);
 
-            var request = httpContextAccessor.HttpContext?.Request;
-            var param = new Dictionary<string, string?>
-            {
-                { "token", token },
-                { "email", user.Email }
-            };
-            var uri = $"{request?.Scheme}://{request?.Host}/api/auth/email-confirm";
-            var callbackUrl = QueryHelpers.AddQueryString(uri, param);
+			string token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+			string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+			var request = httpContextAccessor.HttpContext?.Request;
+			var param = new Dictionary<string, string?>
+			{
+				{ "token", token },
+				{ "email", user.Email }
+			};
+			var uri = $"{request?.Scheme}://{request?.Host}/api/auth/email-confirm";
+			var callbackUrl = QueryHelpers.AddQueryString(uri, param);
 
 			var emailBody = $@"
         <p>Hi {user.UserName},</p>
@@ -132,20 +132,20 @@ namespace IndieGameZone.Application.UserServices
         <p><a href='{callbackUrl}'>Confirm Email</a></p>
         <p>If you didn’t register, please ignore this email.</p>";
 
-            var mail = new Mail(user.Email!, "Email Confirmation – Indie Game Zone", emailBody);
-            emailSender.SendEmail(mail);
-        }
-        public async Task ConfirmEmail(string token, string email, CancellationToken ct = default)
-        {
-            var user = await userManager.FindByEmailAsync(email);
-            if (user == null) throw new RequestTokenBadRequest();
+			var mail = new Mail(user.Email!, "Email Confirmation – Indie Game Zone", emailBody);
+			emailSender.SendEmail(mail);
+		}
+		public async Task ConfirmEmail(string token, string email, CancellationToken ct = default)
+		{
+			var user = await userManager.FindByEmailAsync(email);
+			if (user == null) throw new RequestTokenBadRequest();
 
-            var result = await userManager.ConfirmEmailAsync(user, token);
-            if (!result.Succeeded)
-            {
-                throw new RequestTokenBadRequest();
-            }
-        }
+			var result = await userManager.ConfirmEmailAsync(user, token);
+			if (!result.Succeeded)
+			{
+				throw new RequestTokenBadRequest();
+			}
+		}
 
 		public async Task<Users> ValidateUser(UserForAuthenticationDto userForAuth, CancellationToken ct = default)
 		{
@@ -283,11 +283,16 @@ namespace IndieGameZone.Application.UserServices
 			var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
 			var username = principal.Identity!.Name!;
 
-            var user = await userManager.FindByNameAsync(username);
-            if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-                throw new SecurityTokenException("Invalid refresh token");
+			var user = await userManager.FindByNameAsync(username);
+			if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+				throw new SecurityTokenException("Invalid refresh token");
 
-            return await CreateToken(user, false, ct);
-        }
-    }
+			return await CreateToken(user, false, ct);
+		}
+
+		public Task ResendConfirmationEmail(string email, CancellationToken ct = default)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

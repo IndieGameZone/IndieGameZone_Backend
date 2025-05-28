@@ -33,6 +33,7 @@
 		public virtual ICollection<Reports> Reports { get; set; } = new List<Reports>();
 		public virtual ICollection<GameRecommendations> GameRecommendations { get; set; } = new List<GameRecommendations>();
 		public virtual GameStatuses GameStatus { get; set; } = null!;
+		public virtual ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
 
 	}
 }

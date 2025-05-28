@@ -11,9 +11,11 @@ namespace IndieGameZone.Domain.Entities
 		public TransactionType Type { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public Guid UserId { get; set; }
+		public Guid? GameId { get; set; }
 
 		// Navigation properties
 		public virtual Users User { get; set; } = null!;
+		public virtual Games? Game { get; set; } = null!;
 		public virtual WithdrawRequests WithdrawRequest { get; set; } = null!;
 	}
 }
