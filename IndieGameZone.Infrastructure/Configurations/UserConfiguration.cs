@@ -91,6 +91,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Id = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
 				Email = "admin@gmail.com",
 				NormalizedEmail = "ADMIN@GMAIL.COM",
+				UserName = "admin",
+				NormalizedUserName = "ADMIN",
 				EmailConfirmed = true,
 				IsActive = true,
 				JoinedDate = DateTime.Now,
@@ -104,6 +106,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Email = "moderator@gmail.com",
 				NormalizedEmail = "MODERATOR@GMAIL.COM",
 				EmailConfirmed = true,
+				UserName = "moderator",
+				NormalizedUserName = "MODERATOR",
 				IsActive = true,
 				JoinedDate = DateTime.Now,
 				SecurityStamp = Guid.NewGuid().ToString()
@@ -116,6 +120,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Email = "player@gmail.com",
 				NormalizedEmail = "PLAYER@GMAIL.COM",
 				EmailConfirmed = true,
+				UserName = "player",
+				NormalizedUserName = "PLAYER",
 				IsActive = true,
 				JoinedDate = DateTime.Now,
 				SecurityStamp = Guid.NewGuid().ToString()
@@ -128,6 +134,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Email = "developer1@gmail.com",
 				NormalizedEmail = "DEVELOPER1@GMAIL.COM",
 				EmailConfirmed = true,
+				UserName = "developer1",
+				NormalizedUserName = "DEVELOPER1",
 				IsActive = true,
 				JoinedDate = DateTime.Now,
 				SecurityStamp = Guid.NewGuid().ToString()
@@ -140,6 +148,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Email = "developer2@gmail.com",
 				NormalizedEmail = "DEVELOPER2@GMAIL.COM",
 				EmailConfirmed = true,
+				UserName = "developer2",
+				NormalizedUserName = "DEVELOPER2",
 				IsActive = true,
 				JoinedDate = DateTime.Now,
 				SecurityStamp = Guid.NewGuid().ToString()
@@ -152,6 +162,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 				Email = "developer3@gmail.com",
 				NormalizedEmail = "DEVELOPER3@GMAIL.COM",
 				EmailConfirmed = true,
+				UserName = "developer3",
+				NormalizedUserName = "DEVELOPER3",
 				IsActive = true,
 				JoinedDate = DateTime.Now,
 				SecurityStamp = Guid.NewGuid().ToString()
