@@ -7,6 +7,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public Guid Id { get; init; }
 		public string Name { get; init; }
 		public string CoverImage { get; init; }
+		public string Description { get; init; }
 		public bool IsActive { get; init; }
 		public double Price { get; init; }
 		public double PriceAfterDiscount { get; set; }

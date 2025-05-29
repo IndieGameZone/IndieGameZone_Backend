@@ -27,7 +27,7 @@ namespace IndieGameZone.Application
 		IAchievementService AchievementService { get; }
 		IUserService UserService { get; }
 		IDiscountService DiscountService { get; }
-		IGameInfoService GameInfoService { get; }
+		IGameImageService GameInfoService { get; }
 		IGamePlatformService GamePlatformService { get; }
 		IWishlistService WishlistService { get; }
 		ITransactionService TransactionService { get; }

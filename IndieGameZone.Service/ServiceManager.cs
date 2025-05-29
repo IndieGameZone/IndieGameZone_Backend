@@ -35,7 +35,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IAchievementService> achievementService;
 		private readonly Lazy<IUserService> userService;
 		private readonly Lazy<IDiscountService> discountService;
-		private readonly Lazy<IGameInfoService> gameInfoService;
+		private readonly Lazy<IGameImageService> gameInfoService;
 		private readonly Lazy<IGamePlatformService> gamePlatformService;
 		private readonly Lazy<IWishlistService> wishlistService;
 		private readonly Lazy<ITransactionService> transactionService;
@@ -52,7 +52,7 @@ namespace IndieGameZone.Application
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
 			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
-			gameInfoService = new Lazy<IGameInfoService>(() => new GameInfoService(repositoryManager, mapper, blobService));
+			gameInfoService = new Lazy<IGameImageService>(() => new GameImageService(repositoryManager, mapper, blobService));
 			gamePlatformService = new Lazy<IGamePlatformService>(() => new GamePlatformService(repositoryManager, mapper, blobService));
 			wishlistService = new Lazy<IWishlistService>(() => new WishlistService(repositoryManager, mapper));
 			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration));
@@ -78,7 +78,7 @@ namespace IndieGameZone.Application
 
 		public IDiscountService DiscountService => discountService.Value;
 
-		public IGameInfoService GameInfoService => gameInfoService.Value;
+		public IGameImageService GameInfoService => gameInfoService.Value;
 
 		public IGamePlatformService GamePlatformService => gamePlatformService.Value;
 
