@@ -20,7 +20,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IUserProfileRepository> userProfileRepository;
 		private readonly Lazy<IWalletRepository> walletRepository;
 		private readonly Lazy<IGamePlatformRepository> gamePlatformRepository;
-		private readonly Lazy<IGameInfoRepository> gameInfoRepository;
+		private readonly Lazy<GameImageRepository> gameImageRepository;
 		private readonly Lazy<IGameLanguageRepository> gameLanguageRepository;
 		private readonly Lazy<IGameTagRepository> gameTagRepository;
 		private readonly Lazy<IDiscountRepository> discountRepository;
@@ -42,7 +42,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			userProfileRepository = new Lazy<IUserProfileRepository>(() => new UserProfileRepository(appDbContext));
 			walletRepository = new Lazy<IWalletRepository>(() => new WalletRepository(appDbContext));
 			gamePlatformRepository = new Lazy<IGamePlatformRepository>(() => new GamePlatformRepository(appDbContext));
-			gameInfoRepository = new Lazy<IGameInfoRepository>(() => new GameInfoRepository(appDbContext));
+			gameImageRepository = new Lazy<GameImageRepository>(() => new GameImageRepository(appDbContext));
 			gameLanguageRepository = new Lazy<IGameLanguageRepository>(() => new GameLanguageRepository(appDbContext));
 			gameTagRepository = new Lazy<IGameTagRepository>(() => new GameTagRepository(appDbContext));
 			discountRepository = new Lazy<IDiscountRepository>(() => new DiscountRepository(appDbContext));
@@ -73,7 +73,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public IWalletRepository WalletRepository => walletRepository.Value;
 		public IGamePlatformRepository GamePlatformRepository => gamePlatformRepository.Value;
 
-		public IGameInfoRepository GameInfoRepository => gameInfoRepository.Value;
+		public IGameImageRepository GameImageRepository => gameImageRepository.Value;
 
 		public IGameLanguageRepository GameLanguageRepository => gameLanguageRepository.Value;
 

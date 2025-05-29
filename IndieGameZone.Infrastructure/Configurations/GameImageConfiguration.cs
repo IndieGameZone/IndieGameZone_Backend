@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace IndieGameZone.Infrastructure.Configurations
 {
-	public class GameInfoConfiguration : IEntityTypeConfiguration<GameImages>
+	public class GameImageConfiguration : IEntityTypeConfiguration<GameImages>
 	{
 		public void Configure(EntityTypeBuilder<GameImages> builder)
 		{

@@ -23,7 +23,7 @@ namespace IndieGameZone.Infrastructure.Persistence
 		public DbSet<CommercialRegistration> CommercialRegistration { get; set; } = null!;
 		public DbSet<Coupons> Coupons { get; set; } = null!;
 		public DbSet<Discounts> Discounts { get; set; } = null!;
-		public DbSet<GameImages> GameInfos { get; set; } = null!;
+		public DbSet<GameImages> GameImages { get; set; } = null!;
 		public DbSet<GameLanguages> GameLanguages { get; set; } = null!;
 		public DbSet<GamePlatforms> GamePlatforms { get; set; } = null!;
 		public DbSet<GameRecommendations> GameRecommendations { get; set; } = null!;
@@ -68,7 +68,7 @@ namespace IndieGameZone.Infrastructure.Persistence
 			modelBuilder.ApplyConfiguration(new DiscountConfiguration());
 			modelBuilder.ApplyConfiguration(new GameStatusConfiguration());
 			modelBuilder.ApplyConfiguration(new GameConfiguration());
-			modelBuilder.ApplyConfiguration(new GameInfoConfiguration());
+			modelBuilder.ApplyConfiguration(new GameImageConfiguration());
 			modelBuilder.ApplyConfiguration(new GameRecommendationConfiguration());
 			modelBuilder.ApplyConfiguration(new LanguageConfiguration());
 			modelBuilder.ApplyConfiguration(new LibraryConfiguration());

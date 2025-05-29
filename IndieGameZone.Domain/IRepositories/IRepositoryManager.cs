@@ -18,7 +18,7 @@ namespace IndieGameZone.Domain.IRepositories
 		IUserProfileRepository UserProfileRepository { get; }
 		IWalletRepository WalletRepository { get; }
 		IGamePlatformRepository GamePlatformRepository { get; }
-		IGameInfoRepository GameInfoRepository { get; }
+		IGameImageRepository GameImageRepository { get; }
 		IGameLanguageRepository GameLanguageRepository { get; }
 		IGameTagRepository GameTagRepository { get; }
 		IDiscountRepository DiscountRepository { get; }

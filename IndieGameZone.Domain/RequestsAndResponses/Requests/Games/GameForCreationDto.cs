@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using IndieGameZone.Domain.RequestsAndResponses.Requests.GamePlatforms;
+using Microsoft.AspNetCore.Http;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
 {
@@ -14,5 +15,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
 		public Guid GameStatusId { get; init; }
 		public ICollection<Guid> LanguageIds { get; init; }
 		public ICollection<Guid> TagIds { get; init; }
+		public IFormFileCollection GameImages { get; init; }
+		public ICollection<GamePlatformForCreationDto> GamePlatforms { get; init; }
 	}
 }

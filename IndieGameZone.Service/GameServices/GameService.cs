@@ -71,7 +71,7 @@ namespace IndieGameZone.Application.GameServices
 			}
 
 			//Handle Game Info Entities
-			var existingGameInfos = await repositoryManager.GameInfoRepository.GetGameInfosByGameId(gameId, false, ct);
+			var existingGameInfos = await repositoryManager.GameImageRepository.GetGameImagesByGameId(gameId, false, ct);
 			if (existingGameInfos is not null && existingGameInfos.Any())
 			{
 				foreach (var info in existingGameInfos)
@@ -107,6 +107,29 @@ namespace IndieGameZone.Application.GameServices
 			{
 				string coverImageFilename = $"{game.Name}CoverImage{Path.GetExtension(game.CoverImage.FileName)}";
 				gameEntity.CoverImage = await blobService.UploadBlob(coverImageFilename, StorageContainer.STORAGE_CONTAINER, game.CoverImage);
+			}
+			//Handle Game Images
+			if (game.GameImages is not null && game.GameImages.Count > 0)
+			{
+				var gameImageEntitys = game.GameImages.Select(async image => new GameImages
+				{
+					Id = Guid.NewGuid(),
+					GameId = gameEntity.Id,
+					Image = await blobService.UploadBlob($"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}", StorageContainer.STORAGE_CONTAINER, image)
+				});
+				repositoryManager.GameImageRepository.CreateGameImage(await Task.WhenAll(gameImageEntitys));
+			}
+
+			//Handle Game Platforms
+			if (game.GamePlatforms is not null && game.GamePlatforms.Count > 0)
+			{
+				var gamePlatformEntitys = game.GamePlatforms.Select(async platform => new GamePlatforms
+				{
+					GameId = gameEntity.Id,
+					PlatformId = platform.PlatformId,
+					File = await blobService.UploadBlob($"{Guid.NewGuid()}{Path.GetExtension(platform.File.FileName)}", StorageContainer.STORAGE_CONTAINER, platform.File)
+				});
+				repositoryManager.GamePlatformRepository.CreateGamePlatform(await Task.WhenAll(gamePlatformEntitys));
 			}
 
 			//Handle Game Language

@@ -37,7 +37,7 @@ namespace IndieGameZone.Application.GameInfoServices
 
 		public async Task<IEnumerable<GameImageForReturnDto>> GetGameInfosByGameId(Guid gameId, CancellationToken ct = default)
 		{
-			var gameInfoEntities = await repositoryManager.GameInfoRepository.GetGameInfosByGameId(gameId, false, ct);
+			var gameInfoEntities = await repositoryManager.GameImageRepository.GetGameImagesByGameId(gameId, false, ct);
 			return mapper.Map<IEnumerable<GameImageForReturnDto>>(gameInfoEntities);
 		}
 
