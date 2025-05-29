@@ -3,6 +3,7 @@ using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
+using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Users;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 using IndieGameZone.Domain.Utils;
@@ -55,7 +56,7 @@ namespace IndieGameZone.Application.UserServices
                 throw new UserBadRequestException("Email already exists");
         }
 
-        private async Task<UserForReturnDto?> GetUserById(string userId, CancellationToken ct = default)
+        public async Task<UserForReturnDto> GetUserById(string userId, CancellationToken ct = default)
         {
             if (!Guid.TryParse(userId, out var guidUserId))
                 throw new ArgumentException("Invalid user ID format", nameof(userId));
@@ -388,5 +389,38 @@ namespace IndieGameZone.Application.UserServices
             if (dto == null) throw new UserNotFoundException();
             return dto;
         }
+
+        public async Task<(IEnumerable<UserForReturnDto> users, MetaData metaData)> GetUsers(UserParameters userParameters, CancellationToken ct = default)
+        {
+            var usersWithMetaData = await repositoryManager.UserRepository.GetUsers(userParameters, false, ct);
+            var userList = usersWithMetaData;
+
+            var dtoList = new List<UserForReturnDto>();
+
+            foreach (var user in userList)
+            {
+                var dto = mapper.Map<UserForReturnDto>(user);
+
+                var roleName = (await userManager.GetRolesAsync(user)).FirstOrDefault();
+
+                dtoList.Add(dto with
+                {
+                    Role = !string.IsNullOrWhiteSpace(roleName)
+                        ? new RoleForReturnDto { Name = roleName }
+                        : null,
+
+                    Fullname = user.UserProfile?.Fullname,
+                    Avatar = user.UserProfile?.Avatar,
+                    Bio = user.UserProfile?.Bio,
+                    Birthday = user.UserProfile?.Birthday,
+                    FacebookLink = user.UserProfile?.FacebookLink,
+                    BankName = user.UserProfile?.BankName,
+                    BankAccount = user.UserProfile?.BankAccount
+                });
+            }
+
+            return (dtoList, usersWithMetaData.MetaData);
+        }
+
     }
 }
