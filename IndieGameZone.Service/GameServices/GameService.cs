@@ -89,6 +89,42 @@ namespace IndieGameZone.Application.GameServices
 			await repositoryManager.SaveAsync(ct);
 		}
 
+		private async Task DeleteOldContentBeforeUpdate(Guid gameId, CancellationToken ct = default)
+		{
+			// Handle Game Platforms
+			var existingGamePlatforms = await repositoryManager.GamePlatformRepository.GetGamePlatformsByGameId(gameId, false, ct);
+			if (existingGamePlatforms is not null && existingGamePlatforms.Any())
+			{
+				foreach (var platform in existingGamePlatforms)
+				{
+					await blobService.DeleteBlob(platform.File.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+				}
+			}
+			repositoryManager.GamePlatformRepository.DeleteGamePlatform(existingGamePlatforms);
+
+			//Handle Game Info Entities
+			var existingGameImages = await repositoryManager.GameImageRepository.GetGameImagesByGameId(gameId, false, ct);
+			if (existingGameImages is not null && existingGameImages.Any())
+			{
+				foreach (var info in existingGameImages)
+				{
+					if (info.Image != null)
+					{
+						await blobService.DeleteBlob(info.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+					}
+				}
+			}
+			repositoryManager.GameImageRepository.DeleteGameImage(existingGameImages);
+
+			//Handle Game Language
+			repositoryManager.GameLanguageRepository.DeleteGameLanguage(await repositoryManager.GameLanguageRepository.GetGameLanguagesByGameId(gameId, false, ct));
+
+			//Handle Game Tags
+			repositoryManager.GameTagRepository.DeleteGameTag(await repositoryManager.GameTagRepository.GetGameTagsByGameId(gameId, false, ct));
+
+			await repositoryManager.SaveAsync(ct);
+		}
+
 		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetGamesByDeveloperId(Guid developerId, GameParameters gameParameters, CancellationToken ct = default)
 		{
 			var gamesWithMetaData = await repositoryManager.GameRepository.GetGamesByDeveloperId(developerId, gameParameters, false, ct);
@@ -151,6 +187,7 @@ namespace IndieGameZone.Application.GameServices
 
 		public async Task UpdateGame(Guid developerId, Guid gameId, GameForUpdateDto game, CancellationToken ct = default)
 		{
+			await DeleteOldContentBeforeUpdate(gameId, ct);
 			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, true, ct);
 			if (gameEntity is null)
 			{
@@ -168,13 +205,56 @@ namespace IndieGameZone.Application.GameServices
 				gameEntity.CoverImage = await blobService.UploadBlob(coverImageFilename, StorageContainer.STORAGE_CONTAINER, game.CoverImage);
 			}
 
+			//Handle Game Images
+			if (game.GameImages is not null && game.GameImages.Count > 0)
+			{
+				var gameImageEntities = new List<GameImages>();
+
+				foreach (var image in game.GameImages)
+				{
+					var uploadedUrl = await blobService.UploadBlob(
+						$"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}",
+						StorageContainer.STORAGE_CONTAINER,
+						image);
+
+					gameImageEntities.Add(new GameImages
+					{
+						Id = Guid.NewGuid(),
+						GameId = gameEntity.Id,
+						Image = uploadedUrl
+					});
+				}
+				repositoryManager.GameImageRepository.CreateGameImage(gameImageEntities);
+				await repositoryManager.SaveAsync(ct);
+			}
+
+			//Handle Game Platforms
+			if (game.GamePlatforms is not null && game.GamePlatforms.Count > 0)
+			{
+				var gamePlatformEntities = new List<GamePlatforms>();
+
+				foreach (var platform in game.GamePlatforms)
+				{
+					var uploadedUrl = await blobService.UploadBlob(
+						$"{Guid.NewGuid()}{Path.GetExtension(platform.File.FileName)}",
+						StorageContainer.STORAGE_CONTAINER,
+						platform.File);
+
+					gamePlatformEntities.Add(new GamePlatforms
+					{
+						GameId = gameEntity.Id,
+						PlatformId = platform.PlatformId,
+						File = uploadedUrl
+					});
+				}
+				repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatformEntities);
+			}
+
 			//Handle Game Language
-			repositoryManager.GameLanguageRepository.DeleteGameLanguage(await repositoryManager.GameLanguageRepository.GetGameLanguagesByGameId(gameId, false, ct));
 			var gameLanguageEntitys = game.LanguageIds.Select(id => new GameLanguages { LanguageId = id, GameId = gameEntity.Id });
 			repositoryManager.GameLanguageRepository.CreateGameLanguage(gameLanguageEntitys);
 
 			//Handle Game Tags
-			repositoryManager.GameTagRepository.DeleteGameTag(await repositoryManager.GameTagRepository.GetGameTagsByGameId(gameId, false, ct));
 			var gameTagEntitys = game.TagIds.Select(id => new GameTags { TagId = id, GameId = gameEntity.Id });
 			repositoryManager.GameTagRepository.CreateGameTag(gameTagEntitys);
 

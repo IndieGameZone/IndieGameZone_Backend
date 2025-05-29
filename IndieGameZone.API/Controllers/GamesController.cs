@@ -56,6 +56,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("users/{developerId:guid}/games/{gameId:guid}")]
+		[RequestSizeLimit(104857600)]
 		public async Task<IActionResult> UpdateGame([FromRoute] Guid developerId, [FromRoute] Guid gameId, [FromForm] GameForUpdateDto game, CancellationToken ct)
 		{
 			await serviceManager.GameService.UpdateGame(developerId, gameId, game, ct);

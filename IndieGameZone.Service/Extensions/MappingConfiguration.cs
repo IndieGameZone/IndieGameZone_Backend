@@ -1,5 +1,5 @@
 ﻿using IndieGameZone.Domain.Entities;
-using IndieGameZone.Domain.RequestsAndResponses.Requests.GameInfos;
+using IndieGameZone.Domain.RequestsAndResponses.Requests.GameImages;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.GamePlatforms;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using Mapster;
@@ -24,9 +24,9 @@ namespace IndieGameZone.Application.Extensions
 				.Ignore(dest => dest.GamePlatforms)
 				.Ignore(dest => dest.GameImages);
 
-			config.NewConfig<GameInfoForCreationDto, GameImages>()
+			config.NewConfig<GameImageForCreationDto, GameImages>()
 				.Ignore(dest => dest.Image);
-			config.NewConfig<GameInfoForUpdateDto, GameImages>()
+			config.NewConfig<GameImageForUpdateDto, GameImages>()
 				.Ignore(dest => dest.Image);
 		}
 	}
