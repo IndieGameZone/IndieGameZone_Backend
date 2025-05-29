@@ -89,90 +89,120 @@ namespace IndieGameZone.Infrastructure.Configurations
 			var admin = new Users
 			{
 				Id = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
-				Email = "admin@gmail.com",
+                UserName = "admin",
+                NormalizedUserName = "ADMIN",
+                Email = "admin@gmail.com",
 				NormalizedEmail = "ADMIN@GMAIL.COM",
-				UserName = "admin",
-				NormalizedUserName = "ADMIN",
 				EmailConfirmed = true,
-				IsActive = true,
-				JoinedDate = DateTime.Now,
-				SecurityStamp = Guid.NewGuid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnabled = true,
+                AccessFailedCount = 0,
+                IsActive = true,
+                JoinedDate = DateTime.UtcNow
 			};
 			admin.PasswordHash = passwordHasher.HashPassword(admin, "admin");
 
 			var moderator = new Users
 			{
 				Id = Guid.Parse("3fe77296-fdb3-4d71-8b99-ef8380c32037"),
-				Email = "moderator@gmail.com",
+                UserName = "moderator",
+                NormalizedUserName = "MODERATOR",
+                Email = "moderator@gmail.com",
 				NormalizedEmail = "MODERATOR@GMAIL.COM",
 				EmailConfirmed = true,
-				UserName = "moderator",
-				NormalizedUserName = "MODERATOR",
-				IsActive = true,
-				JoinedDate = DateTime.Now,
-				SecurityStamp = Guid.NewGuid().ToString()
-			};
+				SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnabled = true,
+                AccessFailedCount = 0,
+                IsActive = true,
+                JoinedDate = DateTime.UtcNow
+            };
 			moderator.PasswordHash = passwordHasher.HashPassword(moderator, "moderator");
 
 			var player = new Users
 			{
 				Id = Guid.Parse("23879117-e09e-40f1-b78f-1493d81baf49"),
-				Email = "player@gmail.com",
+                UserName = "player",
+                NormalizedUserName = "PLAYER",
+                Email = "player@gmail.com",
 				NormalizedEmail = "PLAYER@GMAIL.COM",
 				EmailConfirmed = true,
-				UserName = "player",
-				NormalizedUserName = "PLAYER",
-				IsActive = true,
-				JoinedDate = DateTime.Now,
-				SecurityStamp = Guid.NewGuid().ToString()
-			};
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnabled = true,
+                AccessFailedCount = 0,
+                IsActive = true,
+                JoinedDate = DateTime.UtcNow
+            };
 			player.PasswordHash = passwordHasher.HashPassword(player, "player");
 
 			var developer1 = new Users
 			{
 				Id = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-				Email = "developer1@gmail.com",
+                UserName = "developer1",
+                NormalizedUserName = "DEVELOPER1",
+                Email = "developer1@gmail.com",
 				NormalizedEmail = "DEVELOPER1@GMAIL.COM",
 				EmailConfirmed = true,
-				UserName = "developer1",
-				NormalizedUserName = "DEVELOPER1",
-				IsActive = true,
-				JoinedDate = DateTime.Now,
-				SecurityStamp = Guid.NewGuid().ToString()
-			};
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnabled = true,
+                AccessFailedCount = 0,
+                IsActive = true,
+                JoinedDate = DateTime.UtcNow
+            };
 			developer1.PasswordHash = passwordHasher.HashPassword(developer1, "developer1");
 
 			var developer2 = new Users
 			{
 				Id = Guid.Parse("34670beb-a794-4419-adf8-0465eea22a78"),
-				Email = "developer2@gmail.com",
+                UserName = "developer2",
+                NormalizedUserName = "DEVELOPER2",
+                Email = "developer2@gmail.com",
 				NormalizedEmail = "DEVELOPER2@GMAIL.COM",
 				EmailConfirmed = true,
-				UserName = "developer2",
-				NormalizedUserName = "DEVELOPER2",
-				IsActive = true,
-				JoinedDate = DateTime.Now,
-				SecurityStamp = Guid.NewGuid().ToString()
-			};
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnabled = true,
+                AccessFailedCount = 0,
+                IsActive = true,
+                JoinedDate = DateTime.UtcNow
+            };
 			developer2.PasswordHash = passwordHasher.HashPassword(developer2, "developer2");
 
 			var developer3 = new Users
 			{
 				Id = Guid.Parse("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
-				Email = "developer3@gmail.com",
+                UserName = "developer3",
+                NormalizedUserName = "DEVELOPER3",
+                Email = "developer3@gmail.com",
 				NormalizedEmail = "DEVELOPER3@GMAIL.COM",
 				EmailConfirmed = true,
-				UserName = "developer3",
-				NormalizedUserName = "DEVELOPER3",
-				IsActive = true,
-				JoinedDate = DateTime.Now,
-				SecurityStamp = Guid.NewGuid().ToString()
-			};
+                SecurityStamp = Guid.NewGuid().ToString(),
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                PhoneNumberConfirmed = false,
+                TwoFactorEnabled = false,
+                LockoutEnabled = true,
+                AccessFailedCount = 0,
+                IsActive = true,
+                JoinedDate = DateTime.UtcNow
+            };
 			developer3.PasswordHash = passwordHasher.HashPassword(developer3, "developer3");
 
 
 
-			builder.HasData(admin, moderator, developer1, player, developer2, developer3);
+			builder.HasData(admin, moderator, player, developer1, developer2, developer3);
 		}
 	}
 }
