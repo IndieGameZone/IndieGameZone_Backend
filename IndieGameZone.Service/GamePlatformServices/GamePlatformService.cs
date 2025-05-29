@@ -39,7 +39,7 @@ namespace IndieGameZone.Application.GamePlatformServices
 			return mapper.Map<IEnumerable<GamePlatformForReturnDto>>(gamePlatformEntities);
 		}
 
-		public async Task UpdateGamePlatformsByGameId(Guid gameId, IEnumerable<GamePlatformForUpdateDto> gamePlatformForUpdateDtos, CancellationToken ct = default)
+		private async Task DeleteOldContentBeforeUpdate(Guid gameId, CancellationToken ct = default)
 		{
 			var existingGamePlatforms = await repositoryManager.GamePlatformRepository.GetGamePlatformsByGameId(gameId, false, ct);
 			if (existingGamePlatforms is not null && existingGamePlatforms.Any())
@@ -50,6 +50,12 @@ namespace IndieGameZone.Application.GamePlatformServices
 				}
 			}
 			repositoryManager.GamePlatformRepository.DeleteGamePlatform(existingGamePlatforms);
+			await repositoryManager.SaveAsync(ct);
+		}
+
+		public async Task UpdateGamePlatformsByGameId(Guid gameId, IEnumerable<GamePlatformForUpdateDto> gamePlatformForUpdateDtos, CancellationToken ct = default)
+		{
+			await DeleteOldContentBeforeUpdate(gameId, ct);
 			var newGamePlatformEntities = mapper.Map<IEnumerable<GamePlatforms>>(gamePlatformForUpdateDtos).ToList();
 			for (int i = 0; i < newGamePlatformEntities.Count; i++)
 			{

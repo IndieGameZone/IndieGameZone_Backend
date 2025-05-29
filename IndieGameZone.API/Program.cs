@@ -42,17 +42,17 @@ builder.Services.AddScoped<IAIService, AIService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.Configure<FormOptions>(options =>
 {
-	options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // 100MB
+	options.MultipartBodyLengthLimit = 300 * 1024 * 1024; // 300MB
 });
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
-    options.TokenLifespan = TimeSpan.FromHours(1);
+	options.TokenLifespan = TimeSpan.FromHours(1);
 });
 builder.Services.Configure<IdentityOptions>(options =>
 {
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-    options.Lockout.AllowedForNewUsers = true;
+	options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+	options.Lockout.MaxFailedAccessAttempts = 5;
+	options.Lockout.AllowedForNewUsers = true;
 });
 
 

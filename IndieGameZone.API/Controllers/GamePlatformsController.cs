@@ -16,6 +16,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("games/{gameId:guid}/game-platforms")]
+		[RequestSizeLimit(300 * 1024 * 1024)]
 		public async Task<IActionResult> CreateGamePlatforms([FromRoute] Guid gameId, [FromForm] List<GamePlatformForCreationDto> gamePlatforms, CancellationToken ct)
 		{
 			await serviceManager.GamePlatformService.CreateGamePlatforms(gameId, gamePlatforms, ct);
@@ -23,6 +24,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("games/{gameId:guid}/game-platforms")]
+		[RequestSizeLimit(300 * 1024 * 1024)]
 		public async Task<IActionResult> UpdateGamePlatforms([FromRoute] Guid gameId, [FromForm] List<GamePlatformForUpdateDto> gamePlatforms, CancellationToken ct)
 		{
 			await serviceManager.GamePlatformService.UpdateGamePlatformsByGameId(gameId, gamePlatforms, ct);
