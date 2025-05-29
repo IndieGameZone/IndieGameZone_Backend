@@ -202,7 +202,7 @@ namespace IndieGameZone.Application.UserServices
                 user = await userManager.FindByEmailAsync(userForAuth.UserNameOrEmail!);
 
             if (user == null)
-                throw new NotAuthenticatedException("Username or password is incorrect");
+                throw new NotAuthenticatedException("User not found");
 
             if (!user.IsActive)
                 throw new NotAuthenticatedException("User is deactivated");
@@ -210,16 +210,53 @@ namespace IndieGameZone.Application.UserServices
             if (!user.EmailConfirmed)
                 throw new NotAuthenticatedException("Your email has not been confirmed yet");
 
+            // 🛑 Check if account is locked
+            if (await userManager.IsLockedOutAsync(user))
+            {
+                var lockoutEnd = await userManager.GetLockoutEndDateAsync(user);
+                if (lockoutEnd.HasValue)
+                {
+                    var timeLeft = lockoutEnd.Value.UtcDateTime - DateTime.UtcNow;
+                    throw new NotAuthenticatedException(
+                        $"Your account is locked due to multiple failed login attempts. " +
+                        $"Please try again in {timeLeft.Minutes} minute(s) and {timeLeft.Seconds} second(s).");
+                }
+
+                throw new NotAuthenticatedException("Your account is locked due to multiple failed login attempts. Please try again later.");
+            }
+
             bool isPasswordValid = await userManager.CheckPasswordAsync(user, userForAuth.Password!);
             if (!isPasswordValid)
-                throw new NotAuthenticatedException("Username or password is incorrect");
+            {
+                // ❌ Increment failed login attempts
+                await userManager.AccessFailedAsync(user);
 
-            // ✅ Optionally update last login here:
+                if (await userManager.IsLockedOutAsync(user))
+                {
+                    var lockoutEnd = await userManager.GetLockoutEndDateAsync(user);
+                    if (lockoutEnd.HasValue)
+                    {
+                        var timeLeft = lockoutEnd.Value.UtcDateTime - DateTime.UtcNow;
+                        throw new NotAuthenticatedException(
+                            $"Your account has been locked due to multiple failed login attempts. " +
+                            $"Please try again in {timeLeft.Minutes} minute(s) and {timeLeft.Seconds} second(s).");
+                    }
+
+                    throw new NotAuthenticatedException("Your account has been locked due to multiple failed login attempts.");
+                }
+
+                throw new NotAuthenticatedException("Username or password is incorrect");
+            }
+
+            // ✅ Reset failed count on successful login
+            await userManager.ResetAccessFailedCountAsync(user);
+
             user.LastLogin = DateTime.UtcNow;
             await userManager.UpdateAsync(user);
 
             return user;
         }
+
 
         public async Task<TokenDto> CreateToken(Users user, bool setRefreshExpiry, CancellationToken ct = default)
         {
