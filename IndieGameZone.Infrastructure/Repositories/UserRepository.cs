@@ -1,6 +1,9 @@
 ﻿using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
+using IndieGameZone.Domain.RequestFeatures;
+using IndieGameZone.Infrastructure.Extensions;
 using IndieGameZone.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +17,15 @@ namespace IndieGameZone.Infrastructure.Repositories
         public UserRepository(AppDbContext appDbContext) : base(appDbContext)
         {
         }
+        public async Task<PagedList<Users>> GetUsers(UserParameters userParameters, bool trackChange, CancellationToken ct = default)
+        {
+            var userEntities = FindAll(trackChange)
+                .Search(userParameters.SearchName)
+                .Sort()
+                .Include(u => u.UserProfile);
+
+            return await PagedList<Users>.ToPagedList(userEntities, userParameters.PageNumber, userParameters.PageSize, ct);
+        }
+
     }
 }
