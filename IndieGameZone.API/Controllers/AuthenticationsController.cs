@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Application;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Users;
 using IndieGameZone.Domain.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -72,5 +73,14 @@ namespace IndieGameZone.API.Controllers
 				return Unauthorized("Invalid or expired refresh token");
 			}
 		}
-	}
+
+        [HttpGet("current-user")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUser(CancellationToken ct)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var user = await serviceManager.UserService.GetUserByToken(token, ct);
+            return Ok(user);
+        }
+    }
 }

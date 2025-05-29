@@ -4,295 +4,352 @@ using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Users;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 using IndieGameZone.Domain.Utils;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Quartz;
+using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace IndieGameZone.Application.UserServices
 {
-	internal sealed class UserService : IUserService
-	{
-		private readonly IRepositoryManager repositoryManager;
-		private readonly IMapper mapper;
-		private readonly UserManager<Users> userManager;
-		private readonly RoleManager<Roles> roleManager;
-		private readonly IEmailSender emailSender;
-		private readonly IHttpContextAccessor httpContextAccessor;
-		private readonly IConfiguration configuration;
+    internal sealed class UserService : IUserService
+    {
+        private readonly IRepositoryManager repositoryManager;
+        private readonly IMapper mapper;
+        private readonly UserManager<Users> userManager;
+        private readonly RoleManager<Roles> roleManager;
+        private readonly IEmailSender emailSender;
+        private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IConfiguration configuration;
 
-		public UserService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
-		{
-			this.repositoryManager = repositoryManager;
-			this.mapper = mapper;
-			this.userManager = userManager;
-			this.roleManager = roleManager;
-			this.emailSender = emailSender;
-			this.httpContextAccessor = httpContextAccessor;
-			this.configuration = configuration;
-		}
+        public UserService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        {
+            this.repositoryManager = repositoryManager;
+            this.mapper = mapper;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
+            this.emailSender = emailSender;
+            this.httpContextAccessor = httpContextAccessor;
+            this.configuration = configuration;
+        }
 
-		private async Task CheckUserExistWhenRegister(string userName, string email, CancellationToken ct = default)
-		{
-			if (await userManager.FindByNameAsync(userName) is not null)
-				throw new UserBadRequestException("Username already exists");
+        private async Task CheckUserExistWhenRegister(string userName, string email, CancellationToken ct = default)
+        {
+            if (await userManager.FindByNameAsync(userName) is not null)
+                throw new UserBadRequestException("Username already exists");
 
-			if (await userManager.FindByEmailAsync(email) is not null)
-				throw new UserBadRequestException("Email already exists");
-		}
+            if (await userManager.FindByEmailAsync(email) is not null)
+                throw new UserBadRequestException("Email already exists");
+        }
 
-		private async Task<Users?> GetUserById(string userId, CancellationToken ct = default)
-		{
-			var user = await userManager.FindByIdAsync(userId);
-			if (user == null) throw new UserNotFoundException();
-			return user;
-		}
+        private async Task<UserForReturnDto?> GetUserById(string userId, CancellationToken ct = default)
+        {
+            if (!Guid.TryParse(userId, out var guidUserId))
+                throw new ArgumentException("Invalid user ID format", nameof(userId));
 
-		public async Task CreateUser(UserForCreationDto userForCreationDto, CancellationToken ct = default)
-		{
-			await CheckUserExistWhenRegister(userForCreationDto.UserName, userForCreationDto.Email);
-			if (userForCreationDto.Role != RoleEnum.Player && userForCreationDto.Role != RoleEnum.Developer)
-			{
-				throw new InvalidOperationException("Only 'Player' and 'Developer' roles are allowed during registration.");
-			}
-			var user = mapper.Map<Users>(userForCreationDto);
+            var user = await userManager.Users
+                .Include(u => u.UserProfile)
+                .FirstOrDefaultAsync(u => u.Id == guidUserId, ct);
 
-			user.Id = Guid.NewGuid();
-			user.EmailConfirmed = false;
-			user.LockoutEnabled = true;
-			user.IsActive = true;
-			user.JoinedDate = DateTime.UtcNow;
-			user.LastLogin = DateTime.UtcNow;
+            if (user == null)
+                throw new UserNotFoundException();
 
-			// Create the user
-			var result = await userManager.CreateAsync(user, userForCreationDto.Password);
-			if (!result.Succeeded)
-			{
-				throw new InvalidOperationException(string.Join("; ", result.Errors.Select(e => e.Description)));
-			}
+            var dto = mapper.Map<UserForReturnDto>(user);
 
-			// Convert RoleEnum to string
-			var roleName = userForCreationDto.Role.ToString();
+            var roleName = (await userManager.GetRolesAsync(user)).FirstOrDefault();
 
-			// Check if role exists in DB
-			var roleExists = await roleManager.RoleExistsAsync(roleName);
-			if (!roleExists)
-			{
-				throw new InvalidOperationException($"Role '{roleName}' does not exist in the database.");
-			}
+            return dto with
+            {
+                Role = !string.IsNullOrWhiteSpace(roleName)
+                    ? new RoleForReturnDto { Name = roleName }
+                    : null,
 
-			// Assign role to user
-			var roleResult = await userManager.AddToRoleAsync(user, roleName);
-			if (!roleResult.Succeeded)
-			{
-				throw new InvalidOperationException(string.Join("; ", roleResult.Errors.Select(e => e.Description)));
-			}
+                Fullname = user.UserProfile?.Fullname,
+                Avatar = user.UserProfile?.Avatar,
+                Bio = user.UserProfile?.Bio,
+                Birthday = user.UserProfile?.Birthday,
+                FacebookLink = user.UserProfile?.FacebookLink,
+                BankName = user.UserProfile?.BankName,
+                BankAccount = user.UserProfile?.BankAccount
+            };
+        }
 
-			// ✅ Create UserProfile and Wallet after successful user creation
-			var userProfile = new UserProfiles
-			{
-				UserId = user.Id,
-				Avatar = "https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=6&m=1223671392&s=170667a&w=0&h=zP3l7WJinOFaGb2i1F4g8IS2ylw0FlIaa6x3tP9sebU=",
-				Birthday = userForCreationDto.Birthday,
-			};
+        public async Task CreateUser(UserForCreationDto userForCreationDto, CancellationToken ct = default)
+        {
+            await CheckUserExistWhenRegister(userForCreationDto.UserName, userForCreationDto.Email);
+            if (userForCreationDto.Role != RoleEnum.Player && userForCreationDto.Role != RoleEnum.Developer)
+            {
+                throw new InvalidOperationException("Only 'Player' and 'Developer' roles are allowed during registration.");
+            }
+            var user = mapper.Map<Users>(userForCreationDto);
 
-			var wallet = new Wallets
-			{
-				UserId = user.Id,
-				Balance = 0,
-			};
+            user.Id = Guid.NewGuid();
+            user.EmailConfirmed = false;
+            user.LockoutEnabled = true;
+            user.IsActive = true;
+            user.JoinedDate = DateTime.UtcNow;
+            user.LastLogin = DateTime.UtcNow;
 
-			repositoryManager.UserProfileRepository.CreateUserProfile(userProfile);
-			repositoryManager.WalletRepository.CreateWallet(wallet);
-			await repositoryManager.SaveAsync(ct);
+            // Create the user
+            var result = await userManager.CreateAsync(user, userForCreationDto.Password);
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException(string.Join("; ", result.Errors.Select(e => e.Description)));
+            }
 
-			string token = await userManager.GenerateEmailConfirmationTokenAsync(user);
-			string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+            // Convert RoleEnum to string
+            var roleName = userForCreationDto.Role.ToString();
 
-			var request = httpContextAccessor.HttpContext?.Request;
-			var param = new Dictionary<string, string?>
-			{
-				{ "token", token },
-				{ "email", user.Email }
-			};
-			var uri = $"{request?.Scheme}://{request?.Host}/api/auth/email-confirm";
-			var callbackUrl = QueryHelpers.AddQueryString(uri, param);
+            // Check if role exists in DB
+            var roleExists = await roleManager.RoleExistsAsync(roleName);
+            if (!roleExists)
+            {
+                throw new InvalidOperationException($"Role '{roleName}' does not exist in the database.");
+            }
 
-			var emailBody = $@"
+            // Assign role to user
+            var roleResult = await userManager.AddToRoleAsync(user, roleName);
+            if (!roleResult.Succeeded)
+            {
+                throw new InvalidOperationException(string.Join("; ", roleResult.Errors.Select(e => e.Description)));
+            }
+
+            // ✅ Create UserProfile and Wallet after successful user creation
+            var userProfile = new UserProfiles
+            {
+                UserId = user.Id,
+                Avatar = "https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=6&m=1223671392&s=170667a&w=0&h=zP3l7WJinOFaGb2i1F4g8IS2ylw0FlIaa6x3tP9sebU=",
+                Birthday = userForCreationDto.Birthday,
+            };
+
+            var wallet = new Wallets
+            {
+                UserId = user.Id,
+                Balance = 0,
+            };
+
+            repositoryManager.UserProfileRepository.CreateUserProfile(userProfile);
+            repositoryManager.WalletRepository.CreateWallet(wallet);
+            await repositoryManager.SaveAsync(ct);
+            await SendConfirmationEmailAsync(user, ct);
+        }
+
+        public async Task ResendConfirmationEmail(string email, CancellationToken ct = default)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+            if (user == null || user.EmailConfirmed)
+                throw new UserBadRequestException("Invalid or already confirmed email.");
+
+            await SendConfirmationEmailAsync(user, ct);
+        }
+
+        private async Task SendConfirmationEmailAsync(Users user, CancellationToken ct = default)
+        {
+            string token = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            string encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            var request = httpContextAccessor.HttpContext?.Request;
+            var param = new Dictionary<string, string?>
+            {
+                { "token", encodedToken },
+                { "id", user.Id.ToString() }
+            };
+
+            var uri = $"{request?.Scheme}://indie-game-zone.vercel.app/verify-email";
+            var callbackUrl = QueryHelpers.AddQueryString(uri, param);
+
+            var emailBody = $@"
         <p>Hi {user.UserName},</p>
         <p>Welcome to Indie Game Zone!</p>
         <p>Please confirm your email by clicking the link below:</p>
         <p><a href='{callbackUrl}'>Confirm Email</a></p>
         <p>If you didn’t register, please ignore this email.</p>";
 
-			var mail = new Mail(user.Email!, "Email Confirmation – Indie Game Zone", emailBody);
-			emailSender.SendEmail(mail);
-		}
-		public async Task ConfirmEmail(string token, string email, CancellationToken ct = default)
-		{
-			var user = await userManager.FindByEmailAsync(email);
-			if (user == null) throw new RequestTokenBadRequest();
+            var mail = new Mail(user.Email!, "Email Confirmation – Indie Game Zone", emailBody);
+            emailSender.SendEmail(mail);
+        }
 
-			var result = await userManager.ConfirmEmailAsync(user, token);
-			if (!result.Succeeded)
-			{
-				throw new RequestTokenBadRequest();
-			}
-		}
+        public async Task ConfirmEmail(string token, string userId, CancellationToken ct = default)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if (user == null) throw new UserNotFoundException();
 
-		public async Task<Users> ValidateUser(UserForAuthenticationDto userForAuth, CancellationToken ct = default)
-		{
-			Users? user = await userManager.FindByNameAsync(userForAuth.UserNameOrEmail!);
-			if (user == null)
-				user = await userManager.FindByEmailAsync(userForAuth.UserNameOrEmail!);
+            string decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+            var result = await userManager.ConfirmEmailAsync(user, decodedToken);
+            if (!result.Succeeded)
+            {
+                throw new RequestTokenBadRequest();
+            }
+        }
 
-			if (user == null)
-				throw new NotAuthenticatedException("Username or password is incorrect");
+        public async Task<Users> ValidateUser(UserForAuthenticationDto userForAuth, CancellationToken ct = default)
+        {
+            Users? user = await userManager.FindByNameAsync(userForAuth.UserNameOrEmail!);
+            if (user == null)
+                user = await userManager.FindByEmailAsync(userForAuth.UserNameOrEmail!);
 
-			if (!user.IsActive)
-				throw new NotAuthenticatedException("User is deactivated");
+            if (user == null)
+                throw new NotAuthenticatedException("Username or password is incorrect");
 
-			if (!user.EmailConfirmed)
-				throw new NotAuthenticatedException("Your email has not been confirmed yet");
+            if (!user.IsActive)
+                throw new NotAuthenticatedException("User is deactivated");
 
-			bool isPasswordValid = await userManager.CheckPasswordAsync(user, userForAuth.Password!);
-			if (!isPasswordValid)
-				throw new NotAuthenticatedException("Username or password is incorrect");
+            if (!user.EmailConfirmed)
+                throw new NotAuthenticatedException("Your email has not been confirmed yet");
 
-			// ✅ Optionally update last login here:
-			user.LastLogin = DateTime.UtcNow;
-			await userManager.UpdateAsync(user);
+            bool isPasswordValid = await userManager.CheckPasswordAsync(user, userForAuth.Password!);
+            if (!isPasswordValid)
+                throw new NotAuthenticatedException("Username or password is incorrect");
 
-			return user;
-		}
+            // ✅ Optionally update last login here:
+            user.LastLogin = DateTime.UtcNow;
+            await userManager.UpdateAsync(user);
 
-		public async Task<TokenDto> CreateToken(Users user, bool setRefreshExpiry, CancellationToken ct = default)
-		{
-			var jwtSettings = configuration.GetSection("JwtSettings");
-			var signingCredentials = GetSigningCredentials();
-			var claims = await GetClaims(user);
-			var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
+            return user;
+        }
 
-			user.RefreshToken = GenerateToken();
+        public async Task<TokenDto> CreateToken(Users user, bool setRefreshExpiry, CancellationToken ct = default)
+        {
+            var jwtSettings = configuration.GetSection("JwtSettings");
+            var signingCredentials = GetSigningCredentials();
+            var claims = await GetClaims(user);
+            var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
 
-			if (setRefreshExpiry)
-				user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(Convert.ToDouble(jwtSettings["refreshTokenExpires"]));
+            user.RefreshToken = GenerateToken();
 
-			await userManager.UpdateAsync(user);
+            if (setRefreshExpiry)
+                user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(Convert.ToDouble(jwtSettings["refreshTokenExpires"]));
 
-			return new TokenDto
-			{
-				AccessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions),
-				RefreshToken = user.RefreshToken
-			};
-		}
+            await userManager.UpdateAsync(user);
 
-		private SigningCredentials GetSigningCredentials()
-		{
-			var key = Encoding.UTF8.GetBytes(configuration.GetSection("SecretKey").Value!);
-			var secret = new SymmetricSecurityKey(key);
-			return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
-		}
+            return new TokenDto
+            {
+                AccessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions),
+                RefreshToken = user.RefreshToken
+            };
+        }
 
-		private async Task<List<Claim>> GetClaims(Users user)
-		{
-			var claims = new List<Claim>
-		{
-			new Claim(ClaimTypes.Name, user.UserName!),
-			new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-			new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-		};
+        private SigningCredentials GetSigningCredentials()
+        {
+            var key = Encoding.UTF8.GetBytes(configuration.GetSection("SecretKey").Value!);
+            var secret = new SymmetricSecurityKey(key);
+            return new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
+        }
 
-			var roles = await userManager.GetRolesAsync(user);
+        private async Task<List<Claim>> GetClaims(Users user)
+        {
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName!),
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
 
-			foreach (var role in roles)
-			{
-				claims.Add(new Claim(ClaimTypes.Role, role));
-			}
+            var roles = await userManager.GetRolesAsync(user);
 
-			return claims;
-		}
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
-		private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials,
-			List<Claim> claims)
-		{
-			var jwtSettings = configuration.GetSection("JwtSettings");
-			var tokenOptions = new JwtSecurityToken
-			(
-				issuer: jwtSettings["validIssuer"],
-				audience: jwtSettings["validAudience"],
-				claims: claims,
-				expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["accessTokenExpires"])),
-				signingCredentials: signingCredentials
-			);
-			return tokenOptions;
-		}
+            return claims;
+        }
 
-		private string GenerateToken()
-		{
-			var randomBytes = new byte[32];
-			using var rng = RandomNumberGenerator.Create();
-			rng.GetBytes(randomBytes);
-			return Convert.ToBase64String(randomBytes);
-		}
+        private JwtSecurityToken GenerateTokenOptions(SigningCredentials signingCredentials,
+            List<Claim> claims)
+        {
+            var jwtSettings = configuration.GetSection("JwtSettings");
+            var tokenOptions = new JwtSecurityToken
+            (
+                issuer: jwtSettings["validIssuer"],
+                audience: jwtSettings["validAudience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["accessTokenExpires"])),
+                signingCredentials: signingCredentials
+            );
+            return tokenOptions;
+        }
 
-		private string GenerateOTP()
-		{
-			Random random = new Random();
-			int otp = random.Next(100000, 999999);
-			return otp.ToString();
-		}
+        private string GenerateToken()
+        {
+            var randomBytes = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomBytes);
+            return Convert.ToBase64String(randomBytes);
+        }
 
-		private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
-		{
-			var jwtSettings = configuration.GetSection("JwtSettings");
-			var secretKey = configuration.GetSection("SecretKey").Value!;
-			var tokenValidationParameters = new TokenValidationParameters
-			{
-				ValidateIssuer = true,
-				ValidateAudience = true,
-				ValidateLifetime = false,
-				ValidateIssuerSigningKey = true,
+        private string GenerateOTP()
+        {
+            Random random = new Random();
+            int otp = random.Next(100000, 999999);
+            return otp.ToString();
+        }
 
-				ValidIssuer = jwtSettings["validIssuer"],
-				ValidAudience = jwtSettings["validAudience"],
-				IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
-			};
+        private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
+        {
+            var jwtSettings = configuration.GetSection("JwtSettings");
+            var secretKey = configuration.GetSection("SecretKey").Value!;
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = false,
+                ValidateIssuerSigningKey = true,
 
-			var tokenHandler = new JwtSecurityTokenHandler();
-			SecurityToken securityToken;
-			var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
-			var jwtSecurityToken = securityToken as JwtSecurityToken;
+                ValidIssuer = jwtSettings["validIssuer"],
+                ValidAudience = jwtSettings["validAudience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
+            };
 
-			if (jwtSecurityToken == null ||
-				!jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-				throw new SecurityTokenException("Invalid token");
+            var tokenHandler = new JwtSecurityTokenHandler();
+            SecurityToken securityToken;
+            var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);
+            var jwtSecurityToken = securityToken as JwtSecurityToken;
 
-			return principal;
-		}
+            if (jwtSecurityToken == null ||
+                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+                throw new SecurityTokenException("Invalid token");
 
-		public async Task<TokenDto> RefreshToken(TokenDto tokenDto, CancellationToken ct = default)
-		{
-			var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
-			var username = principal.Identity!.Name!;
+            return principal;
+        }
 
-			var user = await userManager.FindByNameAsync(username);
-			if (user == null || user.RefreshToken != tokenDto.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.UtcNow)
-				throw new SecurityTokenException("Invalid refresh token");
+        public async Task<TokenDto> RefreshToken(TokenDto tokenDto, CancellationToken ct = default)
+        {
+            var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
+            var username = principal.Identity!.Name!;
 
-			return await CreateToken(user, false, ct);
-		}
+            var user = await userManager.FindByNameAsync(username);
+            if (user == null ||
+                user.RefreshToken != tokenDto.RefreshToken ||
+                user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                throw new SecurityTokenException("Invalid or expired refresh token");
+            }
 
-		public Task ResendConfirmationEmail(string email, CancellationToken ct = default)
-		{
-			throw new NotImplementedException();
-		}
-	}
+            return await CreateToken(user, setRefreshExpiry: true, ct);
+        }
+
+        public async Task<UserForReturnDto> GetUserByToken(string jwt, CancellationToken ct = default)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(jwt);
+            var userId = token.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+            var dto = await GetUserById(userId, ct);
+            if (dto == null) throw new UserNotFoundException();
+            return dto;
+        }
+    }
 }
