@@ -31,12 +31,5 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.ReviewService.CreateReview(userId, gameId, reviewForCreationDto, ct);
 			return StatusCode(201);
 		}
-
-		[HttpDelete("users/{userId:guid}/reviews/{id:guid}")]
-		public async Task<IActionResult> DeleteReview([FromRoute] Guid userId, [FromRoute] Guid id, CancellationToken ct)
-		{
-			await serviceManager.ReviewService.DeleteReview(userId, id, ct);
-			return NoContent();
-		}
 	}
 }
