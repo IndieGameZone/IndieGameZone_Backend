@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace IndieGameZone.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/users")]
     [ApiController]
     public class UsersController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace IndieGameZone.API.Controllers
         }
 
         [HttpGet]
-        [Authorize(Policy = "Admin")]
+        [Authorize]
         public async Task<IActionResult> GetUsers([FromQuery] UserParameters userParameters, CancellationToken ct)
         {
             var pagedResult = await serviceManager.UserService.GetUsers(userParameters, ct);
