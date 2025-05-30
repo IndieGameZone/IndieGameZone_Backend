@@ -81,9 +81,9 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(gr => gr.Game)
 				.HasForeignKey(gr => gr.GameId)
 				.OnDelete(DeleteBehavior.Restrict);
-			builder.HasOne(g => g.GameStatus)
+			builder.HasOne(g => g.GameTypes)
 				.WithMany(gs => gs.Games)
-				.HasForeignKey(g => g.GameStatusId)
+				.HasForeignKey(g => g.GameTypeId)
 				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.Transactions)
 				.WithOne(t => t.Game)
@@ -105,7 +105,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-					GameStatusId = Guid.Parse("92f9b646-d1db-4bd1-93ed-e5dc73ccd37e"),
+					GameTypeId = Guid.Parse("92f9b646-d1db-4bd1-93ed-e5dc73ccd37e"),
 				}
 			);
 		}

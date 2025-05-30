@@ -6,9 +6,10 @@ using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.EmailServices;
 using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
-using IndieGameZone.Application.GameStatusServices;
+using IndieGameZone.Application.GameTypeServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.PlatformServices;
+using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
 using IndieGameZone.Application.TransactionServices;
 using IndieGameZone.Application.UserServices;
@@ -28,7 +29,6 @@ namespace IndieGameZone.Application
 		private readonly Lazy<ITagService> tagService;
 		private readonly Lazy<ICategoryService> categoryService;
 		private readonly Lazy<IPlatformService> platformService;
-		private readonly Lazy<IGameStatusService> gameStatusService;
 		private readonly Lazy<IAgeRestrictionService> ageRestrictionService;
 		private readonly Lazy<IGameService> gameService;
 		private readonly Lazy<IAchievementService> achievementService;
@@ -37,6 +37,8 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IGamePlatformService> gamePlatformService;
 		private readonly Lazy<IWishlistService> wishlistService;
 		private readonly Lazy<ITransactionService> transactionService;
+		private readonly Lazy<IReviewService> reviewService;
+		private readonly Lazy<IGameTypeService> gameTypeService;
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
 		{
@@ -44,7 +46,6 @@ namespace IndieGameZone.Application
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
 			categoryService = new Lazy<ICategoryService>(() => new CategoryService(repositoryManager, mapper));
 			platformService = new Lazy<IPlatformService>(() => new PlatformService(repositoryManager, mapper));
-			gameStatusService = new Lazy<IGameStatusService>(() => new GameStatusService(repositoryManager, mapper));
 			ageRestrictionService = new Lazy<IAgeRestrictionService>(() => new AgeRestrictionService(repositoryManager, mapper));
 			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService));
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
@@ -53,6 +54,8 @@ namespace IndieGameZone.Application
 			gamePlatformService = new Lazy<IGamePlatformService>(() => new GamePlatformService(repositoryManager, mapper, blobService));
 			wishlistService = new Lazy<IWishlistService>(() => new WishlistService(repositoryManager, mapper));
 			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration));
+			reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, mapper));
+			gameTypeService = new Lazy<IGameTypeService>(() => new GameTypeService(repositoryManager, mapper));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -62,8 +65,6 @@ namespace IndieGameZone.Application
 		public ICategoryService CategoryService => categoryService.Value;
 
 		public IPlatformService PlatformService => platformService.Value;
-
-		public IGameStatusService GameStatusService => gameStatusService.Value;
 
 		public IAgeRestrictionService AgeRestrictionService => ageRestrictionService.Value;
 
@@ -80,5 +81,9 @@ namespace IndieGameZone.Application
 		public IWishlistService WishlistService => wishlistService.Value;
 
 		public ITransactionService TransactionService => transactionService.Value;
+
+		public IReviewService ReviewService => reviewService.Value;
+
+		public IGameTypeService GameTypeService => gameTypeService.Value;
 	}
 }

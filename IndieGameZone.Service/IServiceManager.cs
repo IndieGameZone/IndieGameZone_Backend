@@ -4,9 +4,10 @@ using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
-using IndieGameZone.Application.GameStatusServices;
+using IndieGameZone.Application.GameTypeServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.PlatformServices;
+using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
 using IndieGameZone.Application.TransactionServices;
 using IndieGameZone.Application.UserServices;
@@ -20,7 +21,7 @@ namespace IndieGameZone.Application
 		ITagService TagService { get; }
 		ICategoryService CategoryService { get; }
 		IPlatformService PlatformService { get; }
-		IGameStatusService GameStatusService { get; }
+		IGameTypeService GameTypeService { get; }
 		IAgeRestrictionService AgeRestrictionService { get; }
 		IGameService GameService { get; }
 		IAchievementService AchievementService { get; }
@@ -29,6 +30,7 @@ namespace IndieGameZone.Application
 		IGamePlatformService GamePlatformService { get; }
 		IWishlistService WishlistService { get; }
 		ITransactionService TransactionService { get; }
+		IReviewService ReviewService { get; }
 
 	}
 }

@@ -12,7 +12,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<ITagRepository> tagRepository;
 		private readonly Lazy<ICategoryRepository> categoryRepository;
 		private readonly Lazy<IPlatformRepository> platformRepository;
-		private readonly Lazy<IGameStatusRepository> gameStatusRepository;
 		private readonly Lazy<IAgeRestrictionRepository> ageRestrictionRepository;
 		private readonly Lazy<IGameRepository> gameRepository;
 		private readonly Lazy<IAchievementRepository> achievementRepository;
@@ -26,6 +25,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IDiscountRepository> discountRepository;
 		private readonly Lazy<IWishlistRepository> wishlistRepository;
 		private readonly Lazy<ITransactionRepository> transactionRepository;
+		private readonly Lazy<IReviewRepository> reviewRepository;
+		private readonly Lazy<IGameTypeRepository> gameTypeRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -34,7 +35,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 			tagRepository = new Lazy<ITagRepository>(() => new TagRepository(appDbContext));
 			categoryRepository = new Lazy<ICategoryRepository>(() => new CategoryRepository(appDbContext));
 			platformRepository = new Lazy<IPlatformRepository>(() => new PlatformRepository(appDbContext));
-			gameStatusRepository = new Lazy<IGameStatusRepository>(() => new GameStatusRepository(appDbContext));
 			ageRestrictionRepository = new Lazy<IAgeRestrictionRepository>(() => new AgeRestrictionRepository(appDbContext));
 			gameRepository = new Lazy<IGameRepository>(() => new GameRepository(appDbContext));
 			achievementRepository = new Lazy<IAchievementRepository>(() => new AchievementRepository(appDbContext));
@@ -48,6 +48,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 			discountRepository = new Lazy<IDiscountRepository>(() => new DiscountRepository(appDbContext));
 			wishlistRepository = new Lazy<IWishlistRepository>(() => new WishlistRepository(appDbContext));
 			transactionRepository = new Lazy<ITransactionRepository>(() => new TransactionRepository(appDbContext));
+			reviewRepository = new Lazy<IReviewRepository>(() => new ReviewRepository(appDbContext));
+			gameTypeRepository = new Lazy<IGameTypeRepository>(() => new GameTypeRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
@@ -57,8 +59,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public ICategoryRepository CategoryRepository => categoryRepository.Value;
 
 		public IPlatformRepository PlatformRepository => platformRepository.Value;
-
-		public IGameStatusRepository GameStatusRepository => gameStatusRepository.Value;
 
 		public IAgeRestrictionRepository AgeRestrictionRepository => ageRestrictionRepository.Value;
 
@@ -84,6 +84,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public IWishlistRepository WishlistRepository => wishlistRepository.Value;
 
 		public ITransactionRepository TransactionRepository => transactionRepository.Value;
+
+		public IReviewRepository ReviewRepository => reviewRepository.Value;
+
+		public IGameTypeRepository GameTypeRepository => gameTypeRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{

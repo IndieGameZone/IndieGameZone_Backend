@@ -10,7 +10,7 @@ namespace IndieGameZone.Domain.IRepositories
 		ITagRepository TagRepository { get; }
 		ICategoryRepository CategoryRepository { get; }
 		IPlatformRepository PlatformRepository { get; }
-		IGameStatusRepository GameStatusRepository { get; }
+		IGameTypeRepository GameTypeRepository { get; }
 		IAgeRestrictionRepository AgeRestrictionRepository { get; }
 		IGameRepository GameRepository { get; }
 		IAchievementRepository AchievementRepository { get; }
@@ -24,5 +24,6 @@ namespace IndieGameZone.Domain.IRepositories
 		IDiscountRepository DiscountRepository { get; }
 		IWishlistRepository WishlistRepository { get; }
 		ITransactionRepository TransactionRepository { get; }
+		IReviewRepository ReviewRepository { get; }
 	}
 }

@@ -17,7 +17,7 @@
 		public Guid AgeRestrictionId { get; set; }
 		public Guid DeveloperId { get; set; }
 		public Guid CategoryId { get; set; }
-		public Guid GameStatusId { get; set; }
+		public Guid GameTypeId { get; set; }
 
 		// Navigation properties
 		public virtual ICollection<GameLanguages> GameLanguages { get; set; } = new List<GameLanguages>();
@@ -35,7 +35,7 @@
 		public virtual ICollection<Posts> Posts { get; set; } = new List<Posts>();
 		public virtual ICollection<Reports> Reports { get; set; } = new List<Reports>();
 		public virtual ICollection<GameRecommendations> GameRecommendations { get; set; } = new List<GameRecommendations>();
-		public virtual GameStatuses GameStatus { get; set; } = null!;
+		public virtual GameTypes GameTypes { get; set; } = null!;
 		public virtual ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
 
 	}
