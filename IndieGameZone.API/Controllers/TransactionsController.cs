@@ -28,13 +28,6 @@ namespace IndieGameZone.API.Controllers
 			return StatusCode(201, result);
 		}
 
-		[HttpPost("transactions/donation")]
-		public async Task<IActionResult> CreateTransactionForDonation([FromBody] TransactionForCreationDto transaction, CancellationToken ct)
-		{
-			var result = await serviceManager.TransactionService.CreateTransactionForDonation(transaction, ct);
-			return StatusCode(201, result);
-		}
-
 		[HttpPost("transactions/purchase")]
 		public async Task<IActionResult> CreateTransactionForPurchase([FromBody] TransactionForCreationDto transaction, CancellationToken ct)
 		{
