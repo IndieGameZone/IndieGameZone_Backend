@@ -108,11 +108,22 @@ namespace IndieGameZone.Application.TransactionServices
 
 			wallet.Balance -= transactionEntity.Amount;
 
+			var game = await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId, false, ct);
+
 			var developerId = (await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId, false, ct)).DeveloperId;
 
 			var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
 
-			developerWallet.Balance += transactionEntity.Amount * 0.8; // 80% to developer
+			developerWallet.Balance += game.Price * 0.8; // 80% to developer
+			developerWallet.Balance += transactionEntity.Amount - game.Price; // Donation amount to developer
+
+			var libraryEntity = new Libraries
+			{
+				UserId = transaction.UserId,
+				GameId = (Guid)transaction.GameId,
+				PurchasedAt = DateTime.Now
+			};
+			repositoryManager.LibraryRepository.AddGameToLibrary(libraryEntity);
 
 			await repositoryManager.SaveAsync(ct);
 

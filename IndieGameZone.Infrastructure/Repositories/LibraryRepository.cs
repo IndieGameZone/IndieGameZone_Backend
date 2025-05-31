@@ -1,0 +1,25 @@
+﻿using IndieGameZone.Domain.Entities;
+using IndieGameZone.Domain.IRepositories;
+using IndieGameZone.Domain.RequestFeatures;
+using IndieGameZone.Infrastructure.Extensions;
+using IndieGameZone.Infrastructure.Persistence;
+
+namespace IndieGameZone.Infrastructure.Repositories
+{
+	internal sealed class LibraryRepository : RepositoryBase<Libraries>, ILibraryRepository
+	{
+		public LibraryRepository(AppDbContext appDbContext) : base(appDbContext)
+		{
+		}
+
+		public void AddGameToLibrary(Libraries libraries) => Create(libraries);
+
+		public async Task<PagedList<Libraries>> GetLibraryByUserId(Guid userId, LibraryParameters libraryParameters, bool trackChange, CancellationToken ct = default)
+		{
+			var libraryEntities = FindByCondition(x => x.UserId == userId, trackChange)
+				.Sort();
+
+			return await PagedList<Libraries>.ToPagedList(libraryEntities, libraryParameters.PageNumber, libraryParameters.PageSize, ct);
+		}
+	}
+}

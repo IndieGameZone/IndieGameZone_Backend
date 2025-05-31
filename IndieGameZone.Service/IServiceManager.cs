@@ -6,6 +6,7 @@ using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.GameTypeServices;
 using IndieGameZone.Application.LanguageServices;
+using IndieGameZone.Application.LibraryServices;
 using IndieGameZone.Application.PlatformServices;
 using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
@@ -31,6 +32,7 @@ namespace IndieGameZone.Application
 		IWishlistService WishlistService { get; }
 		ITransactionService TransactionService { get; }
 		IReviewService ReviewService { get; }
+		ILibraryService LibraryService { get; }
 
 	}
 }
