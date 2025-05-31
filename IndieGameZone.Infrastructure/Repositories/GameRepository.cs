@@ -38,7 +38,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.GameLanguages).ThenInclude(x => x.Language).AsSplitQuery()
 				.Include(x => x.GameImages).AsSplitQuery()
 				.Include(x => x.Discounts).AsSplitQuery()
-				.Include(x => x.Status).AsSplitQuery()
 				.FirstOrDefaultAsync(ct);
 		}
 
@@ -46,7 +45,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var gameEntities = FindAll(trackChange)
 				.Include(x => x.Discounts).AsSplitQuery()
-				.Include(x => x.Status).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);
