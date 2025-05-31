@@ -12,11 +12,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(p => p.Title).HasMaxLength(150);
 			builder.Property(p => p.Content);
 			builder.Property(p => p.Image);
-			builder.Property(p => p.IsCensoredByAI);
 			builder.Property(p => p.CreatedAt);
 			builder.Property(p => p.CensoredAt);
 			builder.Property(p => p.UpdatedAt);
-			builder.Property(p => p.IsActive);
+			builder.Property(p => p.Status);
 
 			builder.HasOne(p => p.User)
 				.WithMany(u => u.Posts)

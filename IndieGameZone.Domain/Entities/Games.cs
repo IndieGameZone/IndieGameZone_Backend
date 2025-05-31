@@ -1,4 +1,6 @@
-﻿namespace IndieGameZone.Domain.Entities
+﻿using IndieGameZone.Domain.Constants;
+
+namespace IndieGameZone.Domain.Entities
 {
 	public class Games
 	{
@@ -7,8 +9,8 @@
 		public string CoverImage { get; set; } = string.Empty;
 		public string VideoLink { get; set; } = string.Empty;
 		public string Description { get; set; } = string.Empty;
-		public bool IsCensoredByAI { get; set; }
-		public bool IsActive { get; set; }
+		public bool AllowDonation { get; set; }
+		public GameStatus Status { get; set; }
 		public double Price { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public DateTime? CensoredAt { get; set; }
@@ -35,7 +37,6 @@
 		public virtual ICollection<Posts> Posts { get; set; } = new List<Posts>();
 		public virtual ICollection<Reports> Reports { get; set; } = new List<Reports>();
 		public virtual ICollection<GameRecommendations> GameRecommendations { get; set; } = new List<GameRecommendations>();
-		public virtual GameTypes GameTypes { get; set; } = null!;
 		public virtual ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
 
 	}

@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Infrastructure.Extensions;
@@ -19,7 +20,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<PagedList<Games>> GetActiveGames(ActiveGameParameters activeGameParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var gameEntities = FindByCondition(g => g.IsActive, trackChange)
+			var gameEntities = FindByCondition(g => g.Status == GameStatus.Approved, trackChange)
 				.Include(x => x.Discounts).AsSplitQuery()
 				.Sort();
 
@@ -32,12 +33,12 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.Category).AsSplitQuery()
 				.Include(x => x.AgeRestriction).AsSplitQuery()
 				.Include(x => x.Developers).AsSplitQuery()
-				.Include(x => x.GameTypes).AsSplitQuery()
 				.Include(x => x.GamePlatforms).ThenInclude(x => x.Platform).AsSplitQuery()
 				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
 				.Include(x => x.GameLanguages).ThenInclude(x => x.Language).AsSplitQuery()
 				.Include(x => x.GameImages).AsSplitQuery()
 				.Include(x => x.Discounts).AsSplitQuery()
+				.Include(x => x.Status).AsSplitQuery()
 				.FirstOrDefaultAsync(ct);
 		}
 
@@ -45,6 +46,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var gameEntities = FindAll(trackChange)
 				.Include(x => x.Discounts).AsSplitQuery()
+				.Include(x => x.Status).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);

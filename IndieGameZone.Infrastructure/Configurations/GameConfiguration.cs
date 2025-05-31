@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,8 +14,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(g => g.CoverImage);
 			builder.Property(g => g.VideoLink);
 			builder.Property(g => g.Description);
-			builder.Property(g => g.IsCensoredByAI);
-			builder.Property(g => g.IsActive);
+			builder.Property(g => g.AllowDonation);
+			builder.Property(g => g.Status);
 			builder.Property(g => g.Price);
 			builder.Property(g => g.CreatedAt);
 			builder.Property(g => g.CensoredAt);
@@ -81,10 +82,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(gr => gr.Game)
 				.HasForeignKey(gr => gr.GameId)
 				.OnDelete(DeleteBehavior.Restrict);
-			builder.HasOne(g => g.GameTypes)
-				.WithMany(gs => gs.Games)
-				.HasForeignKey(g => g.GameTypeId)
-				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(g => g.Transactions)
 				.WithOne(t => t.Game)
 				.HasForeignKey(t => t.GameId)
@@ -97,8 +94,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "The Deadseat",
 					CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatCoverImage.png",
 					VideoLink = "https://www.youtube.com/watch?v=Q4A2c8-BN78&t=2s",
-					IsCensoredByAI = true,
-					IsActive = true,
+					Status = GameStatus.Approved,
 					Price = 100000,
 					CreatedAt = DateTime.Now,
 					AverageSession = 0.5,

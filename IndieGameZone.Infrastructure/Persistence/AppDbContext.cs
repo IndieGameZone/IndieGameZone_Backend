@@ -50,7 +50,6 @@ namespace IndieGameZone.Infrastructure.Persistence
 		public DbSet<Wallets> Wallets { get; set; } = null!;
 		public DbSet<Wishlists> Wishlists { get; set; } = null!;
 		public DbSet<WithdrawRequests> WithdrawRequests { get; set; } = null!;
-		public DbSet<GameTypes> GameStatuses { get; set; } = null!;
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -66,7 +65,6 @@ namespace IndieGameZone.Infrastructure.Persistence
 			modelBuilder.ApplyConfiguration(new CommercialRegistrationConfiguration());
 			modelBuilder.ApplyConfiguration(new CouponConfiguration());
 			modelBuilder.ApplyConfiguration(new DiscountConfiguration());
-			modelBuilder.ApplyConfiguration(new GameTypeConfiguration());
 			modelBuilder.ApplyConfiguration(new GameConfiguration());
 			modelBuilder.ApplyConfiguration(new GameImageConfiguration());
 			modelBuilder.ApplyConfiguration(new GameRecommendationConfiguration());

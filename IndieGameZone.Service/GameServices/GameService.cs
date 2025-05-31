@@ -127,7 +127,7 @@ namespace IndieGameZone.Application.GameServices
 			gameEntity.Id = Guid.NewGuid();
 			gameEntity.DeveloperId = developerId;
 			gameEntity.CreatedAt = DateTime.Now;
-			gameEntity.IsActive = true;
+			gameEntity.Status = GameStatus.Approved;
 			if (game.CoverImage is not null && game.CoverImage.Length > 0)
 			{
 				string coverImageFilename = $"{game.Name}CoverImage{Path.GetExtension(game.CoverImage.FileName)}";
@@ -235,7 +235,14 @@ namespace IndieGameZone.Application.GameServices
 			{
 				throw new NotFoundException($"Game not found.");
 			}
-			gameEntity.IsActive = !gameEntity.IsActive;
+			if (gameEntity.Status == GameStatus.Approved)
+			{
+				gameEntity.Status = GameStatus.Rejected;
+			}
+			else
+			{
+				gameEntity.Status = GameStatus.Approved;
+			}
 			await repositoryManager.SaveAsync(ct);
 		}
 	}

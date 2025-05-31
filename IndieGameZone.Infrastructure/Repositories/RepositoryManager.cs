@@ -26,7 +26,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IWishlistRepository> wishlistRepository;
 		private readonly Lazy<ITransactionRepository> transactionRepository;
 		private readonly Lazy<IReviewRepository> reviewRepository;
-		private readonly Lazy<IGameTypeRepository> gameTypeRepository;
 		private readonly Lazy<ILibraryRepository> libraryRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
@@ -50,7 +49,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 			wishlistRepository = new Lazy<IWishlistRepository>(() => new WishlistRepository(appDbContext));
 			transactionRepository = new Lazy<ITransactionRepository>(() => new TransactionRepository(appDbContext));
 			reviewRepository = new Lazy<IReviewRepository>(() => new ReviewRepository(appDbContext));
-			gameTypeRepository = new Lazy<IGameTypeRepository>(() => new GameTypeRepository(appDbContext));
 			libraryRepository = new Lazy<ILibraryRepository>(() => new LibraryRepository(appDbContext));
 		}
 
@@ -88,8 +86,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public ITransactionRepository TransactionRepository => transactionRepository.Value;
 
 		public IReviewRepository ReviewRepository => reviewRepository.Value;
-
-		public IGameTypeRepository GameTypeRepository => gameTypeRepository.Value;
 
 		public ILibraryRepository LibraryRepository => libraryRepository.Value;
 

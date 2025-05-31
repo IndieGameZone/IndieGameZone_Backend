@@ -5,7 +5,6 @@ using IndieGameZone.Domain.RequestsAndResponses.Responses.GameImages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.GameLanguages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.GamePlatforms;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.GameTags;
-using IndieGameZone.Domain.RequestsAndResponses.Responses.GameTypes;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 {
@@ -23,7 +22,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public virtual AgeRestrictionForReturnDto AgeRestriction { get; set; }
 		public virtual ICollection<GamePlatformForReturnDto> GamePlatforms { get; init; }
 		public virtual ICollection<GameLanguageForReturnDto> GameLanguages { get; init; }
-		public virtual GameTypeForReturnDto GameStatus { get; init; }
 		public virtual ICollection<GameImageForReturnDto> GameImages { get; init; }
 		public virtual ICollection<DiscountForReturnDto> Discounts { get; init; }
 	}

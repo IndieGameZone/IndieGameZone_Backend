@@ -6,7 +6,6 @@ using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.EmailServices;
 using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
-using IndieGameZone.Application.GameTypeServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.LibraryServices;
 using IndieGameZone.Application.PlatformServices;
@@ -39,7 +38,6 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IWishlistService> wishlistService;
 		private readonly Lazy<ITransactionService> transactionService;
 		private readonly Lazy<IReviewService> reviewService;
-		private readonly Lazy<IGameTypeService> gameTypeService;
 		private readonly Lazy<ILibraryService> libraryService;
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
@@ -57,7 +55,6 @@ namespace IndieGameZone.Application
 			wishlistService = new Lazy<IWishlistService>(() => new WishlistService(repositoryManager, mapper));
 			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration));
 			reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, mapper));
-			gameTypeService = new Lazy<IGameTypeService>(() => new GameTypeService(repositoryManager, mapper));
 			libraryService = new Lazy<ILibraryService>(() => new LibraryService(repositoryManager, mapper));
 		}
 
@@ -86,8 +83,6 @@ namespace IndieGameZone.Application
 		public ITransactionService TransactionService => transactionService.Value;
 
 		public IReviewService ReviewService => reviewService.Value;
-
-		public IGameTypeService GameTypeService => gameTypeService.Value;
 
 		public ILibraryService LibraryService => libraryService.Value;
 	}

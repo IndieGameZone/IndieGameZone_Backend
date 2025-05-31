@@ -4,7 +4,6 @@ using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
-using IndieGameZone.Application.GameTypeServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.LibraryServices;
 using IndieGameZone.Application.PlatformServices;
@@ -22,7 +21,6 @@ namespace IndieGameZone.Application
 		ITagService TagService { get; }
 		ICategoryService CategoryService { get; }
 		IPlatformService PlatformService { get; }
-		IGameTypeService GameTypeService { get; }
 		IAgeRestrictionService AgeRestrictionService { get; }
 		IGameService GameService { get; }
 		IAchievementService AchievementService { get; }

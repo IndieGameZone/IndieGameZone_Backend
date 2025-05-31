@@ -1,4 +1,6 @@
-﻿namespace IndieGameZone.Domain.Entities
+﻿using IndieGameZone.Domain.Constants;
+
+namespace IndieGameZone.Domain.Entities
 {
 	public class Posts
 	{
@@ -6,11 +8,10 @@
 		public string Title { get; set; } = string.Empty;
 		public string Content { get; set; } = string.Empty;
 		public string Image { get; set; } = string.Empty;
-		public bool IsCensoredByAI { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public DateTime? CensoredAt { get; set; }
 		public DateTime? UpdatedAt { get; set; }
-		public bool IsActive { get; set; }
+		public PostStatus Status { get; set; }
 		public Guid UserId { get; set; }
 		public Guid GameId { get; set; }
 
