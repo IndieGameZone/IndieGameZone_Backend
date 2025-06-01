@@ -161,7 +161,7 @@ namespace IndieGameZone.Application.UserServices
 			var param = new Dictionary<string, string?>
 			{
 				{ "token", encodedToken },
-				{ "id", user.Id.ToString() }
+				{ "userId", user.Id.ToString() }
 			};
 
 			var uri = $"{request?.Scheme}://indie-game-zone.vercel.app/verify-email";
