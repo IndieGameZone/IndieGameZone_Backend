@@ -14,6 +14,7 @@ using IndieGameZone.Application.TagServices;
 using IndieGameZone.Application.TransactionServices;
 using IndieGameZone.Application.UserServices;
 using IndieGameZone.Application.WishlistServices;
+using IndieGameZone.Application.WithdrawRequestServices;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using MapsterMapper;
@@ -39,6 +40,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<ITransactionService> transactionService;
 		private readonly Lazy<IReviewService> reviewService;
 		private readonly Lazy<ILibraryService> libraryService;
+		private readonly Lazy<IWithdrawRequestService> withdrawRequestService;
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
 		{
@@ -56,6 +58,7 @@ namespace IndieGameZone.Application
 			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration));
 			reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, mapper));
 			libraryService = new Lazy<ILibraryService>(() => new LibraryService(repositoryManager, mapper));
+			withdrawRequestService = new Lazy<IWithdrawRequestService>(() => new WithdrawRequestService(repositoryManager, mapper, blobService));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -85,5 +88,7 @@ namespace IndieGameZone.Application
 		public IReviewService ReviewService => reviewService.Value;
 
 		public ILibraryService LibraryService => libraryService.Value;
+
+		public IWithdrawRequestService WithdrawRequestService => withdrawRequestService.Value;
 	}
 }

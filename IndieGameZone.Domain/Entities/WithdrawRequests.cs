@@ -4,6 +4,7 @@
 	{
 		public Guid TransactionId { get; set; }
 		public string ImageProof { get; set; } = string.Empty;
+		public bool IsTransfered { get; set; }
 		public DateTime CreatedAt { get; set; }
 
 

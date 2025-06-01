@@ -10,6 +10,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 		{
 			builder.HasKey(w => w.TransactionId);
 			builder.Property(w => w.ImageProof);
+			builder.Property(w => w.IsTransfered);
 
 			builder.HasOne(w => w.Transaction)
 				.WithOne(t => t.WithdrawRequest)

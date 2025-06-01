@@ -12,6 +12,7 @@ using IndieGameZone.Application.TagServices;
 using IndieGameZone.Application.TransactionServices;
 using IndieGameZone.Application.UserServices;
 using IndieGameZone.Application.WishlistServices;
+using IndieGameZone.Application.WithdrawRequestServices;
 
 namespace IndieGameZone.Application
 {
@@ -31,6 +32,7 @@ namespace IndieGameZone.Application
 		ITransactionService TransactionService { get; }
 		IReviewService ReviewService { get; }
 		ILibraryService LibraryService { get; }
+		IWithdrawRequestService WithdrawRequestService { get; }
 
 	}
 }
