@@ -48,7 +48,8 @@ namespace IndieGameZone.API.Extensions
 		public static void ConfigureCors(this IServiceCollection services) => services.AddCors(options =>
 		{
 			options.AddPolicy("CorsPolicy", builder =>
-				builder.AllowAnyOrigin()
+				builder.WithOrigins("http://localhost:5173/", "https://indie-game-zone.vercel.app/")
+				.AllowCredentials()
 				.AllowAnyMethod()
 				.AllowAnyHeader()
 				.WithExposedHeaders("X-Pagination"));
@@ -106,19 +107,19 @@ namespace IndieGameZone.API.Extensions
 		{
 			var jwtSettings = configuration.GetSection("JwtSettings");
 			var secretKey = configuration.GetSection("SecretKey").Value;
-            if (string.IsNullOrWhiteSpace(secretKey))
-                throw new InvalidOperationException("JWT secret key is not configured.");
+			if (string.IsNullOrWhiteSpace(secretKey))
+				throw new InvalidOperationException("JWT secret key is not configured.");
 
-            services.AddAuthentication(opt =>
+			services.AddAuthentication(opt =>
 			{
 				opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
 				opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+				opt.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 
-            })
+			})
 			.AddJwtBearer(options =>
 			{
-                options.TokenValidationParameters = new TokenValidationParameters
+				options.TokenValidationParameters = new TokenValidationParameters
 				{
 					ValidateIssuer = true,
 					ValidateAudience = true,
@@ -130,9 +131,9 @@ namespace IndieGameZone.API.Extensions
 					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
 				};
 			});
-        }
+		}
 
-        public static void ConfigureQuartz(this IServiceCollection services)
+		public static void ConfigureQuartz(this IServiceCollection services)
 		{
 			services.AddQuartz(q =>
 			{

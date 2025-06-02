@@ -29,6 +29,7 @@ namespace IndieGameZone.Application.PostServices
 			postEntity.UserId = userId;
 			postEntity.GameId = gameId;
 			postEntity.CreatedAt = DateTime.Now;
+			postEntity.Status = PostStatus.Approved;
 			if (postForCreationDto.Image is not null && postForCreationDto.Image.Length > 0)
 			{
 				string filename = $"{Guid.NewGuid()}{Path.GetExtension(postForCreationDto.Image.FileName)}";
@@ -87,6 +88,7 @@ namespace IndieGameZone.Application.PostServices
 			if (post.UserId != userId)
 				throw new UnauthorizedAccessException("You are not authorized to update this post.");
 			mapper.Map(postForUpdateDto, post);
+			post.Status = PostStatus.Approved; // Assuming the post is approved after update, adjust as necessary
 			if (postForUpdateDto.Image is not null && postForUpdateDto.Image.Length > 0)
 			{
 				await blobService.DeleteBlob(post.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
