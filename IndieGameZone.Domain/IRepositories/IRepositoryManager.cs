@@ -26,5 +26,6 @@ namespace IndieGameZone.Domain.IRepositories
 		IReviewRepository ReviewRepository { get; }
 		ILibraryRepository LibraryRepository { get; }
 		IWithdrawRequestRepository WithdrawRequestRepository { get; }
+		IPostRepository PostRepository { get; }
 	}
 }

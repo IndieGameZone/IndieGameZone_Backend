@@ -1,0 +1,57 @@
+﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.RequestFeatures;
+using IndieGameZone.Domain.RequestsAndResponses.Requests.Posts;
+using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
+
+namespace IndieGameZone.API.Controllers
+{
+	[Route("api")]
+	[ApiController]
+	public class PostsController : ControllerBase
+	{
+		private readonly IServiceManager serviceManager;
+
+		public PostsController(IServiceManager serviceManager)
+		{
+			this.serviceManager = serviceManager;
+		}
+
+		[HttpPost("users/{userId:guid}/games/{gameId:guid}/posts")]
+		public async Task<IActionResult> CreatePost(Guid userId, Guid gameId, [FromForm] PostForCreationDto postForCreationDto, CancellationToken ct)
+		{
+			await serviceManager.PostService.CreatePost(userId, gameId, postForCreationDto, ct);
+			return StatusCode(201);
+		}
+
+		[HttpDelete("users/{userId:guid}/posts/{postId:guid}")]
+		public async Task<IActionResult> DeletePost(Guid userId, Guid postId, CancellationToken ct)
+		{
+			await serviceManager.PostService.DeletePost(userId, postId, ct);
+			return NoContent();
+		}
+
+		[HttpGet("posts/{postId:guid}")]
+		public async Task<IActionResult> GetPostById(Guid postId, CancellationToken ct = default)
+		{
+			var post = await serviceManager.PostService.GetPostById(postId, ct);
+			return Ok(post);
+		}
+
+		[HttpGet("games/{gameId:guid}/posts")]
+		public async Task<IActionResult> GetPostsByGameId(Guid gameId, [FromQuery] PostParameters postParameters, CancellationToken ct = default)
+		{
+			var pagedResult = await serviceManager.PostService.GetPostsByGameId(gameId, postParameters, ct);
+			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+			return Ok(pagedResult.posts);
+		}
+
+		[HttpGet("users/{userId:guid}/posts")]
+		public async Task<IActionResult> GetPostsByUserId(Guid userId, [FromQuery] PostParameters postParameters, CancellationToken ct = default)
+		{
+			var pagedResult = await serviceManager.PostService.GetPostsByUserId(userId, postParameters, ct);
+			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+			return Ok(pagedResult.posts);
+		}
+	}
+}

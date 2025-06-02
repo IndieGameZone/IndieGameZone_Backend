@@ -28,6 +28,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IReviewRepository> reviewRepository;
 		private readonly Lazy<ILibraryRepository> libraryRepository;
 		private readonly Lazy<IWithdrawRequestRepository> withdrawRequestRepository;
+		private readonly Lazy<IPostRepository> postRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -52,6 +53,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			reviewRepository = new Lazy<IReviewRepository>(() => new ReviewRepository(appDbContext));
 			libraryRepository = new Lazy<ILibraryRepository>(() => new LibraryRepository(appDbContext));
 			withdrawRequestRepository = new Lazy<IWithdrawRequestRepository>(() => new WithdrawRequestRepository(appDbContext));
+			postRepository = new Lazy<IPostRepository>(() => new PostRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
@@ -92,6 +94,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public ILibraryRepository LibraryRepository => libraryRepository.Value;
 
 		public IWithdrawRequestRepository WithdrawRequestRepository => withdrawRequestRepository.Value;
+
+		public IPostRepository PostRepository => postRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{
