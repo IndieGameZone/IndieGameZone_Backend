@@ -8,8 +8,9 @@ namespace IndieGameZone.Domain.Utils
 {
     public class TokenDto
     {
-        public string AccessToken { get; init; }
-        public string RefreshToken { get; init; }
+        public string? AccessToken { get; init; }
+        public string? RefreshToken { get; init; }
+        public DateTime? AccessTokenExpiry { get; init; }
+        public DateTime? RefreshTokenExpiry { get; init; }
     }
-
 }

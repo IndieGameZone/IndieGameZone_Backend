@@ -130,11 +130,9 @@ namespace IndieGameZone.API.Extensions
 					IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey))
 				};
 			});
-
-			services.AddAuthorization();
         }
 
-		public static void ConfigureQuartz(this IServiceCollection services)
+        public static void ConfigureQuartz(this IServiceCollection services)
 		{
 			services.AddQuartz(q =>
 			{

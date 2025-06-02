@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using Azure.Core;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Users;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
@@ -18,7 +19,7 @@ namespace IndieGameZone.Application.UserServices
         Task ConfirmEmail(string token, string userId, CancellationToken ct = default);
         Task<Users> ValidateUser(UserForAuthenticationDto userForAuth, CancellationToken ct = default);
         Task<TokenDto> CreateToken(Users user, bool setRefreshExpiry, CancellationToken ct = default);
-        Task<TokenDto> RefreshToken(TokenDto tokenDto, CancellationToken ct = default);
+        Task<TokenDto> RefreshToken(string accessToken, string refreshToken, CancellationToken ct = default);
         Task<UserForReturnDto> GetUserByToken(string jwt, CancellationToken ct = default);
         Task<UserForReturnDto> GetUserById(string userId, CancellationToken ct = default);
         Task<(IEnumerable<UserForReturnDto> users, MetaData metaData)> GetUsers(UserParameters userParameters, CancellationToken ct = default);

@@ -34,14 +34,22 @@ namespace IndieGameZone.API.Controllers
 		{
 			var user = await serviceManager.UserService.ValidateUser(userForAuth, ct);
 
-			if (user != null)
-			{
-				var token = await serviceManager.UserService.CreateToken(user, true, ct);
-				return Ok(token);
-			}
+            if (user == null)
+                return Unauthorized();
 
-			return Unauthorized();
-		}
+            var tokenDto = await serviceManager.UserService.CreateToken(user, true, ct);
+
+            // Set refresh token cookie
+            Response.Cookies.Append("refreshToken", tokenDto.RefreshToken!, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Lax,
+                Expires = tokenDto.RefreshTokenExpiry
+            });
+
+            return Ok(tokenDto.AccessToken);
+        }
 
 		[HttpPost("resend-confirmation")]
 		public async Task<IActionResult> ResendEmailConfirmation([FromBody] ResendEmailDto dto, CancellationToken ct)
@@ -57,22 +65,35 @@ namespace IndieGameZone.API.Controllers
 			return Ok("Email confirmation success");
 		}
 
-		[HttpPost("refresh-token")]
-		public async Task<IActionResult> RefreshToken([FromBody] TokenDto tokenDto, CancellationToken ct)
-		{
-			if (tokenDto is null)
-				return BadRequest("Invalid client request");
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(CancellationToken ct)
+        {
+            var accessToken = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (string.IsNullOrEmpty(accessToken))
+                return BadRequest("Access token is missing");
 
-			try
-			{
-				var newToken = await serviceManager.UserService.RefreshToken(tokenDto, ct);
-				return Ok(newToken);
-			}
-			catch (SecurityTokenException)
-			{
-				return Unauthorized("Invalid or expired refresh token");
-			}
-		}
+            if (!Request.Cookies.TryGetValue("refreshToken", out var refreshToken))
+                return Unauthorized("Refresh token not found");
+
+            try
+            {
+                var tokenDto = await serviceManager.UserService.RefreshToken(accessToken, refreshToken, ct);
+
+                Response.Cookies.Append("refreshToken", tokenDto.RefreshToken!, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    Expires = tokenDto.RefreshTokenExpiry
+                });
+
+                return Ok(tokenDto.AccessToken);
+            }
+            catch (SecurityTokenException)
+            {
+                return Unauthorized("Invalid or expired refresh token");
+            }
+        }
 
         [HttpGet("current-user")]
         [Authorize]

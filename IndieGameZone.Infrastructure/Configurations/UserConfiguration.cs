@@ -101,7 +101,7 @@ namespace IndieGameZone.Infrastructure.Configurations
                 LockoutEnabled = true,
                 AccessFailedCount = 0,
                 IsActive = true,
-                JoinedDate = DateTime.UtcNow
+                JoinedDate = DateTime.Now
 			};
 			admin.PasswordHash = passwordHasher.HashPassword(admin, "admin");
 
@@ -120,7 +120,7 @@ namespace IndieGameZone.Infrastructure.Configurations
                 LockoutEnabled = true,
                 AccessFailedCount = 0,
                 IsActive = true,
-                JoinedDate = DateTime.UtcNow
+                JoinedDate = DateTime.Now
             };
 			moderator.PasswordHash = passwordHasher.HashPassword(moderator, "moderator");
 
@@ -139,7 +139,7 @@ namespace IndieGameZone.Infrastructure.Configurations
                 LockoutEnabled = true,
                 AccessFailedCount = 0,
                 IsActive = true,
-                JoinedDate = DateTime.UtcNow
+                JoinedDate = DateTime.Now
             };
 			player.PasswordHash = passwordHasher.HashPassword(player, "player");
 
@@ -158,7 +158,7 @@ namespace IndieGameZone.Infrastructure.Configurations
                 LockoutEnabled = true,
                 AccessFailedCount = 0,
                 IsActive = true,
-                JoinedDate = DateTime.UtcNow
+                JoinedDate = DateTime.Now
             };
 			developer1.PasswordHash = passwordHasher.HashPassword(developer1, "developer1");
 
@@ -177,7 +177,7 @@ namespace IndieGameZone.Infrastructure.Configurations
                 LockoutEnabled = true,
                 AccessFailedCount = 0,
                 IsActive = true,
-                JoinedDate = DateTime.UtcNow
+                JoinedDate = DateTime.Now
             };
 			developer2.PasswordHash = passwordHasher.HashPassword(developer2, "developer2");
 
@@ -196,7 +196,7 @@ namespace IndieGameZone.Infrastructure.Configurations
                 LockoutEnabled = true,
                 AccessFailedCount = 0,
                 IsActive = true,
-                JoinedDate = DateTime.UtcNow
+                JoinedDate = DateTime.Now
             };
 			developer3.PasswordHash = passwordHasher.HashPassword(developer3, "developer3");
 

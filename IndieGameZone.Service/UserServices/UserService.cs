@@ -253,7 +253,6 @@ namespace IndieGameZone.Application.UserServices
 			return user;
 		}
 
-
 		public async Task<TokenDto> CreateToken(Users user, bool setRefreshExpiry, CancellationToken ct = default)
 		{
 			var jwtSettings = configuration.GetSection("JwtSettings");
@@ -261,21 +260,30 @@ namespace IndieGameZone.Application.UserServices
 			var claims = await GetClaims(user);
 			var tokenOptions = GenerateTokenOptions(signingCredentials, claims);
 
-			user.RefreshToken = GenerateToken();
+			var refreshToken = await GenerateAndStoreRefreshToken(user, setRefreshExpiry, ct);
 
-			if (setRefreshExpiry)
-				user.RefreshTokenExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(jwtSettings["refreshTokenExpires"]));
-
-			await userManager.UpdateAsync(user);
-
-			return new TokenDto
+            return new TokenDto
 			{
 				AccessToken = new JwtSecurityTokenHandler().WriteToken(tokenOptions),
-				RefreshToken = user.RefreshToken
-			};
+				RefreshToken = refreshToken,
+				RefreshTokenExpiry = user.RefreshTokenExpiryTime ?? DateTime.Now.AddDays(Convert.ToDouble(jwtSettings["refreshTokenExpires"]))
+            };
 		}
 
-		private SigningCredentials GetSigningCredentials()
+        private async Task<string> GenerateAndStoreRefreshToken(Users user, bool setRefreshExpiry, CancellationToken ct = default)
+        {
+            var jwtSettings = configuration.GetSection("JwtSettings");
+
+            user.RefreshToken = GenerateToken();
+            if (setRefreshExpiry)
+                user.RefreshTokenExpiryTime = DateTime.Now.AddDays(Convert.ToDouble(jwtSettings["refreshTokenExpires"]));
+
+            await userManager.UpdateAsync(user);
+
+            return user.RefreshToken;
+        }
+
+        private SigningCredentials GetSigningCredentials()
 		{
 			var key = Encoding.UTF8.GetBytes(configuration.GetSection("SecretKey").Value!);
 			var secret = new SymmetricSecurityKey(key);
@@ -359,20 +367,20 @@ namespace IndieGameZone.Application.UserServices
 			return principal;
 		}
 
-		public async Task<TokenDto> RefreshToken(TokenDto tokenDto, CancellationToken ct = default)
-		{
-			var principal = GetPrincipalFromExpiredToken(tokenDto.AccessToken);
+		public async Task<TokenDto> RefreshToken(string accessToken, string refreshToken, CancellationToken ct = default)
+        {
+			var principal = GetPrincipalFromExpiredToken(accessToken);
 			var username = principal.Identity!.Name!;
 
 			var user = await userManager.FindByNameAsync(username);
 			if (user == null ||
-				user.RefreshToken != tokenDto.RefreshToken ||
+				user.RefreshToken != refreshToken ||
 				user.RefreshTokenExpiryTime <= DateTime.Now)
 			{
 				throw new SecurityTokenException("Invalid or expired refresh token");
 			}
 
-			return await CreateToken(user, setRefreshExpiry: true, ct);
+			return await CreateToken(user, false, ct);
 		}
 
 		public async Task<UserForReturnDto> GetUserByToken(string jwt, CancellationToken ct = default)
