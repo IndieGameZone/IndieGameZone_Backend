@@ -2,7 +2,6 @@
 using IndieGameZone.Application.AgeRestrictionServices;
 using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.DiscountServices;
-using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.LibraryServices;
@@ -27,7 +26,6 @@ namespace IndieGameZone.Application
 		IAchievementService AchievementService { get; }
 		IUserService UserService { get; }
 		IDiscountService DiscountService { get; }
-		IGamePlatformService GamePlatformService { get; }
 		IWishlistService WishlistService { get; }
 		ITransactionService TransactionService { get; }
 		IReviewService ReviewService { get; }

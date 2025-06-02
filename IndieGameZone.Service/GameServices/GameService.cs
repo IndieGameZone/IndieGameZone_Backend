@@ -106,17 +106,17 @@ namespace IndieGameZone.Application.GameServices
 			repositoryManager.GameImageRepository.DeleteGameImage(existingGameImages);
 
 			//Handle Game Platforms
-			//var existingGamePlatforms = await repositoryManager.GamePlatformRepository.GetGamePlatformsByGameId(gameId, false, ct);
-			//if (existingGamePlatforms is not null && existingGamePlatforms.Any())
-			//{
-			//	foreach (var platform in existingGamePlatforms)
-			//	{
-			//		if (platform.File != null)
-			//		{
-			//			await blobService.DeleteBlob(platform.File.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-			//		}
-			//	}
-			//}
+			var existingGamePlatforms = await repositoryManager.GamePlatformRepository.GetGamePlatformsByGameId(gameId, false, ct);
+			if (existingGamePlatforms is not null && existingGamePlatforms.Any())
+			{
+				foreach (var platform in existingGamePlatforms)
+				{
+					if (platform.File != null)
+					{
+						await blobService.DeleteBlob(platform.File.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+					}
+				}
+			}
 
 			//Handle Game Language
 			repositoryManager.GameLanguageRepository.DeleteGameLanguage(await repositoryManager.GameLanguageRepository.GetGameLanguagesByGameId(gameId, false, ct));
@@ -169,24 +169,24 @@ namespace IndieGameZone.Application.GameServices
 			}
 
 			//Handle Game Platforms
-			//if (game.GamePlatforms is not null && game.GamePlatforms.Count > 0)
-			//{
-			//	var gamePlatformEntities = new List<GamePlatforms>();
-			//	foreach (var platform in game.GamePlatforms)
-			//	{
-			//		var uploadedUrl = await blobService.UploadBlob(
-			//			$"{Guid.NewGuid()}{Path.GetExtension(platform.File.FileName)}",
-			//			StorageContainer.STORAGE_CONTAINER,
-			//			platform.File);
-			//		gamePlatformEntities.Add(new GamePlatforms
-			//		{
-			//			GameId = gameEntity.Id,
-			//			PlatformId = platform.PlatformId,
-			//			File = uploadedUrl
-			//		});
-			//	}
-			//	repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatformEntities);
-			//}
+			if (game.GamePlatforms is not null && game.GamePlatforms.Count > 0)
+			{
+				var gamePlatformEntities = new List<GamePlatforms>();
+				foreach (var platform in game.GamePlatforms)
+				{
+					var uploadedUrl = await blobService.UploadBlob(
+						$"{Guid.NewGuid()}{Path.GetExtension(platform.File.FileName)}",
+						StorageContainer.STORAGE_CONTAINER,
+						platform.File);
+					gamePlatformEntities.Add(new GamePlatforms
+					{
+						GameId = gameEntity.Id,
+						PlatformId = platform.PlatformId,
+						File = uploadedUrl
+					});
+				}
+				repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatformEntities);
+			}
 
 			//Handle Game Language
 			var gameLanguageEntitys = game.LanguageIds.Select(id => new GameLanguages { LanguageId = id, GameId = gameEntity.Id });

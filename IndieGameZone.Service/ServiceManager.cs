@@ -4,7 +4,6 @@ using IndieGameZone.Application.BlobService;
 using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.EmailServices;
-using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.LibraryServices;
@@ -35,7 +34,6 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IAchievementService> achievementService;
 		private readonly Lazy<IUserService> userService;
 		private readonly Lazy<IDiscountService> discountService;
-		private readonly Lazy<IGamePlatformService> gamePlatformService;
 		private readonly Lazy<IWishlistService> wishlistService;
 		private readonly Lazy<ITransactionService> transactionService;
 		private readonly Lazy<IReviewService> reviewService;
@@ -53,7 +51,6 @@ namespace IndieGameZone.Application
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
 			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
-			gamePlatformService = new Lazy<IGamePlatformService>(() => new GamePlatformService(repositoryManager, mapper, blobService));
 			wishlistService = new Lazy<IWishlistService>(() => new WishlistService(repositoryManager, mapper));
 			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration));
 			reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, mapper));
@@ -78,8 +75,6 @@ namespace IndieGameZone.Application
 		public IUserService UserService => userService.Value;
 
 		public IDiscountService DiscountService => discountService.Value;
-
-		public IGamePlatformService GamePlatformService => gamePlatformService.Value;
 
 		public IWishlistService WishlistService => wishlistService.Value;
 

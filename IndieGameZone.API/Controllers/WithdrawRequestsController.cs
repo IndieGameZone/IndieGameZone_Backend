@@ -41,7 +41,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("withdraw-requests/{transactionId:guid}")]
-		public async Task<IActionResult> UpdateWithdrawRequest([FromRoute] Guid transactionId, [FromForm] IFormFile imageProof, CancellationToken ct)
+		public async Task<IActionResult> UpdateWithdrawRequest([FromRoute] Guid transactionId, IFormFile imageProof, CancellationToken ct)
 		{
 			await serviceManager.WithdrawRequestService.UpdateWithdrawRequest(transactionId, imageProof, ct);
 			return NoContent();
