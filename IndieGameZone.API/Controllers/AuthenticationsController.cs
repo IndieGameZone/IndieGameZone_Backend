@@ -25,7 +25,7 @@ namespace IndieGameZone.API.Controllers
 			{
 				return BadRequest(ModelState);
 			}
-			await serviceManager.UserService.CreateUser(userForCreationDto, ct);
+			await serviceManager.UserService.CreateUser(userForCreationDto, false, ct);
 			return StatusCode(201);
 		}
 

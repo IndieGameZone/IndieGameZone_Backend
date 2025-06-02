@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Application;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.RequestFeatures;
+using IndieGameZone.Domain.RequestsAndResponses.Requests.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,19 @@ namespace IndieGameZone.API.Controllers
         {
             var user = await serviceManager.UserService.GetUserById(userId.ToString(), ct);
             return Ok(user);
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateUser([FromBody] UserForCreationDto userForCreationDto, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            await serviceManager.UserService.CreateUser(userForCreationDto, true, ct);
+            return StatusCode(201);
         }
 
         //[HttpPut("{userId:guid}")]

@@ -83,13 +83,17 @@ namespace IndieGameZone.Application.UserServices
 			};
 		}
 
-		public async Task CreateUser(UserForCreationDto userForCreationDto, CancellationToken ct = default)
+		public async Task CreateUser(UserForCreationDto userForCreationDto, bool adminFlag, CancellationToken ct = default)
 		{
 			await CheckUserExistWhenRegister(userForCreationDto.UserName, userForCreationDto.Email);
-			if (userForCreationDto.Role != RoleEnum.Player && userForCreationDto.Role != RoleEnum.Developer)
+			if (!adminFlag)
 			{
-				throw new InvalidOperationException("Only 'Player' and 'Developer' roles are allowed during registration.");
-			}
+                if (userForCreationDto.Role != RoleEnum.Player && userForCreationDto.Role != RoleEnum.Developer)
+                {
+                    throw new InvalidOperationException("Only 'Player' and 'Developer' roles are allowed during registration.");
+                }
+            }
+			
 			var user = mapper.Map<Users>(userForCreationDto);
 
 			user.Id = Guid.NewGuid();
