@@ -6,6 +6,7 @@ using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.LibraryServices;
 using IndieGameZone.Application.PlatformServices;
+using IndieGameZone.Application.PostCommentServices;
 using IndieGameZone.Application.PostServices;
 using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
@@ -33,6 +34,7 @@ namespace IndieGameZone.Application
 		ILibraryService LibraryService { get; }
 		IWithdrawRequestService WithdrawRequestService { get; }
 		IPostService PostService { get; }
+		IPostCommentService PostCommentService { get; }
 
 	}
 }

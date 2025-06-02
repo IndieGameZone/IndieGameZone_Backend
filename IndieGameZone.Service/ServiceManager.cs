@@ -8,6 +8,7 @@ using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.LibraryServices;
 using IndieGameZone.Application.PlatformServices;
+using IndieGameZone.Application.PostCommentServices;
 using IndieGameZone.Application.PostServices;
 using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
@@ -41,6 +42,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<ILibraryService> libraryService;
 		private readonly Lazy<IWithdrawRequestService> withdrawRequestService;
 		private readonly Lazy<IPostService> postService;
+		private readonly Lazy<IPostCommentService> postCommentService;
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
 		{
@@ -59,6 +61,7 @@ namespace IndieGameZone.Application
 			libraryService = new Lazy<ILibraryService>(() => new LibraryService(repositoryManager, mapper));
 			withdrawRequestService = new Lazy<IWithdrawRequestService>(() => new WithdrawRequestService(repositoryManager, mapper, blobService));
 			postService = new Lazy<IPostService>(() => new PostService(repositoryManager, mapper, blobService));
+			postCommentService = new Lazy<IPostCommentService>(() => new PostCommentService(repositoryManager, mapper));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -90,5 +93,7 @@ namespace IndieGameZone.Application
 		public IWithdrawRequestService WithdrawRequestService => withdrawRequestService.Value;
 
 		public IPostService PostService => postService.Value;
+
+		public IPostCommentService PostCommentService => postCommentService.Value;
 	}
 }
