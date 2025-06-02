@@ -429,5 +429,15 @@ namespace IndieGameZone.Application.UserServices
 			return (dtoList, usersWithMetaData.MetaData);
 		}
 
-	}
+        public async Task ChangeActiveStatus(Guid userId, CancellationToken ct = default)
+        {
+            var userEntity = await userManager.Users
+                .FirstOrDefaultAsync(u => u.Id == userId, ct);
+
+            if (userEntity == null) throw new UserNotFoundException();
+
+            userEntity.IsActive = !userEntity.IsActive;
+            await userManager.UpdateAsync(userEntity);
+        }
+    }
 }

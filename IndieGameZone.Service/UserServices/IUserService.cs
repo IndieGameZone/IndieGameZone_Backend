@@ -23,5 +23,6 @@ namespace IndieGameZone.Application.UserServices
         Task<UserForReturnDto> GetUserByToken(string jwt, CancellationToken ct = default);
         Task<UserForReturnDto> GetUserById(string userId, CancellationToken ct = default);
         Task<(IEnumerable<UserForReturnDto> users, MetaData metaData)> GetUsers(UserParameters userParameters, CancellationToken ct = default);
+        Task ChangeActiveStatus(Guid userId, CancellationToken ct = default);
     }
 }
