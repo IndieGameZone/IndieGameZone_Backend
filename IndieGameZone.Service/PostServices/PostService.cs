@@ -49,7 +49,7 @@ namespace IndieGameZone.Application.PostServices
 			if (post is null)
 				throw new NotFoundException($"Post not found.");
 			if (post.UserId != userId)
-				throw new UnauthorizedAccessException("You are not authorized to delete this post.");
+				throw new ForbiddenException("You are not authorized to delete this post.");
 			if (!string.IsNullOrEmpty(post.Image))
 			{
 				await blobService.DeleteBlob(post.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
@@ -86,7 +86,7 @@ namespace IndieGameZone.Application.PostServices
 			if (post is null)
 				throw new NotFoundException($"Post not found.");
 			if (post.UserId != userId)
-				throw new UnauthorizedAccessException("You are not authorized to update this post.");
+				throw new ForbiddenException("You are not authorized to update this post.");
 			mapper.Map(postForUpdateDto, post);
 			post.Status = PostStatus.Approved; // Assuming the post is approved after update, adjust as necessary
 			if (postForUpdateDto.Image is not null && postForUpdateDto.Image.Length > 0)

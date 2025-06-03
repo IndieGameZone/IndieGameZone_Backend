@@ -21,7 +21,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<PagedList<PostComments>> GetCommentsByPostId(Guid postId, PostCommentParameters postCommentParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var comments = FindByCondition(c => c.PostId.Equals(postId), trackChange)
+			var comments = FindByCondition(c => c.PostId.Equals(postId) && c.IsActive, trackChange)
 				.Sort();
 
 			return await PagedList<PostComments>.ToPagedList(comments, postCommentParameters.PageNumber, postCommentParameters.PageSize, ct);
