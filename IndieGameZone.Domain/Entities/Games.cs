@@ -19,7 +19,6 @@ namespace IndieGameZone.Domain.Entities
 		public Guid AgeRestrictionId { get; set; }
 		public Guid DeveloperId { get; set; }
 		public Guid CategoryId { get; set; }
-		public Guid GameTypeId { get; set; }
 
 		// Navigation properties
 		public virtual ICollection<GameLanguages> GameLanguages { get; set; } = new List<GameLanguages>();

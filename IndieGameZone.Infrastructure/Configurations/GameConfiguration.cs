@@ -101,7 +101,48 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-					GameTypeId = Guid.Parse("92f9b646-d1db-4bd1-93ed-e5dc73ccd37e"),
+				},
+				new Games
+				{
+					Id = Guid.Parse("5763f752-914c-4436-803f-4410118774a3"),
+					Name = "MidnightShift",
+					CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/MidnightShiftCoverImage.png",
+					VideoLink = "https://www.youtube.com/watch?v=v1oeNEKiwTg",
+					Status = GameStatus.Approved,
+					Price = 150000,
+					CreatedAt = DateTime.Now,
+					AverageSession = 0.5,
+					CategoryId = Guid.Parse("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
+					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
+					DeveloperId = Guid.Parse("34670beb-a794-4419-adf8-0465eea22a78"),
+				},
+				new Games
+				{
+					Id = Guid.Parse("6e55d2c1-fe9f-477d-bf58-125d73d0c26d"),
+					Name = "Broken Relic",
+					CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelicCoverImage.png",
+					VideoLink = "https://www.youtube.com/watch?v=ColSNi0XD6Q",
+					Status = GameStatus.Approved,
+					Price = 200000,
+					CreatedAt = DateTime.Now,
+					AverageSession = 3.0,
+					CategoryId = Guid.Parse("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
+					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
+					DeveloperId = Guid.Parse("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
+				},
+				new Games
+				{
+					Id = Guid.Parse("b2fd90a7-5714-489e-b952-31b59a058db1"),
+					Name = "Moldwasher",
+					CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/MoldwasherCoverImage.png",
+					VideoLink = "https://www.youtube.com/watch?v=6KGgPoY7TbY",
+					Status = GameStatus.Approved,
+					Price = 120000,
+					CreatedAt = DateTime.Now,
+					AverageSession = 1.0,
+					CategoryId = Guid.Parse("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
+					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
+					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
 				}
 			);
 		}

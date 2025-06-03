@@ -46,6 +46,65 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Id = Guid.Parse("d3e36747-a19a-41ff-b8a1-1c274e378dab"),
 					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatImage5.png",
 					GameId = Guid.Parse("65745560-c7e9-48c3-bc36-8c88d66458c7")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/MidnightShiftImage1.png",
+					GameId = Guid.Parse("5763f752-914c-4436-803f-4410118774a3")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/MidnightShiftImage2.png",
+					GameId = Guid.Parse("5763f752-914c-4436-803f-4410118774a3")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/MidnightShiftImage3.png",
+					GameId = Guid.Parse("5763f752-914c-4436-803f-4410118774a3")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic1.png",
+					GameId = Guid.Parse("6e55d2c1-fe9f-477d-bf58-125d73d0c26d")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic2.png",
+					GameId = Guid.Parse("6e55d2c1-fe9f-477d-bf58-125d73d0c26d")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic3.png",
+					GameId = Guid.Parse("6e55d2c1-fe9f-477d-bf58-125d73d0c26d")
+				}, new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic4.png",
+					GameId = Guid.Parse("6e55d2c1-fe9f-477d-bf58-125d73d0c26d")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/Moldwasher1.png",
+					GameId = Guid.Parse("b2fd90a7-5714-489e-b952-31b59a058db1")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/Moldwasher2.png",
+					GameId = Guid.Parse("b2fd90a7-5714-489e-b952-31b59a058db1")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/Moldwasher3.png",
+					GameId = Guid.Parse("b2fd90a7-5714-489e-b952-31b59a058db1")
 				}
 			);
 		}
