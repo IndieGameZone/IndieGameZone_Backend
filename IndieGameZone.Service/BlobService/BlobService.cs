@@ -1,4 +1,5 @@
-﻿using Azure.Storage.Blobs;
+﻿using Azure.Storage;
+using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 
@@ -38,11 +39,20 @@ namespace IndieGameZone.Application.BlobService
 			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
 			BlobClient blobClient = containerClient.GetBlobClient(blobName);
 
-			var httpHeaders = new BlobHttpHeaders
+			//var httpHeaders = new BlobHttpHeaders
+			//{
+			//	ContentType = file.ContentType
+			//};
+			BlobUploadOptions uploadOptions = new BlobUploadOptions
 			{
-				ContentType = file.ContentType
+				TransferOptions = new StorageTransferOptions
+				{
+					InitialTransferSize = 4 * 1024 * 1024, // 4MB
+					MaximumTransferSize = 4 * 1024 * 1024, // 4MB
+					MaximumConcurrency = 4
+				}
 			};
-			var result = await blobClient.UploadAsync(file.OpenReadStream(), httpHeaders);
+			var result = await blobClient.UploadAsync(file.OpenReadStream(), uploadOptions);
 			if (result is not null)
 			{
 				return await GetBlob(blobName, containerName);

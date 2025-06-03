@@ -6,7 +6,7 @@ using System.Text.Json;
 
 namespace IndieGameZone.API.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api")]
 	[ApiController]
 	public class PostCommentsController : ControllerBase
 	{
