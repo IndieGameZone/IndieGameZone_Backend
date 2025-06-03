@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.AgeRestrictions;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.AgeRestrictions;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Categories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Discounts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.GameImages;
@@ -17,6 +18,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public bool IsActive { get; init; }
 		public double Price { get; init; }
 		public double PriceAfterDiscount { get; set; }
+		public bool AllowDonation { get; init; }
+		public GameStatus Status { get; init; }
 		public virtual ICollection<GameTagForReturnDto> GameTags { get; init; }
 		public virtual CategoryForReturnDto Category { get; init; }
 		public virtual AgeRestrictionForReturnDto AgeRestriction { get; set; }

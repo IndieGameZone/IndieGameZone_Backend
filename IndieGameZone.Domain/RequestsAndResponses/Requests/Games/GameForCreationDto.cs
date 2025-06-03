@@ -13,7 +13,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
 		public double AverageSession { get; set; }
 		public Guid AgeRestrictionId { get; init; }
 		public Guid CategoryId { get; init; }
-		public Guid GameStatusId { get; init; }
 		public ICollection<Guid> LanguageIds { get; init; }
 		public ICollection<Guid> TagIds { get; init; }
 		public IFormFileCollection GameImages { get; init; }
