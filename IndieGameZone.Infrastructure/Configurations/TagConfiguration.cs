@@ -39,6 +39,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				new Tags { Id = Guid.Parse("8c202501-893d-427e-9faf-47e2f1d6ba2d"), Name = "Educational" },
 				new Tags { Id = Guid.Parse("a0f1e28b-a439-4e72-aed8-0baddbb515c2"), Name = "Rhythm" },
 				new Tags { Id = Guid.Parse("3d76f55a-a3c8-4f51-a959-6a36c90ba4bd"), Name = "Sports" },
+				new Tags { Id = Guid.Parse("b0c8f1d2-3e4a-4c5b-9f6d-7f8e9a0b1c2d"), Name = "Horror" },
 
 				// Themes
 				new Tags { Id = Guid.Parse("fcf4e928-dc77-405c-a13e-1d1d5e308d6b"), Name = "2D" },
