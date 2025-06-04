@@ -2,6 +2,7 @@
 using IndieGameZone.Application.AgeRestrictionServices;
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Application.CategoryServices;
+using IndieGameZone.Application.CommercialPackageServices;
 using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.EmailServices;
 using IndieGameZone.Application.GameServices;
@@ -43,8 +44,9 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IWithdrawRequestService> withdrawRequestService;
 		private readonly Lazy<IPostService> postService;
 		private readonly Lazy<IPostCommentService> postCommentService;
+        private readonly Lazy<ICommercialPackageService> commercialPackageService;
 
-		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
+        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
@@ -62,7 +64,8 @@ namespace IndieGameZone.Application
 			withdrawRequestService = new Lazy<IWithdrawRequestService>(() => new WithdrawRequestService(repositoryManager, mapper, blobService));
 			postService = new Lazy<IPostService>(() => new PostService(repositoryManager, mapper, blobService));
 			postCommentService = new Lazy<IPostCommentService>(() => new PostCommentService(repositoryManager, mapper));
-		}
+            commercialPackageService = new Lazy<ICommercialPackageService>(() => new CommercialPackageService(repositoryManager, mapper));
+        }
 
 		public ILanguageService LanguageService => languageService.Value;
 
@@ -95,5 +98,7 @@ namespace IndieGameZone.Application
 		public IPostService PostService => postService.Value;
 
 		public IPostCommentService PostCommentService => postCommentService.Value;
-	}
+
+        public ICommercialPackageService CommercialPackageService => commercialPackageService.Value;
+    }
 }

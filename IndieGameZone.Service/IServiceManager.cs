@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Application.AchievementServices;
 using IndieGameZone.Application.AgeRestrictionServices;
 using IndieGameZone.Application.CategoryServices;
+using IndieGameZone.Application.CommercialPackageServices;
 using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.LanguageServices;
@@ -35,6 +36,6 @@ namespace IndieGameZone.Application
 		IWithdrawRequestService WithdrawRequestService { get; }
 		IPostService PostService { get; }
 		IPostCommentService PostCommentService { get; }
-
-	}
+        ICommercialPackageService CommercialPackageService { get; }
+    }
 }

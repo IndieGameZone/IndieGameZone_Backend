@@ -30,8 +30,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IWithdrawRequestRepository> withdrawRequestRepository;
 		private readonly Lazy<IPostRepository> postRepository;
 		private readonly Lazy<IPostCommentRepository> postCommentRepository;
+		private readonly Lazy<ICommercialPackageRepository> commercialPackageRepository;
 
-		public RepositoryManager(AppDbContext appDbContext)
+        public RepositoryManager(AppDbContext appDbContext)
 		{
 			this.appDbContext = appDbContext;
 			languageRepository = new Lazy<ILanguageRepository>(() => new LanguageRepository(appDbContext));
@@ -56,7 +57,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 			withdrawRequestRepository = new Lazy<IWithdrawRequestRepository>(() => new WithdrawRequestRepository(appDbContext));
 			postRepository = new Lazy<IPostRepository>(() => new PostRepository(appDbContext));
 			postCommentRepository = new Lazy<IPostCommentRepository>(() => new PostCommentRepository(appDbContext));
-		}
+            commercialPackageRepository = new Lazy<ICommercialPackageRepository>(() => new CommercialPackageRepository(appDbContext));
+        }
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
 
@@ -77,6 +79,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public IUserProfileRepository UserProfileRepository => userProfileRepository.Value;
 
 		public IWalletRepository WalletRepository => walletRepository.Value;
+
 		public IGamePlatformRepository GamePlatformRepository => gamePlatformRepository.Value;
 
 		public IGameImageRepository GameImageRepository => gameImageRepository.Value;
@@ -101,7 +104,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public IPostCommentRepository PostCommentRepository => postCommentRepository.Value;
 
-		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
+        public ICommercialPackageRepository CommercialPackageRepository => commercialPackageRepository.Value;
+
+        public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{
 			var transaction = await appDbContext.Database.BeginTransactionAsync(ct);
 			return transaction.GetDbTransaction();
