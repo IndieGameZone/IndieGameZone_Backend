@@ -102,9 +102,13 @@ namespace IndieGameZone.Application.UserServices
 			user.IsActive = true;
 			user.JoinedDate = DateTime.Now;
 			user.LastLogin = DateTime.Now;
+            if (adminFlag)
+			{
+				user.EmailConfirmed = true;
+			}
 
-			// Create the user
-			var result = await userManager.CreateAsync(user, userForCreationDto.Password);
+                // Create the user
+                var result = await userManager.CreateAsync(user, userForCreationDto.Password);
 			if (!result.Succeeded)
 			{
 				throw new InvalidOperationException(string.Join("; ", result.Errors.Select(e => e.Description)));
@@ -144,8 +148,11 @@ namespace IndieGameZone.Application.UserServices
 			repositoryManager.UserProfileRepository.CreateUserProfile(userProfile);
 			repositoryManager.WalletRepository.CreateWallet(wallet);
 			await repositoryManager.SaveAsync(ct);
-			await SendConfirmationEmailAsync(user, ct);
-		}
+            if (!adminFlag)
+			{
+                await SendConfirmationEmailAsync(user, ct);
+            }
+        }
 
 		public async Task ResendConfirmationEmail(string email, CancellationToken ct = default)
 		{
