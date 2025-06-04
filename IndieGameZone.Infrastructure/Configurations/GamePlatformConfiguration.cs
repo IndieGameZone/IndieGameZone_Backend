@@ -115,6 +115,52 @@ namespace IndieGameZone.Infrastructure.Configurations
 					GameId = Guid.Parse("8dd6053e-f3b1-4019-8898-668208f4dd31"),
 					PlatformId = Guid.Parse("574cb883-e637-4f18-9518-269e4d22312c"),
 					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Missing_Mac.zip"
+				},
+
+				//Bloddymall
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("78b9e146-d318-4fc5-aa13-1ba2e7c304c9"),
+					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Bloddymall_Window.zip"
+				},
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("78b9e146-d318-4fc5-aa13-1ba2e7c304c9"),
+					PlatformId = Guid.Parse("db498cbb-c76f-4166-9836-8ecb462419e6"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Bloddymall_Linux.zip"
+				},
+
+				//Thunderhead
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("34209460-1478-4545-9f15-723eeefc5697"),
+					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Thunderhead_Window.zip"
+				},
+
+				//Evaluation
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("ae4dbda4-695a-44b8-9c93-7785cf1d717e"),
+					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Evaluation_Window.zip"
+				},
+
+				//Dominoid
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("ebe90f4b-241a-44d6-8645-4c1f28376f3e"),
+					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Dominoid_Window.zip"
+				},
+
+				//DiggingHour
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("85ce733a-7a1a-4e52-8513-2638b9c44e55"),
+					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/DiggingHour_Window.zip"
 				}
 			);
 		}

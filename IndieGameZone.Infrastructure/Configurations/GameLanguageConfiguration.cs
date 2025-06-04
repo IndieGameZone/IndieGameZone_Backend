@@ -88,6 +88,41 @@ namespace IndieGameZone.Infrastructure.Configurations
 				{
 					GameId = Guid.Parse("8dd6053e-f3b1-4019-8898-668208f4dd31"),
 					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
+				},
+
+				//Bloodmall
+				new GameLanguages
+				{
+					GameId = Guid.Parse("78b9e146-d318-4fc5-aa13-1ba2e7c304c9"),
+					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
+				},
+
+				//Thunderhead
+				new GameLanguages
+				{
+					GameId = Guid.Parse("34209460-1478-4545-9f15-723eeefc5697"),
+					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
+				},
+
+				//Evaluation
+				new GameLanguages
+				{
+					GameId = Guid.Parse("ae4dbda4-695a-44b8-9c93-7785cf1d717e"),
+					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
+				},
+
+				//Dominoid
+				new GameLanguages
+				{
+					GameId = Guid.Parse("ebe90f4b-241a-44d6-8645-4c1f28376f3e"),
+					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
+				},
+
+				//DiggingHour
+				new GameLanguages
+				{
+					GameId = Guid.Parse("85ce733a-7a1a-4e52-8513-2638b9c44e55"),
+					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
 				}
 			);
 		}
