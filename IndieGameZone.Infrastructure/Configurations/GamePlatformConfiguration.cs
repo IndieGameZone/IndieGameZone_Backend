@@ -161,6 +161,54 @@ namespace IndieGameZone.Infrastructure.Configurations
 					GameId = Guid.Parse("85ce733a-7a1a-4e52-8513-2638b9c44e55"),
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/DiggingHour_Window.zip"
+				},
+
+				//Dispatched
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("16565861-4a29-40e7-8efa-1594a82e67e8"),
+					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Dispatched_Window.zip"
+				},
+
+				//SecurityBooth
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("a60c6a31-3d0c-4bb4-9f2a-99020ea026fc"),
+					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/SecurityBooth_Window.zip"
+				},
+
+				//Atlyss
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("152e3482-be53-44db-93e6-785823f6224e"),
+					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Atlyss_Window.zip"
+				},
+
+				//Tomato
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("d11cf96a-0d4f-4834-868c-59b32f047d2a"),
+					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Tomato_Window.exe"
+				},
+
+				//Leftovers
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("ca5adbdb-160c-4a60-98b3-e4f464fbf904"),
+					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Leftovers_Window.zip"
+				},
+
+				//TheStation
+				new GamePlatforms
+				{
+					GameId = Guid.Parse("791a4c74-d469-4432-bd76-c5ace021ce8e"),
+					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheStation_Window.rar"
 				}
 			);
 		}

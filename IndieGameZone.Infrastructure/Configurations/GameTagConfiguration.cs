@@ -261,6 +261,113 @@ namespace IndieGameZone.Infrastructure.Configurations
 				{
 					GameId = Guid.Parse("85ce733a-7a1a-4e52-8513-2638b9c44e55"),
 					TagId = Guid.Parse("0a0af88e-6860-445b-b7ce-b10f46e8dea3")
+				},
+
+				//Dispatched
+				new GameTags
+				{
+					GameId = Guid.Parse("16565861-4a29-40e7-8efa-1594a82e67e8"),
+					TagId = Guid.Parse("b0c8f1d2-3e4a-4c5b-9f6d-7f8e9a0b1c2d")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("16565861-4a29-40e7-8efa-1594a82e67e8"),
+					TagId = Guid.Parse("0a0af88e-6860-445b-b7ce-b10f46e8dea3")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("16565861-4a29-40e7-8efa-1594a82e67e8"),
+					TagId = Guid.Parse("ad95ed3f-284a-45d4-adc2-75b4f3681301")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("16565861-4a29-40e7-8efa-1594a82e67e8"),
+					TagId = Guid.Parse("3ef686ac-5e11-45d8-afab-223d2d149f6f")
+				},
+
+				//SecurityBooth
+				new GameTags
+				{
+					GameId = Guid.Parse("a60c6a31-3d0c-4bb4-9f2a-99020ea026fc"),
+					TagId = Guid.Parse("b9e9a223-25b3-491b-ba92-e185a74d82ab")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("a60c6a31-3d0c-4bb4-9f2a-99020ea026fc"),
+					TagId = Guid.Parse("fcf4e928-dc77-405c-a13e-1d1d5e308d6b")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("a60c6a31-3d0c-4bb4-9f2a-99020ea026fc"),
+					TagId = Guid.Parse("e4e35307-2071-4a75-88fc-579db0077703")
+				},
+
+				//Atlyss
+				new GameTags
+				{
+					GameId = Guid.Parse("152e3482-be53-44db-93e6-785823f6224e"),
+					TagId = Guid.Parse("ad95ed3f-284a-45d4-adc2-75b4f3681301")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("152e3482-be53-44db-93e6-785823f6224e"),
+					TagId = Guid.Parse("ab6e601e-52c3-45dc-97c3-1c6e84732769")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("152e3482-be53-44db-93e6-785823f6224e"),
+					TagId = Guid.Parse("7d5d4e96-d0fa-440e-914f-1667b6ef54c1")
+				},
+
+				//Tomato
+				new GameTags
+				{
+					GameId = Guid.Parse("d11cf96a-0d4f-4834-868c-59b32f047d2a"),
+					TagId = Guid.Parse("8c202501-893d-427e-9faf-47e2f1d6ba2d")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("d11cf96a-0d4f-4834-868c-59b32f047d2a"),
+					TagId = Guid.Parse("fcf4e928-dc77-405c-a13e-1d1d5e308d6b")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("d11cf96a-0d4f-4834-868c-59b32f047d2a"),
+					TagId = Guid.Parse("8c13bf31-2b82-4452-9a5c-2968c01e1dac")
+				},
+
+				//Leftovers
+				new GameTags
+				{
+					GameId = Guid.Parse("ca5adbdb-160c-4a60-98b3-e4f464fbf904"),
+					TagId = Guid.Parse("46c0001e-beb3-4291-885a-f076e53f40fd")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("ca5adbdb-160c-4a60-98b3-e4f464fbf904"),
+					TagId = Guid.Parse("b0c8f1d2-3e4a-4c5b-9f6d-7f8e9a0b1c2d")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("ca5adbdb-160c-4a60-98b3-e4f464fbf904"),
+					TagId = Guid.Parse("6cc4c52b-3b0e-4641-9997-8a1e6c29753b")
+				},
+
+				//TheStation
+				new GameTags
+				{
+					GameId = Guid.Parse("791a4c74-d469-4432-bd76-c5ace021ce8e"),
+					TagId = Guid.Parse("3ef686ac-5e11-45d8-afab-223d2d149f6f")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("791a4c74-d469-4432-bd76-c5ace021ce8e"),
+					TagId = Guid.Parse("0a0af88e-6860-445b-b7ce-b10f46e8dea3")
+				},
+				new GameTags
+				{
+					GameId = Guid.Parse("791a4c74-d469-4432-bd76-c5ace021ce8e"),
+					TagId = Guid.Parse("b0c8f1d2-3e4a-4c5b-9f6d-7f8e9a0b1c2d")
 				}
 			);
 		}

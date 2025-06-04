@@ -123,6 +123,48 @@ namespace IndieGameZone.Infrastructure.Configurations
 				{
 					GameId = Guid.Parse("85ce733a-7a1a-4e52-8513-2638b9c44e55"),
 					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
+				},
+
+				//Dispatched
+				new GameLanguages
+				{
+					GameId = Guid.Parse("16565861-4a29-40e7-8efa-1594a82e67e8"),
+					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
+				},
+
+				//SecurityBooth
+				new GameLanguages
+				{
+					GameId = Guid.Parse("a60c6a31-3d0c-4bb4-9f2a-99020ea026fc"),
+					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
+				},
+
+				//Atlyss
+				new GameLanguages
+				{
+					GameId = Guid.Parse("152e3482-be53-44db-93e6-785823f6224e"),
+					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
+				},
+
+				//Tomato
+				new GameLanguages
+				{
+					GameId = Guid.Parse("d11cf96a-0d4f-4834-868c-59b32f047d2a"),
+					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
+				},
+
+				//Leftovers
+				new GameLanguages
+				{
+					GameId = Guid.Parse("ca5adbdb-160c-4a60-98b3-e4f464fbf904"),
+					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
+				},
+
+				//TheStation
+				new GameLanguages
+				{
+					GameId = Guid.Parse("791a4c74-d469-4432-bd76-c5ace021ce8e"),
+					LanguageId = Guid.Parse("8f29f2a5-146d-44df-95ba-a972e36b7527")
 				}
 			);
 		}

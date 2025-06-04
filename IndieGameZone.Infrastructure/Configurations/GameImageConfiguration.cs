@@ -339,6 +339,126 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Id = Guid.NewGuid(),
 					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DiggingHourImage3.png",
 					GameId = Guid.Parse("85ce733a-7a1a-4e52-8513-2638b9c44e55")
+				},
+
+				//Dispatched
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DispatchedImage1.png",
+					GameId = Guid.Parse("16565861-4a29-40e7-8efa-1594a82e67e8")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DispatchedImage2.png",
+					GameId = Guid.Parse("16565861-4a29-40e7-8efa-1594a82e67e8")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DispatchedImage3.png",
+					GameId = Guid.Parse("16565861-4a29-40e7-8efa-1594a82e67e8")
+				},
+
+				//SecurityBooth
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/SecurityBoothImage1.png",
+					GameId = Guid.Parse("a60c6a31-3d0c-4bb4-9f2a-99020ea026fc")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/SecurityBoothImage2.png",
+					GameId = Guid.Parse("a60c6a31-3d0c-4bb4-9f2a-99020ea026fc")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/SecurityBoothImage3.png",
+					GameId = Guid.Parse("a60c6a31-3d0c-4bb4-9f2a-99020ea026fc")
+				},
+
+				//Atlyss
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/AtlyssImage1.png",
+					GameId = Guid.Parse("152e3482-be53-44db-93e6-785823f6224e")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/AtlyssImage2.png",
+					GameId = Guid.Parse("152e3482-be53-44db-93e6-785823f6224e")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/AtlyssImage3.png",
+					GameId = Guid.Parse("152e3482-be53-44db-93e6-785823f6224e")
+				},
+
+				//Tomato
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TomatoImage1.png",
+					GameId = Guid.Parse("d11cf96a-0d4f-4834-868c-59b32f047d2a")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TomatoImage2.png",
+					GameId = Guid.Parse("d11cf96a-0d4f-4834-868c-59b32f047d2a")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TomatoImage3.png",
+					GameId = Guid.Parse("d11cf96a-0d4f-4834-868c-59b32f047d2a")
+				},
+
+				//Leftovers
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/LeftoversImage1.png",
+					GameId = Guid.Parse("ca5adbdb-160c-4a60-98b3-e4f464fbf904")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/LeftoversImage2.png",
+					GameId = Guid.Parse("ca5adbdb-160c-4a60-98b3-e4f464fbf904")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/LeftoversImage3.png",
+					GameId = Guid.Parse("ca5adbdb-160c-4a60-98b3-e4f464fbf904")
+				},
+
+				//TheStation
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheStationImage1.png",
+					GameId = Guid.Parse("791a4c74-d469-4432-bd76-c5ace021ce8e")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheStationImage2.png",
+					GameId = Guid.Parse("791a4c74-d469-4432-bd76-c5ace021ce8e")
+				},
+				new GameImages
+				{
+					Id = Guid.NewGuid(),
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheStationImage3.png",
+					GameId = Guid.Parse("791a4c74-d469-4432-bd76-c5ace021ce8e")
 				}
 			);
 		}
