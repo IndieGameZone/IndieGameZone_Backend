@@ -343,13 +343,6 @@ namespace IndieGameZone.Application.UserServices
 			return Convert.ToBase64String(randomBytes);
 		}
 
-		private string GenerateOTP()
-		{
-			Random random = new Random();
-			int otp = random.Next(100000, 999999);
-			return otp.ToString();
-		}
-
 		private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
 		{
 			var jwtSettings = configuration.GetSection("JwtSettings");
@@ -445,6 +438,42 @@ namespace IndieGameZone.Application.UserServices
 
             userEntity.IsActive = !userEntity.IsActive;
             await userManager.UpdateAsync(userEntity);
+        }
+
+        public async Task SendResetPasswordToken(string email, CancellationToken ct = default)
+        {
+            var userEntity = await userManager.FindByEmailAsync(email);
+            if (userEntity is null) throw new UserNotFoundException();
+
+            var token = await userManager.GeneratePasswordResetTokenAsync(userEntity);
+
+            var mail = new Mail(userEntity.Email, "Reset password OTP", $@"
+    <div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center;'>
+        <div style='max-width: 600px; background: #ffffff; padding: 20px; border-radius: 8px; 
+                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center;'>
+            <h2 style='color: #333;'>Reset Your Password</h2>
+            <p style='font-size: 16px; color: #555;'>We received a request to reset your password. Use the code below to complete the process:</p>
+            <p style='font-size: 24px; font-weight: bold; color: #ff6f61; margin: 20px 0;'>{token}</p>
+            <p style='font-size: 14px; color: #777;'>If you didn’t request a password reset, you can ignore this email.</p>
+            <p style='font-size: 14px; color: #777;'>For assistance, contact our support team at 
+                <a href='mailto:indiegamezonecompany@gmail.com' style='color: #ff6f61;'>indiegamezonecompany@gmail.com</a>
+            </p>
+            <p style='font-size: 12px; color: #777;'>&copy; 2025 IndieGameZone. All rights reserved.</p>
+        </div>
+    </div>");
+            emailSender.SendEmail(mail);
+        }
+
+        public async Task ResetPassword(UserForResetPasswordDto dto, CancellationToken ct = default)
+        {
+            var user = await userManager.FindByEmailAsync(dto.Email);
+            if (user is null) throw new UserNotFoundException();
+
+            var result = await userManager.ResetPasswordAsync(user, dto.OTP, dto.Password);
+            if (!result.Succeeded)
+            {
+                throw new RequestTokenBadRequest();
+            }
         }
     }
 }

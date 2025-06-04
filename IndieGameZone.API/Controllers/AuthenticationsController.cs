@@ -103,5 +103,19 @@ namespace IndieGameZone.API.Controllers
             var user = await serviceManager.UserService.GetUserByToken(token, ct);
             return Ok(user);
         }
+
+        [HttpPost("password-reset-request")]
+        public async Task<IActionResult> SendResetPasswordToken([FromForm] string email, CancellationToken ct)
+        {
+            await serviceManager.UserService.SendResetPasswordToken(email, ct);
+            return Ok();
+        }
+
+        [HttpPut("password-reset")]
+        public async Task<IActionResult> ResetPassword([FromBody] UserForResetPasswordDto userForResetPasswordDto, CancellationToken ct)
+        {
+            await serviceManager.UserService.ResetPassword(userForResetPasswordDto, ct);
+            return Ok();
+        }
     }
 }
