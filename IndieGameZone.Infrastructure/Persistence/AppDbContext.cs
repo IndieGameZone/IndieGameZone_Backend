@@ -38,7 +38,7 @@ namespace IndieGameZone.Infrastructure.Persistence
 		public DbSet<Posts> Posts { get; set; } = null!;
 		public DbSet<PostTags> PostTags { get; set; } = null!;
 		public DbSet<Reports> Reports { get; set; } = null!;
-		public DbSet<ReportTypes> ReportTypes { get; set; } = null!;
+		public DbSet<ReportReasons> ReportTypes { get; set; } = null!;
 		public DbSet<Reviews> Reviews { get; set; } = null!;
 		public new DbSet<Roles> Roles { get; set; } = null!;
 		public DbSet<Tags> Tags { get; set; } = null!;
@@ -76,7 +76,7 @@ namespace IndieGameZone.Infrastructure.Persistence
 			modelBuilder.ApplyConfiguration(new PostConfiguration());
 			modelBuilder.ApplyConfiguration(new PostReactionConfiguration());
 			modelBuilder.ApplyConfiguration(new ReportConfiguration());
-			modelBuilder.ApplyConfiguration(new ReportTypeConfiguration());
+			modelBuilder.ApplyConfiguration(new ReportReasonConfiguration());
 			modelBuilder.ApplyConfiguration(new ReviewConfiguration());
 			modelBuilder.ApplyConfiguration(new RoleConfiguration());
 			modelBuilder.ApplyConfiguration(new TagConfiguration());

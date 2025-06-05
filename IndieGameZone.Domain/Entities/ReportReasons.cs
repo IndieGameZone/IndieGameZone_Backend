@@ -1,6 +1,6 @@
 ﻿namespace IndieGameZone.Domain.Entities
 {
-	public class ReportTypes
+	public class ReportReasons
 	{
 		public Guid Id { get; set; }
 		public string Name { get; set; } = string.Empty;

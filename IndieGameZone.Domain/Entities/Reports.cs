@@ -8,14 +8,14 @@
 		public Guid ReportingUserId { get; set; }
 		public Guid? ReportedUserId { get; set; }
 		public Guid? PostId { get; set; }
-		public Guid? ReportTypeId { get; set; }
+		public Guid? ReportReasonId { get; set; }
 		public Guid? GameId { get; set; }
 		public Guid? CommentId { get; set; }
 
 		//Navigation properties
 		public virtual Users ReportingUser { get; set; } = null!;
 		public virtual Users ReportedUser { get; set; } = null!;
-		public virtual ReportTypes ReportType { get; set; } = null!;
+		public virtual ReportReasons ReportReason { get; set; } = null!;
 		public virtual Posts Post { get; set; } = null!;
 		public virtual Games Game { get; set; } = null!;
 		public virtual PostComments PostComment { get; set; } = null!;
