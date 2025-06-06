@@ -50,13 +50,13 @@ namespace IndieGameZone.API.Controllers
             return StatusCode(201);
         }
 
-        //[HttpPut("{userId:guid}")]
-        //[Authorize]
-        //public async Task<IActionResult> UpdateUser([FromRoute] Guid userId, [FromForm] UserForUpdateDto userForUpdateDto, CancellationToken ct)
-        //{
-        //    await serviceManager.UserService.UpdateUser(userId, userForUpdateDto, ct);
-        //    return NoContent();
-        //}
+        [HttpPut("{userId:guid}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser([FromRoute] Guid userId, [FromForm] UserForUpdateDto userForUpdateDto, CancellationToken ct)
+        {
+            await serviceManager.UserService.UpdateUser(userId, userForUpdateDto, ct);
+            return NoContent();
+        }
 
         [HttpPut("{userId:guid}/activation")]
         [Authorize]

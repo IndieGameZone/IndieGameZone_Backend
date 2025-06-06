@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Application.EmailServices;
+﻿using IndieGameZone.Application.BlobService;
+using IndieGameZone.Application.EmailServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
@@ -30,19 +31,21 @@ namespace IndieGameZone.Application.UserServices
 		private readonly IEmailSender emailSender;
 		private readonly IHttpContextAccessor httpContextAccessor;
 		private readonly IConfiguration configuration;
+        private readonly IBlobService blobService;
 
-		public UserService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
-		{
-			this.repositoryManager = repositoryManager;
-			this.mapper = mapper;
-			this.userManager = userManager;
-			this.roleManager = roleManager;
-			this.emailSender = emailSender;
-			this.httpContextAccessor = httpContextAccessor;
-			this.configuration = configuration;
-		}
+        public UserService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IBlobService blobService)
+        {
+            this.repositoryManager = repositoryManager;
+            this.mapper = mapper;
+            this.userManager = userManager;
+            this.roleManager = roleManager;
+            this.emailSender = emailSender;
+            this.httpContextAccessor = httpContextAccessor;
+            this.configuration = configuration;
+            this.blobService = blobService;
+        }
 
-		private async Task CheckUserExistWhenRegister(string userName, string email, CancellationToken ct = default)
+        private async Task CheckUserExistWhenRegister(string userName, string email, CancellationToken ct = default)
 		{
 			if (await userManager.FindByNameAsync(userName) is not null)
 				throw new UserBadRequestException("Username already exists");
@@ -494,6 +497,24 @@ namespace IndieGameZone.Application.UserServices
                 var errors = string.Join("; ", result.Errors.Select(e => e.Description));
                 throw new UserBadRequestException($"Failed to change password: {errors}");
             }
+        }
+
+        public async Task UpdateUser(Guid userId, UserForUpdateDto userForUpdateDto, CancellationToken ct = default)
+        {
+            var userProfileEntity = await repositoryManager.UserProfileRepository.GetUserProfileById(userId, true, ct);
+            if (userProfileEntity is null)
+            {
+                throw new NotFoundException($"User Profile not found.");
+            }
+
+            mapper.Map(userForUpdateDto, userProfileEntity);
+            if (userForUpdateDto.Avatar is not null && userForUpdateDto.Avatar.Length > 0)
+            {
+                await blobService.DeleteBlob(userProfileEntity.Avatar.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+                string filename = $"{Guid.NewGuid()}{Path.GetExtension(userForUpdateDto.Avatar.FileName)}";
+                userProfileEntity.Avatar = await blobService.UploadBlob(filename, StorageContainer.STORAGE_CONTAINER, userForUpdateDto.Avatar);
+            }
+            await repositoryManager.SaveAsync(ct);
         }
     }
 }

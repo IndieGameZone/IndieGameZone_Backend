@@ -10,9 +10,7 @@ namespace IndieGameZone.Domain.IRepositories
 {
     public interface IUserProfileRepository
     {
-        //Task<PagedList<UserProfiles>> GetUserProfiles(bool trackChange, CancellationToken ct = default);
-        //Task<UserProfiles?> GetUserProfileById(Guid id, bool trackChange, CancellationToken ct = default);
+        Task<UserProfiles?> GetUserProfileById(Guid id, bool trackChange, CancellationToken ct = default);
         void CreateUserProfile(UserProfiles userProfile);
-        //void DeleteUserProfile(UserProfiles userProfile);
     }
 }

@@ -27,6 +27,6 @@ namespace IndieGameZone.Application.UserServices
         Task SendResetPasswordToken(string email, CancellationToken ct = default);
         Task ResetPassword(UserForResetPasswordDto userForResetPasswordDto, CancellationToken ct = default);
         Task UpdatePassword(Guid userId, UserForUpdatePasswordDto userForUpdatePasswordDto, CancellationToken ct = default);
-    //    Task UpdateUser(Guid userId, UserForUpdateDto userForUpdateDto, CancellationToken ct = default);
+        Task UpdateUser(Guid userId, UserForUpdateDto userForUpdateDto, CancellationToken ct = default);
     }
 }
