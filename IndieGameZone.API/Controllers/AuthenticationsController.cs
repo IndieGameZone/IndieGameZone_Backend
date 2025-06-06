@@ -83,8 +83,9 @@ namespace IndieGameZone.API.Controllers
                 {
                     HttpOnly = true,
                     Secure = true,
-                    SameSite = SameSiteMode.Lax,
-                    Expires = tokenDto.RefreshTokenExpiry
+                    SameSite = SameSiteMode.None,
+                    Expires = tokenDto.RefreshTokenExpiry,
+		    SecurePolicy = CookieSecurePolicy.Always
                 });
 
                 return Ok(tokenDto.AccessToken);
