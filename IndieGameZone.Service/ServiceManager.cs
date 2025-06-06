@@ -11,6 +11,7 @@ using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.LibraryServices;
 using IndieGameZone.Application.PlatformServices;
 using IndieGameZone.Application.PostCommentServices;
+using IndieGameZone.Application.PostReactionServices;
 using IndieGameZone.Application.PostServices;
 using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
@@ -47,6 +48,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IPostCommentService> postCommentService;
 		private readonly Lazy<ICommercialPackageService> commercialPackageService;
 		private readonly Lazy<IGamePlatformService> gamePlatformService;
+		private readonly Lazy<IPostReactionService> postReactionService;
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
 		{
@@ -68,6 +70,7 @@ namespace IndieGameZone.Application
 			postCommentService = new Lazy<IPostCommentService>(() => new PostCommentService(repositoryManager, mapper));
 			commercialPackageService = new Lazy<ICommercialPackageService>(() => new CommercialPackageService(repositoryManager, mapper));
 			gamePlatformService = new Lazy<IGamePlatformService>(() => new GamePlatformService(repositoryManager, mapper, blobService));
+			postReactionService = new Lazy<IPostReactionService>(() => new PostReactionService(repositoryManager));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -105,5 +108,7 @@ namespace IndieGameZone.Application
 		public ICommercialPackageService CommercialPackageService => commercialPackageService.Value;
 
 		public IGamePlatformService GamePlatformService => gamePlatformService.Value;
+
+		public IPostReactionService PostReactionService => postReactionService.Value;
 	}
 }

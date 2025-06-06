@@ -9,6 +9,7 @@ using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.LibraryServices;
 using IndieGameZone.Application.PlatformServices;
 using IndieGameZone.Application.PostCommentServices;
+using IndieGameZone.Application.PostReactionServices;
 using IndieGameZone.Application.PostServices;
 using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
@@ -39,5 +40,6 @@ namespace IndieGameZone.Application
 		IPostCommentService PostCommentService { get; }
 		ICommercialPackageService CommercialPackageService { get; }
 		IGamePlatformService GamePlatformService { get; }
+		IPostReactionService PostReactionService { get; }
 	}
 }
