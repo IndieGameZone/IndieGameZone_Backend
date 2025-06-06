@@ -5,6 +5,7 @@ using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.CommercialPackageServices;
 using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.EmailServices;
+using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.LibraryServices;
@@ -44,9 +45,10 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IWithdrawRequestService> withdrawRequestService;
 		private readonly Lazy<IPostService> postService;
 		private readonly Lazy<IPostCommentService> postCommentService;
-        private readonly Lazy<ICommercialPackageService> commercialPackageService;
+		private readonly Lazy<ICommercialPackageService> commercialPackageService;
+		private readonly Lazy<IGamePlatformService> gamePlatformService;
 
-        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
+		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
@@ -64,8 +66,9 @@ namespace IndieGameZone.Application
 			withdrawRequestService = new Lazy<IWithdrawRequestService>(() => new WithdrawRequestService(repositoryManager, mapper, blobService));
 			postService = new Lazy<IPostService>(() => new PostService(repositoryManager, mapper, blobService));
 			postCommentService = new Lazy<IPostCommentService>(() => new PostCommentService(repositoryManager, mapper));
-            commercialPackageService = new Lazy<ICommercialPackageService>(() => new CommercialPackageService(repositoryManager, mapper));
-        }
+			commercialPackageService = new Lazy<ICommercialPackageService>(() => new CommercialPackageService(repositoryManager, mapper));
+			gamePlatformService = new Lazy<IGamePlatformService>(() => new GamePlatformService(repositoryManager, mapper, blobService));
+		}
 
 		public ILanguageService LanguageService => languageService.Value;
 
@@ -99,6 +102,8 @@ namespace IndieGameZone.Application
 
 		public IPostCommentService PostCommentService => postCommentService.Value;
 
-        public ICommercialPackageService CommercialPackageService => commercialPackageService.Value;
-    }
+		public ICommercialPackageService CommercialPackageService => commercialPackageService.Value;
+
+		public IGamePlatformService GamePlatformService => gamePlatformService.Value;
+	}
 }

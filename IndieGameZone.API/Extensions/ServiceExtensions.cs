@@ -48,7 +48,7 @@ namespace IndieGameZone.API.Extensions
 		public static void ConfigureCors(this IServiceCollection services) => services.AddCors(options =>
 		{
 			options.AddPolicy("CorsPolicy", builder =>
-				builder.WithOrigins("http://localhost:5173", "https://indie-game-zone.vercel.app")
+				builder.WithOrigins("http://localhost:5173", "https://indie-game-zone.vercel.app", "https://localhost:5173")
 				.AllowCredentials()
 				.AllowAnyMethod()
 				.AllowAnyHeader()

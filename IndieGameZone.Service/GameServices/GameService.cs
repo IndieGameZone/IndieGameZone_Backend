@@ -105,19 +105,6 @@ namespace IndieGameZone.Application.GameServices
 			}
 			repositoryManager.GameImageRepository.DeleteGameImage(existingGameImages);
 
-			//Handle Game Platforms
-			var existingGamePlatforms = await repositoryManager.GamePlatformRepository.GetGamePlatformsByGameId(gameId, false, ct);
-			if (existingGamePlatforms is not null && existingGamePlatforms.Any())
-			{
-				foreach (var platform in existingGamePlatforms)
-				{
-					if (platform.File != null)
-					{
-						await blobService.DeleteBlob(platform.File.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-					}
-				}
-			}
-
 			//Handle Game Language
 			repositoryManager.GameLanguageRepository.DeleteGameLanguage(await repositoryManager.GameLanguageRepository.GetGameLanguagesByGameId(gameId, false, ct));
 
@@ -141,52 +128,18 @@ namespace IndieGameZone.Application.GameServices
 			gameEntity.DeveloperId = developerId;
 			gameEntity.CreatedAt = DateTime.Now;
 			gameEntity.Status = GameStatus.Approved;
-			if (game.CoverImage is not null && game.CoverImage.Length > 0)
-			{
-				string coverImageFilename = $"{game.Name}CoverImage{Path.GetExtension(game.CoverImage.FileName)}";
-				gameEntity.CoverImage = await blobService.UploadBlob(coverImageFilename, StorageContainer.STORAGE_CONTAINER, game.CoverImage);
-			}
-			//Handle Game Images
-			if (game.GameImages is not null && game.GameImages.Count > 0)
-			{
-				var gameImageEntities = new List<GameImages>();
 
-				foreach (var image in game.GameImages)
+			var gameImageEntities = new List<GameImages>();
+			foreach (var image in game.GameImages)
+			{
+				gameImageEntities.Add(new GameImages
 				{
-					var uploadedUrl = await blobService.UploadBlob(
-						$"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}",
-						StorageContainer.STORAGE_CONTAINER,
-						image);
-
-					gameImageEntities.Add(new GameImages
-					{
-						Id = Guid.NewGuid(),
-						GameId = gameEntity.Id,
-						Image = uploadedUrl
-					});
-				}
-				repositoryManager.GameImageRepository.CreateGameImage(gameImageEntities);
+					Id = Guid.NewGuid(),
+					GameId = gameEntity.Id,
+					Image = image
+				});
 			}
-
-			//Handle Game Platforms
-			if (game.GamePlatforms is not null && game.GamePlatforms.Count > 0)
-			{
-				var gamePlatformEntities = new List<GamePlatforms>();
-				foreach (var platform in game.GamePlatforms)
-				{
-					var uploadedUrl = await blobService.UploadBlob(
-						$"{Guid.NewGuid()}{Path.GetExtension(platform.File.FileName)}",
-						StorageContainer.STORAGE_CONTAINER,
-						platform.File);
-					gamePlatformEntities.Add(new GamePlatforms
-					{
-						GameId = gameEntity.Id,
-						PlatformId = platform.PlatformId,
-						File = uploadedUrl
-					});
-				}
-				repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatformEntities);
-			}
+			repositoryManager.GameImageRepository.CreateGameImage(gameImageEntities);
 
 			//Handle Game Language
 			var gameLanguageEntitys = game.LanguageIds.Select(id => new GameLanguages { LanguageId = id, GameId = gameEntity.Id });
@@ -218,54 +171,19 @@ namespace IndieGameZone.Application.GameServices
 				throw new ForbiddenException("You do not have permission to update this game.");
 			}
 			mapper.Map(game, gameEntity);
-			if (game.CoverImage is not null && game.CoverImage.Length > 0)
-			{
-				await blobService.DeleteBlob(gameEntity.CoverImage.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-				string coverImageFilename = $"{game.Name}CoverImage{Path.GetExtension(game.CoverImage.FileName)}";
-				gameEntity.CoverImage = await blobService.UploadBlob(coverImageFilename, StorageContainer.STORAGE_CONTAINER, game.CoverImage);
-			}
 
 			//Handle Game Images
-			if (game.GameImages is not null && game.GameImages.Count > 0)
+			var gameImageEntities = new List<GameImages>();
+			foreach (var image in game.GameImages)
 			{
-				var gameImageEntities = new List<GameImages>();
-
-				foreach (var image in game.GameImages)
+				gameImageEntities.Add(new GameImages
 				{
-					var uploadedUrl = await blobService.UploadBlob(
-						$"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}",
-						StorageContainer.STORAGE_CONTAINER,
-						image);
-
-					gameImageEntities.Add(new GameImages
-					{
-						Id = Guid.NewGuid(),
-						GameId = gameEntity.Id,
-						Image = uploadedUrl
-					});
-				}
-				repositoryManager.GameImageRepository.CreateGameImage(gameImageEntities);
+					Id = Guid.NewGuid(),
+					GameId = gameEntity.Id,
+					Image = image,
+				});
 			}
-
-			//Handle Game Platforms
-			//if (game.GamePlatforms is not null && game.GamePlatforms.Count > 0)
-			//{
-			//	var gamePlatformEntities = new List<GamePlatforms>();
-			//	foreach (var platform in game.GamePlatforms)
-			//	{
-			//		var uploadedUrl = await blobService.UploadBlob(
-			//			$"{Guid.NewGuid()}{Path.GetExtension(platform.File.FileName)}",
-			//			StorageContainer.STORAGE_CONTAINER,
-			//			platform.File);
-			//		gamePlatformEntities.Add(new GamePlatforms
-			//		{
-			//			GameId = gameEntity.Id,
-			//			PlatformId = platform.PlatformId,
-			//			File = uploadedUrl
-			//		});
-			//	}
-			//	repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatformEntities);
-			//}
+			repositoryManager.GameImageRepository.CreateGameImage(gameImageEntities);
 
 			//Handle Game Language
 			var gameLanguageEntitys = game.LanguageIds.Select(id => new GameLanguages { LanguageId = id, GameId = gameEntity.Id });
