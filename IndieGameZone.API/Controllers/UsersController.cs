@@ -66,12 +66,12 @@ namespace IndieGameZone.API.Controllers
             return NoContent();
         }
 
-        //[HttpPut("{userId:guid}/password")]
-        //[Authorize]
-        //public async Task<IActionResult> UpdatePassword([FromRoute] Guid userId, [FromBody] UserForUpdatePasswordDto userForUpdatePasswordDto, CancellationToken ct)
-        //{
-        //    await serviceManager.UserService.UpdatePassword(userId, userForUpdatePasswordDto, ct);
-        //    return NoContent();
-        //}
+        [HttpPut("{userId:guid}/password")]
+        [Authorize]
+        public async Task<IActionResult> UpdatePassword([FromRoute] Guid userId, [FromBody] UserForUpdatePasswordDto userForUpdatePasswordDto, CancellationToken ct)
+        {
+            await serviceManager.UserService.UpdatePassword(userId, userForUpdatePasswordDto, ct);
+            return NoContent();
+        }
     }
 }

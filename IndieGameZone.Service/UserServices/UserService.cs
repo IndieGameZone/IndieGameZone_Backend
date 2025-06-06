@@ -475,5 +475,25 @@ namespace IndieGameZone.Application.UserServices
                 throw new RequestTokenBadRequest();
             }
         }
+
+        public async Task UpdatePassword(Guid userId, UserForUpdatePasswordDto userForUpdatePasswordDto, CancellationToken ct = default)
+        {
+            var userEntity = await userManager.Users
+            .FirstOrDefaultAsync(u => u.Id == userId, ct);
+
+            if (userEntity == null) throw new UserNotFoundException();
+
+            var result = await userManager.ChangePasswordAsync(
+                userEntity,
+                userForUpdatePasswordDto.CurrentPassword,
+                userForUpdatePasswordDto.NewPassword
+            );
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join("; ", result.Errors.Select(e => e.Description));
+                throw new UserBadRequestException($"Failed to change password: {errors}");
+            }
+        }
     }
 }
