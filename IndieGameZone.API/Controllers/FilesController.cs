@@ -6,26 +6,26 @@ namespace IndieGameZone.API.Controllers
 {
 	[Route("api")]
 	[ApiController]
-	public class ImagesController : ControllerBase
+	public class FilesController : ControllerBase
 	{
 		private readonly IBlobService blobService;
 
-		public ImagesController(IBlobService blobService)
+		public FilesController(IBlobService blobService)
 		{
 			this.blobService = blobService;
 		}
 
-		[HttpPost("images")]
-		public async Task<IActionResult> UploadImage(IFormFile image)
+		[HttpPost("files")]
+		public async Task<IActionResult> UploadImage(IFormFile file)
 		{
-			if (image == null || image.Length == 0)
+			if (file == null || file.Length == 0)
 			{
 				return BadRequest("No file uploaded.");
 			}
 			var uploadedUrl = await blobService.UploadBlob(
-						$"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}",
+						$"{file.Name}{Path.GetExtension(file.FileName)}",
 						StorageContainer.STORAGE_CONTAINER,
-						image);
+						file);
 
 			return Ok(uploadedUrl);
 		}

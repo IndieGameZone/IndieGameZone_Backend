@@ -20,7 +20,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<PagedList<Games>> GetActiveGames(ActiveGameParameters activeGameParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var gameEntities = FindByCondition(g => g.Status == GameStatus.Approved, trackChange)
+			var gameEntities = FindByCondition(g => g.Visibility == GameVisibility.Public, trackChange)
 				.Include(x => x.Discounts).AsSplitQuery()
 				.Sort();
 

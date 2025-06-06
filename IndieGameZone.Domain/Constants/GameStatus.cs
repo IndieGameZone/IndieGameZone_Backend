@@ -2,8 +2,10 @@
 {
 	public enum GameStatus
 	{
-		Pending,
-		Approved,
-		Rejected
+		Released,
+		InDevelopmnent,
+		OnHold,
+		Canceled,
+		Prototype
 	}
 }

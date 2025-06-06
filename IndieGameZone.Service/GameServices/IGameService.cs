@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.RequestFeatures;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 
@@ -13,6 +14,6 @@ namespace IndieGameZone.Application.GameServices
 		Task DeleteGame(Guid developerId, Guid gameId, CancellationToken ct = default);
 		Task<Guid> CreateGame(Guid developerId, GameForCreationDto game, CancellationToken ct = default);
 		Task UpdateGame(Guid developerId, Guid gameId, GameForUpdateDto game, CancellationToken ct = default);
-		Task UpdateActiveStatus(Guid gameId, CancellationToken ct = default);
+		Task UpdateActiveStatus(Guid gameId, GameVisibility gameVisibility, CancellationToken ct = default);
 	}
 }

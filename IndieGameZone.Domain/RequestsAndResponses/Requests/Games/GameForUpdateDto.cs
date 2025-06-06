@@ -1,4 +1,6 @@
-﻿namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
+﻿using IndieGameZone.Domain.Constants;
+
+namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
 {
 	public class GameForUpdateDto
 	{
@@ -6,6 +8,8 @@
 		public string? CoverImage { get; init; }
 		public string VideoLink { get; init; }
 		public string Description { get; init; }
+		public GameStatus Status { get; init; }
+		public GameVisibility Visibility { get; init; }
 		public double Price { get; init; }
 		public double AverageSession { get; set; }
 		public Guid AgeRestrictionId { get; init; }

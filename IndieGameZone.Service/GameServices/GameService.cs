@@ -127,7 +127,6 @@ namespace IndieGameZone.Application.GameServices
 			gameEntity.Id = Guid.NewGuid();
 			gameEntity.DeveloperId = developerId;
 			gameEntity.CreatedAt = DateTime.Now;
-			gameEntity.Status = GameStatus.Approved;
 
 			var gameImageEntities = new List<GameImages>();
 			foreach (var image in game.GameImages)
@@ -208,21 +207,14 @@ namespace IndieGameZone.Application.GameServices
 			return (games, gamesWithMetaData.MetaData);
 		}
 
-		public async Task UpdateActiveStatus(Guid gameId, CancellationToken ct = default)
+		public async Task UpdateActiveStatus(Guid gameId, GameVisibility gameVisibility, CancellationToken ct = default)
 		{
 			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, true, ct);
 			if (gameEntity is null)
 			{
 				throw new NotFoundException($"Game not found.");
 			}
-			if (gameEntity.Status == GameStatus.Approved)
-			{
-				gameEntity.Status = GameStatus.Rejected;
-			}
-			else
-			{
-				gameEntity.Status = GameStatus.Approved;
-			}
+			gameEntity.Visibility = gameVisibility;
 			await repositoryManager.SaveAsync(ct);
 		}
 	}
