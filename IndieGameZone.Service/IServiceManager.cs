@@ -11,6 +11,7 @@ using IndieGameZone.Application.PlatformServices;
 using IndieGameZone.Application.PostCommentServices;
 using IndieGameZone.Application.PostReactionServices;
 using IndieGameZone.Application.PostServices;
+using IndieGameZone.Application.ReportReasonServices;
 using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
 using IndieGameZone.Application.TransactionServices;
@@ -41,5 +42,6 @@ namespace IndieGameZone.Application
 		ICommercialPackageService CommercialPackageService { get; }
 		IGamePlatformService GamePlatformService { get; }
 		IPostReactionService PostReactionService { get; }
+		IReportReasonService ReportReasonService { get; }
 	}
 }
