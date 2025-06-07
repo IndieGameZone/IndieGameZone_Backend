@@ -15,6 +15,7 @@ using IndieGameZone.Application.ReportReasonServices;
 using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
 using IndieGameZone.Application.TransactionServices;
+using IndieGameZone.Application.UserFollowServices;
 using IndieGameZone.Application.UserServices;
 using IndieGameZone.Application.WishlistServices;
 using IndieGameZone.Application.WithdrawRequestServices;
@@ -43,5 +44,6 @@ namespace IndieGameZone.Application
 		IGamePlatformService GamePlatformService { get; }
 		IPostReactionService PostReactionService { get; }
 		IReportReasonService ReportReasonService { get; }
+		IUserFollowService UserFollowService { get; }
 	}
 }

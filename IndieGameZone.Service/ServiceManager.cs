@@ -17,6 +17,7 @@ using IndieGameZone.Application.ReportReasonServices;
 using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
 using IndieGameZone.Application.TransactionServices;
+using IndieGameZone.Application.UserFollowServices;
 using IndieGameZone.Application.UserServices;
 using IndieGameZone.Application.WishlistServices;
 using IndieGameZone.Application.WithdrawRequestServices;
@@ -51,6 +52,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IGamePlatformService> gamePlatformService;
 		private readonly Lazy<IPostReactionService> postReactionService;
 		private readonly Lazy<IReportReasonService> reportReasonService;
+		private readonly Lazy<IUserFollowService> userFollowService;
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
 		{
@@ -74,6 +76,7 @@ namespace IndieGameZone.Application
 			gamePlatformService = new Lazy<IGamePlatformService>(() => new GamePlatformService(repositoryManager, mapper, blobService));
 			postReactionService = new Lazy<IPostReactionService>(() => new PostReactionService(repositoryManager));
 			reportReasonService = new Lazy<IReportReasonService>(() => new ReportReasonService(repositoryManager, mapper));
+			userFollowService = new Lazy<IUserFollowService>(() => new UserFollowService(repositoryManager));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -115,5 +118,7 @@ namespace IndieGameZone.Application
 		public IPostReactionService PostReactionService => postReactionService.Value;
 
 		public IReportReasonService ReportReasonService => reportReasonService.Value;
+
+		public IUserFollowService UserFollowService => userFollowService.Value;
 	}
 }

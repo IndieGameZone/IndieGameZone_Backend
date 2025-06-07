@@ -33,6 +33,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<ICommercialPackageRepository> commercialPackageRepository;
 		private readonly Lazy<IPostReactionRepository> postReactionRepository;
 		private readonly Lazy<IReportReasonRepository> reportReasonRepository;
+		private readonly Lazy<IUserFollowRepository> userFollowRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -62,6 +63,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			commercialPackageRepository = new Lazy<ICommercialPackageRepository>(() => new CommercialPackageRepository(appDbContext));
 			postReactionRepository = new Lazy<IPostReactionRepository>(() => new PostReactionRepository(appDbContext));
 			reportReasonRepository = new Lazy<IReportReasonRepository>(() => new ReportReasonRepository(appDbContext));
+			userFollowRepository = new Lazy<IUserFollowRepository>(() => new UserFollowRepository(appDbContext));
 
 		}
 
@@ -114,6 +116,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public IPostReactionRepository PostReactionRepository => postReactionRepository.Value;
 
 		public IReportReasonRepository ReportReasonRepository => reportReasonRepository.Value;
+
+		public IUserFollowRepository UserFollowRepository => userFollowRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{
