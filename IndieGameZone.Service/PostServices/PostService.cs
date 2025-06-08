@@ -30,16 +30,20 @@ namespace IndieGameZone.Application.PostServices
 			postEntity.GameId = gameId;
 			postEntity.CreatedAt = DateTime.Now;
 			postEntity.Status = PostStatus.Approved;
-			if (postForCreationDto.Image is not null && postForCreationDto.Image.Length > 0)
+
+			IList<PostTags> postTags = new List<PostTags>();
+			foreach (var tagId in postForCreationDto.Tags)
 			{
-				string filename = $"{Guid.NewGuid()}{Path.GetExtension(postForCreationDto.Image.FileName)}";
-				postEntity.Image = await blobService.UploadBlob(filename, StorageContainer.STORAGE_CONTAINER, postForCreationDto.Image);
+				var postTag = new PostTags
+				{
+					PostId = postEntity.Id,
+					TagId = tagId
+				};
+				postTags.Add(postTag);
 			}
-			else
-			{
-				postEntity.Image = string.Empty;
-			}
+
 			repositoryManager.PostRepository.CreatePost(postEntity);
+			repositoryManager.PostTagRepository.CreatePostTag(postTags);
 			await repositoryManager.SaveAsync(ct);
 		}
 
@@ -82,19 +86,30 @@ namespace IndieGameZone.Application.PostServices
 
 		public async Task UpdatePost(Guid userId, Guid postId, PostForUpdateDto postForUpdateDto, CancellationToken ct = default)
 		{
+			var existingPostTag = await repositoryManager.PostTagRepository.GetPostTagsByPostId(postId, false, ct);
+			repositoryManager.PostTagRepository.DeletePostTag(existingPostTag);
+			await repositoryManager.SaveAsync(ct);
+
 			var post = await repositoryManager.PostRepository.GetPostById(postId, true, ct);
 			if (post is null)
 				throw new NotFoundException($"Post not found.");
 			if (post.UserId != userId)
 				throw new ForbiddenException("You are not authorized to update this post.");
 			mapper.Map(postForUpdateDto, post);
-			post.Status = PostStatus.Approved; // Assuming the post is approved after update, adjust as necessary
-			if (postForUpdateDto.Image is not null && postForUpdateDto.Image.Length > 0)
+
+			IList<PostTags> postTags = new List<PostTags>();
+			foreach (var tagId in postForUpdateDto.Tags)
 			{
-				await blobService.DeleteBlob(post.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-				string filename = $"{Guid.NewGuid()}{Path.GetExtension(postForUpdateDto.Image.FileName)}";
-				post.Image = await blobService.UploadBlob(filename, StorageContainer.STORAGE_CONTAINER, postForUpdateDto.Image);
+				var postTag = new PostTags
+				{
+					PostId = postId,
+					TagId = tagId
+				};
+				postTags.Add(postTag);
 			}
+			repositoryManager.PostTagRepository.CreatePostTag(postTags);
+
+			post.Status = PostStatus.Approved;
 			post.UpdatedAt = DateTime.Now;
 			await repositoryManager.SaveAsync(ct);
 		}

@@ -1,8 +1,8 @@
 ﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.Tags;
 
-namespace IndieGameZone.Domain.RequestsAndResponses.Responses.GameTags
+namespace IndieGameZone.Domain.RequestsAndResponses.Responses.PostTags
 {
-	public class GameTagForReturnDto
+	public class PostTagForReturnDto
 	{
 		public TagForReturnDto Tag { get; init; }
 	}

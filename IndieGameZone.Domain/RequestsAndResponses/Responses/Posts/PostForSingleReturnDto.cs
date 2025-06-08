@@ -1,4 +1,6 @@
-﻿namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Posts
+﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.PostTags;
+
+namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Posts
 {
 	public class PostForSingleReturnDto
 	{
@@ -6,5 +8,6 @@
 		public string Title { get; init; }
 		public string Content { get; init; }
 		public string Image { get; init; }
+		public ICollection<PostTagForReturnDto> PostTags { get; init; }
 	}
 }

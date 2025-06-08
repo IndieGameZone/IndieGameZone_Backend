@@ -32,5 +32,6 @@ namespace IndieGameZone.Domain.IRepositories
 		IPostReactionRepository PostReactionRepository { get; }
 		IReportReasonRepository ReportReasonRepository { get; }
 		IUserFollowRepository UserFollowRepository { get; }
+		IPostTagRepository PostTagRepository { get; }
 	}
 }

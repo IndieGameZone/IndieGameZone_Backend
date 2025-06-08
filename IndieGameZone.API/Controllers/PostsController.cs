@@ -53,5 +53,12 @@ namespace IndieGameZone.API.Controllers
 			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
 			return Ok(pagedResult.posts);
 		}
+
+		[HttpPut("users/{userId:guid}/posts/{postId:guid}")]
+		public async Task<IActionResult> UpdatePost(Guid userId, Guid postId, [FromForm] PostForUpdateDto postForUpdateDto, CancellationToken ct = default)
+		{
+			await serviceManager.PostService.UpdatePost(userId, postId, postForUpdateDto, ct);
+			return NoContent();
+		}
 	}
 }
