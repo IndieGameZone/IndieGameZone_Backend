@@ -6,5 +6,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.GamePlatforms
 	{
 		public virtual PlatformForReturnDto Platform { get; init; }
 		public string File { get; init; }
+		public double Size { get; init; }
 	}
 }

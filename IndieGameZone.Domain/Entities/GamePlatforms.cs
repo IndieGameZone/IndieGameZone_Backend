@@ -5,6 +5,7 @@
 		public Guid GameId { get; set; }
 		public Guid PlatformId { get; set; }
 		public string File { get; set; } = string.Empty;
+		public double Size { get; set; }
 
 		// Navigation properties
 		public virtual Games Game { get; set; } = null!;

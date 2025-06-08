@@ -34,6 +34,19 @@ namespace IndieGameZone.Application.BlobService
 			return blobClient.Uri.AbsoluteUri;
 		}
 
+		public async Task<double> GetBlobSize(string blobName, string containerName)
+		{
+			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+			BlobClient blobClient = containerClient.GetBlobClient(blobName);
+			var exists = await blobClient.ExistsAsync();
+			if (!exists.Value)
+			{
+				throw new FileNotFoundException($"Blob '{blobName}' not found.");
+			}
+			var properties = await blobClient.GetPropertiesAsync();
+			return properties.Value.ContentLength / (1024.0 * 1024.0); // Size in MB
+		}
+
 		public async Task<string> UploadBlob(string blobName, string containerName, IFormFile file)
 		{
 			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);

@@ -6,5 +6,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Platforms
 	{
 		[Required]
 		public string Name { get; init; }
+		[Required]
+		public double Size { get; init; }
 	}
 }

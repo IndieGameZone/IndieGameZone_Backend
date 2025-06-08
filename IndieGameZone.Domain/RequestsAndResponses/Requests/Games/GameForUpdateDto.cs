@@ -8,6 +8,9 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
 		public string? CoverImage { get; init; }
 		public string VideoLink { get; init; }
 		public string Description { get; init; }
+		public string ShortDescription { get; init; }
+		public string InstallInstruction { get; init; }
+		public bool AllowDonation { get; init; }
 		public GameStatus Status { get; init; }
 		public GameVisibility Visibility { get; init; }
 		public double Price { get; init; }

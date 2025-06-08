@@ -26,8 +26,9 @@ namespace IndieGameZone.Application.GamePlatformServices
 			foreach (var gamePlatform in gamePlatforms)
 			{
 				gamePlatform.GameId = gameId;
+				var blobName = gamePlatform.File.Split('/').Last();
+				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 			}
-
 			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatforms);
 			await repositoryManager.SaveAsync(ct);
 		}
@@ -51,6 +52,8 @@ namespace IndieGameZone.Application.GamePlatformServices
 			foreach (var gamePlatform in gamePlatforms)
 			{
 				gamePlatform.GameId = gameId;
+				var blobName = gamePlatform.File.Split('/').Last();
+				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 			}
 
 			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatforms);

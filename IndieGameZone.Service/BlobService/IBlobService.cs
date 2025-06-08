@@ -8,5 +8,6 @@ namespace IndieGameZone.Application.BlobService
 		Task<bool> DeleteBlob(string blobName, string containerName);
 		Task<string> UploadBlob(string blobName, string containerName, IFormFile file);
 		Task<List<string>> UploadBlobs(string blobName, string containerName, IFormFileCollection files);
+		Task<double> GetBlobSize(string blobName, string containerName);
 	}
 }
