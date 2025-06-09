@@ -1,4 +1,6 @@
 ﻿using Azure.Storage.Blobs;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using IndieGameZone.Application;
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Domain.Entities;
@@ -133,7 +135,22 @@ namespace IndieGameZone.API.Extensions
 			});
 		}
 
-		public static void ConfigureQuartz(this IServiceCollection services)
+        public static void ConfigureFirebase(this IServiceCollection services, IConfiguration configuration)
+        {
+            var firebaseJson = configuration["Firebase--ServiceAccount"];
+
+            if (string.IsNullOrWhiteSpace(firebaseJson))
+                throw new InvalidOperationException("Firebase service account JSON is missing in Key Vault");
+
+            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(firebaseJson));
+
+            FirebaseApp.Create(new AppOptions
+            {
+                Credential = GoogleCredential.FromStream(stream)
+            });
+        }
+
+        public static void ConfigureQuartz(this IServiceCollection services)
 		{
 			services.AddQuartz(q =>
 			{
