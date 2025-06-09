@@ -8,7 +8,7 @@
 		public Guid ReportingUserId { get; set; }
 		public Guid? ReportedUserId { get; set; }
 		public Guid? PostId { get; set; }
-		public Guid? ReportReasonId { get; set; }
+		public Guid ReportReasonId { get; set; }
 		public Guid? GameId { get; set; }
 		public Guid? CommentId { get; set; }
 

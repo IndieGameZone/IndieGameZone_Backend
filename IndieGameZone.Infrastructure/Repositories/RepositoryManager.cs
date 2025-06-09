@@ -35,6 +35,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IReportReasonRepository> reportReasonRepository;
 		private readonly Lazy<IUserFollowRepository> userFollowRepository;
 		private readonly Lazy<IPostTagRepository> postTagRepository;
+		private readonly Lazy<IReportRepository> reportRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -66,6 +67,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			reportReasonRepository = new Lazy<IReportReasonRepository>(() => new ReportReasonRepository(appDbContext));
 			userFollowRepository = new Lazy<IUserFollowRepository>(() => new UserFollowRepository(appDbContext));
 			postTagRepository = new Lazy<IPostTagRepository>(() => new PostTagRepository(appDbContext));
+			reportRepository = new Lazy<IReportRepository>(() => new ReportRepository(appDbContext));
 
 		}
 
@@ -122,6 +124,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public IUserFollowRepository UserFollowRepository => userFollowRepository.Value;
 
 		public IPostTagRepository PostTagRepository => postTagRepository.Value;
+
+		public IReportRepository ReportRepository => reportRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{

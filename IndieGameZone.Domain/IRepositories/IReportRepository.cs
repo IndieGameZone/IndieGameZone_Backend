@@ -1,0 +1,12 @@
+﻿using IndieGameZone.Domain.Entities;
+using IndieGameZone.Domain.RequestFeatures;
+
+namespace IndieGameZone.Domain.IRepositories
+{
+	public interface IReportRepository
+	{
+		void CreateReport(Reports report);
+		Task<PagedList<Reports>> GetReports(ReportParameters reportParameters, bool trackChange, CancellationToken ct = default);
+		Task<Reports?> GetReportById(Guid id, bool trackChange, CancellationToken ct = default);
+	}
+}
