@@ -50,7 +50,34 @@ namespace IndieGameZone.API.Controllers
 			return Ok(tokenDto.AccessToken);
 		}
 
-		[HttpPost("resend-confirmation")]
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto, CancellationToken ct)
+        {
+            if (string.IsNullOrWhiteSpace(dto.IdToken))
+                return BadRequest("Google ID token is required.");
+
+            try
+            {
+                var tokenDto = await serviceManager.UserService.LoginWithGoogleAsync(dto.IdToken, ct);
+
+                // Set refresh token cookie
+                Response.Cookies.Append("refreshToken", tokenDto.RefreshToken!, new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                    Expires = tokenDto.RefreshTokenExpiry
+                });
+
+                return Ok(tokenDto.AccessToken);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpPost("resend-confirmation")]
 		public async Task<IActionResult> ResendEmailConfirmation([FromBody] ResendEmailDto dto, CancellationToken ct)
 		{
 			await serviceManager.UserService.ResendConfirmationEmail(dto.Email, ct);

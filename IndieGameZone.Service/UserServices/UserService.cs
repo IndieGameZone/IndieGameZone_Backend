@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Application.BlobService;
+﻿using FirebaseAdmin.Auth;
+using IndieGameZone.Application.BlobService;
 using IndieGameZone.Application.EmailServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
@@ -15,6 +16,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -387,7 +389,7 @@ namespace IndieGameZone.Application.UserServices
 				throw new SecurityTokenException("Invalid or expired refresh token");
 			}
 
-			return await CreateToken(user, false, ct);
+			return await CreateToken(user, setRefreshExpiry: false, ct);
 		}
 
 		public async Task<UserForReturnDto> GetUserByToken(string jwt, CancellationToken ct = default)
@@ -515,6 +517,112 @@ namespace IndieGameZone.Application.UserServices
                 userProfileEntity.Avatar = await blobService.UploadBlob(filename, StorageContainer.STORAGE_CONTAINER, userForUpdateDto.Avatar);
             }
             await repositoryManager.SaveAsync(ct);
+        }
+
+        public async Task<TokenDto> LoginWithGoogleAsync(string idTokenFromFirebase, CancellationToken ct = default)
+        {
+            // Step 1: Verify the token with Firebase
+            var payload = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idTokenFromFirebase);
+            var email = payload.Claims["email"]?.ToString();
+            var name = payload.Claims["name"]?.ToString();
+            var picture = payload.Claims["picture"]?.ToString();
+            var phoneNumber = payload.Claims["phone_number"]?.ToString();
+
+            var firebaseUserId = payload.Uid;
+
+            if (string.IsNullOrEmpty(email))
+                throw new InvalidOperationException("Invalid Google token: missing email");
+
+            // Step 2: Try to find existing user
+            var user = await userManager.FindByEmailAsync(email);
+
+			if (user == null)
+			{
+				// Step 3: Register new user
+				user = new Users
+				{
+					Id = Guid.NewGuid(),
+					UserName = await GenerateUniqueUsernameAsync(name),
+					Email = email,
+					EmailConfirmed = true,
+					PhoneNumber = phoneNumber,
+					PhoneNumberConfirmed = true,
+					LockoutEnabled = true,
+                    IsActive = true,
+                    JoinedDate = DateTime.Now,
+					LastLogin = DateTime.Now
+				};
+
+				var result = await userManager.CreateAsync(user);
+				if (!result.Succeeded)
+					throw new InvalidOperationException(string.Join("; ", result.Errors.Select(e => e.Description)));
+
+                // Check if role exists in DB
+                var roleExists = await roleManager.RoleExistsAsync(RoleEnum.Player.ToString());
+                if (!roleExists)
+                {
+                    throw new InvalidOperationException($"Role '{RoleEnum.Player.ToString()}' does not exist in the database.");
+                }
+
+                var roleResult = await userManager.AddToRoleAsync(user, RoleEnum.Player.ToString());
+                if (!roleResult.Succeeded)
+                {
+                    throw new InvalidOperationException(string.Join("; ", roleResult.Errors.Select(e => e.Description)));
+                }
+
+                // Create Profile + Wallet
+                repositoryManager.UserProfileRepository.CreateUserProfile(new UserProfiles
+				{
+					UserId = user.Id,
+					Avatar = picture ?? "https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=6&m=1223671392&s=170667a&w=0&h=zP3l7WJinOFaGb2i1F4g8IS2ylw0FlIaa6x3tP9sebU=",
+					Fullname = name
+				});
+
+				repositoryManager.WalletRepository.CreateWallet(new Wallets
+				{
+					UserId = user.Id,
+					Balance = 0
+				});
+
+				await repositoryManager.SaveAsync(ct);
+			}
+
+            // Step 4: Save Firebase login info if not already present
+            var loginInfo = new UserLoginInfo("Firebase", firebaseUserId, "Google");
+
+            var existingLogins = await userManager.GetLoginsAsync(user);
+            if (!existingLogins.Any(l => l.LoginProvider == "Firebase" && l.ProviderKey == firebaseUserId))
+            {
+                var addLoginResult = await userManager.AddLoginAsync(user, loginInfo);
+                if (!addLoginResult.Succeeded)
+                    throw new InvalidOperationException("Could not link Firebase login");
+            }
+
+            // Step 5: Update last login and generate tokens
+            user.LastLogin = DateTime.Now;
+            await userManager.UpdateAsync(user);
+
+            return await CreateToken(user, setRefreshExpiry: true, ct);
+        }
+
+        private async Task<string> GenerateUniqueUsernameAsync(string email)
+        {
+            var baseUsername = email.Split('@')[0];
+            string finalUsername;
+            do
+            {
+                var randomSuffix = GenerateRandomNumber(5);
+                finalUsername = $"{baseUsername}{randomSuffix}";
+            }
+            while (await userManager.FindByNameAsync(finalUsername) != null);
+
+            return finalUsername;
+        }
+
+        private string GenerateRandomNumber(int length)
+        {
+            var random = new Random();
+            return string.Join("", Enumerable.Range(0, length).Select(_ => random.Next(0, 10)));
         }
     }
 }
