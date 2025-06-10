@@ -135,22 +135,22 @@ namespace IndieGameZone.API.Extensions
 			});
 		}
 
-        public static void ConfigureFirebase(this IServiceCollection services, IConfiguration configuration)
-        {
-            var firebaseJson = configuration["Firebase--ServiceAccount"];
+		public static void ConfigureFirebase(this IServiceCollection services, IConfiguration configuration)
+		{
+			var firebaseJson = configuration.GetSection("FirebaseServiceAccount").Value;
 
-            if (string.IsNullOrWhiteSpace(firebaseJson))
-                throw new InvalidOperationException("Firebase service account JSON is missing in Key Vault");
+			if (string.IsNullOrWhiteSpace(firebaseJson))
+				throw new InvalidOperationException("Firebase service account JSON is missing in Key Vault");
 
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(firebaseJson));
+			using var stream = new MemoryStream(Encoding.UTF8.GetBytes(firebaseJson));
 
-            FirebaseApp.Create(new AppOptions
-            {
-                Credential = GoogleCredential.FromStream(stream)
-            });
-        }
+			FirebaseApp.Create(new AppOptions
+			{
+				Credential = GoogleCredential.FromStream(stream)
+			});
+		}
 
-        public static void ConfigureQuartz(this IServiceCollection services)
+		public static void ConfigureQuartz(this IServiceCollection services)
 		{
 			services.AddQuartz(q =>
 			{
