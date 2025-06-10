@@ -29,5 +29,6 @@ namespace IndieGameZone.Application.UserServices
         Task UpdatePassword(Guid userId, UserForUpdatePasswordDto userForUpdatePasswordDto, CancellationToken ct = default);
         Task UpdateUser(Guid userId, UserForUpdateDto userForUpdateDto, CancellationToken ct = default);
         Task<TokenDto> LoginWithGoogleAsync(string idTokenFromFirebase, CancellationToken ct = default);
+        Task UpdateBirthday(Guid userId, DateOnly birthday, CancellationToken ct);
     }
 }

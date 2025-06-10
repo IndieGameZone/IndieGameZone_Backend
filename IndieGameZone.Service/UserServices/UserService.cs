@@ -626,5 +626,17 @@ namespace IndieGameZone.Application.UserServices
             var random = new Random();
             return string.Join("", Enumerable.Range(0, length).Select(_ => random.Next(0, 10)));
         }
+
+        public async Task UpdateBirthday(Guid userId, DateOnly birthday, CancellationToken ct)
+        {
+            var userProfileEntity = await repositoryManager.UserProfileRepository.GetUserProfileById(userId, true, ct);
+            if (userProfileEntity is null)
+            {
+                throw new NotFoundException($"User Profile not found.");
+            }
+
+            userProfileEntity.Birthday = birthday;
+            await repositoryManager.SaveAsync(ct);
+        }
     }
 }

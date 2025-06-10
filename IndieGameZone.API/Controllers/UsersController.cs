@@ -73,5 +73,12 @@ namespace IndieGameZone.API.Controllers
             await serviceManager.UserService.UpdatePassword(userId, userForUpdatePasswordDto, ct);
             return NoContent();
         }
+        [HttpPut("{userId:guid}/birthday")]
+        [Authorize]
+        public async Task<IActionResult> UpdateBirthday([FromRoute] Guid userId, [FromBody] UserForUpdateBirthdayDto dto, CancellationToken ct)
+        {
+            await serviceManager.UserService.UpdateBirthday(userId, dto.Birthday, ct);
+            return NoContent();
+        }
     }
 }
