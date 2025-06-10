@@ -479,6 +479,8 @@ namespace IndieGameZone.Application.UserServices
             {
                 throw new RequestTokenBadRequest();
             }
+            user.RefreshToken = null;
+            await userManager.UpdateAsync(user);
         }
 
         public async Task UpdatePassword(Guid userId, UserForUpdatePasswordDto userForUpdatePasswordDto, CancellationToken ct = default)
