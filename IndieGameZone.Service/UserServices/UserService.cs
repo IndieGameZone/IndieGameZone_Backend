@@ -521,10 +521,10 @@ namespace IndieGameZone.Application.UserServices
             await repositoryManager.SaveAsync(ct);
         }
 
-        public async Task<TokenDto> LoginWithGoogleAsync(string idTokenFromFirebase, CancellationToken ct = default)
+        public async Task<TokenDto> LoginWithGoogleAsync(GoogleLoginDto dto, CancellationToken ct = default)
         {
             // Step 1: Verify the token with Firebase
-            var payload = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idTokenFromFirebase);
+            var payload = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(dto.IdToken);
             var email = payload.Claims["email"]?.ToString();
             var name = payload.Claims["name"]?.ToString();
             var picture = payload.Claims["picture"]?.ToString();
@@ -560,13 +560,13 @@ namespace IndieGameZone.Application.UserServices
 					throw new InvalidOperationException(string.Join("; ", result.Errors.Select(e => e.Description)));
 
                 // Check if role exists in DB
-                var roleExists = await roleManager.RoleExistsAsync(RoleEnum.Player.ToString());
+                var roleExists = await roleManager.RoleExistsAsync(dto.Role.ToString());
                 if (!roleExists)
                 {
-                    throw new InvalidOperationException($"Role '{RoleEnum.Player.ToString()}' does not exist in the database.");
+                    throw new InvalidOperationException($"Role '{dto.Role.ToString()}' does not exist in the database.");
                 }
 
-                var roleResult = await userManager.AddToRoleAsync(user, RoleEnum.Player.ToString());
+                var roleResult = await userManager.AddToRoleAsync(user, dto.Role.ToString());
                 if (!roleResult.Succeeded)
                 {
                     throw new InvalidOperationException(string.Join("; ", roleResult.Errors.Select(e => e.Description)));
@@ -577,7 +577,8 @@ namespace IndieGameZone.Application.UserServices
 				{
 					UserId = user.Id,
 					Avatar = picture ?? "https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=6&m=1223671392&s=170667a&w=0&h=zP3l7WJinOFaGb2i1F4g8IS2ylw0FlIaa6x3tP9sebU=",
-					Fullname = name
+					Fullname = name,
+					Birthday = dto.Birthday
 				});
 
 				repositoryManager.WalletRepository.CreateWallet(new Wallets

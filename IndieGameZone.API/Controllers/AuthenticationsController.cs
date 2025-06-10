@@ -58,7 +58,7 @@ namespace IndieGameZone.API.Controllers
 
             try
             {
-                var tokenDto = await serviceManager.UserService.LoginWithGoogleAsync(dto.IdToken, ct);
+                var tokenDto = await serviceManager.UserService.LoginWithGoogleAsync(dto, ct);
 
                 // Set refresh token cookie
                 Response.Cookies.Append("refreshToken", tokenDto.RefreshToken!, new CookieOptions
