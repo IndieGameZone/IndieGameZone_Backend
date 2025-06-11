@@ -27,11 +27,7 @@ namespace IndieGameZone.API.Controllers
 						StorageContainer.STORAGE_CONTAINER,
 						file);
 
-			return Ok(new
-			{
-				url = uploadedUrl,
-				size = file.Length,
-			});
+			return Ok(uploadedUrl);
 		}
 	}
 }

@@ -7,6 +7,7 @@ using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.LanguageServices;
 using IndieGameZone.Application.LibraryServices;
+using IndieGameZone.Application.NotificationServices;
 using IndieGameZone.Application.PlatformServices;
 using IndieGameZone.Application.PostCommentServices;
 using IndieGameZone.Application.PostReactionServices;
@@ -47,5 +48,6 @@ namespace IndieGameZone.Application
 		IReportReasonService ReportReasonService { get; }
 		IUserFollowService UserFollowService { get; }
 		IReportService ReportService { get; }
+		INotificationService NotificationService { get; }
 	}
 }

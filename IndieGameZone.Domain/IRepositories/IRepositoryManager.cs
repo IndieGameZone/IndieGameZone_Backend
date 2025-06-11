@@ -34,5 +34,6 @@ namespace IndieGameZone.Domain.IRepositories
 		IUserFollowRepository UserFollowRepository { get; }
 		IPostTagRepository PostTagRepository { get; }
 		IReportRepository ReportRepository { get; }
+		INotificationRepository NotificationRepository { get; }
 	}
 }
