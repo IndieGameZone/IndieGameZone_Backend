@@ -7,13 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Entities\Identities\**" />
+    <EmbeddedResource Remove="Entities\Identities\**" />
+    <None Remove="Entities\Identities\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Features" Version="5.0.17" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.15" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.15" />
   </ItemGroup>
-	
-	<ItemGroup>
-		<Folder Include="Entities\Identities" />
-	</ItemGroup>
 	
 	</Project>

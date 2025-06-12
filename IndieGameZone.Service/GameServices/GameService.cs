@@ -127,6 +127,7 @@ namespace IndieGameZone.Application.GameServices
 			gameEntity.Id = Guid.NewGuid();
 			gameEntity.DeveloperId = developerId;
 			gameEntity.CreatedAt = DateTime.Now;
+			gameEntity.NumberOfDownloads = 0;
 
 			var gameImageEntities = new List<GameImages>();
 			foreach (var image in game.GameImages)

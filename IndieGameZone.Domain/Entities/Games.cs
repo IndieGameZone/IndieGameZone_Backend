@@ -15,6 +15,7 @@ namespace IndieGameZone.Domain.Entities
 		public GameStatus Status { get; set; }
 		public GameVisibility Visibility { get; set; }
 		public double Price { get; set; }
+		public double NumberOfDownloads { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public DateTime? CensoredAt { get; set; }
 		public DateTime? UpdatedAt { get; set; }
@@ -22,6 +23,7 @@ namespace IndieGameZone.Domain.Entities
 		public Guid AgeRestrictionId { get; set; }
 		public Guid DeveloperId { get; set; }
 		public Guid CategoryId { get; set; }
+
 
 		// Navigation properties
 		public virtual ICollection<GameLanguages> GameLanguages { get; set; } = new List<GameLanguages>();
