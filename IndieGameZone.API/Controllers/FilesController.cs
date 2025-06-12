@@ -23,7 +23,7 @@ namespace IndieGameZone.API.Controllers
 				return BadRequest("No file uploaded.");
 			}
 			var uploadedUrl = await blobService.UploadBlob(
-						$"{file.Name}{Path.GetExtension(file.FileName)}",
+						$"{file.FileName}",
 						StorageContainer.STORAGE_CONTAINER,
 						file);
 

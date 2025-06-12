@@ -25,6 +25,7 @@ namespace IndieGameZone.Application.GamePlatformServices
 			var gamePlatforms = mapper.Map<ICollection<GamePlatforms>>(gamePlatformForCreationDto);
 			foreach (var gamePlatform in gamePlatforms)
 			{
+				gamePlatform.Id = Guid.NewGuid();
 				gamePlatform.GameId = gameId;
 				var blobName = gamePlatform.File.Split('/').Last();
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);

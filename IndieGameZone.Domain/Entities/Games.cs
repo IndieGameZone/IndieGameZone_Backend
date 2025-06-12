@@ -14,6 +14,7 @@ namespace IndieGameZone.Domain.Entities
 		public bool AllowDonation { get; set; }
 		public GameStatus Status { get; set; }
 		public GameVisibility Visibility { get; set; }
+		public CensorStatus CensorStatus { get; set; }
 		public double Price { get; set; }
 		public double NumberOfDownloads { get; set; }
 		public DateTime CreatedAt { get; set; }

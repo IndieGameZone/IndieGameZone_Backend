@@ -3,7 +3,7 @@
 	public enum GameStatus
 	{
 		Released,
-		InDevelopmnent,
+		InDevelopment,
 		OnHold,
 		Canceled,
 		Prototype

@@ -17,6 +17,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(g => g.AllowDonation);
 			builder.Property(g => g.Status).HasConversion<string>();
 			builder.Property(g => g.Visibility).HasConversion<string>();
+			builder.Property(g => g.CensorStatus).HasConversion<string>();
 			builder.Property(g => g.Price);
 			builder.Property(g => g.NumberOfDownloads);
 			builder.Property(g => g.CreatedAt);
