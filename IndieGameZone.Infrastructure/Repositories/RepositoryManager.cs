@@ -37,8 +37,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IPostTagRepository> postTagRepository;
 		private readonly Lazy<IReportRepository> reportRepository;
 		private readonly Lazy<INotificationRepository> notificationRepository;
+		private readonly Lazy<IBanHistoryRepository> banHistoryRepository;
 
-		public RepositoryManager(AppDbContext appDbContext)
+        public RepositoryManager(AppDbContext appDbContext)
 		{
 			this.appDbContext = appDbContext;
 			languageRepository = new Lazy<ILanguageRepository>(() => new LanguageRepository(appDbContext));
@@ -70,8 +71,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 			postTagRepository = new Lazy<IPostTagRepository>(() => new PostTagRepository(appDbContext));
 			reportRepository = new Lazy<IReportRepository>(() => new ReportRepository(appDbContext));
 			notificationRepository = new Lazy<INotificationRepository>(() => new NotificationRepository(appDbContext));
-
-		}
+            banHistoryRepository = new Lazy<IBanHistoryRepository>(() => new BanHistoryRepository(appDbContext));
+        }
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
 
@@ -131,7 +132,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public INotificationRepository NotificationRepository => notificationRepository.Value;
 
-		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
+        public IBanHistoryRepository BanHistoryRepository => banHistoryRepository.Value;
+
+        public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{
 			var transaction = await appDbContext.Database.BeginTransactionAsync(ct);
 			return transaction.GetDbTransaction();

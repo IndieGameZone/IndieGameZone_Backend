@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application.AchievementServices;
 using IndieGameZone.Application.AgeRestrictionServices;
+using IndieGameZone.Application.BanHistoryServices;
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.CommercialPackageServices;
@@ -58,8 +59,9 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IUserFollowService> userFollowService;
 		private readonly Lazy<IReportService> reportService;
 		private readonly Lazy<INotificationService> notificationService;
+        private readonly Lazy<IBanHistoryService> banHistoryService;
 
-		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory)
+        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
@@ -84,7 +86,8 @@ namespace IndieGameZone.Application
 			userFollowService = new Lazy<IUserFollowService>(() => new UserFollowService(repositoryManager));
 			reportService = new Lazy<IReportService>(() => new ReportService(repositoryManager, mapper));
 			notificationService = new Lazy<INotificationService>(() => new NotificationService(repositoryManager, mapper));
-		}
+            banHistoryService = new Lazy<IBanHistoryService>(() => new BanHistoryService(repositoryManager, mapper));
+        }
 
 		public ILanguageService LanguageService => languageService.Value;
 
@@ -131,5 +134,7 @@ namespace IndieGameZone.Application
 		public IReportService ReportService => reportService.Value;
 
 		public INotificationService NotificationService => notificationService.Value;
-	}
+
+        public IBanHistoryService BanHistoryService => banHistoryService.Value;
+    }
 }

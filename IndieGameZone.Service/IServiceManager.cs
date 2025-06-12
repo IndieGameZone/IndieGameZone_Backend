@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application.AchievementServices;
 using IndieGameZone.Application.AgeRestrictionServices;
+using IndieGameZone.Application.BanHistoryServices;
 using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.CommercialPackageServices;
 using IndieGameZone.Application.DiscountServices;
@@ -49,5 +50,6 @@ namespace IndieGameZone.Application
 		IUserFollowService UserFollowService { get; }
 		IReportService ReportService { get; }
 		INotificationService NotificationService { get; }
+		IBanHistoryService BanHistoryService { get; }
 	}
 }
