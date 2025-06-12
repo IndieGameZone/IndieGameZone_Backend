@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Domain.Entities;
+using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Achievements;
@@ -32,9 +33,15 @@ namespace IndieGameZone.Application.BanHistoryServices
             await repositoryManager.SaveAsync(ct);
         }
 
-        public Task DeleteBanHistory(Guid id, CancellationToken ct = default)
+        public async Task DeleteBanHistory(Guid id, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryById(id, false, ct);
+            if (banHistoryEntity is null)
+            {
+                throw new NotFoundException($"Ban History not found.");
+            }
+            repositoryManager.BanHistoryRepository.DeleteBanHistory(banHistoryEntity);
+            await repositoryManager.SaveAsync(ct);
         }
 
         public Task<(IEnumerable<BanHistoryForReturnDto> banHistories, MetaData metaData)> GetBanHistories(BanHistoryParameters banHistoryParameters, CancellationToken ct = default)

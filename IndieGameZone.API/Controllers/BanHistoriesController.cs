@@ -54,11 +54,11 @@ namespace IndieGameZone.API.Controllers
         //    return NoContent();
         //}
 
-        //[HttpDelete("{id:guid}")]
-        //public async Task<IActionResult> DeleteBanHistory([FromRoute] Guid id, CancellationToken ct)
-        //{
-        //    await serviceManager.AchievementService.DeleteAchievement(id, ct);
-        //    return NoContent();
-        //}
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteBanHistory([FromRoute] Guid id, CancellationToken ct)
+        {
+            await serviceManager.AchievementService.DeleteAchievement(id, ct);
+            return NoContent();
+        }
     }
 }
