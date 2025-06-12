@@ -86,7 +86,7 @@ namespace IndieGameZone.Application
 			userFollowService = new Lazy<IUserFollowService>(() => new UserFollowService(repositoryManager));
 			reportService = new Lazy<IReportService>(() => new ReportService(repositoryManager, mapper));
 			notificationService = new Lazy<INotificationService>(() => new NotificationService(repositoryManager, mapper));
-            banHistoryService = new Lazy<IBanHistoryService>(() => new BanHistoryService(repositoryManager, mapper));
+            banHistoryService = new Lazy<IBanHistoryService>(() => new BanHistoryService(repositoryManager, mapper, userManager));
         }
 
 		public ILanguageService LanguageService => languageService.Value;
