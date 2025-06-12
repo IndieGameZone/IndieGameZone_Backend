@@ -67,9 +67,15 @@ namespace IndieGameZone.Application.BanHistoryServices
             throw new NotImplementedException();
         }
 
-        public Task UpdateBanHistory(Guid id, BanHistoryForUpdateDto banHistoryForUpdateDto, CancellationToken ct = default)
+        public async Task UpdateBanHistory(Guid id, BanHistoryForUpdateDto banHistoryForUpdateDto, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryById(id, true, ct);
+            if (banHistoryEntity is null)
+            {
+                throw new NotFoundException($"Ban History not found.");
+            }
+            mapper.Map(banHistoryForUpdateDto, banHistoryEntity);
+            await repositoryManager.SaveAsync(ct);
         }
     }
 }

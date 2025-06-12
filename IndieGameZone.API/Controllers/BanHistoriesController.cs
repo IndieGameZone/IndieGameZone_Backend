@@ -40,12 +40,12 @@ namespace IndieGameZone.API.Controllers
             return StatusCode(201);
         }
 
-        //[HttpPut("{id:guid}")]
-        //public async Task<IActionResult> UpdateBanHistory([FromRoute] Guid id, [FromBody] AchievementForUpdateDto achievementForUpdateDto, CancellationToken ct)
-        //{
-        //    await serviceManager.AchievementService.UpdateAchievement(id, achievementForUpdateDto, ct);
-        //    return NoContent();
-        //}
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateBanHistory([FromRoute] Guid id, [FromBody] BanHistoryForUpdateDto banHistoryForUpdateDto, CancellationToken ct)
+        {
+            await serviceManager.BanHistoryService.UpdateBanHistory(id, banHistoryForUpdateDto, ct);
+            return NoContent();
+        }
 
         //[HttpPatch("{id:guid}/unban")]
         //public async Task<IActionResult> UnbanUser([FromRoute] Guid id, [FromBody] AchievementForUpdateDto achievementForUpdateDto, CancellationToken ct)
