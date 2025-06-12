@@ -4,6 +4,7 @@ using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Achievements;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.BanHistories;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Achievements;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.BanHistories;
 using MapsterMapper;
 using System;
@@ -44,14 +45,21 @@ namespace IndieGameZone.Application.BanHistoryServices
             await repositoryManager.SaveAsync(ct);
         }
 
-        public Task<(IEnumerable<BanHistoryForReturnDto> banHistories, MetaData metaData)> GetBanHistories(BanHistoryParameters banHistoryParameters, CancellationToken ct = default)
+        public async Task<(IEnumerable<BanHistoryForReturnDto> banHistories, MetaData metaData)> GetBanHistories(BanHistoryParameters banHistoryParameters, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var banHistoriesWithMetaData = await repositoryManager.BanHistoryRepository.GetBanHistories(banHistoryParameters, false, ct);
+            var banHistories = mapper.Map<IEnumerable<BanHistoryForReturnDto>>(banHistoriesWithMetaData);
+            return (banHistories, banHistoriesWithMetaData.MetaData);
         }
 
-        public Task<BanHistoryForReturnDto> GetBanHistoryById(Guid id, CancellationToken ct = default)
+        public async Task<BanHistoryForReturnDto> GetBanHistoryById(Guid id, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryById(id, false, ct);
+            if (banHistoryEntity is null)
+            {
+                throw new NotFoundException($"Ban History not found.");
+            }
+            return mapper.Map<BanHistoryForReturnDto>(banHistoryEntity);
         }
 
         public Task UnbanUser(Guid id, CancellationToken ct = default)

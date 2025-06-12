@@ -1,6 +1,6 @@
 ﻿using IndieGameZone.Application;
 using IndieGameZone.Domain.RequestFeatures;
-using IndieGameZone.Domain.RequestsAndResponses.Requests.Achievements;
+using IndieGameZone.Domain.RequestsAndResponses.Requests.BanHistories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -18,25 +18,25 @@ namespace IndieGameZone.API.Controllers
             this.serviceManager = serviceManager;
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetBanHistories([FromQuery] AchievementParameters achievementParameters, CancellationToken ct)
-        //{
-        //    var pagedResult = await serviceManager.AchievementService.GetAchievements(achievementParameters, ct);
-        //    Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
-        //    return Ok(pagedResult.achievements);
-        //}
+        [HttpGet]
+        public async Task<IActionResult> GetBanHistories([FromQuery] BanHistoryParameters banHistoryParameters, CancellationToken ct)
+        {
+            var pagedResult = await serviceManager.BanHistoryService.GetBanHistories(banHistoryParameters, ct);
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+            return Ok(pagedResult.banHistories);
+        }
 
-        //[HttpGet("{id:guid}")]
-        //public async Task<IActionResult> GetBanHistoryById([FromRoute] Guid id, CancellationToken ct)
-        //{
-        //    var achievement = await serviceManager.AchievementService.GetAchievementById(id, ct);
-        //    return Ok(achievement);
-        //}
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetBanHistoryById([FromRoute] Guid id, CancellationToken ct)
+        {
+            var banHistory = await serviceManager.BanHistoryService.GetBanHistoryById(id, ct);
+            return Ok(banHistory);
+        }
 
         [HttpPost]
-        public async Task<IActionResult> CreateBanHistory([FromBody] AchievementForCreationDto achievementForCreationDto, CancellationToken ct)
+        public async Task<IActionResult> CreateBanHistory([FromBody] BanHistoryForCreationDto banHistoryForCreationDto, CancellationToken ct)
         {
-            await serviceManager.AchievementService.CreateAchievement(achievementForCreationDto, ct);
+            await serviceManager.BanHistoryService.CreateBanHistory(banHistoryForCreationDto, ct);
             return StatusCode(201);
         }
 
@@ -57,7 +57,7 @@ namespace IndieGameZone.API.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteBanHistory([FromRoute] Guid id, CancellationToken ct)
         {
-            await serviceManager.AchievementService.DeleteAchievement(id, ct);
+            await serviceManager.BanHistoryService.DeleteBanHistory(id, ct);
             return NoContent();
         }
     }
