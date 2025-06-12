@@ -31,14 +31,12 @@ namespace IndieGameZone.Application.BanHistoryServices
 
         public async Task CreateBanHistory(BanHistoryForCreationDto banHistoryForCreationDto, CancellationToken ct = default)
         {
-            var now = DateTime.Now;
-
             // Validate BanDate < UnbanDate
             if (banHistoryForCreationDto.BanDate >= banHistoryForCreationDto.UnbanDate)
                 throw new InvalidOperationException("Ban date must be earlier than unban date.");
 
             // Validate both dates are not in the past
-            if (banHistoryForCreationDto.UnbanDate <= now)
+            if (banHistoryForCreationDto.UnbanDate <= DateTime.Now)
                 throw new InvalidOperationException("Unban dates must be in the future.");
 
             var user = await userManager.FindByIdAsync(banHistoryForCreationDto.UserId.ToString());
@@ -46,7 +44,7 @@ namespace IndieGameZone.Application.BanHistoryServices
                 throw new UserNotFoundException();
 
             // Only deactivate the user if they are currently within the ban period
-            if (now >= banHistoryForCreationDto.BanDate && now <= banHistoryForCreationDto.UnbanDate)
+            if (DateTime.Now >= banHistoryForCreationDto.BanDate && DateTime.Now <= banHistoryForCreationDto.UnbanDate)
             {
                 user.IsActive = false;
                 await userManager.UpdateAsync(user);
@@ -108,8 +106,6 @@ namespace IndieGameZone.Application.BanHistoryServices
 
         public async Task UpdateBanHistory(Guid id, BanHistoryForUpdateDto banHistoryForUpdateDto, CancellationToken ct = default)
         {
-            var now = DateTime.Now;
-
             // Validate BanDate < UnbanDate
             if (banHistoryForUpdateDto.BanDate >= banHistoryForUpdateDto.UnbanDate)
                 throw new InvalidOperationException("Ban date must be earlier than unban date.");
@@ -124,7 +120,7 @@ namespace IndieGameZone.Application.BanHistoryServices
             var user = await userManager.FindByIdAsync(banHistoryEntity.UserId.ToString());
             if (user == null) throw new UserNotFoundException();
             // Only deactivate the user if they are currently within the ban period
-            if (now >= banHistoryForUpdateDto.BanDate && now <= banHistoryForUpdateDto.UnbanDate)
+            if (DateTime.Now >= banHistoryForUpdateDto.BanDate && DateTime.Now <= banHistoryForUpdateDto.UnbanDate)
             {
                 user.IsActive = false;
                 await userManager.UpdateAsync(user);
