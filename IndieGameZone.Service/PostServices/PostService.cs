@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Application.BlobService;
+﻿using IndieGameZone.Application.BackgroundJobServices;
+using IndieGameZone.Application.BlobService;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
@@ -7,6 +8,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Posts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Posts;
 using MapsterMapper;
+using Quartz;
 
 namespace IndieGameZone.Application.PostServices
 {
@@ -15,12 +17,14 @@ namespace IndieGameZone.Application.PostServices
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 		private readonly IBlobService blobService;
+		private readonly ISchedulerFactory schedulerFactory;
 
-		public PostService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService)
+		public PostService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, ISchedulerFactory schedulerFactory)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.blobService = blobService;
+			this.schedulerFactory = schedulerFactory;
 		}
 		public async Task CreatePost(Guid userId, Guid gameId, PostForCreationDto postForCreationDto, CancellationToken ct = default)
 		{
@@ -29,7 +33,7 @@ namespace IndieGameZone.Application.PostServices
 			postEntity.UserId = userId;
 			postEntity.GameId = gameId;
 			postEntity.CreatedAt = DateTime.Now;
-			postEntity.Status = PostStatus.Approved;
+			postEntity.Status = PostStatus.Pending;
 
 			IList<PostTags> postTags = new List<PostTags>();
 			foreach (var tagId in postForCreationDto.Tags)
@@ -45,6 +49,20 @@ namespace IndieGameZone.Application.PostServices
 			repositoryManager.PostRepository.CreatePost(postEntity);
 			repositoryManager.PostTagRepository.CreatePostTag(postTags);
 			await repositoryManager.SaveAsync(ct);
+
+			IJobDetail job = JobBuilder.Create<ValidatePostJob>()
+				.WithIdentity("validatePostJob", "PostGroup")
+				.UsingJobData("postId", postEntity.Id.ToString())
+				.Build();
+
+			ITrigger trigger = TriggerBuilder.Create()
+				.WithIdentity("validatePostTrigger", "PostGroup")
+				.StartNow()
+				.Build();
+
+			var scheduler = await schedulerFactory.GetScheduler(ct);
+
+			await scheduler.ScheduleJob(job, trigger, ct);
 		}
 
 		public async Task DeletePost(Guid userId, Guid postId, CancellationToken ct = default)

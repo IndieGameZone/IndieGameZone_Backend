@@ -29,6 +29,7 @@ using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
+using Quartz;
 
 namespace IndieGameZone.Application
 {
@@ -58,7 +59,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IReportService> reportService;
 		private readonly Lazy<INotificationService> notificationService;
 
-		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor)
+		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
@@ -74,7 +75,7 @@ namespace IndieGameZone.Application
 			reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, mapper));
 			libraryService = new Lazy<ILibraryService>(() => new LibraryService(repositoryManager, mapper));
 			withdrawRequestService = new Lazy<IWithdrawRequestService>(() => new WithdrawRequestService(repositoryManager, mapper, blobService));
-			postService = new Lazy<IPostService>(() => new PostService(repositoryManager, mapper, blobService));
+			postService = new Lazy<IPostService>(() => new PostService(repositoryManager, mapper, blobService, schedulerFactory));
 			postCommentService = new Lazy<IPostCommentService>(() => new PostCommentService(repositoryManager, mapper));
 			commercialPackageService = new Lazy<ICommercialPackageService>(() => new CommercialPackageService(repositoryManager, mapper));
 			gamePlatformService = new Lazy<IGamePlatformService>(() => new GamePlatformService(repositoryManager, mapper, blobService));
