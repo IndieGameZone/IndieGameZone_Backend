@@ -528,7 +528,6 @@ namespace IndieGameZone.Application.UserServices
             var email = payload.Claims["email"]?.ToString();
             var name = payload.Claims["name"]?.ToString();
             var picture = payload.Claims["picture"]?.ToString();
-            var phoneNumber = payload.Claims["phone_number"]?.ToString();
 
             var firebaseUserId = payload.Uid;
 
@@ -547,8 +546,6 @@ namespace IndieGameZone.Application.UserServices
 					UserName = await GenerateUniqueUsernameAsync(name),
 					Email = email,
 					EmailConfirmed = true,
-					PhoneNumber = phoneNumber,
-					PhoneNumberConfirmed = true,
 					LockoutEnabled = true,
                     IsActive = true,
                     JoinedDate = DateTime.Now,
