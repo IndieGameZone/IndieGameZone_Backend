@@ -128,6 +128,7 @@ namespace IndieGameZone.Application.GameServices
 			gameEntity.DeveloperId = developerId;
 			gameEntity.CreatedAt = DateTime.Now;
 			gameEntity.NumberOfDownloads = 0;
+			gameEntity.CensorStatus = CensorStatus.Approved;
 
 			var gameImageEntities = new List<GameImages>();
 			foreach (var image in game.GameImages)
@@ -171,6 +172,8 @@ namespace IndieGameZone.Application.GameServices
 				throw new ForbiddenException("You do not have permission to update this game.");
 			}
 			mapper.Map(game, gameEntity);
+			gameEntity.UpdatedAt = DateTime.Now;
+			gameEntity.CensorStatus = CensorStatus.Approved;
 
 			//Handle Game Images
 			var gameImageEntities = new List<GameImages>();

@@ -28,6 +28,7 @@ namespace IndieGameZone.Application.GamePlatformServices
 				gamePlatform.Id = Guid.NewGuid();
 				gamePlatform.GameId = gameId;
 				var blobName = gamePlatform.File.Split('/').Last();
+				gamePlatform.DisplayName = blobName.Split('.').First();
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 			}
 			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatforms);
@@ -52,8 +53,10 @@ namespace IndieGameZone.Application.GamePlatformServices
 			var gamePlatforms = mapper.Map<ICollection<GamePlatforms>>(gamePlatformForUpdateDto);
 			foreach (var gamePlatform in gamePlatforms)
 			{
+				gamePlatform.Id = Guid.NewGuid();
 				gamePlatform.GameId = gameId;
 				var blobName = gamePlatform.File.Split('/').Last();
+				gamePlatform.DisplayName = blobName.Split('.').First();
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 			}
 
