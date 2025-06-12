@@ -68,7 +68,22 @@ namespace IndieGameZone.Application.UserServices
 			if (user == null)
 				throw new UserNotFoundException();
 
-			var dto = mapper.Map<UserForReturnDto>(user);
+            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryByUserId(user.Id, false, ct);
+            if (banHistoryEntity is not null)
+            {
+                if (banHistoryEntity.BanDate <= DateTime.Now && banHistoryEntity.UnbanDate >= DateTime.Now)
+                {
+                    user.IsActive = false;
+                    await userManager.UpdateAsync(user);
+                }
+                else
+                {
+                    user.IsActive = true;
+                    await userManager.UpdateAsync(user);
+                }
+            }
+
+            var dto = mapper.Map<UserForReturnDto>(user);
 
 			var roleName = (await userManager.GetRolesAsync(user)).FirstOrDefault();
 
@@ -216,32 +231,25 @@ namespace IndieGameZone.Application.UserServices
 			if (user == null)
 				throw new NotAuthenticatedException("User not found");
 
-			if (!user.IsActive)
-				throw new NotAuthenticatedException("User is deactivated");
-
-			if (!user.EmailConfirmed)
-				throw new NotAuthenticatedException("Your email has not been confirmed yet");
-
-			// 🛑 Check if account is locked
-			if (await userManager.IsLockedOutAsync(user))
-			{
-				var lockoutEnd = await userManager.GetLockoutEndDateAsync(user);
-				if (lockoutEnd.HasValue)
-				{
-					var timeLeft = lockoutEnd.Value.DateTime - DateTime.Now;
-					throw new NotAuthenticatedException(
-						$"Your account is locked due to multiple failed login attempts. " +
-						$"Please try again in {timeLeft.Minutes} minute(s) and {timeLeft.Seconds} second(s).");
-				}
-
-				throw new NotAuthenticatedException("Your account is locked due to multiple failed login attempts. Please try again later.");
-			}
-
 			bool isPasswordValid = await userManager.CheckPasswordAsync(user, userForAuth.Password!);
 			if (!isPasswordValid)
 			{
-				// ❌ Increment failed login attempts
-				await userManager.AccessFailedAsync(user);
+                if (await userManager.IsLockedOutAsync(user))
+                {
+                    var lockoutEnd = await userManager.GetLockoutEndDateAsync(user);
+                    if (lockoutEnd.HasValue)
+                    {
+                        var timeLeft = lockoutEnd.Value.DateTime - DateTime.Now;
+                        throw new NotAuthenticatedException(
+                            $"Your account is locked due to multiple failed login attempts. " +
+                            $"Please try again in {timeLeft.Minutes} minute(s) and {timeLeft.Seconds} second(s).");
+                    }
+
+                    throw new NotAuthenticatedException("Your account is locked due to multiple failed login attempts. Please try again later.");
+                }
+
+                // ❌ Increment failed login attempts
+                await userManager.AccessFailedAsync(user);
 
 				if (await userManager.IsLockedOutAsync(user))
 				{
@@ -260,13 +268,33 @@ namespace IndieGameZone.Application.UserServices
 				throw new NotAuthenticatedException("Username or password is incorrect");
 			}
 
-			// ✅ Reset failed count on successful login
-			await userManager.ResetAccessFailedCountAsync(user);
+            // 🛑 Check if account is locked
+            if (await userManager.IsLockedOutAsync(user))
+            {
+                var lockoutEnd = await userManager.GetLockoutEndDateAsync(user);
+                if (lockoutEnd.HasValue)
+                {
+                    var timeLeft = lockoutEnd.Value.DateTime - DateTime.Now;
+                    throw new NotAuthenticatedException(
+                        $"Your account is locked due to multiple failed login attempts. " +
+                        $"Please try again in {timeLeft.Minutes} minute(s) and {timeLeft.Seconds} second(s).");
+                }
+
+                throw new NotAuthenticatedException("Your account is locked due to multiple failed login attempts. Please try again later.");
+            }
+
+            await CheckAndUpdateBanStatusAsync(user, ct);
+
+            if (!user.EmailConfirmed)
+                throw new NotAuthenticatedException("Your email has not been confirmed yet");
+
+            // ✅ Reset failed count on successful login
+            await userManager.ResetAccessFailedCountAsync(user);
 
 			user.LastLogin = DateTime.Now;
 			await userManager.UpdateAsync(user);
-
-			return user;
+            
+            return user;
 		}
 
 		public async Task<TokenDto> CreateToken(Users user, bool setRefreshExpiry, CancellationToken ct = default)
@@ -389,7 +417,9 @@ namespace IndieGameZone.Application.UserServices
 				throw new SecurityTokenException("Invalid or expired refresh token");
 			}
 
-			return await CreateToken(user, setRefreshExpiry: false, ct);
+            await CheckAndUpdateBanStatusAsync(user, ct);
+
+            return await CreateToken(user, setRefreshExpiry: false, ct);
 		}
 
 		public async Task<UserForReturnDto> GetUserByToken(string jwt, CancellationToken ct = default)
@@ -397,7 +427,13 @@ namespace IndieGameZone.Application.UserServices
 			var handler = new JwtSecurityTokenHandler();
 			var token = handler.ReadJwtToken(jwt);
 			var userId = token.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
-			var dto = await GetUserById(userId, ct);
+            
+			var user = await userManager.FindByIdAsync(userId);
+            if (user == null)
+                throw new NotAuthenticatedException("User not found");
+            await CheckAndUpdateBanStatusAsync(user, ct);
+
+            var dto = await GetUserById(userId, ct);
 			if (dto == null) throw new UserNotFoundException();
 			return dto;
 		}
@@ -411,7 +447,22 @@ namespace IndieGameZone.Application.UserServices
 
 			foreach (var user in userList)
 			{
-				var dto = mapper.Map<UserForReturnDto>(user);
+                var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryByUserId(user.Id, false, ct);
+                if (banHistoryEntity is not null)
+                {
+                    if (banHistoryEntity.BanDate <= DateTime.Now && banHistoryEntity.UnbanDate >= DateTime.Now)
+                    {
+                        user.IsActive = false;
+                        await userManager.UpdateAsync(user);
+                    }
+                    else
+                    {
+                        user.IsActive = true;
+                        await userManager.UpdateAsync(user);
+                    }
+                }
+
+                var dto = mapper.Map<UserForReturnDto>(user);
 
 				var roleName = (await userManager.GetRolesAsync(user)).FirstOrDefault();
 
@@ -433,17 +484,6 @@ namespace IndieGameZone.Application.UserServices
 
 			return (dtoList, usersWithMetaData.MetaData);
 		}
-
-        public async Task ChangeActiveStatus(Guid userId, CancellationToken ct = default)
-        {
-            var userEntity = await userManager.Users
-                .FirstOrDefaultAsync(u => u.Id == userId, ct);
-
-            if (userEntity == null) throw new UserNotFoundException();
-
-            userEntity.IsActive = !userEntity.IsActive;
-            await userManager.UpdateAsync(userEntity);
-        }
 
         public async Task SendResetPasswordToken(string email, CancellationToken ct = default)
         {
@@ -587,6 +627,8 @@ namespace IndieGameZone.Application.UserServices
 				await repositoryManager.SaveAsync(ct);
 			}
 
+            await CheckAndUpdateBanStatusAsync(user, ct);
+
             // Step 4: Save Firebase login info if not already present
             var loginInfo = new UserLoginInfo("Firebase", firebaseUserId, "Google");
 
@@ -635,6 +677,25 @@ namespace IndieGameZone.Application.UserServices
 
             userProfileEntity.Birthday = birthday;
             await repositoryManager.SaveAsync(ct);
+        }
+
+        private async Task CheckAndUpdateBanStatusAsync(Users user, CancellationToken ct)
+        {
+            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryByUserId(user.Id, false, ct);
+            if (banHistoryEntity is not null)
+            {
+                if (banHistoryEntity.BanDate <= DateTime.Now && banHistoryEntity.UnbanDate >= DateTime.Now)
+                {
+                    user.IsActive = false;
+                    await userManager.UpdateAsync(user);
+                    throw new UserBadRequestException("Your account is currently banned.");
+                }
+                else
+                {
+                    user.IsActive = true;
+                    await userManager.UpdateAsync(user);
+                }
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ using IndieGameZone.Domain.RequestsAndResponses.Requests.BanHistories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Achievements;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.BanHistories;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,17 +20,39 @@ namespace IndieGameZone.Application.BanHistoryServices
     {
         private readonly IRepositoryManager repositoryManager;
         private readonly IMapper mapper;
-        
-        public BanHistoryService(IRepositoryManager repositoryManager, IMapper mapper)
+		private readonly UserManager<Users> userManager;
+
+        public BanHistoryService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager)
         {
             this.repositoryManager = repositoryManager;
             this.mapper = mapper;
+            this.userManager = userManager;
         }
 
         public async Task CreateBanHistory(BanHistoryForCreationDto banHistoryForCreationDto, CancellationToken ct = default)
         {
+            // Validate BanDate < UnbanDate
+            if (banHistoryForCreationDto.BanDate >= banHistoryForCreationDto.UnbanDate)
+                throw new InvalidOperationException("Ban date must be earlier than unban date.");
+
+            // Validate both dates are not in the past
+            if (banHistoryForCreationDto.UnbanDate <= DateTime.Now)
+                throw new InvalidOperationException("Unban dates must be in the future.");
+
+            var user = await userManager.FindByIdAsync(banHistoryForCreationDto.UserId.ToString());
+            if (user == null)
+                throw new UserNotFoundException();
+
+            // Only deactivate the user if they are currently within the ban period
+            if (DateTime.Now >= banHistoryForCreationDto.BanDate && DateTime.Now <= banHistoryForCreationDto.UnbanDate)
+            {
+                user.IsActive = false;
+                await userManager.UpdateAsync(user);
+            }
+
             var banHistoryEntity = mapper.Map<BanHistories>(banHistoryForCreationDto);
             banHistoryEntity.Id = Guid.NewGuid();
+
             repositoryManager.BanHistoryRepository.CreateBanHistory(banHistoryEntity);
             await repositoryManager.SaveAsync(ct);
         }
@@ -41,6 +64,10 @@ namespace IndieGameZone.Application.BanHistoryServices
             {
                 throw new NotFoundException($"Ban History not found.");
             }
+            var user = await userManager.FindByIdAsync(banHistoryEntity.UserId.ToString());
+            if (user == null) throw new UserNotFoundException();
+            user.IsActive = true;
+            await userManager.UpdateAsync(user);
             repositoryManager.BanHistoryRepository.DeleteBanHistory(banHistoryEntity);
             await repositoryManager.SaveAsync(ct);
         }
@@ -70,17 +97,39 @@ namespace IndieGameZone.Application.BanHistoryServices
                 throw new NotFoundException($"Ban History not found.");
             }
             banHistoryEntity.UnbanDate = DateTime.Now;
+            var user = await userManager.FindByIdAsync(banHistoryEntity.UserId.ToString());
+            if (user == null) throw new UserNotFoundException();
+            user.IsActive = true;
+            await userManager.UpdateAsync(user);
             await repositoryManager.SaveAsync(ct);
         }
 
         public async Task UpdateBanHistory(Guid id, BanHistoryForUpdateDto banHistoryForUpdateDto, CancellationToken ct = default)
         {
+            // Validate BanDate < UnbanDate
+            if (banHistoryForUpdateDto.BanDate >= banHistoryForUpdateDto.UnbanDate)
+                throw new InvalidOperationException("Ban date must be earlier than unban date.");
+
             var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryById(id, true, ct);
             if (banHistoryEntity is null)
             {
                 throw new NotFoundException($"Ban History not found.");
             }
             mapper.Map(banHistoryForUpdateDto, banHistoryEntity);
+
+            var user = await userManager.FindByIdAsync(banHistoryEntity.UserId.ToString());
+            if (user == null) throw new UserNotFoundException();
+            // Only deactivate the user if they are currently within the ban period
+            if (DateTime.Now >= banHistoryForUpdateDto.BanDate && DateTime.Now <= banHistoryForUpdateDto.UnbanDate)
+            {
+                user.IsActive = false;
+                await userManager.UpdateAsync(user);
+            }
+            else
+            {
+                user.IsActive = true;
+                await userManager.UpdateAsync(user);
+            }
             await repositoryManager.SaveAsync(ct);
         }
     }

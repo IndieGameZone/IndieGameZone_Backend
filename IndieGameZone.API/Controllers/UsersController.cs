@@ -58,14 +58,6 @@ namespace IndieGameZone.API.Controllers
             return NoContent();
         }
 
-        [HttpPut("{userId:guid}/activation")]
-        [Authorize]
-        public async Task<IActionResult> ChangeActiveStatus([FromRoute] Guid userId, CancellationToken ct)
-        {
-            await serviceManager.UserService.ChangeActiveStatus(userId, ct);
-            return NoContent();
-        }
-
         [HttpPut("{userId:guid}/password")]
         [Authorize]
         public async Task<IActionResult> UpdatePassword([FromRoute] Guid userId, [FromBody] UserForUpdatePasswordDto userForUpdatePasswordDto, CancellationToken ct)
