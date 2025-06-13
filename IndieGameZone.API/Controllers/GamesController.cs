@@ -71,9 +71,9 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("games/{gameId:guid}/activation")]
-		public async Task<IActionResult> ActivateGame([FromRoute] Guid gameId, GameVisibility gameVisibility, CancellationToken ct)
+		public async Task<IActionResult> ActivateGame([FromRoute] Guid gameId, CensorStatus censorStatus, CancellationToken ct)
 		{
-			await serviceManager.GameService.UpdateActiveStatus(gameId, gameVisibility, ct);
+			await serviceManager.GameService.UpdateActiveStatus(gameId, censorStatus, ct);
 			return NoContent();
 		}
 	}
