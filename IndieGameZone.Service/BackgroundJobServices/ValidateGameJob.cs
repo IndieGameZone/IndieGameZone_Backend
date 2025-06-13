@@ -5,12 +5,12 @@ using Quartz;
 
 namespace IndieGameZone.Application.BackgroundJobServices
 {
-	public class ValidatePostJob : IJob
+	public class ValidateGameJob : IJob
 	{
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IAIService aIService;
 
-		public ValidatePostJob(IRepositoryManager repositoryManager, IAIService aIService)
+		public ValidateGameJob(IRepositoryManager repositoryManager, IAIService aIService)
 		{
 			this.repositoryManager = repositoryManager;
 			this.aIService = aIService;
@@ -19,20 +19,18 @@ namespace IndieGameZone.Application.BackgroundJobServices
 		public async Task Execute(IJobExecutionContext context)
 		{
 			var dataMap = context.MergedJobDataMap;
-			Guid postId = Guid.Parse(dataMap.GetString("postId"));
+			Guid gameId = Guid.Parse(dataMap.GetString("gameId"));
 
-			var blog = await repositoryManager.PostRepository.GetPostById(postId, true);
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, true);
 
-			if (await aIService.AnalyzeText(blog.Title) && await aIService.AnalyzeText(blog.Content))
+			if (await aIService.AnalyzeText(game.Name) && await aIService.AnalyzeText(game.Description) && await aIService.AnalyzeText(game.ShortDescription))
 			{
-				blog.Status = PostStatus.Approved;
+				game.CensorStatus = CensorStatus.Approved;
 			}
 			else
 			{
-				blog.Status = PostStatus.PendingManualReview;
+				game.CensorStatus = CensorStatus.PendingManualReview;
 			}
-			blog.CensoredAt = DateTime.Now;
-			await repositoryManager.SaveAsync();
 		}
 	}
 }

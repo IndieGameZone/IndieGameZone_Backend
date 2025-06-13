@@ -2,8 +2,9 @@
 {
 	public enum PostStatus
 	{
-		Pending,
+		PendingAIReview,
+		PendingManualReview,
+		Rejected,
 		Approved,
-		Rejected
 	}
 }

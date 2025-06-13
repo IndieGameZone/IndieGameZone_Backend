@@ -128,7 +128,7 @@ namespace IndieGameZone.Application.GameServices
 			gameEntity.DeveloperId = developerId;
 			gameEntity.CreatedAt = DateTime.Now;
 			gameEntity.NumberOfDownloads = 0;
-			gameEntity.CensorStatus = CensorStatus.Approved;
+			gameEntity.CensorStatus = CensorStatus.PendingAIReview;
 
 			var gameImageEntities = new List<GameImages>();
 			foreach (var image in game.GameImages)
@@ -173,7 +173,7 @@ namespace IndieGameZone.Application.GameServices
 			}
 			mapper.Map(game, gameEntity);
 			gameEntity.UpdatedAt = DateTime.Now;
-			gameEntity.CensorStatus = CensorStatus.Approved;
+			gameEntity.CensorStatus = CensorStatus.PendingAIReview;
 
 			//Handle Game Images
 			var gameImageEntities = new List<GameImages>();
@@ -211,14 +211,14 @@ namespace IndieGameZone.Application.GameServices
 			return (games, gamesWithMetaData.MetaData);
 		}
 
-		public async Task UpdateActiveStatus(Guid gameId, GameVisibility gameVisibility, CancellationToken ct = default)
+		public async Task UpdateActiveStatus(Guid gameId, CensorStatus censorStatus, CancellationToken ct = default)
 		{
 			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, true, ct);
 			if (gameEntity is null)
 			{
 				throw new NotFoundException($"Game not found.");
 			}
-			gameEntity.Visibility = gameVisibility;
+			gameEntity.CensorStatus = censorStatus;
 			await repositoryManager.SaveAsync(ct);
 		}
 	}

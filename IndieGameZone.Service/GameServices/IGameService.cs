@@ -14,6 +14,6 @@ namespace IndieGameZone.Application.GameServices
 		Task DeleteGame(Guid developerId, Guid gameId, CancellationToken ct = default);
 		Task<Guid> CreateGame(Guid developerId, GameForCreationDto game, CancellationToken ct = default);
 		Task UpdateGame(Guid developerId, Guid gameId, GameForUpdateDto game, CancellationToken ct = default);
-		Task UpdateActiveStatus(Guid gameId, GameVisibility gameVisibility, CancellationToken ct = default);
+		Task UpdateActiveStatus(Guid gameId, CensorStatus censorStatus, CancellationToken ct = default);
 	}
 }

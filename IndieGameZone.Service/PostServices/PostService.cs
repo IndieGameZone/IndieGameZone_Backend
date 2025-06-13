@@ -33,7 +33,7 @@ namespace IndieGameZone.Application.PostServices
 			postEntity.UserId = userId;
 			postEntity.GameId = gameId;
 			postEntity.CreatedAt = DateTime.Now;
-			postEntity.Status = PostStatus.Pending;
+			postEntity.Status = PostStatus.PendingAIReview;
 
 			IList<PostTags> postTags = new List<PostTags>();
 			foreach (var tagId in postForCreationDto.Tags)
@@ -114,6 +114,8 @@ namespace IndieGameZone.Application.PostServices
 			if (post.UserId != userId)
 				throw new ForbiddenException("You are not authorized to update this post.");
 			mapper.Map(postForUpdateDto, post);
+			post.UpdatedAt = DateTime.Now;
+			post.Status = PostStatus.PendingAIReview;
 
 			IList<PostTags> postTags = new List<PostTags>();
 			foreach (var tagId in postForUpdateDto.Tags)
@@ -127,8 +129,6 @@ namespace IndieGameZone.Application.PostServices
 			}
 			repositoryManager.PostTagRepository.CreatePostTag(postTags);
 
-			post.Status = PostStatus.Approved;
-			post.UpdatedAt = DateTime.Now;
 			await repositoryManager.SaveAsync(ct);
 		}
 	}
