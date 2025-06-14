@@ -1,4 +1,5 @@
-﻿using FirebaseAdmin.Auth;
+﻿using Bogus;
+using FirebaseAdmin.Auth;
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Application.EmailServices;
 using IndieGameZone.Domain.Constants;
@@ -34,8 +35,9 @@ namespace IndieGameZone.Application.UserServices
 		private readonly IHttpContextAccessor httpContextAccessor;
 		private readonly IConfiguration configuration;
         private readonly IBlobService blobService;
+		private readonly Faker faker;
 
-        public UserService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IBlobService blobService)
+        public UserService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IBlobService blobService, Faker faker)
         {
             this.repositoryManager = repositoryManager;
             this.mapper = mapper;
@@ -45,6 +47,7 @@ namespace IndieGameZone.Application.UserServices
             this.httpContextAccessor = httpContextAccessor;
             this.configuration = configuration;
             this.blobService = blobService;
+            this.faker = faker;
         }
 
         private async Task CheckUserExistWhenRegister(string userName, string email, CancellationToken ct = default)
@@ -583,7 +586,7 @@ namespace IndieGameZone.Application.UserServices
 				user = new Users
 				{
 					Id = Guid.NewGuid(),
-					UserName = await GenerateUniqueUsernameAsync(name),
+					UserName = await GenerateUniqueUsernameAsync(),
 					Email = email,
 					EmailConfirmed = true,
 					LockoutEnabled = true,
@@ -647,24 +650,21 @@ namespace IndieGameZone.Application.UserServices
             return await CreateToken(user, setRefreshExpiry: true, ct);
         }
 
-        private async Task<string> GenerateUniqueUsernameAsync(string email)
+        private async Task<string> GenerateUniqueUsernameAsync()
         {
-            var baseUsername = email.Split('@')[0];
             string finalUsername;
+
             do
             {
-                var randomSuffix = GenerateRandomNumber(5);
-                finalUsername = $"{baseUsername}{randomSuffix}";
+                var adjective = faker.Hacker.Adjective(); // e.g., "fuzzy"
+                var noun = faker.Hacker.Noun();           // e.g., "system"
+                var number = faker.Random.Number(10000, 99999); // 5-digit suffix
+
+                finalUsername = $"{adjective}{noun}{number}";
             }
             while (await userManager.FindByNameAsync(finalUsername) != null);
 
             return finalUsername;
-        }
-
-        private string GenerateRandomNumber(int length)
-        {
-            var random = new Random();
-            return string.Join("", Enumerable.Range(0, length).Select(_ => random.Next(0, 10)));
         }
 
         public async Task UpdateBirthday(Guid userId, DateOnly birthday, CancellationToken ct)

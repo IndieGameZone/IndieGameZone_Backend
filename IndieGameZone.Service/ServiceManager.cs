@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Application.AchievementServices;
+﻿using Bogus;
+using IndieGameZone.Application.AchievementServices;
 using IndieGameZone.Application.AgeRestrictionServices;
 using IndieGameZone.Application.BanHistoryServices;
 using IndieGameZone.Application.BlobService;
@@ -61,7 +62,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<INotificationService> notificationService;
         private readonly Lazy<IBanHistoryService> banHistoryService;
 
-        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory)
+        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
@@ -70,7 +71,7 @@ namespace IndieGameZone.Application
 			ageRestrictionService = new Lazy<IAgeRestrictionService>(() => new AgeRestrictionService(repositoryManager, mapper));
 			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService));
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
-			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration, blobService));
+			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration, blobService, faker));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
 			wishlistService = new Lazy<IWishlistService>(() => new WishlistService(repositoryManager, mapper));
 			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration));
