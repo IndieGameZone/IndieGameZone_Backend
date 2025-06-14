@@ -54,7 +54,21 @@ namespace IndieGameZone.Application.AchievementServices
 			return (achievements, achievementsWithMetaData.MetaData);
 		}
 
-		public async Task UpdateAchievement(Guid id, AchievementForUpdateDto achievementForUpdateDto, CancellationToken ct = default)
+        public async Task<(IEnumerable<AchievementForReturnDto> achievements, MetaData metaData)> GetObtainedAchievementsByUser(Guid userId, AchievementParameters parameters, CancellationToken ct = default)
+        {
+            var obtainedPaged = await repositoryManager.AchievementRepository.GetAchievementsByUser(userId, parameters, obtained: true, ct);
+            var dtos = mapper.Map<IEnumerable<AchievementForReturnDto>>(obtainedPaged);
+            return (dtos, obtainedPaged.MetaData);
+        }
+
+        public async Task<(IEnumerable<AchievementForReturnDto> achievements, MetaData metaData)> GetUnobtainedAchievementsByUser(Guid userId, AchievementParameters parameters, CancellationToken ct = default)
+        {
+            var unobtainedPaged = await repositoryManager.AchievementRepository.GetAchievementsByUser(userId, parameters, obtained: false, ct);
+            var dtos = mapper.Map<IEnumerable<AchievementForReturnDto>>(unobtainedPaged);
+            return (dtos, unobtainedPaged.MetaData);
+        }
+
+        public async Task UpdateAchievement(Guid id, AchievementForUpdateDto achievementForUpdateDto, CancellationToken ct = default)
 		{
 			var achievementEntity = await repositoryManager.AchievementRepository.GetAchievementById(id, true, ct);
 			if (achievementEntity is null)

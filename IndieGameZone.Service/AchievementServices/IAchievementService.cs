@@ -11,6 +11,8 @@ namespace IndieGameZone.Application.AchievementServices
 		Task DeleteAchievement(Guid id, CancellationToken ct = default);
 		Task<AchievementForReturnDto> GetAchievementById(Guid id, CancellationToken ct = default);
 		Task<(IEnumerable<AchievementForReturnDto> achievements, MetaData metaData)> GetAchievements(AchievementParameters achievementParameters, CancellationToken ct = default);
+        Task<(IEnumerable<AchievementForReturnDto> achievements, MetaData metaData)> GetObtainedAchievementsByUser(Guid userId, AchievementParameters parameters, CancellationToken ct = default);
+        Task<(IEnumerable<AchievementForReturnDto> achievements, MetaData metaData)> GetUnobtainedAchievementsByUser(Guid userId, AchievementParameters parameters, CancellationToken ct = default);
 
-	}
+    }
 }

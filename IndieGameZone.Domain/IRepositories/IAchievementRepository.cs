@@ -9,5 +9,6 @@ namespace IndieGameZone.Domain.IRepositories
 		Task<Achievements?> GetAchievementById(Guid id, bool trackChange, CancellationToken ct = default);
 		void CreateAchievement(Achievements achievement);
 		void DeleteAchievement(Achievements achievement);
-	}
+        Task<PagedList<Achievements>> GetAchievementsByUser(Guid userId, AchievementParameters parameters, bool obtained, CancellationToken ct = default);
+    }
 }

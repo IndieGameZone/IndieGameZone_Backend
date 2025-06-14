@@ -32,25 +32,42 @@ namespace IndieGameZone.API.Controllers
 			return Ok(achievement);
 		}
 
-		[HttpPost]
-		public async Task<IActionResult> CreateAchievement([FromBody] AchievementForCreationDto achievementForCreationDto, CancellationToken ct)
-		{
-			await serviceManager.AchievementService.CreateAchievement(achievementForCreationDto, ct);
-			return StatusCode(201);
-		}
+        [HttpGet("obtained/{userId:guid}")]
+        public async Task<IActionResult> GetObtainedAchievements([FromRoute] Guid userId, [FromQuery] AchievementParameters achievementParameters, CancellationToken ct)
+        {
+            var pagedResult = await serviceManager.AchievementService.GetObtainedAchievementsByUser(userId, achievementParameters, ct);
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+            return Ok(pagedResult.achievements);
+        }
 
-		[HttpPut("{id:guid}")]
-		public async Task<IActionResult> UpdateAchievement([FromRoute] Guid id, [FromBody] AchievementForUpdateDto achievementForUpdateDto, CancellationToken ct)
-		{
-			await serviceManager.AchievementService.UpdateAchievement(id, achievementForUpdateDto, ct);
-			return NoContent();
-		}
+        [HttpGet("unobtained/{userId:guid}")]
+        public async Task<IActionResult> GetUnobtainedAchievements([FromRoute] Guid userId, [FromQuery] AchievementParameters achievementParameters, CancellationToken ct)
+        {
+            var pagedResult = await serviceManager.AchievementService.GetUnobtainedAchievementsByUser(userId, achievementParameters, ct);
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+            return Ok(pagedResult.achievements);
+        }
 
-		[HttpDelete("{id:guid}")]
-		public async Task<IActionResult> DeleteAchievement([FromRoute] Guid id, CancellationToken ct)
-		{
-			await serviceManager.AchievementService.DeleteAchievement(id, ct);
-			return NoContent();
-		}
-	}
+
+        //[HttpPost]
+        //public async Task<IActionResult> CreateAchievement([FromBody] AchievementForCreationDto achievementForCreationDto, CancellationToken ct)
+        //{
+        //	await serviceManager.AchievementService.CreateAchievement(achievementForCreationDto, ct);
+        //	return StatusCode(201);
+        //}
+
+        //[HttpPut("{id:guid}")]
+        //public async Task<IActionResult> UpdateAchievement([FromRoute] Guid id, [FromBody] AchievementForUpdateDto achievementForUpdateDto, CancellationToken ct)
+        //{
+        //	await serviceManager.AchievementService.UpdateAchievement(id, achievementForUpdateDto, ct);
+        //	return NoContent();
+        //}
+
+        //[HttpDelete("{id:guid}")]
+        //public async Task<IActionResult> DeleteAchievement([FromRoute] Guid id, CancellationToken ct)
+        //{
+        //	await serviceManager.AchievementService.DeleteAchievement(id, ct);
+        //	return NoContent();
+        //}
+    }
 }
