@@ -143,5 +143,5 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.UserService.ResetPassword(userForResetPasswordDto, ct);
 			return Ok();
 		}
-	}
+    }
 }

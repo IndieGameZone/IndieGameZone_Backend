@@ -20,6 +20,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Users
         public bool? IsActive { get; init; }
         public DateTime? JoinedDate { get; init; }
         public DateTime? LastLogin { get; init; }
+        public DateTime? LastUsernameChangedDate { get; init; }
 
         public string? Fullname { get; init; }
         public string? Avatar { get; init; }

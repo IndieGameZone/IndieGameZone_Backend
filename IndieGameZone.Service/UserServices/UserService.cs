@@ -679,6 +679,26 @@ namespace IndieGameZone.Application.UserServices
             await repositoryManager.SaveAsync(ct);
         }
 
+        public async Task UpdateUsername(Guid userId, string newUsername, CancellationToken ct)
+        {
+            var user = await userManager.FindByIdAsync(userId.ToString());
+            if (user == null) throw new UserNotFoundException();
+			if(user.LastUsernameChangedDate.HasValue &&
+               user.LastUsernameChangedDate.Value.AddDays(30) > DateTime.Now)
+            {
+                throw new UserBadRequestException("You can only change your username once every 30 days.");
+            }
+            if (newUsername.Equals(user.UserName)) throw new UserBadRequestException("New username cannot be the same as the current username.");
+            if (await userManager.FindByNameAsync(newUsername) != null) throw new UserBadRequestException("Username already exists");
+            user.UserName = newUsername;
+            user.LastUsernameChangedDate = DateTime.Now;
+            var result = await userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException(string.Join("; ", result.Errors.Select(e => e.Description)));
+            }
+        }
+
         private async Task CheckAndUpdateBanStatusAsync(Users user, CancellationToken ct)
         {
             var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryByUserId(user.Id, false, ct);
