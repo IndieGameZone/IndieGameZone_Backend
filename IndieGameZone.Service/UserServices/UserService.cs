@@ -1,4 +1,5 @@
-﻿using Bogus;
+﻿
+using Bogus;
 using FirebaseAdmin.Auth;
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Application.EmailServices;
@@ -628,7 +629,9 @@ namespace IndieGameZone.Application.UserServices
 				});
 
 				await repositoryManager.SaveAsync(ct);
-			}
+
+                SendWelcomeEmailAsync(email, name);
+            }
 
             await CheckAndUpdateBanStatusAsync(user, ct);
 
@@ -665,6 +668,19 @@ namespace IndieGameZone.Application.UserServices
             while (await userManager.FindByNameAsync(finalUsername) != null);
 
             return finalUsername;
+        }
+
+        private void SendWelcomeEmailAsync(string email, string fullname)
+        {
+            var emailBody = $@"
+		<p>Hi {fullname},</p>
+		<p>Welcome to Indie Game Zone!</p>
+		<p>Thanks for signing up with your Google account.</p>
+		<p>Explore the platform, connect with other gamers, and enjoy your stay!</p>
+		<p>If you have any questions, feel free to contact our support team.</p>";
+
+            var mail = new Mail(email!, "Welcome to Indie Game Zone!", emailBody);
+            emailSender.SendEmail(mail);
         }
 
         public async Task UpdateBirthday(Guid userId, DateOnly birthday, CancellationToken ct)
