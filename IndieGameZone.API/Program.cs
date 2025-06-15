@@ -1,4 +1,5 @@
 using Azure.Identity;
+using Bogus;
 using IndieGameZone.API.Extensions;
 using IndieGameZone.Application.AIService;
 using IndieGameZone.Application.EmailServices;
@@ -42,6 +43,7 @@ builder.Services.ConfigureBlobService(builder.Configuration);
 builder.Services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
 builder.Services.AddScoped<IAIService, AIService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<Faker>();
 builder.Services.Configure<FormOptions>(options =>
 {
 	options.MultipartBodyLengthLimit = 300 * 1024 * 1024; // 300MB

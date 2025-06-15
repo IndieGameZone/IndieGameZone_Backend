@@ -20,8 +20,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<PagedList<Games>> GetActiveGames(ActiveGameParameters activeGameParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var gameEntities = FindByCondition(g => g.Visibility == GameVisibility.Public, trackChange)
+			var gameEntities = FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
+				.Search(activeGameParameters.SearchTerm)
 				.Include(x => x.Discounts).AsSplitQuery()
+				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
+				.Include(x => x.Category).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Games>.ToPagedList(gameEntities, activeGameParameters.PageNumber, activeGameParameters.PageSize, ct);
@@ -44,7 +47,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<PagedList<Games>> GetGames(GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var gameEntities = FindAll(trackChange)
+				.FilterByCensorStatus(gameParameters.CensorStatus)
+				.Search(gameParameters.SearchTerm)
 				.Include(x => x.Discounts).AsSplitQuery()
+				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
+				.Include(x => x.Category).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);

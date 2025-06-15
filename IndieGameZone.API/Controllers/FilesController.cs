@@ -36,9 +36,13 @@ namespace IndieGameZone.API.Controllers
 					return BadRequest("Image analysis failed. Please ensure the image is appropriate.");
 				}
 			}
-			if (file.FileName.EndsWith(".rar") || file.FileName.EndsWith(".zip") || file.FileName.EndsWith(".exe"))
+			else if (file.FileName.EndsWith(".rar") || file.FileName.EndsWith(".zip") || file.FileName.EndsWith(".exe"))
 			{
 
+			}
+			else
+			{
+				return BadRequest("Files are not supported");
 			}
 
 			return Ok(uploadedUrl);

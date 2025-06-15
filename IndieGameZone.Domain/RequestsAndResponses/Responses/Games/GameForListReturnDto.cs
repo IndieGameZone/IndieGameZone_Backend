@@ -1,5 +1,7 @@
 ﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Categories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Discounts;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.GameTags;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 {
@@ -13,6 +15,9 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public bool AllowDonation { get; init; }
 		public double Price { get; init; }
 		public double PriceAfterDiscount { get; set; }
+		public string ShortDescription { get; init; }
 		public virtual ICollection<DiscountForReturnDto> Discounts { get; init; }
+		public virtual ICollection<GameTagForReturnDto> GameTags { get; set; }
+		public virtual CategoryForReturnDto Category { get; init; }
 	}
 }
