@@ -559,18 +559,43 @@ namespace IndieGameZone.Application.UserServices
             await repositoryManager.SaveAsync(ct);
         }
 
-        public async Task<bool> IsFirstGoogleLoginAsync(string idToken, CancellationToken ct = default)
+        public async Task<(bool isFirstTime, TokenDto? dto)> IsFirstGoogleLoginAsync(string idToken, CancellationToken ct = default)
         {
             // Step 1: Verify the token
             var payload = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken, ct);
             var email = payload.Claims["email"]?.ToString();
+            var firebaseUserId = payload.Uid;
 
             if (string.IsNullOrEmpty(email))
                 throw new InvalidOperationException("Invalid Google token: missing email");
 
             // Step 2: Check if user exists
             var user = await userManager.FindByEmailAsync(email);
-            return user == null;
+            if (user == null)
+            {
+                // First-time login
+                return (true, null);
+            }
+
+            // Step 3: Check if user has been banned
+            await CheckAndUpdateBanStatusAsync(user, ct);
+
+            // Step 4: Save Firebase login info if not already present
+            var loginInfo = new UserLoginInfo("Firebase", firebaseUserId, "Google");
+
+            var existingLogins = await userManager.GetLoginsAsync(user);
+            if (!existingLogins.Any(l => l.LoginProvider == "Firebase" && l.ProviderKey == firebaseUserId))
+            {
+                var addLoginResult = await userManager.AddLoginAsync(user, loginInfo);
+                if (!addLoginResult.Succeeded)
+                    throw new InvalidOperationException("Could not link Firebase login");
+            }
+
+            // Step 5: Update last login and generate tokens
+            user.LastLogin = DateTime.Now;
+            await userManager.UpdateAsync(user);
+
+            return (false, await CreateToken(user, setRefreshExpiry: true, ct));
         }
 
         public async Task<TokenDto> LoginWithGoogleAsync(GoogleLoginDto dto, CancellationToken ct = default)
@@ -621,14 +646,22 @@ namespace IndieGameZone.Application.UserServices
                     throw new InvalidOperationException(string.Join("; ", roleResult.Errors.Select(e => e.Description)));
                 }
 
-                // Create Profile + Wallet
-                repositoryManager.UserProfileRepository.CreateUserProfile(new UserProfiles
-				{
-					UserId = user.Id,
-					Avatar = picture ?? "https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=6&m=1223671392&s=170667a&w=0&h=zP3l7WJinOFaGb2i1F4g8IS2ylw0FlIaa6x3tP9sebU=",
-					Fullname = name,
-					Birthday = dto.Birthday
-				});
+                if (dto.Birthday is null)
+                {
+
+                    throw new InvalidOperationException("Birthday is required for new users. Please provide a valid date.");
+                }
+                else
+                {
+                    // Create Profile + Wallet
+                    repositoryManager.UserProfileRepository.CreateUserProfile(new UserProfiles
+                    {
+                        UserId = user.Id,
+                        Avatar = picture ?? "https://media.istockphoto.com/vectors/default-profile-picture-avatar-photo-placeholder-vector-illustration-vector-id1223671392?k=6&m=1223671392&s=170667a&w=0&h=zP3l7WJinOFaGb2i1F4g8IS2ylw0FlIaa6x3tP9sebU=",
+                        Fullname = name,
+                        Birthday = (DateOnly)dto.Birthday
+                    });
+                }
 
 				repositoryManager.WalletRepository.CreateWallet(new Wallets
 				{

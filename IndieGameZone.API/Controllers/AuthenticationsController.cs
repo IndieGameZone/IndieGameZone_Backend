@@ -58,8 +58,24 @@ namespace IndieGameZone.API.Controllers
 
             try
             {
-                var isFirstTime = await serviceManager.UserService.IsFirstGoogleLoginAsync(dto.IdToken, ct);
-                return Ok(isFirstTime);
+                var result = await serviceManager.UserService.IsFirstGoogleLoginAsync(dto.IdToken, ct);
+                if (result.isFirstTime)
+                {
+                    return Ok(new { isFirstTime = true });
+                }
+                else
+                {
+                    // Set refresh token cookie if not first time
+                    Response.Cookies.Append("refreshToken", result.dto!.RefreshToken!, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Expires = result.dto.RefreshTokenExpiry
+                    });
+
+                    return Ok(new { isFirstTime = false, accessToken = result.dto.AccessToken });
+                }
             }
             catch (InvalidOperationException ex)
             {
