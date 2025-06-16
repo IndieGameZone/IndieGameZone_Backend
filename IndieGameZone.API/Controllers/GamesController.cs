@@ -18,6 +18,9 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
+		/// <summary>
+		/// Gets all the games for moderators and admins.
+		/// </summary>
 		[HttpGet("games")]
 		public async Task<IActionResult> GetGames([FromQuery] GameParameters gameParameters, CancellationToken ct)
 		{
@@ -33,6 +36,9 @@ namespace IndieGameZone.API.Controllers
 			return Ok(game);
 		}
 
+		/// <summary>
+		/// Gets all the games belong to developer.
+		/// </summary>
 		[HttpGet("users/{developerId:guid}/games")]
 		public async Task<IActionResult> GetGamesByDeveloperId([FromRoute] Guid developerId, [FromQuery] GameParameters gameParameters, CancellationToken ct)
 		{
@@ -62,6 +68,9 @@ namespace IndieGameZone.API.Controllers
 			return NoContent();
 		}
 
+		/// <summary>
+		/// Gets all the games pass all the censor and visibility is public.
+		/// </summary>
 		[HttpGet("active-games")]
 		public async Task<IActionResult> GetActiveGames([FromQuery] ActiveGameParameters activeGameParameters, CancellationToken ct)
 		{

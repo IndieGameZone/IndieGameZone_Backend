@@ -61,18 +61,19 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
 	options.TokenLifespan = TimeSpan.FromHours(1);
 });
-builder.Services.Configure<IdentityOptions>(options =>
-{
-	options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-	options.Lockout.MaxFailedAccessAttempts = 5;
-	options.Lockout.AllowedForNewUsers = true;
-});
+//builder.Services.Configure<IdentityOptions>(options =>
+//{
+//	options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+//	options.Lockout.MaxFailedAccessAttempts = 5;
+//	options.Lockout.AllowedForNewUsers = true;
+//});
 builder.Services.ConfigureApplicationCookie(options =>
 {
 	options.Cookie.HttpOnly = true;
 	options.Cookie.SameSite = SameSiteMode.None;
 	options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 });
+
 
 
 var app = builder.Build();

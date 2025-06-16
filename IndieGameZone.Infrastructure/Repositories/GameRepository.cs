@@ -22,8 +22,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var gameEntities = FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
 				.Search(activeGameParameters.SearchTerm)
+				.FilterByPrice(activeGameParameters.Price)
 				.Include(x => x.Discounts).AsSplitQuery()
-				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
+				.Include(x => x.GameTags).ThenInclude(x => x.Tag).FilterByTags(activeGameParameters.Tags).AsSplitQuery()
+				.Include(x => x.GamePlatforms).FilterByPlatform(activeGameParameters.Platforms).AsSplitQuery()
+				.Include(x => x.GameLanguages).FilterByLanguages(activeGameParameters.Languages).AsSplitQuery()
 				.Include(x => x.Category).AsSplitQuery()
 				.Sort();
 

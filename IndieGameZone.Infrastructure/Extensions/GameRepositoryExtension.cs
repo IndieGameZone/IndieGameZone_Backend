@@ -23,5 +23,41 @@ namespace IndieGameZone.Infrastructure.Extensions
 		{
 			return source.Where(x => x.CensorStatus == censorStatus);
 		}
+
+		public static IQueryable<Games> FilterByPrice(this IQueryable<Games> source, double price)
+		{
+			if (price <= 0)
+			{
+				return source;
+			}
+			return source.Where(x => x.Price <= price);
+		}
+
+		public static IQueryable<Games> FilterByTags(this IQueryable<Games> source, ICollection<Guid> tags)
+		{
+			if (tags == null || !tags.Any())
+			{
+				return source;
+			}
+			return source.Where(x => x.GameTags.Any(gt => tags.Contains(gt.TagId)));
+		}
+
+		public static IQueryable<Games> FilterByPlatform(this IQueryable<Games> source, ICollection<Guid> platforms)
+		{
+			if (platforms == null || !platforms.Any())
+			{
+				return source;
+			}
+			return source.Where(x => x.GamePlatforms.Any(gp => platforms.Contains(gp.PlatformId)));
+		}
+
+		public static IQueryable<Games> FilterByLanguages(this IQueryable<Games> source, ICollection<Guid> languages)
+		{
+			if (languages == null || !languages.Any())
+			{
+				return source;
+			}
+			return source.Where(x => x.GameLanguages.Any(gl => languages.Contains(gl.LanguageId)));
+		}
 	}
 }

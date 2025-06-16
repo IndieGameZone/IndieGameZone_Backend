@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Quartz;
 using Quartz.Simpl;
+using System.Reflection;
 using System.Text;
 
 namespace IndieGameZone.API.Extensions
@@ -42,6 +43,9 @@ namespace IndieGameZone.API.Extensions
 				o.Password.RequireNonAlphanumeric = false;
 				o.Password.RequiredLength = 5;
 				o.User.RequireUniqueEmail = true;
+				o.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+				o.Lockout.MaxFailedAccessAttempts = 5;
+				o.Lockout.AllowedForNewUsers = true;
 			})
 				.AddEntityFrameworkStores<AppDbContext>()
 				.AddDefaultTokenProviders();
@@ -102,6 +106,13 @@ namespace IndieGameZone.API.Extensions
 						new List<string>()
 					}
 				});
+
+				var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+				var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+				if (File.Exists(xmlPath))
+				{
+					option.IncludeXmlComments(xmlPath);
+				}
 			});
 		}
 
