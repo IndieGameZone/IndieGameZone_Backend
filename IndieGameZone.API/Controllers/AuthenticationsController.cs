@@ -51,7 +51,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
         [HttpPost("google-login/check-first")]
-        public async Task<IActionResult> CheckFirstGoogleLogin([FromBody] GoogleLoginDto dto, CancellationToken ct)
+        public async Task<IActionResult> CheckFirstGoogleLogin([FromBody] CheckFirstGoogleLoginDto dto, CancellationToken ct)
         {
             if (string.IsNullOrWhiteSpace(dto.IdToken))
                 return BadRequest("Google ID token is required.");
