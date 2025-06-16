@@ -556,12 +556,6 @@ namespace IndieGameZone.Application.UserServices
             }
 
             mapper.Map(userForUpdateDto, userProfileEntity);
-            if (userForUpdateDto.Avatar is not null && userForUpdateDto.Avatar.Length > 0)
-            {
-                await blobService.DeleteBlob(userProfileEntity.Avatar.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-                string filename = $"{Guid.NewGuid()}{Path.GetExtension(userForUpdateDto.Avatar.FileName)}";
-                userProfileEntity.Avatar = await blobService.UploadBlob(filename, StorageContainer.STORAGE_CONTAINER, userForUpdateDto.Avatar);
-            }
             await repositoryManager.SaveAsync(ct);
         }
 

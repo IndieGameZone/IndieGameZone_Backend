@@ -10,13 +10,12 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Users
 {
     public record UserForUpdateDto
     {
-        [Required]
-        public string Fullname { get; init; }
-        public IFormFile? Avatar { get; init; }
+        public string? Fullname { get; init; }
+        public string? Avatar { get; init; }
         public string? Bio { get; init; }
-        [Required]
-        public DateOnly Birthday { get; init; }
+        public DateOnly? Birthday { get; init; }
         public string? FacebookLink { get; init; }
+        public string? YoutubeChannelLink { get; init; }
         public string? BankName { get; init; }
         public string? BankAccount { get; init; }
 
