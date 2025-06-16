@@ -12,10 +12,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Users
     {
         [Required]
         public string IdToken { get; set; } = string.Empty;
-        [Required]
-        public required DateOnly Birthday { get; init; }
-        [Required]
+        public DateOnly? Birthday { get; init; }
         [EnumDataType(typeof(RoleEnum))]
-        public RoleEnum Role { get; init; }
+        public RoleEnum? Role { get; init; }
     }
 }

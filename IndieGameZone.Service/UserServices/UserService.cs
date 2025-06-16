@@ -559,10 +559,24 @@ namespace IndieGameZone.Application.UserServices
             await repositoryManager.SaveAsync(ct);
         }
 
+        public async Task<bool> IsFirstGoogleLoginAsync(string idToken, CancellationToken ct = default)
+        {
+            // Step 1: Verify the token
+            var payload = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(idToken, ct);
+            var email = payload.Claims["email"]?.ToString();
+
+            if (string.IsNullOrEmpty(email))
+                throw new InvalidOperationException("Invalid Google token: missing email");
+
+            // Step 2: Check if user exists
+            var user = await userManager.FindByEmailAsync(email);
+            return user == null;
+        }
+
         public async Task<TokenDto> LoginWithGoogleAsync(GoogleLoginDto dto, CancellationToken ct = default)
         {
             // Step 1: Verify the token with Firebase
-            var payload = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(dto.IdToken);
+            var payload = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(dto.IdToken, ct);
             var email = payload.Claims["email"]?.ToString();
             var name = payload.Claims["name"]?.ToString();
             var picture = payload.Claims["picture"]?.ToString();

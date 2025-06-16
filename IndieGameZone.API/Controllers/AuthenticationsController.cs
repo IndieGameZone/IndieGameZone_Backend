@@ -50,6 +50,23 @@ namespace IndieGameZone.API.Controllers
 			return Ok(tokenDto.AccessToken);
 		}
 
+        [HttpPost("google-login/check-first")]
+        public async Task<IActionResult> CheckFirstGoogleLogin([FromBody] GoogleLoginDto dto, CancellationToken ct)
+        {
+            if (string.IsNullOrWhiteSpace(dto.IdToken))
+                return BadRequest("Google ID token is required.");
+
+            try
+            {
+                var isFirstTime = await serviceManager.UserService.IsFirstGoogleLoginAsync(dto.IdToken, ct);
+                return Ok(isFirstTime);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto, CancellationToken ct)
         {
