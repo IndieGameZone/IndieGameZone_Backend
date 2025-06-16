@@ -7,6 +7,7 @@
 		public string? Avatar { get; set; } = string.Empty;
 		public string? Bio { get; set; } = string.Empty;
 		public DateOnly Birthday { get; set; }
+		public string? YoutubeChannelLink { get; set; } = string.Empty;
 		public string? FacebookLink { get; set; } = string.Empty;
 		public string? BankName { get; set; } = string.Empty;
 		public string? BankAccount { get; set; } = string.Empty;
