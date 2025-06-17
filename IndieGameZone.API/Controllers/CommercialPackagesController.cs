@@ -9,7 +9,7 @@ using System.Text.Json;
 
 namespace IndieGameZone.API.Controllers
 {
-    [Route("api/commercialpackages")]
+    [Route("api/commercial-packages")]
     [ApiController]
     public class CommercialPackagesController : ControllerBase
     {
