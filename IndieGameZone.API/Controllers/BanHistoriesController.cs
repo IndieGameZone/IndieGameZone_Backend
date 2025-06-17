@@ -7,7 +7,7 @@ using System.Text.Json;
 
 namespace IndieGameZone.API.Controllers
 {
-    [Route("api/banhistories")]
+    [Route("api/ban-histories")]
     [ApiController]
     public class BanHistoriesController : ControllerBase
     {
