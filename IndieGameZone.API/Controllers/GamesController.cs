@@ -85,5 +85,12 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.GameService.UpdateActiveStatus(gameId, censorStatus, ct);
 			return NoContent();
 		}
+
+		[HttpPut("games/{gamePlatformId:guid}/number-of-download")]
+		public async Task<IActionResult> IncreaseNumberOfDownload([FromRoute] Guid gamePlatformId, CancellationToken ct)
+		{
+			var downloadUrl = await serviceManager.GameService.IncreaseNumberOfDownload(gamePlatformId, ct);
+			return Redirect(downloadUrl);
+		}
 	}
 }

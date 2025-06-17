@@ -221,5 +221,15 @@ namespace IndieGameZone.Application.GameServices
 			gameEntity.CensorStatus = censorStatus;
 			await repositoryManager.SaveAsync(ct);
 		}
+
+		public async Task<string> IncreaseNumberOfDownload(Guid gamePlatformId, CancellationToken ct = default)
+		{
+			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, false, ct);
+			var game = await repositoryManager.GameRepository.GetGameById(gamePlatform.GameId, true, ct);
+			game.NumberOfDownloads++;
+			await repositoryManager.SaveAsync(ct);
+
+			return gamePlatform.File;
+		}
 	}
 }

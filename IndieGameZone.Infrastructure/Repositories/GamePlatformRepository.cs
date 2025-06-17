@@ -20,5 +20,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<IEnumerable<GamePlatforms>> GetGamePlatformsByGameId(Guid gameId, bool trackChanges, CancellationToken ct = default) => await
 			FindByCondition(gp => gp.GameId.Equals(gameId), trackChanges).ToListAsync(ct);
+
+		public async Task<GamePlatforms?> GetGamePlatformsById(Guid gamePlatformId, bool trackChanges, CancellationToken ct = default) => await
+			FindByCondition(gp => gp.Id.Equals(gamePlatformId), trackChanges).FirstOrDefaultAsync(ct);
 	}
 }
