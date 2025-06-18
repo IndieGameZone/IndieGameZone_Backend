@@ -42,6 +42,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(g => g.Developers)
 				.HasForeignKey(g => g.DeveloperId)
 				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasMany(u => u.CensorGames)
+				.WithOne(g => g.Moderator)
+				.HasForeignKey(g => g.ModeratorId)
+				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(u => u.Coupons)
 				.WithOne(c => c.User)
 				.HasForeignKey(c => c.UserId)
@@ -87,6 +91,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.HasForeignKey(gr => gr.UserId)
 				.OnDelete(DeleteBehavior.Restrict);
 
+
 			var admin = new Users
 			{
 				Id = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
@@ -125,13 +130,13 @@ namespace IndieGameZone.Infrastructure.Configurations
 			};
 			moderator.PasswordHash = passwordHasher.HashPassword(moderator, "moderator");
 
-			var player = new Users
+			var player1 = new Users
 			{
 				Id = Guid.Parse("23879117-e09e-40f1-b78f-1493d81baf49"),
-				UserName = "player",
-				NormalizedUserName = "PLAYER",
-				Email = "player@gmail.com",
-				NormalizedEmail = "PLAYER@GMAIL.COM",
+				UserName = "player1",
+				NormalizedUserName = "PLAYER1",
+				Email = "player1@gmail.com",
+				NormalizedEmail = "PLAYER1@GMAIL.COM",
 				EmailConfirmed = true,
 				SecurityStamp = Guid.NewGuid().ToString(),
 				ConcurrencyStamp = Guid.NewGuid().ToString(),
@@ -142,7 +147,45 @@ namespace IndieGameZone.Infrastructure.Configurations
 				IsActive = true,
 				JoinedDate = DateTime.Now
 			};
-			player.PasswordHash = passwordHasher.HashPassword(player, "player");
+			player1.PasswordHash = passwordHasher.HashPassword(player1, "player1");
+
+			var player2 = new Users
+			{
+				Id = Guid.Parse("91b106fa-7b95-480f-a12a-0e0303454332"),
+				UserName = "player2",
+				NormalizedUserName = "PLAYER2",
+				Email = "player2@gmail.com",
+				NormalizedEmail = "PLAYER2@GMAIL.COM",
+				EmailConfirmed = true,
+				SecurityStamp = Guid.NewGuid().ToString(),
+				ConcurrencyStamp = Guid.NewGuid().ToString(),
+				PhoneNumberConfirmed = false,
+				TwoFactorEnabled = false,
+				LockoutEnabled = true,
+				AccessFailedCount = 0,
+				IsActive = true,
+				JoinedDate = DateTime.Now
+			};
+			player2.PasswordHash = passwordHasher.HashPassword(player2, "player2");
+
+			var player3 = new Users
+			{
+				Id = Guid.Parse("537f05fd-120c-40b0-b2ec-639756f866ab"),
+				UserName = "player3",
+				NormalizedUserName = "PLAYER3",
+				Email = "player3@gmail.com",
+				NormalizedEmail = "PLAYER3@GMAIL.COM",
+				EmailConfirmed = true,
+				SecurityStamp = Guid.NewGuid().ToString(),
+				ConcurrencyStamp = Guid.NewGuid().ToString(),
+				PhoneNumberConfirmed = false,
+				TwoFactorEnabled = false,
+				LockoutEnabled = true,
+				AccessFailedCount = 0,
+				IsActive = true,
+				JoinedDate = DateTime.Now
+			};
+			player3.PasswordHash = passwordHasher.HashPassword(player3, "player3");
 
 			var developer1 = new Users
 			{
@@ -203,7 +246,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 
 
 
-			builder.HasData(admin, moderator, player, developer1, developer2, developer3);
+			builder.HasData(admin, moderator, player1, player2, player3, developer1, developer2, developer3);
 		}
 	}
 }

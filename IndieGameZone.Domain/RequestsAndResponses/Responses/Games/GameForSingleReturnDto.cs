@@ -6,6 +6,7 @@ using IndieGameZone.Domain.RequestsAndResponses.Responses.GameImages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.GameLanguages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.GamePlatforms;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.GameTags;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 {
@@ -14,6 +15,9 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public Guid Id { get; init; }
 		public string Name { get; init; }
 		public string CoverImage { get; init; }
+		public string VideoLink { get; init; }
+		public string InstallInstruction { get; init; }
+		public string ShortDescription { get; init; }
 		public string Description { get; init; }
 		public double Price { get; init; }
 		public double PriceAfterDiscount { get; set; }
@@ -22,9 +26,10 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public GameVisibility Visibility { get; set; }
 		public CensorStatus CensorStatus { get; set; }
 		public double NumberOfDownloads { get; set; }
-		public DateTime CreatedAt { get; set; }
-		public DateTime? CensoredAt { get; set; }
-		public DateTime? UpdatedAt { get; set; }
+		public DateTime CreatedAt { get; init; }
+		public DateTime? CensoredAt { get; init; }
+		public DateTime? UpdatedAt { get; init; }
+		public string? CensorReason { get; init; }
 		public virtual ICollection<GameTagForReturnDto> GameTags { get; init; }
 		public virtual CategoryForReturnDto Category { get; init; }
 		public virtual AgeRestrictionForReturnDto AgeRestriction { get; set; }
@@ -32,5 +37,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public virtual ICollection<GameLanguageForReturnDto> GameLanguages { get; init; }
 		public virtual ICollection<GameImageForReturnDto> GameImages { get; init; }
 		public virtual ICollection<DiscountForReturnDto> Discounts { get; init; }
+		public virtual UserForReturnDto Developers { get; init; }
+		public virtual UserForReturnDto? Moderator { get; init; }
 	}
 }

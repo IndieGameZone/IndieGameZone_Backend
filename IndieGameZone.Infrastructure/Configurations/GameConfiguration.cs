@@ -24,6 +24,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(g => g.CensoredAt);
 			builder.Property(g => g.UpdatedAt);
 			builder.Property(g => g.AverageSession);
+			builder.Property(g => g.CensorReason);
 
 			builder.HasMany(g => g.GameLanguages)
 				.WithOne(gl => gl.Game)
@@ -89,6 +90,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(t => t.Game)
 				.HasForeignKey(t => t.GameId)
 				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne(g => g.Moderator)
+				.WithMany(m => m.CensorGames)
+				.HasForeignKey(g => g.ModeratorId)
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasData(
 				new Games
@@ -116,6 +121,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=v1oeNEKiwTg",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 150000,
 					NumberOfDownloads = 150,
 					CreatedAt = DateTime.Now,
@@ -133,6 +139,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=ColSNi0XD6Q",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 200000,
 					NumberOfDownloads = 200,
 					CreatedAt = DateTime.Now,
@@ -150,6 +157,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=6KGgPoY7TbY",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 120000,
 					NumberOfDownloads = 250,
 					CreatedAt = DateTime.Now,
@@ -167,6 +175,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=WJKp2xT4QTs",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 100000,
 					NumberOfDownloads = 300,
 					CreatedAt = DateTime.Now,
@@ -184,6 +193,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=gjV5Vdf04UY&t=1s",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 50000,
 					NumberOfDownloads = 300,
 					CreatedAt = DateTime.Now,
@@ -201,6 +211,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=yxt7w5VRQ_w",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 75000,
 					NumberOfDownloads = 400,
 					CreatedAt = DateTime.Now,
@@ -218,6 +229,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=RRs_AI96h-w",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 75000,
 					NumberOfDownloads = 500,
 					CreatedAt = DateTime.Now,
@@ -235,6 +247,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 75000,
 					NumberOfDownloads = 200,
 					CreatedAt = DateTime.Now,
@@ -252,6 +265,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 60000,
 					NumberOfDownloads = 150,
 					CreatedAt = DateTime.Now,
@@ -269,6 +283,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=1fYf3Rt7guw",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 80000,
 					NumberOfDownloads = 350,
 					CreatedAt = DateTime.Now,
@@ -286,6 +301,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=c8JdCXw4l3k",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 90000,
 					NumberOfDownloads = 400,
 					CreatedAt = DateTime.Now,
@@ -303,6 +319,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 90000,
 					NumberOfDownloads = 500,
 					CreatedAt = DateTime.Now,
@@ -320,6 +337,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 95000,
 					NumberOfDownloads = 600,
 					CreatedAt = DateTime.Now,
@@ -337,6 +355,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=tNoPejgMaB0",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 85000,
 					NumberOfDownloads = 700,
 					CreatedAt = DateTime.Now,
@@ -354,6 +373,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 85000,
 					NumberOfDownloads = 100,
 					CreatedAt = DateTime.Now,
@@ -371,6 +391,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=wYnJD9Pteis",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 70000,
 					NumberOfDownloads = 200,
 					CreatedAt = DateTime.Now,
@@ -388,6 +409,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "https://www.youtube.com/watch?v=example",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 60000,
 					NumberOfDownloads = 150,
 					CreatedAt = DateTime.Now,
@@ -405,6 +427,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					NumberOfDownloads = 300,
 					Price = 75000,
 					CreatedAt = DateTime.Now,
@@ -422,6 +445,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 50000,
 					NumberOfDownloads = 100,
 					CreatedAt = DateTime.Now,
@@ -439,6 +463,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					VideoLink = "",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
+					CensorStatus = CensorStatus.Approved,
 					Price = 65000,
 					NumberOfDownloads = 200,
 					CreatedAt = DateTime.Now,

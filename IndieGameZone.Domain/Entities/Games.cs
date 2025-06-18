@@ -24,6 +24,8 @@ namespace IndieGameZone.Domain.Entities
 		public Guid AgeRestrictionId { get; set; }
 		public Guid DeveloperId { get; set; }
 		public Guid CategoryId { get; set; }
+		public string? CensorReason { get; set; }
+		public Guid? ModeratorId { get; set; }
 
 
 		// Navigation properties
@@ -43,6 +45,7 @@ namespace IndieGameZone.Domain.Entities
 		public virtual ICollection<Reports> Reports { get; set; } = new List<Reports>();
 		public virtual ICollection<GameRecommendations> GameRecommendations { get; set; } = new List<GameRecommendations>();
 		public virtual ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
+		public virtual Users? Moderator { get; set; } = null!;
 
 	}
 }
