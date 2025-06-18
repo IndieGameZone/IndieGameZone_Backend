@@ -55,5 +55,13 @@ namespace IndieGameZone.API.Controllers
             await serviceManager.CommercialPackageService.DeleteCommercialPackage(id, ct);
             return NoContent();
         }
+
+        [HttpGet("{commercialPackageId:guid}/registrations")]
+        public async Task<IActionResult> GetCommercialRegistrationsByPackage([FromRoute] Guid commercialPackageId, [FromQuery] CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct)
+        {
+            var pagedResult = await serviceManager.CommercialPackageService.GetCommercialRegistrationsByPackage(commercialPackageId, commercialRegistrationParameters, ct);
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+            return Ok(pagedResult.commercialRegistrations);
+        }
     }
 }

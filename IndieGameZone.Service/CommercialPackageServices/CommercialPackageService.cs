@@ -71,5 +71,12 @@ namespace IndieGameZone.Application.CommercialPackageServices
             mapper.Map(commercialPackageForUpdateDto, commercialPackageEntity);
             await repositoryManager.SaveAsync(ct);
         }
+
+        public async Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetCommercialRegistrationsByPackage(Guid commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default)
+        {
+            var commercialRegistrationsWithMetaData = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationsByPackage(commercialPackageId, commercialRegistrationParameters, false, ct);
+            var commercialRegistrations = mapper.Map<IEnumerable<CommercialRegistrationForReturnDto>>(commercialRegistrationsWithMetaData);
+            return (commercialRegistrations, commercialRegistrationsWithMetaData.MetaData);
+        }
     }
 }

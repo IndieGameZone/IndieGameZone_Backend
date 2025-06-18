@@ -36,5 +36,6 @@ namespace IndieGameZone.Domain.IRepositories
 		IReportRepository ReportRepository { get; }
 		INotificationRepository NotificationRepository { get; }
         IBanHistoryRepository BanHistoryRepository { get; }
+        ICommercialRegistrationRepository CommercialRegistrationRepository { get; }
     }
 }
