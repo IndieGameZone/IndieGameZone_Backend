@@ -1,5 +1,4 @@
-﻿using IndieGameZone.Domain.Constants;
-using IndieGameZone.Domain.RequestsAndResponses.Responses.Categories;
+﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.Categories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Discounts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.GameTags;
 
@@ -10,11 +9,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public Guid Id { get; init; }
 		public string Name { get; init; }
 		public string CoverImage { get; init; }
-		public string Description { get; init; }
-		public GameStatus Status { get; init; }
-		public GameVisibility Visibility { get; set; }
-		public CensorStatus CensorStatus { get; set; }
-		public bool AllowDonation { get; init; }
 		public double Price { get; init; }
 		public double PriceAfterDiscount { get; set; }
 		public string ShortDescription { get; init; }

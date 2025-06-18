@@ -11,10 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.Domain", "Ind
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.Infrastructure", "IndieGameZone.Infrastructure\IndieGameZone.Infrastructure.csproj", "{28845834-F752-451D-BEE2-E0F95E651964}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.AppHost", "IndieGameZone.AppHost\IndieGameZone.AppHost.csproj", "{ADCCE45B-648C-4AB2-9584-1487B3755665}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.ServiceDefaults", "IndieGameZone.ServiceDefaults\IndieGameZone.ServiceDefaults.csproj", "{F8681277-E31B-653E-BDAE-631772D26C11}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,14 +33,6 @@ Global
 		{28845834-F752-451D-BEE2-E0F95E651964}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28845834-F752-451D-BEE2-E0F95E651964}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28845834-F752-451D-BEE2-E0F95E651964}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ADCCE45B-648C-4AB2-9584-1487B3755665}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ADCCE45B-648C-4AB2-9584-1487B3755665}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ADCCE45B-648C-4AB2-9584-1487B3755665}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ADCCE45B-648C-4AB2-9584-1487B3755665}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8681277-E31B-653E-BDAE-631772D26C11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8681277-E31B-653E-BDAE-631772D26C11}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8681277-E31B-653E-BDAE-631772D26C11}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8681277-E31B-653E-BDAE-631772D26C11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

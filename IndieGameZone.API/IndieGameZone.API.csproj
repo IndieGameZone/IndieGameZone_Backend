@@ -33,7 +33,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\IndieGameZone.Infrastructure\IndieGameZone.Infrastructure.csproj" />
-    <ProjectReference Include="..\IndieGameZone.ServiceDefaults\IndieGameZone.ServiceDefaults.csproj" />
     <ProjectReference Include="..\IndieGameZone.Service\IndieGameZone.Application.csproj" />
   </ItemGroup>
 

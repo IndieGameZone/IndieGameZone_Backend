@@ -15,11 +15,16 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public string Name { get; init; }
 		public string CoverImage { get; init; }
 		public string Description { get; init; }
-		public bool IsActive { get; init; }
 		public double Price { get; init; }
 		public double PriceAfterDiscount { get; set; }
 		public bool AllowDonation { get; init; }
 		public GameStatus Status { get; init; }
+		public GameVisibility Visibility { get; set; }
+		public CensorStatus CensorStatus { get; set; }
+		public double NumberOfDownloads { get; set; }
+		public DateTime CreatedAt { get; set; }
+		public DateTime? CensoredAt { get; set; }
+		public DateTime? UpdatedAt { get; set; }
 		public virtual ICollection<GameTagForReturnDto> GameTags { get; init; }
 		public virtual CategoryForReturnDto Category { get; init; }
 		public virtual AgeRestrictionForReturnDto AgeRestriction { get; set; }
