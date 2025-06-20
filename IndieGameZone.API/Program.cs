@@ -38,6 +38,7 @@ builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.AddAuthorization();
 builder.Services.ConfigureFirebase(builder.Configuration);
 builder.Services.ConfigureBlobService(builder.Configuration);
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
 builder.Services.AddScoped<IAIService, AIService>();
 builder.Services.AddScoped<IEmailSender, EmailSender>();

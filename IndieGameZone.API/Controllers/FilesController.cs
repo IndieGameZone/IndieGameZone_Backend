@@ -2,8 +2,8 @@
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Domain.Constants;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Http.Headers;
 using System.Text.Json;
-using System.Web;
 
 namespace IndieGameZone.API.Controllers
 {
@@ -14,12 +14,71 @@ namespace IndieGameZone.API.Controllers
 		private readonly IBlobService blobService;
 		private readonly IAIService aIService;
 		private readonly IConfiguration configuration;
+		private readonly HttpClient httpClient;
 
-		public FilesController(IBlobService blobService, IAIService aIService, IConfiguration configuration)
+		public FilesController(IBlobService blobService, IAIService aIService, IConfiguration configuration, HttpClient httpClient)
 		{
 			this.blobService = blobService;
 			this.aIService = aIService;
 			this.configuration = configuration;
+			this.httpClient = httpClient;
+		}
+
+		private async Task<string> GetUploadUrlAsync()
+		{
+			httpClient.DefaultRequestHeaders.Clear();
+			httpClient.DefaultRequestHeaders.Add("x-apikey", configuration.GetSection("TotalVirusAPIKey").Value);
+			httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+			var urlResponse = await httpClient.GetAsync("https://www.virustotal.com/api/v3/files/upload_url");
+			var urlContent = await urlResponse.Content.ReadAsStringAsync();
+			Console.WriteLine(urlContent);
+			using var jsonDocUrl = JsonDocument.Parse(urlContent);
+			string uploadUrl = jsonDocUrl.RootElement.GetProperty("data").GetString() ?? string.Empty;
+			return uploadUrl;
+		}
+
+		private async Task<string> UploadFileToVirusTotalAsync(IFormFile file, string uploadUrl)
+		{
+			using var content = new MultipartFormDataContent();
+			using var fileStream = file.OpenReadStream();
+			var streamContent = new StreamContent(fileStream);
+			streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType ?? "application/octet-stream");
+			streamContent.Headers.ContentDisposition = new ContentDispositionHeaderValue("form-data")
+			{
+				Name = "\"file\"",
+				FileName = $"\"{file.FileName}\""
+			};
+			content.Add(streamContent, "file", file.FileName);
+
+			httpClient.DefaultRequestHeaders.Clear();
+			httpClient.DefaultRequestHeaders.Add("x-apikey", configuration.GetSection("TotalVirusAPIKey").Value);
+			httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+			var uploadResponse = await httpClient.PostAsync(uploadUrl, content);
+			var uploadContent = await uploadResponse.Content.ReadAsStringAsync();
+			Console.WriteLine(uploadContent);
+			using var jsonDocUpload = JsonDocument.Parse(uploadContent);
+			var analystId = jsonDocUpload.RootElement.GetProperty("data").GetProperty("id").GetString() ?? string.Empty;
+			return analystId;
+		}
+
+		private async Task<(string Status, int MaliciousCount, int SuspiciousCount)> GetAnalysisResultsAsync(string analysisId)
+		{
+			httpClient.DefaultRequestHeaders.Clear();
+			httpClient.DefaultRequestHeaders.Add("x-apikey", configuration.GetSection("TotalVirusAPIKey").Value);
+			httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+			var analystResponse = await httpClient.GetAsync($"https://www.virustotal.com/api/v3/analyses/{analysisId}");
+			var analystContent = await analystResponse.Content.ReadAsStringAsync();
+			using var jsonDocAnalyst = JsonDocument.Parse(analystContent);
+			var attributes = jsonDocAnalyst.RootElement.GetProperty("data").GetProperty("attributes");
+			var status = attributes.GetProperty("status").GetString() ?? string.Empty;
+			var maliciousCount = attributes.GetProperty("stats").GetProperty("malicious").GetInt32();
+			var suspiciousCount = attributes.GetProperty("stats").GetProperty("suspicious").GetInt32();
+			Console.WriteLine($"Status: {status}, Malicious: {maliciousCount}, Suspicious: {suspiciousCount}");
+
+			return (status, maliciousCount, suspiciousCount);
 		}
 
 		[HttpPost("files")]
@@ -33,12 +92,23 @@ namespace IndieGameZone.API.Controllers
 				!file.FileName.EndsWith(".rar") && !file.FileName.EndsWith(".zip") &&
 				!file.FileName.EndsWith(".exe") && !file.FileName.EndsWith(".webp"))
 			{
-				return BadRequest("File type is not supported. Only .jpg, .png, .rar, .zip, and .exe files are allowed.");
+				return BadRequest("File type is not supported. Only .jpg, .png, .rar, .zip, .exe and .webp files are allowed.");
+			}
+			if (file.FileName.EndsWith(".rar") || file.FileName.EndsWith(".zip") || file.FileName.EndsWith(".exe"))
+			{
+				string uploadUrl = await GetUploadUrlAsync();
+				string analysisId = await UploadFileToVirusTotalAsync(file, uploadUrl);
+				var (status, maliciousCount, suspiciousCount) = await GetAnalysisResultsAsync(analysisId);
+
+				if ((maliciousCount > 0 || suspiciousCount > 0) && status.Equals("completed"))
+				{
+					return BadRequest("File analysis failed. Please ensure the file is safe and appropriate.");
+				}
 			}
 			var uploadedUrl = await blobService.UploadBlob(
-						$"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}",
-						StorageContainer.STORAGE_CONTAINER,
-						file);
+					$"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}",
+					StorageContainer.STORAGE_CONTAINER,
+					file);
 			if (file.FileName.EndsWith(".jpg") || file.FileName.EndsWith(".png") || file.FileName.EndsWith(".webp"))
 			{
 				if (!await aIService.AnalyzeImage(uploadedUrl))
@@ -47,71 +117,6 @@ namespace IndieGameZone.API.Controllers
 					return BadRequest("Image analysis failed. Please ensure the image is appropriate.");
 				}
 			}
-			else if (file.FileName.EndsWith(".rar") || file.FileName.EndsWith(".zip") || file.FileName.EndsWith(".exe"))
-			{
-				var httpClient = new HttpClient();
-				string url = $"https://www.ipqualityscore.com/api/json/url/{configuration.GetSection("IPQualityKey").Value}/{HttpUtility.UrlEncode(uploadedUrl)}";
-				var response = await httpClient.GetAsync(url);
-				response.EnsureSuccessStatusCode();
-				var content = await response.Content.ReadAsStringAsync();
-				using var jsonDoc = JsonDocument.Parse(content);
-				var isSafe = !jsonDoc.RootElement.GetProperty("unsafe").GetBoolean();
-				Console.WriteLine($"{isSafe}");
-				if (!isSafe)
-				{
-					await blobService.DeleteBlob(uploadedUrl.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-					return BadRequest("File analysis failed. Please ensure the file is safe and appropriate.");
-				}
-
-				//var requestUrl = "https://www.virustotal.com/api/v3/urls";
-
-				//// Prepare the form content
-				//var formData = new FormUrlEncodedContent(new[]
-				//{
-				//	new KeyValuePair<string, string>("url", uploadedUrl)
-				//});
-
-				//// First request to get analyst Id
-				//var request = new HttpRequestMessage(HttpMethod.Post, requestUrl)
-				//{
-				//	Content = formData
-				//};
-				//request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-				//request.Headers.Add("x-apikey", configuration.GetSection("TotalVirusAPIKey").Value);
-
-				//var response = await httpClient.SendAsync(request);
-				//var content = await response.Content.ReadAsStringAsync();
-
-				//var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-				//var result = JsonSerializer.Deserialize<TotalVirusResponse>(content, options);
-
-				//var analystId = result?.data?.id;
-				//// Second request to get the analysis results
-				//var analystUrl = $"https://www.virustotal.com/api/v3/analyses/{analystId}";
-				//var analystRequest = new HttpRequestMessage(HttpMethod.Get, analystUrl);
-
-				//analystRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-				//analystRequest.Headers.Add("x-apikey", configuration.GetSection("TotalVirusAPIKey").Value);
-
-				//var analystResponse = await httpClient.SendAsync(analystRequest);
-				//var analystContent = await analystResponse.Content.ReadAsStringAsync();
-
-				//using var jsonDoc = JsonDocument.Parse(analystContent);
-				//var stats = jsonDoc.RootElement.GetProperty("data").GetProperty("attributes").GetProperty("stats");
-				//string status = jsonDoc.RootElement.GetProperty("data").GetProperty("attributes").GetProperty("status").GetString() ?? string.Empty;
-				//int maliciousCount = stats.GetProperty("malicious").GetInt32();
-				//int suspiciousCount = stats.GetProperty("suspicious").GetInt32();
-				//int harmlessCount = stats.GetProperty("harmless").GetInt32();
-				//int undetectedCount = stats.GetProperty("undetected").GetInt32();
-				//int timeoutCount = stats.GetProperty("timeout").GetInt32();
-
-
-				//if ((maliciousCount > 0 || suspiciousCount > 0) && status.Equals("completed"))
-				//{
-				//	return BadRequest("File analysis failed. Please ensure the file is safe and appropriate.");
-				//}
-			}
-
 			return Ok(uploadedUrl);
 		}
 	}
