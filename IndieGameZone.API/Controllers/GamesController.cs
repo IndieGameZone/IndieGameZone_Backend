@@ -29,6 +29,13 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.games);
 		}
 
+		[HttpPut("games/algolia-games")]
+		public async Task<IActionResult> UploadGameToAlgolia(CancellationToken ct)
+		{
+			await serviceManager.GameService.UploadGameToAlgolia(ct);
+			return NoContent();
+		}
+
 		[HttpGet("games/{gameId:guid}")]
 		public async Task<IActionResult> GetGame([FromRoute] Guid gameId, CancellationToken ct)
 		{

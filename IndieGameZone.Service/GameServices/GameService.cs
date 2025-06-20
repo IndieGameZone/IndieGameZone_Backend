@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Application.BlobService;
+﻿using Algolia.Search.Clients;
+using IndieGameZone.Application.BlobService;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
@@ -7,6 +8,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using MapsterMapper;
+using Microsoft.Extensions.Configuration;
 
 namespace IndieGameZone.Application.GameServices
 {
@@ -15,12 +17,14 @@ namespace IndieGameZone.Application.GameServices
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 		private readonly IBlobService blobService;
+		private readonly IConfiguration configuration;
 
-		public GameService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService)
+		public GameService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, IConfiguration configuration)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.blobService = blobService;
+			this.configuration = configuration;
 		}
 
 		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetGames(GameParameters gameParameters, CancellationToken ct = default)
@@ -230,6 +234,19 @@ namespace IndieGameZone.Application.GameServices
 			await repositoryManager.SaveAsync(ct);
 
 			return gamePlatform.File;
+		}
+
+		public async Task UploadGameToAlgolia(CancellationToken ct = default)
+		{
+			var appID = configuration.GetSection("AlgoliaApplicationID").Value;
+			var apiKey = configuration.GetSection("AlgoliaWriteAPIKey").Value;
+			var indexName = "active-games";
+
+			var client = new SearchClient(appID, apiKey);
+
+			var games = mapper.Map<IEnumerable<GameForAlgoliaDto>>(await repositoryManager.GameRepository.GetActiveGames(false, ct));
+			// Add record to an index
+			await client.SaveObjectsAsync<GameForAlgoliaDto>(indexName, games);
 		}
 	}
 }

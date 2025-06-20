@@ -33,6 +33,14 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return await PagedList<Games>.ToPagedList(gameEntities, activeGameParameters.PageNumber, activeGameParameters.PageSize, ct);
 		}
 
+		public async Task<IEnumerable<Games>> GetActiveGames(bool trackChange, CancellationToken ct = default)
+		{
+			return await FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
+				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
+				.Include(x => x.Category).AsSplitQuery()
+				.Sort().ToListAsync();
+		}
+
 		public async Task<Games?> GetGameById(Guid id, bool trackChange, CancellationToken ct = default)
 		{
 			return await FindByCondition(x => x.Id.Equals(id), trackChange)

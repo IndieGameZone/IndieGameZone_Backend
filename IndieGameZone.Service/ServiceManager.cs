@@ -60,16 +60,16 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IUserFollowService> userFollowService;
 		private readonly Lazy<IReportService> reportService;
 		private readonly Lazy<INotificationService> notificationService;
-        private readonly Lazy<IBanHistoryService> banHistoryService;
+		private readonly Lazy<IBanHistoryService> banHistoryService;
 
-        public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker)
+		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
 			categoryService = new Lazy<ICategoryService>(() => new CategoryService(repositoryManager, mapper));
 			platformService = new Lazy<IPlatformService>(() => new PlatformService(repositoryManager, mapper));
 			ageRestrictionService = new Lazy<IAgeRestrictionService>(() => new AgeRestrictionService(repositoryManager, mapper));
-			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService));
+			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService, configuration));
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
 			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration, blobService, faker));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
@@ -87,8 +87,8 @@ namespace IndieGameZone.Application
 			userFollowService = new Lazy<IUserFollowService>(() => new UserFollowService(repositoryManager));
 			reportService = new Lazy<IReportService>(() => new ReportService(repositoryManager, mapper));
 			notificationService = new Lazy<INotificationService>(() => new NotificationService(repositoryManager, mapper));
-            banHistoryService = new Lazy<IBanHistoryService>(() => new BanHistoryService(repositoryManager, mapper, userManager));
-        }
+			banHistoryService = new Lazy<IBanHistoryService>(() => new BanHistoryService(repositoryManager, mapper, userManager));
+		}
 
 		public ILanguageService LanguageService => languageService.Value;
 
@@ -136,6 +136,6 @@ namespace IndieGameZone.Application
 
 		public INotificationService NotificationService => notificationService.Value;
 
-        public IBanHistoryService BanHistoryService => banHistoryService.Value;
-    }
+		public IBanHistoryService BanHistoryService => banHistoryService.Value;
+	}
 }

@@ -423,7 +423,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				{
 					Id = Guid.Parse("d11cf96a-0d4f-4834-868c-59b32f047d2a"),
 					Name = "Tomato",
-					CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/TomatoImage.png",
+					CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/TomatoImage.jpg",
 					VideoLink = "",
 					Status = GameStatus.Released,
 					Visibility = GameVisibility.Public,
