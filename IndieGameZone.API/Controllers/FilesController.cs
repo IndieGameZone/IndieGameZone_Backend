@@ -31,7 +31,7 @@ namespace IndieGameZone.API.Controllers
 			}
 			if (!file.FileName.EndsWith(".jpg") && !file.FileName.EndsWith(".png") &&
 				!file.FileName.EndsWith(".rar") && !file.FileName.EndsWith(".zip") &&
-				!file.FileName.EndsWith(".exe"))
+				!file.FileName.EndsWith(".exe") && !file.FileName.EndsWith(".webp"))
 			{
 				return BadRequest("File type is not supported. Only .jpg, .png, .rar, .zip, and .exe files are allowed.");
 			}
@@ -39,10 +39,11 @@ namespace IndieGameZone.API.Controllers
 						$"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}",
 						StorageContainer.STORAGE_CONTAINER,
 						file);
-			if (file.FileName.EndsWith(".jpg") || file.FileName.EndsWith(".png"))
+			if (file.FileName.EndsWith(".jpg") || file.FileName.EndsWith(".png") || file.FileName.EndsWith(".webp"))
 			{
 				if (!await aIService.AnalyzeImage(uploadedUrl))
 				{
+					await blobService.DeleteBlob(uploadedUrl.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
 					return BadRequest("Image analysis failed. Please ensure the image is appropriate.");
 				}
 			}
@@ -58,6 +59,7 @@ namespace IndieGameZone.API.Controllers
 				Console.WriteLine($"{isSafe}");
 				if (!isSafe)
 				{
+					await blobService.DeleteBlob(uploadedUrl.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
 					return BadRequest("File analysis failed. Please ensure the file is safe and appropriate.");
 				}
 
