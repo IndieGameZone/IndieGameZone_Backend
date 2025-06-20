@@ -31,6 +31,8 @@ namespace IndieGameZone.Application.BackgroundJobServices
 			{
 				game.CensorStatus = CensorStatus.PendingManualReview;
 			}
+			game.CensoredAt = DateTime.Now;
+			await repositoryManager.SaveAsync();
 		}
 	}
 }
