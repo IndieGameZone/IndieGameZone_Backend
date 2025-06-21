@@ -260,5 +260,11 @@ namespace IndieGameZone.Application.GameServices
 			}
 			return (games, gamesWithMetaData.MetaData);
 		}
+
+		public async Task<PlatformFileDto> GetGamePlatformFile(Guid gameId, CancellationToken ct = default)
+		{
+			var platformFile = mapper.Map<PlatformFileDto>(await repositoryManager.GameRepository.GetGameById(gameId, false, ct));
+			return platformFile ?? throw new NotFoundException($"Game not found.");
+		}
 	}
 }

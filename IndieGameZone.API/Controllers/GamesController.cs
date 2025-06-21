@@ -101,6 +101,13 @@ namespace IndieGameZone.API.Controllers
 			return NoContent();
 		}
 
+		[HttpGet("games/{gameId:guid}/platform-file")]
+		public async Task<IActionResult> GetGamePlatformFile([FromRoute] Guid gameId, CancellationToken ct)
+		{
+			var platformFile = await serviceManager.GameService.GetGamePlatformFile(gameId, ct);
+			return Ok(platformFile);
+		}
+
 		[HttpPut("games/{gamePlatformId:guid}/number-of-download")]
 		public async Task<IActionResult> IncreaseNumberOfDownload([FromRoute] Guid gamePlatformId, CancellationToken ct)
 		{

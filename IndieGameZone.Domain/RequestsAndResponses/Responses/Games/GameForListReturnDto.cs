@@ -1,4 +1,6 @@
 ﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Categories;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.GameTags;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 {
@@ -17,7 +19,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public double AverageRating { get; init; }
 		public double NumberOfReviews { get; init; }
 		public double Discount { get; init; }
-		public ICollection<string> Tags { get; init; }
-		public string Category { get; init; }
+		public virtual ICollection<GameTagForReturnDto> GameTags { get; init; }
+		public virtual CategoryForReturnDto Category { get; init; }
 	}
 }
