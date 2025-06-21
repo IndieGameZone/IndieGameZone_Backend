@@ -41,6 +41,21 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Sort().ToListAsync();
 		}
 
+		public async Task<PagedList<Games>> GetActiveGamesByDeveloperId(Guid developerId, ActiveGameParameters activeGameParameters, bool trackChange, CancellationToken ct = default)
+		{
+			var gameEntities = FindByCondition(g => g.DeveloperId == developerId && g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
+				.Search(activeGameParameters.SearchTerm)
+				.FilterByPrice(activeGameParameters.Price)
+				.Include(x => x.Discounts).AsSplitQuery()
+				.Include(x => x.GameTags).ThenInclude(x => x.Tag).FilterByTags(activeGameParameters.Tags).AsSplitQuery()
+				.Include(x => x.GamePlatforms).FilterByPlatform(activeGameParameters.Platforms).AsSplitQuery()
+				.Include(x => x.GameLanguages).FilterByLanguages(activeGameParameters.Languages).AsSplitQuery()
+				.Include(x => x.Category).AsSplitQuery()
+				.Sort();
+
+			return await PagedList<Games>.ToPagedList(gameEntities, activeGameParameters.PageNumber, activeGameParameters.PageSize, ct);
+		}
+
 		public async Task<Games?> GetGameById(Guid id, bool trackChange, CancellationToken ct = default)
 		{
 			return await FindByCondition(x => x.Id.Equals(id), trackChange)

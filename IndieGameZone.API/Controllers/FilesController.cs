@@ -98,6 +98,7 @@ namespace IndieGameZone.API.Controllers
 			{
 				string uploadUrl = await GetUploadUrlAsync();
 				string analysisId = await UploadFileToVirusTotalAsync(file, uploadUrl);
+				await Task.Delay(15000);
 				var (status, maliciousCount, suspiciousCount) = await GetAnalysisResultsAsync(analysisId);
 
 				if ((maliciousCount > 0 || suspiciousCount > 0) && status.Equals("completed"))

@@ -29,12 +29,12 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.games);
 		}
 
-		[HttpPut("games/algolia-games")]
-		public async Task<IActionResult> UploadGameToAlgolia(CancellationToken ct)
-		{
-			await serviceManager.GameService.UploadGameToAlgolia(ct);
-			return NoContent();
-		}
+		//[HttpPut("games/algolia-games")]
+		//public async Task<IActionResult> UploadGameToAlgolia(CancellationToken ct)
+		//{
+		//	await serviceManager.GameService.UploadGameToAlgolia(ct);
+		//	return NoContent();
+		//}
 
 		[HttpGet("games/{gameId:guid}")]
 		public async Task<IActionResult> GetGame([FromRoute] Guid gameId, CancellationToken ct)
@@ -50,6 +50,14 @@ namespace IndieGameZone.API.Controllers
 		public async Task<IActionResult> GetGamesByDeveloperId([FromRoute] Guid developerId, [FromQuery] GameParameters gameParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.GameService.GetGamesByDeveloperId(developerId, gameParameters, ct);
+			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+			return Ok(pagedResult.games);
+		}
+
+		[HttpGet("users/{developerId:guid}/active-games")]
+		public async Task<IActionResult> GetActiveGamesByDeveloperId([FromRoute] Guid developerId, [FromQuery] ActiveGameParameters activeGameParameters, CancellationToken ct)
+		{
+			var pagedResult = await serviceManager.GameService.GetActiveGamesByDeveloperId(developerId, activeGameParameters, ct);
 			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
 			return Ok(pagedResult.games);
 		}

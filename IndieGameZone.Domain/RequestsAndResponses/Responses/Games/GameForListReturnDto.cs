@@ -1,6 +1,4 @@
-﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.Categories;
-using IndieGameZone.Domain.RequestsAndResponses.Responses.Discounts;
-using IndieGameZone.Domain.RequestsAndResponses.Responses.GameTags;
+﻿using IndieGameZone.Domain.Constants;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 {
@@ -12,8 +10,14 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public double Price { get; init; }
 		public double PriceAfterDiscount { get; set; }
 		public string ShortDescription { get; init; }
-		public virtual ICollection<DiscountForReturnDto> Discounts { get; init; }
-		public virtual ICollection<GameTagForReturnDto> GameTags { get; set; }
-		public virtual CategoryForReturnDto Category { get; init; }
+		public CensorStatus CensorStatus { get; init; }
+		public DateTime CreatedAt { get; init; }
+		public DateTime? CensoredAt { get; init; }
+		public DateTime? UpdatedAt { get; init; }
+		public double AverageRating { get; init; }
+		public double NumberOfReviews { get; init; }
+		public double Discount { get; init; }
+		public ICollection<string> Tags { get; init; }
+		public string Category { get; init; }
 	}
 }
