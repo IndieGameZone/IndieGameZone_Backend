@@ -20,7 +20,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public string Description { get; init; }
 		public double Price { get; init; }
 		public double PriceAfterDiscount { get; set; }
-		public bool AllowDonation { get; init; }
+		public double AverageSession { get; set; }
 		public GameStatus Status { get; init; }
 		public GameVisibility Visibility { get; set; }
 		public CensorStatus CensorStatus { get; set; }
@@ -38,7 +38,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public virtual ICollection<GamePlatformWithoutFileForReturnDto> GamePlatforms { get; init; }
 		public virtual ICollection<GameLanguageForReturnDto> GameLanguages { get; init; }
 		public virtual ICollection<GameImageForReturnDto> GameImages { get; init; }
-		public virtual UserForReturnDto Developers { get; init; }
-		public virtual UserForReturnDto? Moderator { get; init; }
+		public virtual UserShortForReturnDto Developer { get; init; }
+		public virtual UserShortForReturnDto? Moderator { get; init; }
 	}
 }

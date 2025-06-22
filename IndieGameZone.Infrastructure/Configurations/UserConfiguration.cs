@@ -39,7 +39,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.HasForeignKey<Wallets>(w => w.UserId)
 				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(u => u.Games)
-				.WithOne(g => g.Developers)
+				.WithOne(g => g.Developer)
 				.HasForeignKey(g => g.DeveloperId)
 				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(u => u.CensorGames)

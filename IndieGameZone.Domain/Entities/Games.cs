@@ -15,7 +15,6 @@ namespace IndieGameZone.Domain.Entities
 		public GameStatus Status { get; set; }
 		public GameVisibility Visibility { get; set; }
 		public CensorStatus CensorStatus { get; set; }
-		public bool HasCommercial { get; set; }
 		public double Price { get; set; }
 		public double NumberOfDownloads { get; set; }
 		public DateTime CreatedAt { get; set; }
@@ -36,7 +35,7 @@ namespace IndieGameZone.Domain.Entities
 		public virtual Categories Category { get; set; } = null!;
 		public virtual ICollection<GamePlatforms> GamePlatforms { get; set; } = new List<GamePlatforms>();
 		public virtual AgeRestrictions AgeRestriction { get; set; } = null!;
-		public virtual Users Developers { get; set; } = null!;
+		public virtual Users Developer { get; set; } = null!;
 		public virtual ICollection<Reviews> Reviews { get; set; } = new List<Reviews>();
 		public virtual ICollection<Discounts> Discounts { get; set; } = new List<Discounts>();
 		public virtual ICollection<CommercialRegistration> CommercialRegistration { get; set; } = new List<CommercialRegistration>();

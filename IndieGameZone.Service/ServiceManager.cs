@@ -69,7 +69,7 @@ namespace IndieGameZone.Application
 			categoryService = new Lazy<ICategoryService>(() => new CategoryService(repositoryManager, mapper));
 			platformService = new Lazy<IPlatformService>(() => new PlatformService(repositoryManager, mapper));
 			ageRestrictionService = new Lazy<IAgeRestrictionService>(() => new AgeRestrictionService(repositoryManager, mapper));
-			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService, configuration));
+			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService, configuration, schedulerFactory));
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
 			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration, blobService, faker));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));

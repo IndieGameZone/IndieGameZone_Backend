@@ -1,4 +1,5 @@
 ﻿using Algolia.Search.Clients;
+using IndieGameZone.Application.BackgroundJobServices;
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
@@ -9,6 +10,7 @@ using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using MapsterMapper;
 using Microsoft.Extensions.Configuration;
+using Quartz;
 
 namespace IndieGameZone.Application.GameServices
 {
@@ -18,13 +20,15 @@ namespace IndieGameZone.Application.GameServices
 		private readonly IMapper mapper;
 		private readonly IBlobService blobService;
 		private readonly IConfiguration configuration;
+		private readonly ISchedulerFactory schedulerFactory;
 
-		public GameService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, IConfiguration configuration)
+		public GameService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, IConfiguration configuration, ISchedulerFactory schedulerFactory)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.blobService = blobService;
 			this.configuration = configuration;
+			this.schedulerFactory = schedulerFactory;
 		}
 
 		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetGames(GameParameters gameParameters, CancellationToken ct = default)
@@ -160,6 +164,20 @@ namespace IndieGameZone.Application.GameServices
 
 			await repositoryManager.SaveAsync(ct);
 
+			IJobDetail job = JobBuilder.Create<ValidateGameJob>()
+				.WithIdentity("GameJob", "GameGroup")
+				.UsingJobData("gameId", gameEntity.Id.ToString())
+				.Build();
+
+			ITrigger trigger = TriggerBuilder.Create()
+				.WithIdentity("GameTrigger", "GameGroup")
+				.StartNow()
+				.Build();
+
+			var scheduler = await schedulerFactory.GetScheduler(ct);
+
+			await scheduler.ScheduleJob(job, trigger, ct);
+
 			return gameEntity.Id;
 		}
 
@@ -201,6 +219,20 @@ namespace IndieGameZone.Application.GameServices
 			repositoryManager.GameTagRepository.CreateGameTag(gameTagEntitys);
 
 			await repositoryManager.SaveAsync(ct);
+
+			IJobDetail job = JobBuilder.Create<ValidatePostJob>()
+				.WithIdentity("GameJob", "GameGroup")
+				.UsingJobData("gameId", gameEntity.Id.ToString())
+				.Build();
+
+			ITrigger trigger = TriggerBuilder.Create()
+				.WithIdentity("GameTrigger", "GameGroup")
+				.StartNow()
+				.Build();
+
+			var scheduler = await schedulerFactory.GetScheduler(ct);
+
+			await scheduler.ScheduleJob(job, trigger, ct);
 		}
 
 		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetActiveGames(ActiveGameParameters activeGameParameters, CancellationToken ct = default)

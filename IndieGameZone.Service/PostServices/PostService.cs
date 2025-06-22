@@ -51,12 +51,12 @@ namespace IndieGameZone.Application.PostServices
 			await repositoryManager.SaveAsync(ct);
 
 			IJobDetail job = JobBuilder.Create<ValidatePostJob>()
-				.WithIdentity("validatePostJob", "PostGroup")
+				.WithIdentity("PostJob", "PostGroup")
 				.UsingJobData("postId", postEntity.Id.ToString())
 				.Build();
 
 			ITrigger trigger = TriggerBuilder.Create()
-				.WithIdentity("validatePostTrigger", "PostGroup")
+				.WithIdentity("PostTrigger", "PostGroup")
 				.StartNow()
 				.Build();
 
@@ -130,6 +130,20 @@ namespace IndieGameZone.Application.PostServices
 			repositoryManager.PostTagRepository.CreatePostTag(postTags);
 
 			await repositoryManager.SaveAsync(ct);
+
+			IJobDetail job = JobBuilder.Create<ValidatePostJob>()
+				.WithIdentity("PostJob", "PostGroup")
+				.UsingJobData("postId", postId.ToString())
+				.Build();
+
+			ITrigger trigger = TriggerBuilder.Create()
+				.WithIdentity("PostTrigger", "PostGroup")
+				.StartNow()
+				.Build();
+
+			var scheduler = await schedulerFactory.GetScheduler(ct);
+
+			await scheduler.ScheduleJob(job, trigger, ct);
 		}
 	}
 }

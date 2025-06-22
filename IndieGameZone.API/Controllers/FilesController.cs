@@ -107,7 +107,7 @@ namespace IndieGameZone.API.Controllers
 				}
 			}
 			var uploadedUrl = await blobService.UploadBlob(
-					$"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}",
+					$"{Guid.NewGuid()}_{file.FileName}",
 					StorageContainer.STORAGE_CONTAINER,
 					file);
 			if (file.FileName.EndsWith(".jpg") || file.FileName.EndsWith(".png") || file.FileName.EndsWith(".webp"))

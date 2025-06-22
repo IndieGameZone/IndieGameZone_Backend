@@ -19,8 +19,12 @@ namespace IndieGameZone.Infrastructure.Extensions
 			return source.Where(x => x.Name.ToLower().Contains(searchTerm.ToLower()));
 		}
 
-		public static IQueryable<Games> FilterByCensorStatus(this IQueryable<Games> source, CensorStatus censorStatus)
+		public static IQueryable<Games> FilterByCensorStatus(this IQueryable<Games> source, CensorStatus? censorStatus)
 		{
+			if (censorStatus == null)
+			{
+				return source;
+			}
 			return source.Where(x => x.CensorStatus == censorStatus);
 		}
 

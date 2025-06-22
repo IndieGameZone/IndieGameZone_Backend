@@ -61,7 +61,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return await FindByCondition(x => x.Id.Equals(id), trackChange)
 				.Include(x => x.Category).AsSplitQuery()
 				.Include(x => x.AgeRestriction).AsSplitQuery()
-				.Include(x => x.Developers).ThenInclude(x => x.UserProfile).AsSplitQuery()
+				.Include(x => x.Developer).ThenInclude(x => x.UserProfile).AsSplitQuery()
 				.Include(x => x.Moderator).ThenInclude(x => x.UserProfile).AsSplitQuery()
 				.Include(x => x.GamePlatforms).ThenInclude(x => x.Platform).AsSplitQuery()
 				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()

@@ -20,7 +20,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(g => g.CensorStatus).HasConversion<string>();
 			builder.Property(g => g.InstallInstruction);
 			builder.Property(g => g.ShortDescription);
-			builder.Property(g => g.HasCommercial);
 			builder.Property(g => g.Price);
 			builder.Property(g => g.NumberOfDownloads);
 			builder.Property(g => g.CreatedAt);
@@ -53,7 +52,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithMany(ar => ar.Games)
 				.HasForeignKey(g => g.AgeRestrictionId)
 				.OnDelete(DeleteBehavior.Cascade);
-			builder.HasOne(g => g.Developers)
+			builder.HasOne(g => g.Developer)
 				.WithMany(d => d.Games)
 				.HasForeignKey(g => g.DeveloperId)
 				.OnDelete(DeleteBehavior.Restrict);
@@ -118,7 +117,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -139,7 +137,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("34670beb-a794-4419-adf8-0465eea22a78"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -160,7 +157,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -179,7 +175,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -200,7 +195,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("34670beb-a794-4419-adf8-0465eea22a78"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -221,7 +215,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -242,7 +235,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -263,7 +255,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("34670beb-a794-4419-adf8-0465eea22a78"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -284,7 +275,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("2d740ce2-a803-4b32-8df8-ab5139203742"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -305,7 +295,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("77c89b32-78e3-4fea-915f-4b8df819ffa2"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -326,7 +315,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("34670beb-a794-4419-adf8-0465eea22a78"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -347,7 +335,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -368,7 +355,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("77c89b32-78e3-4fea-915f-4b8df819ffa2"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -389,7 +375,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("bca8721b-c323-44a1-afcf-876e206ab035"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("34670beb-a794-4419-adf8-0465eea22a78"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -410,7 +395,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("2d740ce2-a803-4b32-8df8-ab5139203742"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -431,7 +415,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("2d740ce2-a803-4b32-8df8-ab5139203742"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -452,7 +435,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("2d740ce2-a803-4b32-8df8-ab5139203742"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("34670beb-a794-4419-adf8-0465eea22a78"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -473,7 +455,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("89a4e6d2-2cfe-4474-9b96-6d3595ad4705"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -494,7 +475,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("5e1afbc9-31dd-417d-ae49-baa45d6d5797"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -515,7 +495,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("34670beb-a794-4419-adf8-0465eea22a78"),
-					HasCommercial = false
 				},
 				new Games
 				{
@@ -536,7 +515,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 					CategoryId = Guid.Parse("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
 					AgeRestrictionId = Guid.Parse("c48f1c63-f301-44e9-8766-3d4b60134b5f"),
 					DeveloperId = Guid.Parse("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
-					HasCommercial = false
 				}
 			);
 		}
