@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Application.AlgoliaServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
@@ -12,10 +13,12 @@ namespace IndieGameZone.API.Controllers
 	public class GamesController : ControllerBase
 	{
 		private readonly IServiceManager serviceManager;
+		private readonly IAlgoliaService algoliaService;
 
-		public GamesController(IServiceManager serviceManager)
+		public GamesController(IServiceManager serviceManager, IAlgoliaService algoliaService)
 		{
 			this.serviceManager = serviceManager;
+			this.algoliaService = algoliaService;
 		}
 
 		/// <summary>
@@ -32,9 +35,14 @@ namespace IndieGameZone.API.Controllers
 		//[HttpPut("games/algolia-games")]
 		//public async Task<IActionResult> UploadGameToAlgolia(CancellationToken ct)
 		//{
-		//	await serviceManager.GameService.UploadGameToAlgolia(ct);
+		//	await algoliaService.UploadGamesToAlgolia(ct);
 		//	return NoContent();
 		//}
+		[HttpGet("users/{playerId:guid}/recommended-games")]
+		public async Task<IActionResult> GetRecommendedGames([FromRoute] Guid playerId, CancellationToken ct)
+		{
+			return Ok(await algoliaService.GetPersonalizedRecommendations(playerId.ToString()));
+		}
 
 		[HttpGet("games/{gameId:guid}")]
 		public async Task<IActionResult> GetGame([FromRoute] Guid gameId, CancellationToken ct)

@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Application.AlgoliaServices;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
@@ -11,11 +12,13 @@ namespace IndieGameZone.Application.WishlistServices
 	{
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
+		private readonly IAlgoliaService algoliaService;
 
-		public WishlistService(IRepositoryManager repositoryManager, IMapper mapper)
+		public WishlistService(IRepositoryManager repositoryManager, IMapper mapper, IAlgoliaService algoliaService)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
+			this.algoliaService = algoliaService;
 		}
 		public async Task AddToWishlist(Guid userId, Guid gameId, CancellationToken ct = default)
 		{
@@ -27,6 +30,8 @@ namespace IndieGameZone.Application.WishlistServices
 			};
 			repositoryManager.WishlistRepository.AddToWishlist(wishlistEntity);
 			await repositoryManager.SaveAsync(ct);
+
+			await algoliaService.SendEventToAlgolia("conversion", "Added to Wishlist", userId.ToString(), gameId.ToString(), ct);
 		}
 
 		public async Task<(IEnumerable<WishlistForReturnDto> wishlists, MetaData metaData)> GetWishlistsFromUserId(WishlistParameters wishlistParameters, Guid userId, CancellationToken ct = default)
