@@ -36,7 +36,6 @@ namespace IndieGameZone.API.Controllers
             return Ok(user);
         }
 
-
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateUser([FromBody] UserForCreationDto userForCreationDto, CancellationToken ct)
