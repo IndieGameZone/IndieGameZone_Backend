@@ -9,6 +9,7 @@
 		public double Price { get; set; }
 
 		//Navigation properties
+		public ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
 		public ICollection<CommercialRegistration> CommercialRegistrations { get; set; } = new List<CommercialRegistration>();
 	}
 }

@@ -33,6 +33,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithMany(g => g.Transactions)
 				.HasForeignKey(t => t.GameId)
 				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne(t => t.CommercialPackage)
+				.WithMany(cp => cp.Transactions)
+				.HasForeignKey(t => t.CommercialPackageId)
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

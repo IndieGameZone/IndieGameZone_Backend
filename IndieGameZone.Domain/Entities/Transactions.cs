@@ -13,8 +13,10 @@ namespace IndieGameZone.Domain.Entities
 		public DateTime CreatedAt { get; set; }
 		public Guid UserId { get; set; }
 		public Guid? GameId { get; set; }
+		public Guid? CommercialPackageId { get; set; }
 
 		// Navigation properties
+		public virtual CommercialPackages? CommercialPackage { get; set; } = null!;
 		public virtual Users User { get; set; } = null!;
 		public virtual Games? Game { get; set; } = null!;
 		public virtual WithdrawRequests WithdrawRequest { get; set; } = null!;
