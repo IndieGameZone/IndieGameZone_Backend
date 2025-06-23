@@ -30,7 +30,6 @@ namespace IndieGameZone.API.Controllers
         }
 
         [HttpGet("{userId:guid}")]
-        [Authorize]
         public async Task<IActionResult> GetUser([FromRoute] Guid userId, CancellationToken ct)
         {
             var user = await serviceManager.UserService.GetUserById(userId.ToString(), ct);
