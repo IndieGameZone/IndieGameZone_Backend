@@ -36,5 +36,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 			return PagedList<Transactions>.ToPagedList(transactionEntities, transactionParameters.PageNumber, transactionParameters.PageSize, ct);
 		}
-	}
+
+        public async Task<bool> IsOrderCodeExistsAsync(int orderCode, CancellationToken ct = default)
+        {
+            return await AppDbContext.Transactions.AnyAsync(t => t.OrderCode == orderCode, ct);
+        }
+    }
 }

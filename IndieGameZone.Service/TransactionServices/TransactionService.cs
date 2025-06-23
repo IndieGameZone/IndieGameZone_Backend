@@ -30,11 +30,11 @@ namespace IndieGameZone.Application.TransactionServices
 			Random random = new Random();
 			var transactionEntity = mapper.Map<Transactions>(transaction);
 			transactionEntity.Id = Guid.NewGuid();
-			transactionEntity.OrderCode = random.Next(100000, 999999);
-			transactionEntity.CreatedAt = DateTime.Now;
-			transactionEntity.Type = TransactionType.Deposit;
-			transactionEntity.Status = TransactionStatus.Pending;
-			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
+			transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
+            transactionEntity.Status = TransactionStatus.Pending;
+            transactionEntity.Type = TransactionType.Deposit;
+            transactionEntity.CreatedAt = DateTime.Now;
+            repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
 
 			var clientId = configuration.GetSection("PayOSClientID").Value;
 			var apiKey = configuration.GetSection("PayOSAPIKey").Value;
@@ -49,8 +49,8 @@ namespace IndieGameZone.Application.TransactionServices
 				amount: (int)transactionEntity.Amount,
 				description: transactionEntity.Description,
 				items: [new("Deposit", 1, (int)transaction.Amount)],
-				returnUrl: domain + "?success=true",
-				cancelUrl: domain + "?canceled=true"
+                cancelUrl: domain + "?canceled=true",
+                returnUrl: domain + "?success=true"
 			);
 			var response = await payOS.createPaymentLink(paymentLinkRequest);
 
@@ -62,8 +62,8 @@ namespace IndieGameZone.Application.TransactionServices
 			Random random = new Random();
 			var transactionEntity = mapper.Map<Transactions>(transaction);
 			transactionEntity.Id = Guid.NewGuid();
-			transactionEntity.OrderCode = random.Next(100000, 999999);
-			transactionEntity.CreatedAt = DateTime.Now;
+			transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
+            transactionEntity.CreatedAt = DateTime.Now;
 			transactionEntity.Type = TransactionType.Donation;
 			transactionEntity.Status = TransactionStatus.Pending;
 			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
@@ -99,8 +99,8 @@ namespace IndieGameZone.Application.TransactionServices
 			}
 			var transactionEntity = mapper.Map<Transactions>(transaction);
 			transactionEntity.Id = Guid.NewGuid();
-			transactionEntity.OrderCode = random.Next(100000, 999999);
-			transactionEntity.CreatedAt = DateTime.Now;
+			transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
+            transactionEntity.CreatedAt = DateTime.Now;
 			transactionEntity.Type = TransactionType.Purchase;
 			transactionEntity.Status = TransactionStatus.Success;
 
@@ -110,9 +110,7 @@ namespace IndieGameZone.Application.TransactionServices
 
 			var game = await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId, false, ct);
 
-			var developerId = (await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId, false, ct)).DeveloperId;
-
-			var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
+			var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(game.DeveloperId, true, ct);
 
 			developerWallet.Balance += game.Price * 0.8; // 80% to developer
 			developerWallet.Balance += transactionEntity.Amount - game.Price; // Donation amount to developer
@@ -175,5 +173,20 @@ namespace IndieGameZone.Application.TransactionServices
 
 			await repositoryManager.SaveAsync();
 		}
-	}
+
+        private async Task<long> GenerateUniqueOrderCodeAsync(CancellationToken ct)
+        {
+            Random random = new Random();
+            long orderCode;
+
+            do
+            {
+                orderCode = random.Next(100000, 999999);
+            }
+            while (await repositoryManager.TransactionRepository.IsOrderCodeExistsAsync(orderCode, ct));
+
+            return orderCode;
+        }
+
+    }
 }

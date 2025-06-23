@@ -10,5 +10,6 @@ namespace IndieGameZone.Domain.IRepositories
 		Task<Transactions?> GetTransactionById(long orderCode, bool trackChange, CancellationToken ct = default);
 		Task<PagedList<Transactions>> GetTransactionsByUserId(Guid userId, TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default);
 		Task<PagedList<Transactions>> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default);
-	}
+        Task<bool> IsOrderCodeExistsAsync(long orderCode, CancellationToken ct = default);
+    }
 }
