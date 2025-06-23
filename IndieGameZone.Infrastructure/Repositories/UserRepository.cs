@@ -22,7 +22,8 @@ namespace IndieGameZone.Infrastructure.Repositories
             var userEntities = FindAll(trackChange)
                 .Search(userParameters.SearchName)
                 .Sort()
-                .Include(u => u.UserProfile);
+                .Include(u => u.UserProfile)
+                .Include(u => u.Wallet);
 
             return await PagedList<Users>.ToPagedList(userEntities, userParameters.PageNumber, userParameters.PageSize, ct);
         }

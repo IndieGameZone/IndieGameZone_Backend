@@ -67,7 +67,8 @@ namespace IndieGameZone.Application.UserServices
 
 			var user = await userManager.Users
 				.Include(u => u.UserProfile)
-				.FirstOrDefaultAsync(u => u.Id == guidUserId, ct);
+                .Include(u => u.Wallet)
+                .FirstOrDefaultAsync(u => u.Id == guidUserId, ct);
 
 			if (user == null)
 				throw new UserNotFoundException();
@@ -104,8 +105,9 @@ namespace IndieGameZone.Application.UserServices
                 YoutubeChannelLink = user.UserProfile?.YoutubeChannelLink,
                 FacebookLink = user.UserProfile?.FacebookLink,
 				BankName = user.UserProfile?.BankName,
-				BankAccount = user.UserProfile?.BankAccount
-			};
+				BankAccount = user.UserProfile?.BankAccount,
+                Balance = user.Wallet?.Balance ?? 0
+            };
 		}
 
 		public async Task CreateUser(UserForCreationDto userForCreationDto, bool adminFlag, CancellationToken ct = default)
@@ -484,8 +486,9 @@ namespace IndieGameZone.Application.UserServices
                     Birthday = user.UserProfile?.Birthday,
 					FacebookLink = user.UserProfile?.FacebookLink,
 					BankName = user.UserProfile?.BankName,
-					BankAccount = user.UserProfile?.BankAccount
-				});
+					BankAccount = user.UserProfile?.BankAccount,
+                    Balance = user.Wallet?.Balance ?? 0
+                });
 			}
 
 			return (dtoList, usersWithMetaData.MetaData);
