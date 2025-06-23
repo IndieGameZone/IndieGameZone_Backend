@@ -1,5 +1,4 @@
-﻿using Algolia.Search.Clients;
-using IndieGameZone.Application.BackgroundJobServices;
+﻿using IndieGameZone.Application.BackgroundJobServices;
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
@@ -266,19 +265,6 @@ namespace IndieGameZone.Application.GameServices
 			await repositoryManager.SaveAsync(ct);
 
 			return gamePlatform.File;
-		}
-
-		public async Task UploadGameToAlgolia(CancellationToken ct = default)
-		{
-			var appID = configuration.GetSection("AlgoliaApplicationID").Value;
-			var apiKey = configuration.GetSection("AlgoliaWriteAPIKey").Value;
-			var indexName = "active-games";
-
-			var client = new SearchClient(appID, apiKey);
-
-			var games = mapper.Map<IEnumerable<GameForAlgoliaDto>>(await repositoryManager.GameRepository.GetActiveGames(false, ct));
-			// Add record to an index
-			await client.SaveObjectsAsync<GameForAlgoliaDto>(indexName, games);
 		}
 
 		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetActiveGamesByDeveloperId(Guid developerId, ActiveGameParameters activeGameParameters, CancellationToken ct = default)

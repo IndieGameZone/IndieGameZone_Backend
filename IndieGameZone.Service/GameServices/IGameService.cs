@@ -17,7 +17,6 @@ namespace IndieGameZone.Application.GameServices
 		Task UpdateGame(Guid developerId, Guid gameId, GameForUpdateDto game, CancellationToken ct = default);
 		Task UpdateActiveStatus(Guid gameId, CensorStatus censorStatus, CancellationToken ct = default);
 		Task<string> IncreaseNumberOfDownload(Guid gamePlatformId, CancellationToken ct = default);
-		Task UploadGameToAlgolia(CancellationToken ct = default);
 		Task<PlatformFileDto> GetGamePlatformFile(Guid gameId, CancellationToken ct = default);
 	}
 }
