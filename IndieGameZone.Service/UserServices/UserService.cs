@@ -101,7 +101,8 @@ namespace IndieGameZone.Application.UserServices
 				Avatar = user.UserProfile?.Avatar,
 				Bio = user.UserProfile?.Bio,
 				Birthday = user.UserProfile?.Birthday,
-				FacebookLink = user.UserProfile?.FacebookLink,
+                YoutubeChannelLink = user.UserProfile?.YoutubeChannelLink,
+                FacebookLink = user.UserProfile?.FacebookLink,
 				BankName = user.UserProfile?.BankName,
 				BankAccount = user.UserProfile?.BankAccount
 			};
@@ -479,7 +480,8 @@ namespace IndieGameZone.Application.UserServices
 					Fullname = user.UserProfile?.Fullname,
 					Avatar = user.UserProfile?.Avatar,
 					Bio = user.UserProfile?.Bio,
-					Birthday = user.UserProfile?.Birthday,
+                    YoutubeChannelLink = user.UserProfile?.YoutubeChannelLink,
+                    Birthday = user.UserProfile?.Birthday,
 					FacebookLink = user.UserProfile?.FacebookLink,
 					BankName = user.UserProfile?.BankName,
 					BankAccount = user.UserProfile?.BankAccount
