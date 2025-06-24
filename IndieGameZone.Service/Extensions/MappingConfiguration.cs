@@ -2,6 +2,7 @@
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Posts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 using Mapster;
 
 namespace IndieGameZone.Application.Extensions
@@ -34,6 +35,10 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.ObjectID, src => src.Id)
 				.Map(dest => dest.Category, src => src.Category.Name)
 				.Map(dest => dest.Tags, src => src.GameTags.Select(gt => gt.Tag.Name).ToList());
+
+			config.NewConfig<Users, UserShortForReturnDto>()
+				.Map(dest => dest.Fullname, src => src.UserProfile.Fullname)
+				.Map(dest => dest.Avatar, src => src.UserProfile.Avatar);
 
 
 		}

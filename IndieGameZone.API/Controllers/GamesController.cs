@@ -1,6 +1,5 @@
 ﻿using IndieGameZone.Application;
 using IndieGameZone.Application.AlgoliaServices;
-using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using Microsoft.AspNetCore.Mvc;
@@ -102,10 +101,10 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.games);
 		}
 
-		[HttpPut("games/{gameId:guid}/activation")]
-		public async Task<IActionResult> ActivateGame([FromRoute] Guid gameId, CensorStatus censorStatus, CancellationToken ct)
+		[HttpPut("users/{moderatorId:guid}games/{gameId:guid}/activation")]
+		public async Task<IActionResult> ActivateGame([FromRoute] Guid gameId, [FromRoute] Guid moderatorId, [FromForm] GameActivationDto gameActivationDto, CancellationToken ct)
 		{
-			await serviceManager.GameService.UpdateActiveStatus(gameId, censorStatus, ct);
+			await serviceManager.GameService.UpdateActiveStatus(moderatorId, gameId, gameActivationDto, ct);
 			return NoContent();
 		}
 

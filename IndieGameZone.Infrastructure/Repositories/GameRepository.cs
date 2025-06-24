@@ -88,7 +88,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<PagedList<Games>> GetGamesByDeveloperId(Guid developerId, GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var gameEntities = FindByCondition(g => g.DeveloperId == developerId, trackChange)
+				.FilterByCensorStatus(gameParameters.CensorStatus)
+				.Search(gameParameters.SearchTerm)
 				.Include(x => x.Discounts).AsSplitQuery()
+				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
+				.Include(x => x.Category).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);

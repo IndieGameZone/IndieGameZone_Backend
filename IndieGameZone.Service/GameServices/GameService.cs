@@ -246,14 +246,15 @@ namespace IndieGameZone.Application.GameServices
 			return (games, gamesWithMetaData.MetaData);
 		}
 
-		public async Task UpdateActiveStatus(Guid gameId, CensorStatus censorStatus, CancellationToken ct = default)
+		public async Task UpdateActiveStatus(Guid moderatorId, Guid gameId, GameActivationDto gameActivationDto, CancellationToken ct = default)
 		{
 			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, true, ct);
 			if (gameEntity is null)
 			{
 				throw new NotFoundException($"Game not found.");
 			}
-			gameEntity.CensorStatus = censorStatus;
+			mapper.Map(gameActivationDto, gameEntity);
+			gameEntity.ModeratorId = moderatorId;
 			await repositoryManager.SaveAsync(ct);
 		}
 

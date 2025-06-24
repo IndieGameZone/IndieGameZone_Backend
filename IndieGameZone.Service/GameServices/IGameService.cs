@@ -1,5 +1,4 @@
-﻿using IndieGameZone.Domain.Constants;
-using IndieGameZone.Domain.RequestFeatures;
+﻿using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 
@@ -15,7 +14,7 @@ namespace IndieGameZone.Application.GameServices
 		Task DeleteGame(Guid developerId, Guid gameId, CancellationToken ct = default);
 		Task<Guid> CreateGame(Guid developerId, GameForCreationDto game, CancellationToken ct = default);
 		Task UpdateGame(Guid developerId, Guid gameId, GameForUpdateDto game, CancellationToken ct = default);
-		Task UpdateActiveStatus(Guid gameId, CensorStatus censorStatus, CancellationToken ct = default);
+		Task UpdateActiveStatus(Guid moderatorId, Guid gameId, GameActivationDto gameActivationDto, CancellationToken ct = default);
 		Task<string> IncreaseNumberOfDownload(Guid gamePlatformId, CancellationToken ct = default);
 		Task<PlatformFileDto> GetGamePlatformFile(Guid gameId, CancellationToken ct = default);
 	}

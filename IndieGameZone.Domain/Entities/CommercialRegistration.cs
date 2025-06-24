@@ -9,7 +9,8 @@
 		public Guid CommercialPackageId { get; set; }
 
 		//Navigation properties
-		public Games Game { get; set; } = null!;
-		public CommercialPackages CommercialPackage { get; set; } = null!;
+		public Transactions Transaction { get; set; }
+		public Games Game { get; set; }
+		public CommercialPackages CommercialPackage { get; set; }
 	}
 }
