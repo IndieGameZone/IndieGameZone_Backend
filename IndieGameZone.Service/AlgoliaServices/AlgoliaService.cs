@@ -80,7 +80,7 @@ namespace IndieGameZone.Application.AlgoliaServices
 					new
 					{
 						indexName,
-						userToken
+						userToken,
 						model = "personalization",
 						maxRecommendations = 5
 					}
