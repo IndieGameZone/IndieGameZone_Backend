@@ -37,11 +37,12 @@ namespace IndieGameZone.API.Controllers
 		//	await algoliaService.UploadGamesToAlgolia(ct);
 		//	return NoContent();
 		//}
-		[HttpGet("users/{playerId:guid}/recommended-games")]
-		public async Task<IActionResult> GetRecommendedGames([FromRoute] Guid playerId, CancellationToken ct)
-		{
-			return Ok(await algoliaService.GetPersonalizedRecommendations(playerId.ToString()));
-		}
+
+		//[HttpGet("users/{playerId:guid}/recommended-games")]
+		//public async Task<IActionResult> GetRecommendedGames([FromRoute] Guid playerId, CancellationToken ct)
+		//{
+		//	return Ok(await algoliaService.GetPersonalizedRecommendations(playerId.ToString()));
+		//}
 
 		[HttpGet("games/{gameId:guid}")]
 		public async Task<IActionResult> GetGame([FromRoute] Guid gameId, CancellationToken ct)

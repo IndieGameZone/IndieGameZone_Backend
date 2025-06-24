@@ -71,7 +71,7 @@ namespace IndieGameZone.Application.AlgoliaServices
 			var response = await client.SaveObjectAsync(indexName, game);
 		}
 
-		public async Task<List<string>> GetPersonalizedRecommendations(string userToken)
+		public async Task<string> GetPersonalizedRecommendations(string userToken)
 		{
 			var requestBody = new
 			{
@@ -80,11 +80,9 @@ namespace IndieGameZone.Application.AlgoliaServices
 					new
 					{
 						indexName,
-						model = "personalization",
-						objectID = "any", // required but ignored
-						threshold = 0,
-						maxRecommendations = 5,
 						userToken
+						model = "personalization",
+						maxRecommendations = 5
 					}
 				}
 			};
@@ -106,7 +104,7 @@ namespace IndieGameZone.Application.AlgoliaServices
 			var hits = result.GetProperty("results")[0].GetProperty("hits");
 			var objectIds = hits.EnumerateArray().Select(hit => hit.GetProperty("objectID").GetString()).ToList();
 
-			return objectIds;
+			return resultJson;
 		}
 	}
 }
