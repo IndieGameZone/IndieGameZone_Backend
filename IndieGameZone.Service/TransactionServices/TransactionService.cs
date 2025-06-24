@@ -25,16 +25,22 @@ namespace IndieGameZone.Application.TransactionServices
 			this.configuration = configuration;
 		}
 
-		public async Task<string> CreateTransactionForDeposit(TransactionForCreationDto transaction, CancellationToken ct = default)
+		public Task CreateTransactionForCommercialPurchase(Guid userId, Guid commercialPackageId, CancellationToken ct = default)
+		{
+			throw new NotImplementedException();
+		}
+
+		public async Task<string> CreateTransactionForDeposit(Guid userId, TransactionForCreationDto transaction, CancellationToken ct = default)
 		{
 			Random random = new Random();
 			var transactionEntity = mapper.Map<Transactions>(transaction);
 			transactionEntity.Id = Guid.NewGuid();
+			transactionEntity.UserId = userId;
 			transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
-            transactionEntity.Status = TransactionStatus.Pending;
-            transactionEntity.Type = TransactionType.Deposit;
-            transactionEntity.CreatedAt = DateTime.Now;
-            repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
+			transactionEntity.Status = TransactionStatus.Pending;
+			transactionEntity.Type = TransactionType.Deposit;
+			transactionEntity.CreatedAt = DateTime.Now;
+			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
 
 			var clientId = configuration.GetSection("PayOSClientID").Value;
 			var apiKey = configuration.GetSection("PayOSAPIKey").Value;
@@ -49,58 +55,60 @@ namespace IndieGameZone.Application.TransactionServices
 				amount: (int)transactionEntity.Amount,
 				description: transactionEntity.Description,
 				items: [new("Deposit", 1, (int)transaction.Amount)],
-                cancelUrl: domain + "?canceled=true",
-                returnUrl: domain + "?success=true"
+				cancelUrl: domain + "?canceled=true",
+				returnUrl: domain + "?success=true"
 			);
 			var response = await payOS.createPaymentLink(paymentLinkRequest);
 
 			return response.checkoutUrl;
 		}
 
-		public async Task<string> CreateTransactionForDonation(TransactionForCreationDto transaction, CancellationToken ct = default)
+		//public async Task<string> CreateTransactionForDonation(TransactionForCreationDto transaction, CancellationToken ct = default)
+		//{
+		//	Random random = new Random();
+		//	var transactionEntity = mapper.Map<Transactions>(transaction);
+		//	transactionEntity.Id = Guid.NewGuid();
+		//	transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
+		//	transactionEntity.CreatedAt = DateTime.Now;
+		//	transactionEntity.Type = TransactionType.Donation;
+		//	transactionEntity.Status = TransactionStatus.Pending;
+		//	repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
+
+		//	var clientId = configuration.GetSection("PayOSClientID").Value;
+		//	var apiKey = configuration.GetSection("PayOSAPIKey").Value;
+		//	var checksumKey = configuration.GetSection("PayOSChecksumKey").Value;
+
+		//	var domain = "https://indie-game-zone.vercel.app/";
+
+		//	var payOS = new PayOS(clientId, apiKey, checksumKey);
+
+		//	var paymentLinkRequest = new PaymentData(
+		//		orderCode: transactionEntity.OrderCode,
+		//		amount: (int)transactionEntity.Amount,
+		//		description: transactionEntity.Description,
+		//		items: [new("Donation", 1, (int)transaction.Amount)],
+		//		returnUrl: domain + "?success=true",
+		//		cancelUrl: domain + "?canceled=true"
+		//	);
+		//	var response = await payOS.createPaymentLink(paymentLinkRequest);
+
+		//	return response.checkoutUrl;
+		//}
+
+		public async Task CreateTransactionForGamePurchase(Guid userId, Guid gameId, TransactionForCreationDto transaction, CancellationToken ct = default)
 		{
 			Random random = new Random();
-			var transactionEntity = mapper.Map<Transactions>(transaction);
-			transactionEntity.Id = Guid.NewGuid();
-			transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
-            transactionEntity.CreatedAt = DateTime.Now;
-			transactionEntity.Type = TransactionType.Donation;
-			transactionEntity.Status = TransactionStatus.Pending;
-			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
-
-			var clientId = configuration.GetSection("PayOSClientID").Value;
-			var apiKey = configuration.GetSection("PayOSAPIKey").Value;
-			var checksumKey = configuration.GetSection("PayOSChecksumKey").Value;
-
-			var domain = "https://indie-game-zone.vercel.app/";
-
-			var payOS = new PayOS(clientId, apiKey, checksumKey);
-
-			var paymentLinkRequest = new PaymentData(
-				orderCode: transactionEntity.OrderCode,
-				amount: (int)transactionEntity.Amount,
-				description: transactionEntity.Description,
-				items: [new("Donation", 1, (int)transaction.Amount)],
-				returnUrl: domain + "?success=true",
-				cancelUrl: domain + "?canceled=true"
-			);
-			var response = await payOS.createPaymentLink(paymentLinkRequest);
-
-			return response.checkoutUrl;
-		}
-
-		public async Task CreateTransactionForPurchase(TransactionForCreationDto transaction, CancellationToken ct = default)
-		{
-			Random random = new Random();
-			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(transaction.UserId, true, ct);
+			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct);
 			if (wallet.Balance < transaction.Amount)
 			{
 				throw new NotEnoughCreditException("You don't have enough credits to buy this game");
 			}
 			var transactionEntity = mapper.Map<Transactions>(transaction);
 			transactionEntity.Id = Guid.NewGuid();
+			transactionEntity.UserId = userId;
+			transactionEntity.GameId = gameId;
 			transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
-            transactionEntity.CreatedAt = DateTime.Now;
+			transactionEntity.CreatedAt = DateTime.Now;
 			transactionEntity.Type = TransactionType.Purchase;
 			transactionEntity.Status = TransactionStatus.Success;
 
@@ -108,7 +116,7 @@ namespace IndieGameZone.Application.TransactionServices
 
 			wallet.Balance -= transactionEntity.Amount;
 
-			var game = await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId, false, ct);
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
 
 			var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(game.DeveloperId, true, ct);
 
@@ -117,8 +125,8 @@ namespace IndieGameZone.Application.TransactionServices
 
 			var libraryEntity = new Libraries
 			{
-				UserId = transaction.UserId,
-				GameId = (Guid)transaction.GameId,
+				UserId = userId,
+				GameId = gameId,
 				PurchasedAt = DateTime.Now
 			};
 			repositoryManager.LibraryRepository.AddGameToLibrary(libraryEntity);
@@ -174,19 +182,19 @@ namespace IndieGameZone.Application.TransactionServices
 			await repositoryManager.SaveAsync();
 		}
 
-        private async Task<long> GenerateUniqueOrderCodeAsync(CancellationToken ct)
-        {
-            Random random = new Random();
-            long orderCode;
+		private async Task<long> GenerateUniqueOrderCodeAsync(CancellationToken ct)
+		{
+			Random random = new Random();
+			long orderCode;
 
-            do
-            {
-                orderCode = random.Next(100000, 999999);
-            }
-            while (await repositoryManager.TransactionRepository.IsOrderCodeExistsAsync(orderCode, ct));
+			do
+			{
+				orderCode = random.Next(100000, 999999);
+			}
+			while (await repositoryManager.TransactionRepository.IsOrderCodeExistsAsync(orderCode, ct));
 
-            return orderCode;
-        }
+			return orderCode;
+		}
 
-    }
+	}
 }

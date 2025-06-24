@@ -21,21 +21,28 @@ namespace IndieGameZone.API.Controllers
 			this.configuration = configuration;
 		}
 
-		[HttpPost("transactions/deposit")]
-		public async Task<IActionResult> CreateTransactionForDeposit([FromBody] TransactionForCreationDto transaction, CancellationToken ct)
+		[HttpPost("users/{userId:guid}transactions/deposit")]
+		public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromBody] TransactionForCreationDto transaction, CancellationToken ct)
 		{
-			var result = await serviceManager.TransactionService.CreateTransactionForDeposit(transaction, ct);
+			var result = await serviceManager.TransactionService.CreateTransactionForDeposit(userId, transaction, ct);
 			return StatusCode(201, result);
 		}
 
-		[HttpPost("transactions/purchase")]
-		public async Task<IActionResult> CreateTransactionForPurchase([FromBody] TransactionForCreationDto transaction, CancellationToken ct)
+		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-purchasing")]
+		public async Task<IActionResult> CreateTransactionForPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromBody] TransactionForCreationDto transaction, CancellationToken ct)
 		{
-			await serviceManager.TransactionService.CreateTransactionForPurchase(transaction, ct);
+			await serviceManager.TransactionService.CreateTransactionForGamePurchase(userId, gameId, transaction, ct);
 			return StatusCode(201);
 		}
 
-		public record Responses(int error, string message, object? data);
+		[HttpPost("users/{userId:guid}/commercial-packages/{commercialPackageId:guid}/transactions/commercial-purchasing")]
+		public async Task<IActionResult> CreateTransactionForCommercialPurchase([FromRoute] Guid userId, [FromRoute] Guid commercialPackageId, CancellationToken ct)
+		{
+			await serviceManager.TransactionService.CreateTransactionForCommercialPurchase(userId, commercialPackageId, ct);
+			return StatusCode(201);
+		}
+
+
 
 		[HttpPost("transactions/hook-receiving")]
 		public async Task<IActionResult> IPN([FromBody] WebhookType webhookBody, CancellationToken ct)
@@ -48,7 +55,7 @@ namespace IndieGameZone.API.Controllers
 			WebhookData data = payOS.verifyPaymentWebhookData(webhookBody);
 
 			await serviceManager.TransactionService.IPNAsync(data, ct);
-			return Ok(new Responses(0, "Success", null));
+			return Ok();
 		}
 
 		[HttpGet("users/{userId}/transactions")]
