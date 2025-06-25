@@ -72,16 +72,38 @@ namespace IndieGameZone.Application.CommercialPackageServices
             await repositoryManager.SaveAsync(ct);
         }
 
-        public async Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetCommercialRegistrationsByPackage(Guid commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default)
+        private async Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetCommercialRegistrationsByPackage(Guid commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default)
         {
             var commercialRegistrationsWithMetaData = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationsByPackage(commercialPackageId, commercialRegistrationParameters, false, ct);
             var commercialRegistrations = mapper.Map<IEnumerable<CommercialRegistrationForReturnDto>>(commercialRegistrationsWithMetaData);
             return (commercialRegistrations, commercialRegistrationsWithMetaData.MetaData);
         }
 
-        public async Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetCommercialRegistrationsByGame(Guid gameId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default)
+        private async Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetCommercialRegistrationsByGame(Guid gameId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default)
         {
             var commercialRegistrationsWithMetaData = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationsByGame(gameId, commercialRegistrationParameters, false, ct);
+            var commercialRegistrations = mapper.Map<IEnumerable<CommercialRegistrationForReturnDto>>(commercialRegistrationsWithMetaData);
+            return (commercialRegistrations, commercialRegistrationsWithMetaData.MetaData);
+        }
+
+        public async Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetFilteredCommercialRegistrations(Guid? gameId, Guid? commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default)
+        {
+            if (gameId.HasValue && commercialPackageId.HasValue)
+            {
+                throw new BadRequestException("You cannot filter by both gameId and commercialPackageId at the same time.");
+            }
+
+            if (gameId.HasValue)
+            {
+                return await GetCommercialRegistrationsByGame(gameId.Value, commercialRegistrationParameters, ct);
+            }
+
+            if (commercialPackageId.HasValue)
+            {
+                return await GetCommercialRegistrationsByPackage(commercialPackageId.Value, commercialRegistrationParameters, ct);
+            }
+
+            var commercialRegistrationsWithMetaData = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrations(commercialRegistrationParameters, false, ct);
             var commercialRegistrations = mapper.Map<IEnumerable<CommercialRegistrationForReturnDto>>(commercialRegistrationsWithMetaData);
             return (commercialRegistrations, commercialRegistrationsWithMetaData.MetaData);
         }

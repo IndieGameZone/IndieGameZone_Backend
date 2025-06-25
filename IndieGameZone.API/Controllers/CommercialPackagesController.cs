@@ -56,20 +56,20 @@ namespace IndieGameZone.API.Controllers
             return NoContent();
         }
 
-        [HttpGet("{commercialPackageId:guid}/registrations")]
-        public async Task<IActionResult> GetCommercialRegistrationsByPackage([FromRoute] Guid commercialPackageId, [FromQuery] CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct)
+        [HttpGet("registrations")]
+        public async Task<IActionResult> GetCommercialRegistrations(
+    [FromQuery] Guid? gameId,
+    [FromQuery] Guid? commercialPackageId,
+    [FromQuery] CommercialRegistrationParameters parameters,
+    CancellationToken ct)
         {
-            var pagedResult = await serviceManager.CommercialPackageService.GetCommercialRegistrationsByPackage(commercialPackageId, commercialRegistrationParameters, ct);
+            var pagedResult = await serviceManager
+                .CommercialPackageService
+                .GetFilteredCommercialRegistrations(gameId, commercialPackageId, parameters, ct);
+
             Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
             return Ok(pagedResult.commercialRegistrations);
         }
 
-        [HttpGet("{gameId:guid}/registrations")]
-        public async Task<IActionResult> GetCommercialRegistrationsByGame([FromRoute] Guid gameId, [FromQuery] CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct)
-        {
-            var pagedResult = await serviceManager.CommercialPackageService.GetCommercialRegistrationsByGame(gameId, commercialRegistrationParameters, ct);
-            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
-            return Ok(pagedResult.commercialRegistrations);
-        }
     }
 }
