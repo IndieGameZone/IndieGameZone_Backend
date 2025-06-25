@@ -1,6 +1,7 @@
 ﻿using Bogus;
 using IndieGameZone.Application.AchievementServices;
 using IndieGameZone.Application.AgeRestrictionServices;
+using IndieGameZone.Application.AIService;
 using IndieGameZone.Application.AlgoliaServices;
 using IndieGameZone.Application.BanHistoryServices;
 using IndieGameZone.Application.BlobService;
@@ -63,7 +64,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<INotificationService> notificationService;
 		private readonly Lazy<IBanHistoryService> banHistoryService;
 
-		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker, IAlgoliaService algoliaService)
+		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker, IAlgoliaService algoliaService, IAIService aIService)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
@@ -76,7 +77,7 @@ namespace IndieGameZone.Application
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
 			wishlistService = new Lazy<IWishlistService>(() => new WishlistService(repositoryManager, mapper, algoliaService));
 			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration));
-			reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, mapper));
+			reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, mapper, aIService));
 			libraryService = new Lazy<ILibraryService>(() => new LibraryService(repositoryManager, mapper));
 			withdrawRequestService = new Lazy<IWithdrawRequestService>(() => new WithdrawRequestService(repositoryManager, mapper, blobService));
 			postService = new Lazy<IPostService>(() => new PostService(repositoryManager, mapper, blobService, schedulerFactory));

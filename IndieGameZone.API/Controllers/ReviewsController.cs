@@ -25,6 +25,13 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.reviews);
 		}
 
+		[HttpGet("games/{gameId:guid}/reviews-summary")]
+		public async Task<IActionResult> GetReviewsSummary([FromRoute] Guid gameId, CancellationToken ct)
+		{
+			var summary = await serviceManager.ReviewService.GetSummaryReviewByGameId(gameId, ct);
+			return Ok(summary);
+		}
+
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/reviews")]
 		public async Task<IActionResult> CreateReview([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromBody] ReviewForCreationDto reviewForCreationDto, CancellationToken ct)
 		{

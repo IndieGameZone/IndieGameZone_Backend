@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Application.AIService;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
@@ -12,11 +13,13 @@ namespace IndieGameZone.Application.ReviewServices
 	{
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
+		private readonly IAIService aIService;
 
-		public ReviewService(IRepositoryManager repositoryManager, IMapper mapper)
+		public ReviewService(IRepositoryManager repositoryManager, IMapper mapper, IAIService aIService)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
+			this.aIService = aIService;
 		}
 
 		public async Task CreateReview(Guid userId, Guid gameId, ReviewForCreationDto reviewForCreationDto, CancellationToken ct = default)
@@ -51,6 +54,18 @@ namespace IndieGameZone.Application.ReviewServices
 			var reviewsWithMetaData = await repositoryManager.ReviewRepository.GetReviewsByGameId(gameId, reviewParameters, false, ct);
 			var reviews = mapper.Map<IEnumerable<ReviewForReturnDto>>(reviewsWithMetaData);
 			return (reviews, reviewsWithMetaData.MetaData);
+		}
+
+		public async Task<string> GetSummaryReviewByGameId(Guid gameId, CancellationToken ct = default)
+		{
+			var reviews = await repositoryManager.ReviewRepository.GetReviewsByGameId(gameId, false, ct);
+			if (reviews == null || !reviews.Any())
+			{
+				return "There are no review for this game";
+			}
+			var reviewTexts = reviews.Select(r => r.Comment).ToList();
+			var summary = await aIService.SummarizeReviews(reviewTexts, ct);
+			return summary;
 		}
 	}
 }

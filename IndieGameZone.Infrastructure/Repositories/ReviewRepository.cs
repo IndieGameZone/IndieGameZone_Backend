@@ -27,5 +27,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 			return await PagedList<Reviews>.ToPagedList(reviewEntities, reviewParameters.PageNumber, reviewParameters.PageSize, ct);
 		}
+
+		public async Task<IEnumerable<Reviews>> GetReviewsByGameId(Guid gameId, bool trackChange, CancellationToken ct = default)
+		{
+			var reviewEntities = FindByCondition(r => r.GameId.Equals(gameId), trackChange);
+			return await reviewEntities.ToListAsync(ct);
+		}
 	}
 }
