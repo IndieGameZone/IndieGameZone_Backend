@@ -447,12 +447,11 @@ namespace IndieGameZone.Application.UserServices
 
 		public async Task<(IEnumerable<UserForReturnDto> users, MetaData metaData)> GetUsers(UserParameters userParameters, CancellationToken ct = default)
 		{
-			var usersWithMetaData = await repositoryManager.UserRepository.GetUsers(userParameters, false, ct);
-			var userList = usersWithMetaData;
+			var usersWithMetaData = await repositoryManager.UserRepository.GetUsers(userParameters, true, ct);
 
 			var dtoList = new List<UserForReturnDto>();
 
-			foreach (var user in userList)
+			foreach (var user in usersWithMetaData)
 			{
                 var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryByUserId(user.Id, false, ct);
                 if (banHistoryEntity is not null)
