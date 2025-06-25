@@ -24,6 +24,13 @@ namespace IndieGameZone.Infrastructure.Repositories
 
             return await PagedList<CommercialRegistration>.ToPagedList(commercialRegistrationEntities, commercialRegistrationParameters.PageNumber, commercialRegistrationParameters.PageSize, ct);
         }
+     
+        public async Task<PagedList<CommercialRegistration>> GetCommercialRegistrationsByGame(Guid gameId, CommercialRegistrationParameters commercialRegistrationParameters, bool trackChange, CancellationToken ct = default)
+        {
+            var commercialRegistrationEntities = FindByCondition(cr => cr.GameId.Equals(gameId), trackChange)
+                .Sort();
 
+            return await PagedList<CommercialRegistration>.ToPagedList(commercialRegistrationEntities, commercialRegistrationParameters.PageNumber, commercialRegistrationParameters.PageSize, ct);
+        }
     }
 }
