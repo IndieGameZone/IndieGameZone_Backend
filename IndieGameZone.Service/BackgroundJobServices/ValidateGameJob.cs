@@ -22,10 +22,19 @@ namespace IndieGameZone.Application.BackgroundJobServices
 			Guid gameId = Guid.Parse(dataMap.GetString("gameId"));
 
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, true);
+			var gameImages = await repositoryManager.GameImageRepository.GetGameImagesByGameId(gameId, false);
 
-			if (await aIService.AnalyzeText(game.Name) && await aIService.AnalyzeText(game.Description) && await aIService.AnalyzeText(game.ShortDescription))
+			if (await aIService.AnalyzeText(game.Name) && await aIService.AnalyzeText(game.Description) && await aIService.AnalyzeText(game.ShortDescription) && await aIService.AnalyzeImage(game.CoverImage))
 			{
 				game.CensorStatus = CensorStatus.Approved;
+				foreach (var image in gameImages)
+				{
+					if (!(await aIService.AnalyzeImage(image.Image)))
+					{
+						game.CensorStatus = CensorStatus.PendingManualReview;
+						break;
+					}
+				}
 			}
 			else
 			{

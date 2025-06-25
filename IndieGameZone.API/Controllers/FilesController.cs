@@ -110,14 +110,6 @@ namespace IndieGameZone.API.Controllers
 					$"{Guid.NewGuid()}_{file.FileName}",
 					StorageContainer.STORAGE_CONTAINER,
 					file);
-			if (file.FileName.EndsWith(".jpg") || file.FileName.EndsWith(".png") || file.FileName.EndsWith(".webp"))
-			{
-				if (!await aIService.AnalyzeImage(uploadedUrl))
-				{
-					await blobService.DeleteBlob(uploadedUrl.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-					return BadRequest("Image analysis failed. Please ensure the image is appropriate.");
-				}
-			}
 			return Ok(uploadedUrl);
 		}
 	}
