@@ -16,6 +16,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithMany(gcl => gcl.GameCensorLogs)
 				.HasForeignKey(gcl => gcl.ModeratorId)
 				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne(gcl => gcl.Game)
+				.WithMany(gcl => gcl.GameCensorLogs)
+				.HasForeignKey(gcl => gcl.GameId)
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

@@ -91,6 +91,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(t => t.Game)
 				.HasForeignKey(t => t.GameId)
 				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasMany(g => g.GameCensorLogs)
+				.WithOne(gcl => gcl.Game)
+				.HasForeignKey(gcl => gcl.GameId)
+				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasData(
 				new Games
