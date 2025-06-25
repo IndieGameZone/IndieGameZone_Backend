@@ -16,7 +16,7 @@ namespace IndieGameZone.Application.CommercialPackageServices
         Task DeleteCommercialPackage(Guid id, CancellationToken ct = default);
         Task<CommercialPackageForReturnDto> GetCommercialPackageById(Guid id, CancellationToken ct = default);
         Task<(IEnumerable<CommercialPackageForReturnDto> commercialPackages, MetaData metaData)> GetCommercialPackages(CommercialPackageParameters commercialPackagesParameters, CancellationToken ct = default);
-        Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetCommercialRegistrationsByPackage(Guid commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default);
+        Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetFilteredCommercialRegistrations(Guid? gameId, Guid? commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default);
 
     }
 }
