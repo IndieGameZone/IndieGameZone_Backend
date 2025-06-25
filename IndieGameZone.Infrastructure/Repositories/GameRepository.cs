@@ -62,7 +62,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.Category).AsSplitQuery()
 				.Include(x => x.AgeRestriction).AsSplitQuery()
 				.Include(x => x.Developer).ThenInclude(x => x.UserProfile).AsSplitQuery()
-				.Include(x => x.Moderator).ThenInclude(x => x.UserProfile).AsSplitQuery()
 				.Include(x => x.GamePlatforms).ThenInclude(x => x.Platform).AsSplitQuery()
 				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
 				.Include(x => x.GameLanguages).ThenInclude(x => x.Language).AsSplitQuery()

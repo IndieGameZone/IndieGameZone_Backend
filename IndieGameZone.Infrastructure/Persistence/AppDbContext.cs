@@ -50,6 +50,7 @@ namespace IndieGameZone.Infrastructure.Persistence
 		public DbSet<Wallets> Wallets { get; set; } = null!;
 		public DbSet<Wishlists> Wishlists { get; set; } = null!;
 		public DbSet<WithdrawRequests> WithdrawRequests { get; set; } = null!;
+		public DbSet<GameCensorLogs> GameCensorLogs { get; set; } = null!;
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -93,6 +94,8 @@ namespace IndieGameZone.Infrastructure.Persistence
 			modelBuilder.ApplyConfiguration(new GameTagConfiguration());
 			modelBuilder.ApplyConfiguration(new PostTagConfiguration());
 			modelBuilder.ApplyConfiguration(new UserAchievementConfiguration());
+			modelBuilder.ApplyConfiguration(new GameCensorLogConfiguration());
+
 		}
 	}
 }

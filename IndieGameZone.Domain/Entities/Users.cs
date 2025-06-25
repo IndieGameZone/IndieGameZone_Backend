@@ -17,7 +17,6 @@ namespace IndieGameZone.Domain.Entities
 		public virtual ICollection<UserAchievements> UserAchievements { get; set; } = new List<UserAchievements>();
 		public virtual ICollection<Notifications> Notifications { get; set; } = null!;
 		public virtual ICollection<Games> Games { get; set; } = null!;
-		public virtual ICollection<Games> CensorGames { get; set; } = new List<Games>();
 		public virtual ICollection<Reviews> Reviews { get; set; } = new List<Reviews>();
 		public virtual ICollection<Wishlists> Wishlists { get; set; } = new List<Wishlists>();
 		public virtual ICollection<Libraries> Libraries { get; set; } = new List<Libraries>();
@@ -32,6 +31,7 @@ namespace IndieGameZone.Domain.Entities
 		public virtual ICollection<UserFollows> FollowingUsers { get; set; } = new List<UserFollows>();
 		public virtual ICollection<UserFollows> FollowedUsers { get; set; } = new List<UserFollows>();
 		public virtual ICollection<GameRecommendations> GameRecommendations { get; set; } = new List<GameRecommendations>();
+		public virtual ICollection<GameCensorLogs> GameCensorLogs { get; set; } = new List<GameCensorLogs>();
 
 	}
 }

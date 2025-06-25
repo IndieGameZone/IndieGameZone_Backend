@@ -15,18 +15,17 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(g => g.VideoLink);
 			builder.Property(g => g.Description);
 			builder.Property(g => g.AllowDonation);
-			builder.Property(g => g.Status).HasConversion<string>();
-			builder.Property(g => g.Visibility).HasConversion<string>();
-			builder.Property(g => g.CensorStatus).HasConversion<string>();
+			builder.Property(g => g.Status).HasConversion<string>().HasMaxLength(50);
+			builder.Property(g => g.Visibility).HasConversion<string>().HasMaxLength(50);
+			builder.Property(g => g.CensorStatus).HasConversion<string>().HasMaxLength(50);
 			builder.Property(g => g.InstallInstruction);
 			builder.Property(g => g.ShortDescription);
 			builder.Property(g => g.Price);
 			builder.Property(g => g.NumberOfDownloads);
 			builder.Property(g => g.CreatedAt);
-			builder.Property(g => g.CensoredAt);
 			builder.Property(g => g.UpdatedAt);
+			builder.Property(g => g.CensoredAt);
 			builder.Property(g => g.AverageSession);
-			builder.Property(g => g.CensorReason);
 
 			builder.HasMany(g => g.GameLanguages)
 				.WithOne(gl => gl.Game)
@@ -91,10 +90,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(g => g.Transactions)
 				.WithOne(t => t.Game)
 				.HasForeignKey(t => t.GameId)
-				.OnDelete(DeleteBehavior.Restrict);
-			builder.HasOne(g => g.Moderator)
-				.WithMany(m => m.CensorGames)
-				.HasForeignKey(g => g.ModeratorId)
 				.OnDelete(DeleteBehavior.Restrict);
 
 			builder.HasData(

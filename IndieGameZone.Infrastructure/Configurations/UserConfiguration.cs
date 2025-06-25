@@ -42,10 +42,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(g => g.Developer)
 				.HasForeignKey(g => g.DeveloperId)
 				.OnDelete(DeleteBehavior.Restrict);
-			builder.HasMany(u => u.CensorGames)
-				.WithOne(g => g.Moderator)
-				.HasForeignKey(g => g.ModeratorId)
-				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(u => u.Coupons)
 				.WithOne(c => c.User)
 				.HasForeignKey(c => c.UserId)

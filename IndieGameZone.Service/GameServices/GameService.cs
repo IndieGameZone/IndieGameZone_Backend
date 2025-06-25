@@ -254,7 +254,6 @@ namespace IndieGameZone.Application.GameServices
 				throw new NotFoundException($"Game not found.");
 			}
 			mapper.Map(gameActivationDto, gameEntity);
-			gameEntity.ModeratorId = moderatorId;
 			await repositoryManager.SaveAsync(ct);
 		}
 
