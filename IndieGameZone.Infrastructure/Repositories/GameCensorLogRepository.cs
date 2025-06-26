@@ -18,7 +18,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<PagedList<GameCensorLogs>> GetCensorLogByGameId(Guid gameId, GameCensorLogParameters gameCensorLogParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var gameCensorLogs = FindByCondition(x => x.GameId == gameId, trackChange)
-				.Include(x => x.Moderator)
+				.Include(x => x.Moderator).ThenInclude(x => x.UserProfile)
 				.Sort();
 
 			return await PagedList<GameCensorLogs>.ToPagedList(gameCensorLogs, gameCensorLogParameters.PageNumber, gameCensorLogParameters.PageSize, ct);
