@@ -1,8 +1,8 @@
 ﻿namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 {
-	public class GameForAlgoliaDto
+	public class GameForRecommendationDto
 	{
-		public Guid ObjectID { get; set; }
+		public Guid Id { get; set; }
 		public string Name { get; set; }
 		public string CoverImage { get; set; }
 		public string ShortDescription { get; set; }

@@ -60,14 +60,14 @@ namespace IndieGameZone.Application.AlgoliaServices
 		public async Task UploadGamesToAlgolia(CancellationToken ct = default)
 		{
 
-			var games = mapper.Map<IEnumerable<GameForAlgoliaDto>>(await repositoryManager.GameRepository.GetActiveGames(false, ct));
+			var games = mapper.Map<IEnumerable<GameForRecommendationDto>>(await repositoryManager.GameRepository.GetActiveGames(false, ct));
 			// Add record to an index
-			await client.SaveObjectsAsync<GameForAlgoliaDto>(indexName, games);
+			await client.SaveObjectsAsync<GameForRecommendationDto>(indexName, games);
 		}
 
 		public async Task UploadGameToAlgolia(Guid gameId, CancellationToken ct = default)
 		{
-			var game = mapper.Map<GameForAlgoliaDto>(await repositoryManager.GameRepository.GetGameById(gameId, false, ct));
+			var game = mapper.Map<GameForRecommendationDto>(await repositoryManager.GameRepository.GetGameById(gameId, false, ct));
 			var response = await client.SaveObjectAsync(indexName, game);
 		}
 

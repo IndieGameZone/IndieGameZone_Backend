@@ -31,8 +31,7 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.NumberOfReviews, src => src.Reviews.Count)
 				.Map(dest => dest.Discount, src => src.Discounts.Any() ? src.Discounts.Where(d => d.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= d.EndDate).Select(d => d.Percentage).FirstOrDefault() : 0);
 
-			config.NewConfig<Games, GameForAlgoliaDto>()
-				.Map(dest => dest.ObjectID, src => src.Id)
+			config.NewConfig<Games, GameForRecommendationDto>()
 				.Map(dest => dest.Category, src => src.Category.Name)
 				.Map(dest => dest.Tags, src => src.GameTags.Select(gt => gt.Tag.Name).ToList());
 

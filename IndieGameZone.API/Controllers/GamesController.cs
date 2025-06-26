@@ -1,5 +1,5 @@
 ﻿using IndieGameZone.Application;
-using IndieGameZone.Application.AlgoliaServices;
+using IndieGameZone.Application.RecombeeServices;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +12,12 @@ namespace IndieGameZone.API.Controllers
 	public class GamesController : ControllerBase
 	{
 		private readonly IServiceManager serviceManager;
-		private readonly IAlgoliaService algoliaService;
+		private readonly IRecombeeService recombeeService;
 
-		public GamesController(IServiceManager serviceManager, IAlgoliaService algoliaService)
+		public GamesController(IServiceManager serviceManager, IRecombeeService recombeeService)
 		{
 			this.serviceManager = serviceManager;
-			this.algoliaService = algoliaService;
+			this.recombeeService = recombeeService;
 		}
 
 		/// <summary>
@@ -31,10 +31,10 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.games);
 		}
 
-		//[HttpPut("games/algolia-games")]
+		//[HttpPut("games/recombee-games")]
 		//public async Task<IActionResult> UploadGameToAlgolia(CancellationToken ct)
 		//{
-		//	await algoliaService.UploadGamesToAlgolia(ct);
+		//	await recombeeService.PushGamesToRecombee();
 		//	return NoContent();
 		//}
 
