@@ -102,7 +102,7 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.games);
 		}
 
-		[HttpPut("users/{moderatorId:guid}games/{gameId:guid}/activation")]
+		[HttpPut("users/{moderatorId:guid}/games/{gameId:guid}/activation")]
 		public async Task<IActionResult> ActivateGame([FromRoute] Guid gameId, [FromRoute] Guid moderatorId, [FromForm] GameActivationDto gameActivationDto, CancellationToken ct)
 		{
 			await serviceManager.GameService.UpdateActiveStatus(moderatorId, gameId, gameActivationDto, ct);

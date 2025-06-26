@@ -18,7 +18,7 @@ namespace IndieGameZone.Domain.Entities
 		public double Price { get; set; }
 		public double NumberOfDownloads { get; set; }
 		public DateTime CreatedAt { get; set; }
-		public DateTime CensoredAt { get; set; }
+		public DateTime? CensoredAt { get; set; }
 		public DateTime? UpdatedAt { get; set; }
 		public double AverageSession { get; set; }
 		public Guid AgeRestrictionId { get; set; }

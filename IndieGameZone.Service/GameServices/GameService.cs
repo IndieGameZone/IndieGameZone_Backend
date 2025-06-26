@@ -157,9 +157,17 @@ namespace IndieGameZone.Application.GameServices
 			var gameTagEntitys = game.TagIds.Select(id => new GameTags { TagId = id, GameId = gameEntity.Id });
 			repositoryManager.GameTagRepository.CreateGameTag(gameTagEntitys);
 
-
 			//Handle Games
 			repositoryManager.GameRepository.CreateGame(gameEntity);
+
+			var gameCensorLogs = new GameCensorLogs
+			{
+				Id = Guid.NewGuid(),
+				GameId = gameEntity.Id,
+				CensorStatus = CensorStatus.PendingAIReview,
+				CreatedAt = DateTime.Now
+			};
+			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
 
 			await repositoryManager.SaveAsync(ct);
 
@@ -217,6 +225,15 @@ namespace IndieGameZone.Application.GameServices
 			var gameTagEntitys = game.TagIds.Select(id => new GameTags { TagId = id, GameId = gameEntity.Id });
 			repositoryManager.GameTagRepository.CreateGameTag(gameTagEntitys);
 
+			var gameCensorLogs = new GameCensorLogs
+			{
+				Id = Guid.NewGuid(),
+				GameId = gameId,
+				CensorStatus = CensorStatus.PendingAIReview,
+				CreatedAt = DateTime.Now
+			};
+			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
+
 			await repositoryManager.SaveAsync(ct);
 
 			IJobDetail job = JobBuilder.Create<ValidatePostJob>()
@@ -253,7 +270,20 @@ namespace IndieGameZone.Application.GameServices
 			{
 				throw new NotFoundException($"Game not found.");
 			}
-			mapper.Map(gameActivationDto, gameEntity);
+			gameEntity.CensorStatus = gameActivationDto.CensorStatus;
+
+			var gameCensorLogs = new GameCensorLogs
+			{
+				Id = Guid.NewGuid(),
+				GameId = gameId,
+				ModeratorId = moderatorId,
+				CensorStatus = gameActivationDto.CensorStatus,
+				CensorReason = gameActivationDto.CensorReason,
+				CensoredAt = DateTime.Now,
+				CreatedAt = DateTime.Now
+			};
+			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
+
 			await repositoryManager.SaveAsync(ct);
 		}
 

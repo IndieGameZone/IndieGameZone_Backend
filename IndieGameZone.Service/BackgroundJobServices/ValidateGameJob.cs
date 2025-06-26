@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application.AIService;
 using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using Quartz;
 
@@ -24,23 +25,51 @@ namespace IndieGameZone.Application.BackgroundJobServices
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, true);
 			var gameImages = await repositoryManager.GameImageRepository.GetGameImagesByGameId(gameId, false);
 
-			if (await aIService.AnalyzeText(game.Name) && await aIService.AnalyzeText(game.Description) && await aIService.AnalyzeText(game.ShortDescription) && await aIService.AnalyzeImage(game.CoverImage))
+			if (!await aIService.AnalyzeText(game.Name) || !await aIService.AnalyzeText(game.Description) || !await aIService.AnalyzeText(game.ShortDescription) || !await aIService.AnalyzeImage(game.CoverImage))
 			{
-				game.CensorStatus = CensorStatus.Approved;
+				game.CensorStatus = CensorStatus.PendingManualReview;
+				var gameCensorLogs1 = new GameCensorLogs
+				{
+					Id = Guid.NewGuid(),
+					GameId = gameId,
+					CensorStatus = CensorStatus.PendingManualReview,
+					CreatedAt = DateTime.Now
+				};
+				repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs1);
+				await repositoryManager.SaveAsync();
+				return;
+			}
+			else
+			{
 				foreach (var image in gameImages)
 				{
 					if (!(await aIService.AnalyzeImage(image.Image)))
 					{
 						game.CensorStatus = CensorStatus.PendingManualReview;
-						break;
+						var gameCensorLogs1 = new GameCensorLogs
+						{
+							Id = Guid.NewGuid(),
+							GameId = gameId,
+							CensorStatus = CensorStatus.PendingManualReview,
+							CreatedAt = DateTime.Now
+						};
+						repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs1);
+						await repositoryManager.SaveAsync();
+						return;
 					}
 				}
 			}
-			else
-			{
-				game.CensorStatus = CensorStatus.PendingManualReview;
-			}
 			game.CensoredAt = DateTime.Now;
+			game.CensorStatus = CensorStatus.Approved;
+			var gameCensorLogs = new GameCensorLogs
+			{
+				Id = Guid.NewGuid(),
+				GameId = gameId,
+				CensorStatus = CensorStatus.Approved,
+				CensoredAt = DateTime.Now,
+				CreatedAt = DateTime.Now
+			};
+			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
 			await repositoryManager.SaveAsync();
 		}
 	}
