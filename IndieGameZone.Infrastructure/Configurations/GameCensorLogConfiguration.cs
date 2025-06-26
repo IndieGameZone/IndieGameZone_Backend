@@ -10,6 +10,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 		{
 			builder.HasKey(gcl => gcl.Id);
 			builder.Property(gcl => gcl.CensoredAt);
+			builder.Property(gcl => gcl.CreatedAt);
 			builder.Property(gcl => gcl.CensorReason);
 			builder.Property(gcl => gcl.CensorStatus).HasConversion<string>().HasMaxLength(50);
 			builder.HasOne(gcl => gcl.Moderator)

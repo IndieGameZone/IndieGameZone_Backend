@@ -4,6 +4,7 @@ using IndieGameZone.Application.BanHistoryServices;
 using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.CommercialPackageServices;
 using IndieGameZone.Application.DiscountServices;
+using IndieGameZone.Application.GameCensorLogServices;
 using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.LanguageServices;
@@ -51,5 +52,6 @@ namespace IndieGameZone.Application
 		IReportService ReportService { get; }
 		INotificationService NotificationService { get; }
 		IBanHistoryService BanHistoryService { get; }
+		IGameCensorLogService GameCensorLogService { get; }
 	}
 }

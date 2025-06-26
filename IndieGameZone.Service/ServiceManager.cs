@@ -9,6 +9,7 @@ using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.CommercialPackageServices;
 using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.EmailServices;
+using IndieGameZone.Application.GameCensorLogServices;
 using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.LanguageServices;
@@ -63,6 +64,7 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IReportService> reportService;
 		private readonly Lazy<INotificationService> notificationService;
 		private readonly Lazy<IBanHistoryService> banHistoryService;
+		private readonly Lazy<IGameCensorLogService> gameCensorLogService;
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker, IAlgoliaService algoliaService, IAIService aIService)
 		{
@@ -90,6 +92,7 @@ namespace IndieGameZone.Application
 			reportService = new Lazy<IReportService>(() => new ReportService(repositoryManager, mapper));
 			notificationService = new Lazy<INotificationService>(() => new NotificationService(repositoryManager, mapper));
 			banHistoryService = new Lazy<IBanHistoryService>(() => new BanHistoryService(repositoryManager, mapper, userManager));
+			gameCensorLogService = new Lazy<IGameCensorLogService>(() => new GameCensorLogService(repositoryManager, mapper));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -139,5 +142,7 @@ namespace IndieGameZone.Application
 		public INotificationService NotificationService => notificationService.Value;
 
 		public IBanHistoryService BanHistoryService => banHistoryService.Value;
+
+		public IGameCensorLogService GameCensorLogService => gameCensorLogService.Value;
 	}
 }
