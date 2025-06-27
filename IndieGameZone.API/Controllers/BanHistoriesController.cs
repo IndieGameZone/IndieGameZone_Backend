@@ -47,18 +47,18 @@ namespace IndieGameZone.API.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{id:guid}/unban")]
-        public async Task<IActionResult> UnbanUser([FromRoute] Guid id, CancellationToken ct)
+        [HttpPatch("{userId:guid}/unban")]
+        public async Task<IActionResult> UnbanUser([FromRoute] Guid userId, CancellationToken ct)
         {
-            await serviceManager.BanHistoryService.UnbanUser(id, ct);
+            await serviceManager.BanHistoryService.UnbanUser(userId, ct);
             return NoContent();
         }
 
-        [HttpDelete("{id:guid}")]
-        public async Task<IActionResult> DeleteBanHistory([FromRoute] Guid id, CancellationToken ct)
-        {
-            await serviceManager.BanHistoryService.DeleteBanHistory(id, ct);
-            return NoContent();
-        }
+        //[HttpDelete("{id:guid}")]
+        //public async Task<IActionResult> DeleteBanHistory([FromRoute] Guid id, CancellationToken ct)
+        //{
+        //    await serviceManager.BanHistoryService.DeleteBanHistory(id, ct);
+        //    return NoContent();
+        //}
     }
 }

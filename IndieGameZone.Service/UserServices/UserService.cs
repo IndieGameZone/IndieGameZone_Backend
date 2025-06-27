@@ -73,20 +73,10 @@ namespace IndieGameZone.Application.UserServices
 			if (user == null)
 				throw new UserNotFoundException();
 
-            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetLatestBanHistoryByUserId(user.Id, false, ct);
-            if (banHistoryEntity is not null)
-            {
-                if (banHistoryEntity.BanDate <= DateTime.Now && banHistoryEntity.UnbanDate >= DateTime.Now)
-                {
-                    user.IsActive = false;
-                    await userManager.UpdateAsync(user);
-                }
-                else
-                {
-                    user.IsActive = true;
-                    await userManager.UpdateAsync(user);
-                }
-            }
+            bool hasActiveBan = await repositoryManager.BanHistoryRepository.HasActiveBanAsync(user.Id, ct);
+
+            user.IsActive = !hasActiveBan;
+            await userManager.UpdateAsync(user);
 
             var dto = mapper.Map<UserForReturnDto>(user);
 
@@ -452,21 +442,11 @@ namespace IndieGameZone.Application.UserServices
 			var dtoList = new List<UserForReturnDto>();
 
 			foreach (var user in usersWithMetaData)
-			{
-                var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetLatestBanHistoryByUserId(user.Id, false, ct);
-                if (banHistoryEntity is not null)
-                {
-                    if (banHistoryEntity.BanDate <= DateTime.Now && banHistoryEntity.UnbanDate >= DateTime.Now)
-                    {
-                        user.IsActive = false;
-                        await userManager.UpdateAsync(user);
-                    }
-                    else
-                    {
-                        user.IsActive = true;
-                        await userManager.UpdateAsync(user);
-                    }
-                }
+            {
+                bool hasActiveBan = await repositoryManager.BanHistoryRepository.HasActiveBanAsync(user.Id, ct);
+
+                user.IsActive = !hasActiveBan;
+                await userManager.UpdateAsync(user);
 
                 var dto = mapper.Map<UserForReturnDto>(user);
 
@@ -762,21 +742,14 @@ namespace IndieGameZone.Application.UserServices
 
         private async Task CheckAndUpdateBanStatusAsync(Users user, CancellationToken ct)
         {
-            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetLatestBanHistoryByUserId(user.Id, false, ct);
-            if (banHistoryEntity is not null)
-            {
-                if (banHistoryEntity.BanDate <= DateTime.Now && banHistoryEntity.UnbanDate >= DateTime.Now)
-                {
-                    user.IsActive = false;
-                    await userManager.UpdateAsync(user);
-                    throw new UserBadRequestException("Your account is currently banned.");
-                }
-                else
-                {
-                    user.IsActive = true;
-                    await userManager.UpdateAsync(user);
-                }
-            }
+            bool hasActiveBan = await repositoryManager.BanHistoryRepository.HasActiveBanAsync(user.Id, ct);
+
+            user.IsActive = !hasActiveBan;
+            await userManager.UpdateAsync(user);
+
+            if (hasActiveBan)
+                throw new UserBadRequestException("Your account is currently banned.");
+
         }
     }
 }

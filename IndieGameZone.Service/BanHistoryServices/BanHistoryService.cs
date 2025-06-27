@@ -32,26 +32,22 @@ namespace IndieGameZone.Application.BanHistoryServices
         public async Task CreateBanHistory(BanHistoryForCreationDto banHistoryForCreationDto, CancellationToken ct = default)
         {
             // Validate BanDate < UnbanDate
-            if (banHistoryForCreationDto.BanDate >= banHistoryForCreationDto.UnbanDate)
-                throw new InvalidOperationException("Ban date must be earlier than unban date.");
-
-            // Validate both dates are not in the past
-            if (banHistoryForCreationDto.UnbanDate <= DateTime.Now)
-                throw new InvalidOperationException("Unban dates must be in the future.");
+            if (DateTime.Now >= banHistoryForCreationDto.UnbanDate)
+                throw new InvalidOperationException("Unban date must be after today.");
 
             var user = await userManager.FindByIdAsync(banHistoryForCreationDto.UserId.ToString());
             if (user == null)
                 throw new UserNotFoundException();
 
-            // Only deactivate the user if they are currently within the ban period
-            if (DateTime.Now >= banHistoryForCreationDto.BanDate && DateTime.Now <= banHistoryForCreationDto.UnbanDate)
-            {
-                user.IsActive = false;
-                await userManager.UpdateAsync(user);
-            }
+            if (await repositoryManager.BanHistoryRepository.HasActiveBanAsync(banHistoryForCreationDto.UserId, ct))
+                throw new InvalidOperationException("User already has an active ban.");
 
+            user.IsActive = false;
+            await userManager.UpdateAsync(user);
+            
             var banHistoryEntity = mapper.Map<BanHistories>(banHistoryForCreationDto);
             banHistoryEntity.Id = Guid.NewGuid();
+            banHistoryEntity.BanDate = DateTime.Now;
 
             repositoryManager.BanHistoryRepository.CreateBanHistory(banHistoryEntity);
             await repositoryManager.SaveAsync(ct);
@@ -89,15 +85,19 @@ namespace IndieGameZone.Application.BanHistoryServices
             return mapper.Map<BanHistoryForReturnDto>(banHistoryEntity);
         }
 
-        public async Task UnbanUser(Guid id, CancellationToken ct = default)
+        public async Task UnbanUser(Guid userId, CancellationToken ct = default)
         {
-            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryById(id, true, ct);
+
+            if (!await repositoryManager.BanHistoryRepository.HasActiveBanAsync(userId, ct))
+                throw new InvalidOperationException("User don't has an active ban.");
+
+            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetLatestBanHistoryByUserId(userId, true, ct);
             if (banHistoryEntity is null)
             {
                 throw new NotFoundException($"Ban History not found.");
             }
             banHistoryEntity.UnbanDate = DateTime.Now;
-            var user = await userManager.FindByIdAsync(banHistoryEntity.UserId.ToString());
+            var user = await userManager.FindByIdAsync(userId.ToString());
             if (user == null) throw new UserNotFoundException();
             user.IsActive = true;
             await userManager.UpdateAsync(user);
@@ -106,21 +106,26 @@ namespace IndieGameZone.Application.BanHistoryServices
 
         public async Task UpdateBanHistory(Guid id, BanHistoryForUpdateDto banHistoryForUpdateDto, CancellationToken ct = default)
         {
-            // Validate BanDate < UnbanDate
-            if (banHistoryForUpdateDto.BanDate >= banHistoryForUpdateDto.UnbanDate)
-                throw new InvalidOperationException("Ban date must be earlier than unban date.");
-
             var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryById(id, true, ct);
             if (banHistoryEntity is null)
-            {
                 throw new NotFoundException($"Ban History not found.");
-            }
+            if (banHistoryEntity.BanDate >= banHistoryForUpdateDto.UnbanDate)
+                throw new InvalidOperationException("Updated unban date must be later than ban date.");
+
+            // ✅ Check if there's a newer ban for the same user
+            var hasFutureBan = await repositoryManager.BanHistoryRepository
+                .HasFutureBanAsync(banHistoryEntity.UserId, banHistoryEntity.Id, banHistoryEntity.BanDate, ct);
+
+            if (hasFutureBan && banHistoryForUpdateDto.UnbanDate != banHistoryEntity.UnbanDate)
+                throw new InvalidOperationException("Cannot update unban date because a newer ban already exists for this user.");
+
+
             mapper.Map(banHistoryForUpdateDto, banHistoryEntity);
 
             var user = await userManager.FindByIdAsync(banHistoryEntity.UserId.ToString());
             if (user == null) throw new UserNotFoundException();
             // Only deactivate the user if they are currently within the ban period
-            if (DateTime.Now >= banHistoryForUpdateDto.BanDate && DateTime.Now <= banHistoryForUpdateDto.UnbanDate)
+            if (DateTime.Now >= banHistoryEntity.BanDate && DateTime.Now <= banHistoryForUpdateDto.UnbanDate)
             {
                 user.IsActive = false;
                 await userManager.UpdateAsync(user);
