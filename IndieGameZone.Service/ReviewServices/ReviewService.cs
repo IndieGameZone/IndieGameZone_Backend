@@ -1,6 +1,6 @@
 ﻿using IndieGameZone.Application.AIService;
+using IndieGameZone.Application.RecombeeServices;
 using IndieGameZone.Domain.Entities;
-using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Reviews;
@@ -14,12 +14,14 @@ namespace IndieGameZone.Application.ReviewServices
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 		private readonly IAIService aIService;
+		private readonly IRecombeeService recombeeService;
 
-		public ReviewService(IRepositoryManager repositoryManager, IMapper mapper, IAIService aIService)
+		public ReviewService(IRepositoryManager repositoryManager, IMapper mapper, IAIService aIService, IRecombeeService recombeeService)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.aIService = aIService;
+			this.recombeeService = recombeeService;
 		}
 
 		public async Task CreateReview(Guid userId, Guid gameId, ReviewForCreationDto reviewForCreationDto, CancellationToken ct = default)
@@ -32,22 +34,24 @@ namespace IndieGameZone.Application.ReviewServices
 
 			repositoryManager.ReviewRepository.CreateReview(reviewEntities);
 			await repositoryManager.SaveAsync(ct);
+
+			await recombeeService.SendRatingEvent(userId, gameId, reviewEntities.Rating);
 		}
 
-		public async Task DeleteReview(Guid userId, Guid id, CancellationToken ct = default)
-		{
-			var reviewEntity = await repositoryManager.ReviewRepository.GetReviewById(id, false, ct);
-			if (reviewEntity == null)
-			{
-				throw new NotFoundException("Review not found.");
-			}
-			if (reviewEntity.UserId != userId)
-			{
-				throw new ForbiddenException("You are not allowed to delete this review.");
-			}
-			repositoryManager.ReviewRepository.DeleteReview(reviewEntity);
-			await repositoryManager.SaveAsync(ct);
-		}
+		//public async Task DeleteReview(Guid userId, Guid id, CancellationToken ct = default)
+		//{
+		//	var reviewEntity = await repositoryManager.ReviewRepository.GetReviewById(id, false, ct);
+		//	if (reviewEntity == null)
+		//	{
+		//		throw new NotFoundException("Review not found.");
+		//	}
+		//	if (reviewEntity.UserId != userId)
+		//	{
+		//		throw new ForbiddenException("You are not allowed to delete this review.");
+		//	}
+		//	repositoryManager.ReviewRepository.DeleteReview(reviewEntity);
+		//	await repositoryManager.SaveAsync(ct);
+		//}
 
 		public async Task<(IEnumerable<ReviewForReturnDto> reviews, MetaData metaData)> GetReviewsByGameId(Guid gameId, ReviewParameters reviewParameters, CancellationToken ct = default)
 		{

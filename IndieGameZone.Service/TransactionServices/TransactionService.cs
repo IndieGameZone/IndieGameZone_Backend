@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Constants;
+﻿using IndieGameZone.Application.RecombeeServices;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
@@ -17,12 +18,14 @@ namespace IndieGameZone.Application.TransactionServices
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 		private readonly IConfiguration configuration;
+		private readonly IRecombeeService recombeeService;
 
-		public TransactionService(IRepositoryManager repositoryManager, IMapper mapper, IConfiguration configuration)
+		public TransactionService(IRepositoryManager repositoryManager, IMapper mapper, IConfiguration configuration, IRecombeeService recombeeService)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.configuration = configuration;
+			this.recombeeService = recombeeService;
 		}
 
 		public Task CreateTransactionForCommercialPurchase(Guid userId, Guid commercialPackageId, CancellationToken ct = default)
@@ -132,6 +135,8 @@ namespace IndieGameZone.Application.TransactionServices
 			repositoryManager.LibraryRepository.AddGameToLibrary(libraryEntity);
 
 			await repositoryManager.SaveAsync(ct);
+
+			await recombeeService.SendPurchaseEvent(userId, gameId);
 
 		}
 

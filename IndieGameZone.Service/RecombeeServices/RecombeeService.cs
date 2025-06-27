@@ -4,6 +4,7 @@ using MapsterMapper;
 using Microsoft.Extensions.Configuration;
 using Recombee.ApiClient;
 using Recombee.ApiClient.ApiRequests;
+using Recombee.ApiClient.Bindings;
 using Recombee.ApiClient.Util;
 
 namespace IndieGameZone.Application.RecombeeServices
@@ -34,6 +35,11 @@ namespace IndieGameZone.Application.RecombeeServices
 			await client.SendAsync(new AddItemProperty("Tags", "set"));
 		}
 
+		public async Task GetRecommendedGamesForUser(Guid userId)
+		{
+			RecommendationResponse result = await client.SendAsync(new RecommendItemsToUser(userId.ToString(), 5));
+		}
+
 		public async Task PushGamesToRecombee()
 		{
 			await AddProperty();
@@ -55,6 +61,45 @@ namespace IndieGameZone.Application.RecombeeServices
 					cascadeCreate: true);
 				await client.SendAsync(item);
 			}
+		}
+
+		public async Task PushGameToRecombee(Guid gameId)
+		{
+			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, false);
+			var game = mapper.Map<GameForRecommendationDto>(gameEntity);
+			var item = new SetItemValues(
+				game.Id.ToString(),
+				new Dictionary<string, object>
+				{
+					{ "Name", game.Name },
+					{ "CoverImage", game.CoverImage },
+					{ "ShortDescription", game.ShortDescription },
+					{ "Price", game.Price },
+					{ "Category", game.Category },
+					{ "Tags", game.Tags }
+				},
+				cascadeCreate: true);
+			await client.SendAsync(item);
+		}
+
+		public async Task SendBookmarkEvent(Guid userId, Guid gameId)
+		{
+			await client.SendAsync(new AddBookmark(userId.ToString(), gameId.ToString(), timestamp: DateTime.Now, cascadeCreate: true));
+		}
+
+		public async Task SendDetailViewEvent(Guid userId, Guid gameId)
+		{
+			await client.SendAsync(new AddDetailView(userId.ToString(), gameId.ToString(), timestamp: DateTime.Now, cascadeCreate: true));
+		}
+
+		public async Task SendPurchaseEvent(Guid userId, Guid gameId)
+		{
+			await client.SendAsync(new AddPurchase(userId.ToString(), gameId.ToString(), timestamp: DateTime.Now, cascadeCreate: true));
+		}
+
+		public async Task SendRatingEvent(Guid userId, Guid gameId, double rating)
+		{
+			await client.SendAsync(new AddRating(userId.ToString(), gameId.ToString(), rating, timestamp: DateTime.Now, cascadeCreate: true));
 		}
 	}
 }

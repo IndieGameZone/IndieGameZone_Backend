@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application.BackgroundJobServices;
 using IndieGameZone.Application.BlobService;
+using IndieGameZone.Application.RecombeeServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
@@ -20,14 +21,16 @@ namespace IndieGameZone.Application.GameServices
 		private readonly IBlobService blobService;
 		private readonly IConfiguration configuration;
 		private readonly ISchedulerFactory schedulerFactory;
+		private readonly IRecombeeService recombeeService;
 
-		public GameService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, IConfiguration configuration, ISchedulerFactory schedulerFactory)
+		public GameService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, IConfiguration configuration, ISchedulerFactory schedulerFactory, IRecombeeService recombeeService)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.blobService = blobService;
 			this.configuration = configuration;
 			this.schedulerFactory = schedulerFactory;
+			this.recombeeService = recombeeService;
 		}
 
 		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetGames(GameParameters gameParameters, CancellationToken ct = default)
@@ -42,7 +45,7 @@ namespace IndieGameZone.Application.GameServices
 			return (games, gamesWithMetaData.MetaData);
 		}
 
-		public async Task<GameForSingleReturnDto> GetGameById(Guid gameId, CancellationToken ct = default)
+		public async Task<GameForSingleReturnDto> GetGameById(Guid playerId, Guid gameId, CancellationToken ct = default)
 		{
 			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
 			if (gameEntity is null)
@@ -52,6 +55,8 @@ namespace IndieGameZone.Application.GameServices
 			var gameDto = mapper.Map<GameForSingleReturnDto>(gameEntity);
 			var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gameId, false, ct);
 			gameDto.PriceAfterDiscount = discount is not null ? gameDto.Price - (gameDto.Price * discount.Percentage / 100) : gameDto.Price;
+
+			await recombeeService.SendDetailViewEvent(playerId, gameId);
 			return gameDto;
 		}
 

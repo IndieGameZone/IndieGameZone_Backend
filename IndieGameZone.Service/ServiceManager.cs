@@ -2,7 +2,6 @@
 using IndieGameZone.Application.AchievementServices;
 using IndieGameZone.Application.AgeRestrictionServices;
 using IndieGameZone.Application.AIService;
-using IndieGameZone.Application.AlgoliaServices;
 using IndieGameZone.Application.BanHistoryServices;
 using IndieGameZone.Application.BlobService;
 using IndieGameZone.Application.CategoryServices;
@@ -19,6 +18,7 @@ using IndieGameZone.Application.PlatformServices;
 using IndieGameZone.Application.PostCommentServices;
 using IndieGameZone.Application.PostReactionServices;
 using IndieGameZone.Application.PostServices;
+using IndieGameZone.Application.RecombeeServices;
 using IndieGameZone.Application.ReportReasonServices;
 using IndieGameZone.Application.ReportServices;
 using IndieGameZone.Application.ReviewServices;
@@ -66,20 +66,20 @@ namespace IndieGameZone.Application
 		private readonly Lazy<IBanHistoryService> banHistoryService;
 		private readonly Lazy<IGameCensorLogService> gameCensorLogService;
 
-		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker, IAlgoliaService algoliaService, IAIService aIService)
+		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker, IAIService aIService, IRecombeeService recombeeService)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
 			categoryService = new Lazy<ICategoryService>(() => new CategoryService(repositoryManager, mapper));
 			platformService = new Lazy<IPlatformService>(() => new PlatformService(repositoryManager, mapper));
 			ageRestrictionService = new Lazy<IAgeRestrictionService>(() => new AgeRestrictionService(repositoryManager, mapper));
-			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService, configuration, schedulerFactory));
+			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService, configuration, schedulerFactory, recombeeService));
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
 			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration, blobService, faker));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
-			wishlistService = new Lazy<IWishlistService>(() => new WishlistService(repositoryManager, mapper, algoliaService));
-			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration));
-			reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, mapper, aIService));
+			wishlistService = new Lazy<IWishlistService>(() => new WishlistService(repositoryManager, mapper, recombeeService));
+			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration, recombeeService));
+			reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, mapper, aIService, recombeeService));
 			libraryService = new Lazy<ILibraryService>(() => new LibraryService(repositoryManager, mapper));
 			withdrawRequestService = new Lazy<IWithdrawRequestService>(() => new WithdrawRequestService(repositoryManager, mapper, blobService));
 			postService = new Lazy<IPostService>(() => new PostService(repositoryManager, mapper, blobService, schedulerFactory));

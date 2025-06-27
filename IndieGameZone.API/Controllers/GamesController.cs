@@ -44,10 +44,10 @@ namespace IndieGameZone.API.Controllers
 		//	return Ok(await algoliaService.GetPersonalizedRecommendations(playerId.ToString()));
 		//}
 
-		[HttpGet("games/{gameId:guid}")]
-		public async Task<IActionResult> GetGame([FromRoute] Guid gameId, CancellationToken ct)
+		[HttpGet("users/{playerId:guid}/games/{gameId:guid}")]
+		public async Task<IActionResult> GetGame([FromRoute] Guid playerId, [FromRoute] Guid gameId, CancellationToken ct)
 		{
-			var game = await serviceManager.GameService.GetGameById(gameId, ct);
+			var game = await serviceManager.GameService.GetGameById(playerId, gameId, ct);
 			return Ok(game);
 		}
 

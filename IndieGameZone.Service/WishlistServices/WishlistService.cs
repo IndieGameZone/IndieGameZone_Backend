@@ -1,4 +1,4 @@
-﻿using IndieGameZone.Application.AlgoliaServices;
+﻿using IndieGameZone.Application.RecombeeServices;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
@@ -12,13 +12,13 @@ namespace IndieGameZone.Application.WishlistServices
 	{
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
-		private readonly IAlgoliaService algoliaService;
+		private readonly IRecombeeService recombeeService;
 
-		public WishlistService(IRepositoryManager repositoryManager, IMapper mapper, IAlgoliaService algoliaService)
+		public WishlistService(IRepositoryManager repositoryManager, IMapper mapper, IRecombeeService recombeeService)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
-			this.algoliaService = algoliaService;
+			this.recombeeService = recombeeService;
 		}
 		public async Task AddToWishlist(Guid userId, Guid gameId, CancellationToken ct = default)
 		{
@@ -31,7 +31,7 @@ namespace IndieGameZone.Application.WishlistServices
 			repositoryManager.WishlistRepository.AddToWishlist(wishlistEntity);
 			await repositoryManager.SaveAsync(ct);
 
-			await algoliaService.SendEventToAlgolia("conversion", "Added to Wishlist", userId.ToString(), gameId.ToString(), ct);
+			await recombeeService.SendBookmarkEvent(userId, gameId);
 		}
 
 		public async Task<(IEnumerable<WishlistForReturnDto> wishlists, MetaData metaData)> GetWishlistsFromUserId(WishlistParameters wishlistParameters, Guid userId, CancellationToken ct = default)
