@@ -82,6 +82,11 @@ namespace IndieGameZone.Application.RecombeeServices
 			await client.SendAsync(item);
 		}
 
+		public async Task RemoveGameFromRecombee(Guid gameId)
+		{
+			await client.SendAsync(new DeleteItem(gameId.ToString()));
+		}
+
 		public async Task SendBookmarkEvent(Guid userId, Guid gameId)
 		{
 			await client.SendAsync(new AddBookmark(userId.ToString(), gameId.ToString(), timestamp: DateTime.Now, cascadeCreate: true));

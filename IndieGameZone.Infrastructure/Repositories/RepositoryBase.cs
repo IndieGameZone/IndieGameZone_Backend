@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace IndieGameZone.Infrastructure.Repositories
 {
-	internal abstract class RepositoryBase<T> : IRepositoryBase<T> where T : class
+	internal abstract class RepositoryBase<T> : Domain.IRepositories.RepositoryBase<T> where T : class
 	{
 		protected AppDbContext AppDbContext;
 		public RepositoryBase(AppDbContext appDbContext)

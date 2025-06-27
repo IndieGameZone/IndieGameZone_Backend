@@ -40,6 +40,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IBanHistoryRepository> banHistoryRepository;
 		private readonly Lazy<ICommercialRegistrationRepository> commercialRegistrationRepository;
 		private readonly Lazy<IGameCensorLogRepository> gameCensorLogRepository;
+		private readonly Lazy<IGameRecommendationRepository> gameRecommendationRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -76,6 +77,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			banHistoryRepository = new Lazy<IBanHistoryRepository>(() => new BanHistoryRepository(appDbContext));
 			commercialRegistrationRepository = new Lazy<ICommercialRegistrationRepository>(() => new CommercialRegistrationRepository(appDbContext));
 			gameCensorLogRepository = new Lazy<IGameCensorLogRepository>(() => new GameCensorLogRepository(appDbContext));
+			gameRecommendationRepository = new Lazy<IGameRecommendationRepository>(() => new GameRecommendationRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
@@ -141,6 +143,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public ICommercialRegistrationRepository CommercialRegistrationRepository => commercialRegistrationRepository.Value;
 
 		public IGameCensorLogRepository GameCensorLogRepository => gameCensorLogRepository.Value;
+
+		public IGameRecommendationRepository GameRecommendationRepository => gameRecommendationRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{

@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application.AIService;
+using IndieGameZone.Application.RecombeeServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
@@ -10,11 +11,13 @@ namespace IndieGameZone.Application.BackgroundJobServices
 	{
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IAIService aIService;
+		private readonly IRecombeeService recombeeService;
 
-		public ValidateGameJob(IRepositoryManager repositoryManager, IAIService aIService)
+		public ValidateGameJob(IRepositoryManager repositoryManager, IAIService aIService, IRecombeeService recombeeService)
 		{
 			this.repositoryManager = repositoryManager;
 			this.aIService = aIService;
+			this.recombeeService = recombeeService;
 		}
 
 		public async Task Execute(IJobExecutionContext context)
@@ -71,6 +74,11 @@ namespace IndieGameZone.Application.BackgroundJobServices
 			};
 			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
 			await repositoryManager.SaveAsync();
+
+			if (game.Visibility == GameVisibility.Public)
+			{
+				await recombeeService.PushGameToRecombee(game.Id);
+			}
 		}
 	}
 }

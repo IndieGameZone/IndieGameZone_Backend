@@ -99,6 +99,8 @@ namespace IndieGameZone.Application.GameServices
 
 			repositoryManager.GameRepository.DeleteGame(gameEntity);
 			await repositoryManager.SaveAsync(ct);
+
+			await recombeeService.RemoveGameFromRecombee(gameId);
 		}
 
 		private async Task DeleteOldContentBeforeUpdate(Guid gameId, CancellationToken ct = default)
@@ -290,6 +292,11 @@ namespace IndieGameZone.Application.GameServices
 			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
 
 			await repositoryManager.SaveAsync(ct);
+
+			if (gameEntity.Visibility == GameVisibility.Public && gameEntity.CensorStatus == CensorStatus.Approved)
+			{
+				await recombeeService.PushGameToRecombee(gameId);
+			}
 		}
 
 		public async Task<string> IncreaseNumberOfDownload(Guid gamePlatformId, CancellationToken ct = default)
