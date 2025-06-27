@@ -73,7 +73,7 @@ namespace IndieGameZone.Application.UserServices
 			if (user == null)
 				throw new UserNotFoundException();
 
-            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryByUserId(user.Id, false, ct);
+            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetLatestBanHistoryByUserId(user.Id, false, ct);
             if (banHistoryEntity is not null)
             {
                 if (banHistoryEntity.BanDate <= DateTime.Now && banHistoryEntity.UnbanDate >= DateTime.Now)
@@ -453,7 +453,7 @@ namespace IndieGameZone.Application.UserServices
 
 			foreach (var user in usersWithMetaData)
 			{
-                var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryByUserId(user.Id, false, ct);
+                var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetLatestBanHistoryByUserId(user.Id, false, ct);
                 if (banHistoryEntity is not null)
                 {
                     if (banHistoryEntity.BanDate <= DateTime.Now && banHistoryEntity.UnbanDate >= DateTime.Now)
@@ -762,7 +762,7 @@ namespace IndieGameZone.Application.UserServices
 
         private async Task CheckAndUpdateBanStatusAsync(Users user, CancellationToken ct)
         {
-            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetBanHistoryByUserId(user.Id, false, ct);
+            var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetLatestBanHistoryByUserId(user.Id, false, ct);
             if (banHistoryEntity is not null)
             {
                 if (banHistoryEntity.BanDate <= DateTime.Now && banHistoryEntity.UnbanDate >= DateTime.Now)
