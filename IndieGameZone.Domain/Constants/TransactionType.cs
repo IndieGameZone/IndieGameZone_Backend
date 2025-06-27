@@ -4,7 +4,8 @@
 	{
 		Deposit,
 		Withdraw,
-		Purchase,
+		PurchaseGame,
+		PurchaseCommercialPackage,
 		Donation
 	}
 }

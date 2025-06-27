@@ -4,7 +4,6 @@
 	{
 		public Guid Id { get; set; }
 		public double Percentage { get; set; }
-		public DateOnly StartDate { get; set; }
 		public DateOnly EndDate { get; set; }
 		public Guid GameId { get; set; }
 

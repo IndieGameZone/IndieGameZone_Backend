@@ -13,7 +13,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasIndex(c => c.Code).IsUnique();
 			builder.Property(c => c.Percentage);
 			builder.Property(c => c.IsUsed);
-			builder.Property(c => c.StartDate);
 			builder.Property(c => c.EndDate);
 
 			builder.HasOne(c => c.User)

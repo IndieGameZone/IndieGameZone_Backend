@@ -28,18 +28,13 @@ namespace IndieGameZone.Application.TransactionServices
 			this.recombeeService = recombeeService;
 		}
 
-		public Task CreateTransactionForCommercialPurchase(Guid userId, Guid commercialPackageId, CancellationToken ct = default)
+		public async Task<string> CreateTransactionForDeposit(Guid userId, TransactionForDepositCreationDto transaction, CancellationToken ct = default)
 		{
-			throw new NotImplementedException();
-		}
-
-		public async Task<string> CreateTransactionForDeposit(Guid userId, TransactionForCreationDto transaction, CancellationToken ct = default)
-		{
-			Random random = new Random();
 			var transactionEntity = mapper.Map<Transactions>(transaction);
 			transactionEntity.Id = Guid.NewGuid();
 			transactionEntity.UserId = userId;
 			transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
+			transactionEntity.Description = "Deposit to wallet";
 			transactionEntity.Status = TransactionStatus.Pending;
 			transactionEntity.Type = TransactionType.Deposit;
 			transactionEntity.CreatedAt = DateTime.Now;
@@ -66,65 +61,163 @@ namespace IndieGameZone.Application.TransactionServices
 			return response.checkoutUrl;
 		}
 
-		//public async Task<string> CreateTransactionForDonation(TransactionForCreationDto transaction, CancellationToken ct = default)
-		//{
-		//	Random random = new Random();
-		//	var transactionEntity = mapper.Map<Transactions>(transaction);
-		//	transactionEntity.Id = Guid.NewGuid();
-		//	transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
-		//	transactionEntity.CreatedAt = DateTime.Now;
-		//	transactionEntity.Type = TransactionType.Donation;
-		//	transactionEntity.Status = TransactionStatus.Pending;
-		//	repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
-
-		//	var clientId = configuration.GetSection("PayOSClientID").Value;
-		//	var apiKey = configuration.GetSection("PayOSAPIKey").Value;
-		//	var checksumKey = configuration.GetSection("PayOSChecksumKey").Value;
-
-		//	var domain = "https://indie-game-zone.vercel.app/";
-
-		//	var payOS = new PayOS(clientId, apiKey, checksumKey);
-
-		//	var paymentLinkRequest = new PaymentData(
-		//		orderCode: transactionEntity.OrderCode,
-		//		amount: (int)transactionEntity.Amount,
-		//		description: transactionEntity.Description,
-		//		items: [new("Donation", 1, (int)transaction.Amount)],
-		//		returnUrl: domain + "?success=true",
-		//		cancelUrl: domain + "?canceled=true"
-		//	);
-		//	var response = await payOS.createPaymentLink(paymentLinkRequest);
-
-		//	return response.checkoutUrl;
-		//}
-
-		public async Task CreateTransactionForGamePurchase(Guid userId, Guid gameId, TransactionForCreationDto transaction, CancellationToken ct = default)
+		public async Task<string> CreateTransactionForGamePayOSPurchase(Guid userId, Guid gameId, string? couponCode, CancellationToken ct = default)
 		{
-			Random random = new Random();
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+
+			double gamePriceAfterDiscount = 0;
+			if (couponCode == null || couponCode.Trim().Equals(string.Empty))
+			{
+				gamePriceAfterDiscount = game.Price;
+			}
+			else
+			{
+				var coupon = await repositoryManager.CouponRepository.GetCouponByCode(couponCode, true, ct);
+				if (coupon == null)
+				{
+					throw new NotFoundException("Coupon does not exist");
+				}
+				else if (coupon.EndDate < DateOnly.FromDateTime(DateTime.Now))
+				{
+					throw new BadRequestException("This coupon has expired");
+				}
+				else if (coupon.IsUsed)
+				{
+					throw new BadRequestException("This coupon has already been used");
+				}
+				gamePriceAfterDiscount = game.Price - (game.Price * coupon.Percentage / 100);
+				coupon.IsUsed = true;
+			}
+
+			var transactionEntity = new Transactions()
+			{
+				Id = Guid.NewGuid(),
+				UserId = userId,
+				GameId = gameId,
+				Amount = gamePriceAfterDiscount,
+				Description = $"Purchase of game {game.Name}",
+				CreatedAt = DateTime.Now,
+				Type = TransactionType.PurchaseGame,
+				Status = TransactionStatus.Pending,
+			};
+			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
+
+			var clientId = configuration.GetSection("PayOSClientID").Value;
+			var apiKey = configuration.GetSection("PayOSAPIKey").Value;
+			var checksumKey = configuration.GetSection("PayOSChecksumKey").Value;
+
+			var domain = "https://indie-game-zone.vercel.app/";
+
+			var payOS = new PayOS(clientId, apiKey, checksumKey);
+
+			var paymentLinkRequest = new PaymentData(
+				orderCode: transactionEntity.OrderCode,
+				amount: (int)transactionEntity.Amount,
+				description: transactionEntity.Description,
+				items: [new("PurchaseGame", 1, (int)transactionEntity.Amount)],
+				cancelUrl: domain + "?canceled=true",
+				returnUrl: domain + "?success=true"
+			);
+			var response = await payOS.createPaymentLink(paymentLinkRequest);
+
+			return response.checkoutUrl;
+		}
+
+		public async Task<string> CreateTransactionForDonation(Guid userId, Guid gameId, TransactionForDonationCreationDto transactionForDonationCreationDto, CancellationToken ct = default)
+		{
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null)
+			{
+				throw new NotFoundException("Game does not exist");
+			}
+			var transactionEntity = new Transactions()
+			{
+				Id = Guid.NewGuid(),
+				UserId = userId,
+				GameId = gameId,
+				Amount = transactionForDonationCreationDto.Amount,
+				Description = $"Donation for game {game.Name}",
+				CreatedAt = DateTime.Now,
+				Type = TransactionType.Donation,
+				Status = TransactionStatus.Pending
+			};
+			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
+
+			var clientId = configuration.GetSection("PayOSClientID").Value;
+			var apiKey = configuration.GetSection("PayOSAPIKey").Value;
+			var checksumKey = configuration.GetSection("PayOSChecksumKey").Value;
+
+			var domain = "https://indie-game-zone.vercel.app/";
+
+			var payOS = new PayOS(clientId, apiKey, checksumKey);
+
+			var paymentLinkRequest = new PaymentData(
+				orderCode: transactionEntity.OrderCode,
+				amount: (int)transactionEntity.Amount,
+				description: transactionEntity.Description,
+				items: [new("Donation", 1, (int)transactionEntity.Amount)],
+				returnUrl: domain + "?success=true",
+				cancelUrl: domain + "?canceled=true"
+			);
+			var response = await payOS.createPaymentLink(paymentLinkRequest);
+
+
+			return response.checkoutUrl;
+		}
+
+		public async Task CreateTransactionForGameWalletPurchase(Guid userId, Guid gameId, string? couponCode, CancellationToken ct = default)
+		{
 			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct);
-			if (wallet.Balance < transaction.Amount)
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+
+			double gamePriceAfterDiscount = 0;
+			if (couponCode == null || couponCode.Trim().Equals(string.Empty))
+			{
+				gamePriceAfterDiscount = game.Price;
+			}
+			else
+			{
+				var coupon = await repositoryManager.CouponRepository.GetCouponByCode(couponCode, true, ct);
+				if (coupon == null)
+				{
+					throw new NotFoundException("Coupon does not exist");
+				}
+				else if (coupon.EndDate < DateOnly.FromDateTime(DateTime.Now))
+				{
+					throw new BadRequestException("This coupon has expired");
+				}
+				else if (coupon.IsUsed)
+				{
+					throw new BadRequestException("This coupon has already been used");
+				}
+				gamePriceAfterDiscount = game.Price - (game.Price * coupon.Percentage / 100);
+				coupon.IsUsed = true;
+			}
+
+
+			if (wallet.Balance < gamePriceAfterDiscount)
 			{
 				throw new NotEnoughCreditException("You don't have enough credits to buy this game");
 			}
-			var transactionEntity = mapper.Map<Transactions>(transaction);
-			transactionEntity.Id = Guid.NewGuid();
-			transactionEntity.UserId = userId;
-			transactionEntity.GameId = gameId;
-			transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
-			transactionEntity.CreatedAt = DateTime.Now;
-			transactionEntity.Type = TransactionType.Purchase;
-			transactionEntity.Status = TransactionStatus.Success;
+			var transactionEntity = new Transactions()
+			{
+				Id = Guid.NewGuid(),
+				UserId = userId,
+				GameId = gameId,
+				Amount = gamePriceAfterDiscount,
+				Description = $"Purchase of game {game.Name}",
+				CreatedAt = DateTime.Now,
+				Type = TransactionType.PurchaseGame,
+				Status = TransactionStatus.Success
+			};
 
 			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
 
 			wallet.Balance -= transactionEntity.Amount;
 
-			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
-
 			var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(game.DeveloperId, true, ct);
 
-			developerWallet.Balance += game.Price * 0.8; // 80% to developer
-			developerWallet.Balance += transactionEntity.Amount - game.Price; // Donation amount to developer
+			developerWallet.Balance += transactionEntity.Amount * 0.8; // 80% to developer
 
 			var libraryEntity = new Libraries
 			{
@@ -175,6 +268,20 @@ namespace IndieGameZone.Application.TransactionServices
 					var developerId = transaction.Game.DeveloperId;
 					var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
 					developerWallet.Balance += transaction.Amount;
+				}
+				else if (transaction.Type == TransactionType.PurchaseGame)
+				{
+					var developerId = transaction.Game.DeveloperId;
+					var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
+					developerWallet.Balance += transaction.Amount * 0.8; // 80% to developer
+					var libraryEntity = new Libraries
+					{
+						UserId = transaction.UserId,
+						GameId = (Guid)transaction.GameId,
+						PurchasedAt = DateTime.Now
+					};
+					repositoryManager.LibraryRepository.AddGameToLibrary(libraryEntity);
+					await recombeeService.SendPurchaseEvent(transaction.UserId, (Guid)transaction.GameId);
 				}
 
 				transaction.Status = TransactionStatus.Success;

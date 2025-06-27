@@ -24,12 +24,12 @@ namespace IndieGameZone.Application.Extensions
 			config.NewConfig<Games, GameForListReturnDto>()
 				.Map(dest => dest.AverageRating, src => src.Reviews.Any() ? src.Reviews.Average(r => r.Rating) : 0)
 				.Map(dest => dest.NumberOfReviews, src => src.Reviews.Count)
-				.Map(dest => dest.Discount, src => src.Discounts.Any() ? src.Discounts.Where(d => d.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= d.EndDate).Select(d => d.Percentage).FirstOrDefault() : 0);
+				.Map(dest => dest.Discount, src => src.Discounts.Any() ? src.Discounts.Where(d => DateOnly.FromDateTime(DateTime.Now) <= d.EndDate).Select(d => d.Percentage).FirstOrDefault() : 0);
 
 			config.NewConfig<Games, GameForSingleReturnDto>()
 				.Map(dest => dest.AverageRating, src => src.Reviews.Any() ? src.Reviews.Average(r => r.Rating) : 0)
 				.Map(dest => dest.NumberOfReviews, src => src.Reviews.Count)
-				.Map(dest => dest.Discount, src => src.Discounts.Any() ? src.Discounts.Where(d => d.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= d.EndDate).Select(d => d.Percentage).FirstOrDefault() : 0);
+				.Map(dest => dest.Discount, src => src.Discounts.Any() ? src.Discounts.Where(d => DateOnly.FromDateTime(DateTime.Now) <= d.EndDate).Select(d => d.Percentage).FirstOrDefault() : 0);
 
 			config.NewConfig<Games, GameForRecommendationDto>()
 				.Map(dest => dest.Category, src => src.Category.Name)

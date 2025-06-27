@@ -21,27 +21,33 @@ namespace IndieGameZone.API.Controllers
 			this.configuration = configuration;
 		}
 
-		[HttpPost("users/{userId:guid}transactions/deposit")]
-		public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromBody] TransactionForCreationDto transaction, CancellationToken ct)
+		[HttpPost("users/{userId:guid}/transactions/deposit")]
+		public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromBody] TransactionForDepositCreationDto transaction, CancellationToken ct)
 		{
 			var result = await serviceManager.TransactionService.CreateTransactionForDeposit(userId, transaction, ct);
 			return StatusCode(201, result);
 		}
 
-		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-purchasing")]
-		public async Task<IActionResult> CreateTransactionForPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromBody] TransactionForCreationDto transaction, CancellationToken ct)
+		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-wallet-purchasing")]
+		public async Task<IActionResult> CreateTransactionForPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromQuery] string? couponCode, CancellationToken ct)
 		{
-			await serviceManager.TransactionService.CreateTransactionForGamePurchase(userId, gameId, transaction, ct);
+			await serviceManager.TransactionService.CreateTransactionForGameWalletPurchase(userId, gameId, couponCode, ct);
 			return StatusCode(201);
 		}
 
-		[HttpPost("users/{userId:guid}/commercial-packages/{commercialPackageId:guid}/transactions/commercial-purchasing")]
-		public async Task<IActionResult> CreateTransactionForCommercialPurchase([FromRoute] Guid userId, [FromRoute] Guid commercialPackageId, CancellationToken ct)
+		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-payos-purchasing")]
+		public async Task<IActionResult> CreateTransactionForPayOSPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromQuery] string? couponCode, CancellationToken ct)
 		{
-			await serviceManager.TransactionService.CreateTransactionForCommercialPurchase(userId, commercialPackageId, ct);
-			return StatusCode(201);
+			var result = await serviceManager.TransactionService.CreateTransactionForGamePayOSPurchase(userId, gameId, couponCode, ct);
+			return StatusCode(201, result);
 		}
 
+		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/donation")]
+		public async Task<IActionResult> CreateTransactionForDonation([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromBody] TransactionForDonationCreationDto transactionForDonationCreationDto, CancellationToken ct)
+		{
+			var result = await serviceManager.TransactionService.CreateTransactionForDonation(userId, gameId, transactionForDonationCreationDto, ct);
+			return StatusCode(201, result);
+		}
 
 
 		[HttpPost("transactions/hook-receiving")]

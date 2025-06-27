@@ -39,5 +39,6 @@ namespace IndieGameZone.Domain.IRepositories
 		ICommercialRegistrationRepository CommercialRegistrationRepository { get; }
 		IGameCensorLogRepository GameCensorLogRepository { get; }
 		IGameRecommendationRepository GameRecommendationRepository { get; }
+		ICouponRepository CouponRepository { get; }
 	}
 }
