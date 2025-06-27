@@ -22,11 +22,13 @@ namespace IndieGameZone.Infrastructure.Repositories
 
         public void DeleteBanHistory(BanHistories banHistory) => Delete(banHistory);
 
-        public async Task<BanHistories?> GetBanHistoryById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(a => a.Id.Equals(id), trackChange)
+        public async Task<BanHistories?> GetBanHistoryById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(b => b.Id.Equals(id), trackChange)
             .SingleOrDefaultAsync(ct);
 
-        public async Task<BanHistories?> GetBanHistoryByUserId(Guid userId, bool trackChange, CancellationToken ct = default) => await FindByCondition(a => a.UserId.Equals(userId), trackChange)
-    .SingleOrDefaultAsync(ct);
+        public async Task<BanHistories?> GetLatestBanHistoryByUserId(Guid userId, bool trackChange, CancellationToken ct = default) => await FindByCondition(b => b.UserId.Equals(userId), trackChange)
+        .OrderByDescending(b => b.UnbanDate)
+        .FirstOrDefaultAsync(ct);
+
 
         public async Task<PagedList<BanHistories>> GetBanHistories(BanHistoryParameters banHistoryParameters, bool trackChange, CancellationToken ct = default)
         {
