@@ -28,18 +28,11 @@ namespace IndieGameZone.API.Controllers
 			return StatusCode(201, result);
 		}
 
-		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-wallet-purchasing")]
-		public async Task<IActionResult> CreateTransactionForPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromQuery] string? couponCode, CancellationToken ct)
+		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-purchasing")]
+		public async Task<IActionResult> CreateTransactionForPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromForm] TransactionForGameCreation transactionForGameCreation, CancellationToken ct)
 		{
-			await serviceManager.TransactionService.CreateTransactionForGameWalletPurchase(userId, gameId, couponCode, ct);
-			return StatusCode(201);
-		}
-
-		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-payos-purchasing")]
-		public async Task<IActionResult> CreateTransactionForPayOSPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromQuery] string? couponCode, CancellationToken ct)
-		{
-			var result = await serviceManager.TransactionService.CreateTransactionForGamePayOSPurchase(userId, gameId, couponCode, ct);
-			return StatusCode(201, result);
+			var paymentLink = await serviceManager.TransactionService.CreateTransactionForGamePurchase(userId, gameId, transactionForGameCreation, ct);
+			return StatusCode(201, paymentLink);
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/donation")]
