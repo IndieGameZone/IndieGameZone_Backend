@@ -7,6 +7,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Transactions;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Transactions;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Net.payOS;
 using Net.payOS.Types;
@@ -93,6 +94,36 @@ namespace IndieGameZone.Application.TransactionServices
 			return orderCode;
 		}
 
+		private async Task CheckGameAchievements(Guid userId)
+		{
+			int libraryCount = await repositoryManager.LibraryRepository.GetLibraryByUserId(userId, false).CountAsync();
+			if (libraryCount == 1)
+			{
+				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
+				{
+					UserId = userId,
+					AchievementId = Guid.Parse("fef0c70d-cf7b-4c90-9865-383e660fda8a")
+				});
+			}
+			else if (libraryCount == 10)
+			{
+				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
+				{
+					UserId = userId,
+					AchievementId = Guid.Parse("56e5cd8d-2d46-45dc-9006-f71920beea40")
+				});
+			}
+			else if (libraryCount == 50)
+			{
+				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
+				{
+					UserId = userId,
+					AchievementId = Guid.Parse("9c60bc27-9c8a-4be3-9e0d-1f4e96cb59a7")
+				});
+			}
+			await repositoryManager.SaveAsync();
+		}
+
 		public async Task<string> CreateTransactionForDeposit(Guid userId, TransactionForDepositCreationDto transaction, CancellationToken ct = default)
 		{
 			var transactionEntity = mapper.Map<Transactions>(transaction);
@@ -151,6 +182,8 @@ namespace IndieGameZone.Application.TransactionServices
 				repositoryManager.LibraryRepository.AddGameToLibrary(libraryEntity);
 				await repositoryManager.SaveAsync(ct);
 				await recombeeService.SendPurchaseEvent(userId, gameId);
+
+				await CheckGameAchievements(userId);
 				return string.Empty;
 			}
 			else
@@ -243,6 +276,10 @@ namespace IndieGameZone.Application.TransactionServices
 			}
 
 			await repositoryManager.SaveAsync();
+			if (transaction.Type == TransactionType.PurchaseGame)
+			{
+				await CheckGameAchievements(transaction.UserId);
+			}
 		}
 
 	}

@@ -40,5 +40,6 @@ namespace IndieGameZone.Domain.IRepositories
 		IGameCensorLogRepository GameCensorLogRepository { get; }
 		IGameRecommendationRepository GameRecommendationRepository { get; }
 		ICouponRepository CouponRepository { get; }
+		IUserAchievementRepository UserAchievementRepository { get; }
 	}
 }

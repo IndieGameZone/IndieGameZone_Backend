@@ -19,6 +19,7 @@ using IndieGameZone.Application.ReportServices;
 using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
 using IndieGameZone.Application.TransactionServices;
+using IndieGameZone.Application.UserAchievementServices;
 using IndieGameZone.Application.UserFollowServices;
 using IndieGameZone.Application.UserServices;
 using IndieGameZone.Application.WishlistServices;
@@ -53,5 +54,6 @@ namespace IndieGameZone.Application
 		INotificationService NotificationService { get; }
 		IBanHistoryService BanHistoryService { get; }
 		IGameCensorLogService GameCensorLogService { get; }
+		IUserAchievementService UserAchievementService { get; }
 	}
 }

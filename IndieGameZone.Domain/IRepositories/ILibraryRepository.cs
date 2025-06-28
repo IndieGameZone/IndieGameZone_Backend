@@ -7,5 +7,6 @@ namespace IndieGameZone.Domain.IRepositories
 	{
 		void AddGameToLibrary(Libraries libraries);
 		Task<PagedList<Libraries>> GetLibraryByUserId(Guid userId, LibraryParameters libraryParameters, bool trackChange, CancellationToken ct = default);
+		IQueryable<Libraries> GetLibraryByUserId(Guid userId, bool trackChange);
 	}
 }

@@ -42,6 +42,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<IGameCensorLogRepository> gameCensorLogRepository;
 		private readonly Lazy<IGameRecommendationRepository> gameRecommendationRepository;
 		private readonly Lazy<ICouponRepository> couponRepository;
+		private readonly Lazy<IUserAchievementRepository> userAchievementRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -80,6 +81,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			gameCensorLogRepository = new Lazy<IGameCensorLogRepository>(() => new GameCensorLogRepository(appDbContext));
 			gameRecommendationRepository = new Lazy<IGameRecommendationRepository>(() => new GameRecommendationRepository(appDbContext));
 			couponRepository = new Lazy<ICouponRepository>(() => new CouponRepository(appDbContext));
+			userAchievementRepository = new Lazy<IUserAchievementRepository>(() => new UserAchievementRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
@@ -149,6 +151,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public IGameRecommendationRepository GameRecommendationRepository => gameRecommendationRepository.Value;
 
 		public ICouponRepository CouponRepository => couponRepository.Value;
+
+		public IUserAchievementRepository UserAchievementRepository => userAchievementRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{
