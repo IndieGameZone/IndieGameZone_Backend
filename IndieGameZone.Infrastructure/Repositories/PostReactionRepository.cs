@@ -18,5 +18,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<PostReactions?> GetReaction(Guid userId, Guid postId, bool trackChange, CancellationToken ct = default) => await FindByCondition(p => p.UserId == userId && p.PostId == postId, trackChange).SingleOrDefaultAsync(ct);
 
 		public IQueryable<PostReactions> GetReactionsByPostId(Guid postId, bool trackChange, CancellationToken ct = default) => FindByCondition(p => p.PostId == postId, trackChange);
+
+		public IQueryable<PostReactions> GetReactionsByUserId(Guid userId, bool trackChange, CancellationToken ct = default) => FindByCondition(p => p.UserId == userId, trackChange);
 	}
 }

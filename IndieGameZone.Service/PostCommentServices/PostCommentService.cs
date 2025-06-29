@@ -5,6 +5,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.PostComments;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.PostComments;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Application.PostCommentServices
 {
@@ -19,6 +20,37 @@ namespace IndieGameZone.Application.PostCommentServices
 			this.mapper = mapper;
 		}
 
+		private async Task CheckCommentAchievements(Guid userId, CancellationToken ct = default)
+		{
+			var userAchievements = repositoryManager.UserAchievementRepository.GetUserAchievementsByUserId(userId, false);
+			var commentCount = await repositoryManager.PostCommentRepository.GetCommentsByUserId(userId, false).CountAsync();
+			if (commentCount == 1 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("f3e1b3e3-9ac3-41e3-83a6-83b44b76446b")))
+			{
+				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
+				{
+					UserId = userId,
+					AchievementId = Guid.Parse("f3e1b3e3-9ac3-41e3-83a6-83b44b76446b")
+				});
+			}
+			else if (commentCount == 10 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("d55f9b9a-d660-4c9a-bc35-94d7ef5a4eb3")))
+			{
+				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
+				{
+					UserId = userId,
+					AchievementId = Guid.Parse("d55f9b9a-d660-4c9a-bc35-94d7ef5a4eb3")
+				});
+			}
+			else if (commentCount == 50 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("2190f97e-1533-4c91-9152-f7ae9ec6f8c0")))
+			{
+				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
+				{
+					UserId = userId,
+					AchievementId = Guid.Parse("2190f97e-1533-4c91-9152-f7ae9ec6f8c0")
+				});
+			}
+			await repositoryManager.SaveAsync(ct);
+		}
+
 		public async Task CreateComment(Guid userId, Guid postId, PostCommentForCreationDto postCommentForCreationDto, CancellationToken ct = default)
 		{
 			var postComment = mapper.Map<PostComments>(postCommentForCreationDto);
@@ -30,6 +62,8 @@ namespace IndieGameZone.Application.PostCommentServices
 
 			repositoryManager.PostCommentRepository.CreateComment(postComment);
 			await repositoryManager.SaveAsync(ct);
+
+			await CheckCommentAchievements(userId, ct);
 		}
 
 		public async Task DeleteComment(Guid userId, Guid commentId, CancellationToken ct = default)

@@ -26,5 +26,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 			return await PagedList<PostComments>.ToPagedList(comments, postCommentParameters.PageNumber, postCommentParameters.PageSize, ct);
 		}
+
+		public IQueryable<PostComments> GetCommentsByUserId(Guid userId, bool trackChange, CancellationToken ct = default) => FindByCondition(c => c.UserId.Equals(userId) && c.IsActive, trackChange);
 	}
 }

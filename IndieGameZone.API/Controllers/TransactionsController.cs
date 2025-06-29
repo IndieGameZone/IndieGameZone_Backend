@@ -24,8 +24,8 @@ namespace IndieGameZone.API.Controllers
 		[HttpPost("users/{userId:guid}/transactions/deposit")]
 		public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromBody] TransactionForDepositCreationDto transaction, CancellationToken ct)
 		{
-			var result = await serviceManager.TransactionService.CreateTransactionForDeposit(userId, transaction, ct);
-			return StatusCode(201, result);
+			var paymentLink = await serviceManager.TransactionService.CreateTransactionForDeposit(userId, transaction, ct);
+			return StatusCode(201, paymentLink);
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-purchasing")]
@@ -40,6 +40,16 @@ namespace IndieGameZone.API.Controllers
 		{
 			var result = await serviceManager.TransactionService.CreateTransactionForDonation(userId, gameId, transactionForDonationCreationDto, ct);
 			return StatusCode(201, result);
+		}
+
+		/// <summary>
+		/// Update transaction as cancel. Call when navigating when the user cancels the payment.
+		/// </summary>
+		[HttpPut("transactions/{orderCode:long}/cancel")]
+		public async Task<IActionResult> CancelTransaction([FromRoute] long orderCode, CancellationToken ct)
+		{
+			await serviceManager.TransactionService.Cancel(orderCode, ct);
+			return NoContent();
 		}
 
         [HttpPost("users/{userId:guid}/commercial-packages/{commercialPackageId:guid}/transactions/commercial-purchasing")]
@@ -59,7 +69,9 @@ namespace IndieGameZone.API.Controllers
 			var payOS = new PayOS(clientId, apiKey, checksumKey);
 			WebhookData data = payOS.verifyPaymentWebhookData(webhookBody);
 
-			await serviceManager.TransactionService.IPNAsync(data, ct);
+			Console.WriteLine($"Webhook received: {JsonSerializer.Serialize(webhookBody)}");
+
+			await serviceManager.TransactionService.IPNAsync(data, webhookBody.success, ct);
 			return Ok();
 		}
 
