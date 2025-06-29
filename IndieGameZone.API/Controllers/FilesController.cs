@@ -98,6 +98,7 @@ namespace IndieGameZone.API.Controllers
 				var (status, maliciousCount, suspiciousCount) = await GetAnalysisResultsAsync(analysisId);
 				while (!status.Equals("completed"))
 				{
+					await Task.Delay(4000);
 					(status, maliciousCount, suspiciousCount) = await GetAnalysisResultsAsync(analysisId);
 				}
 
