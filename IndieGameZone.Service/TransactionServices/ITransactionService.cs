@@ -12,6 +12,7 @@ namespace IndieGameZone.Application.TransactionServices
 		Task<string> CreateTransactionForDonation(Guid userId, Guid gameId, TransactionForDonationCreationDto transactionForDonationCreationDto, CancellationToken ct = default);
 		Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactionsByUserId(Guid userId, TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default);
 		Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default);
-		Task IPNAsync(WebhookData webhookData, CancellationToken ct = default);
+		Task IPNAsync(WebhookData webhookData, bool isSuccess, CancellationToken ct = default);
+		Task Cancel(long orderCode, CancellationToken ct = default);
 	}
 }

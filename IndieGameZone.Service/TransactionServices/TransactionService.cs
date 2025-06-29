@@ -233,7 +233,7 @@ namespace IndieGameZone.Application.TransactionServices
 			return (transactions, transactionsWithMetaData.MetaData);
 		}
 
-		public async Task IPNAsync(WebhookData webhookData, CancellationToken ct = default)
+		public async Task IPNAsync(WebhookData webhookData, bool isSuccess, CancellationToken ct = default)
 		{
 			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(webhookData.orderCode, true);
 
@@ -242,7 +242,7 @@ namespace IndieGameZone.Application.TransactionServices
 			var checksumKey = configuration.GetSection("PayOSChecksumKey").Value;
 
 			var payOS = new PayOS(clientId, apiKey, checksumKey);
-			if (webhookData.code == "00")
+			if (isSuccess)
 			{
 				if (transaction.Type == TransactionType.Deposit)
 				{
@@ -284,5 +284,24 @@ namespace IndieGameZone.Application.TransactionServices
 			}
 		}
 
+		public async Task Cancel(long orderCode, CancellationToken ct = default)
+		{
+			var clientId = configuration.GetSection("PayOSClientID").Value;
+			var apiKey = configuration.GetSection("PayOSAPIKey").Value;
+			var checksumKey = configuration.GetSection("PayOSChecksumKey").Value;
+
+			var payOS = new PayOS(clientId, apiKey, checksumKey);
+
+			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(orderCode, true, ct);
+			if (transaction == null)
+			{
+				throw new NotFoundException("Transaction not found");
+			}
+			transaction.Status = TransactionStatus.Cancel;
+			await repositoryManager.SaveAsync(ct);
+
+
+			await payOS.cancelPaymentLink(orderCode);
+		}
 	}
 }

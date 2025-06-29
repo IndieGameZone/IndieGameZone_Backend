@@ -9,5 +9,6 @@ namespace IndieGameZone.Domain.IRepositories
 		void DeleteComment(PostComments comment);
 		Task<PagedList<PostComments>> GetCommentsByPostId(Guid postId, PostCommentParameters postCommentParameters, bool trackChange, CancellationToken ct = default);
 		Task<PostComments?> GetCommentById(Guid commentId, bool trackChange, CancellationToken ct = default);
+		IQueryable<PostComments> GetCommentsByUserId(Guid userId, bool trackChange, CancellationToken ct = default);
 	}
 }

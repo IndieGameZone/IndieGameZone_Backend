@@ -8,5 +8,7 @@ namespace IndieGameZone.Domain.IRepositories
 		void DeleteReactions(PostReactions postReactions);
 		Task<PostReactions?> GetReaction(Guid userId, Guid postId, bool trackChange, CancellationToken ct = default);
 		IQueryable<PostReactions> GetReactionsByPostId(Guid postId, bool trackChange, CancellationToken ct = default);
+		IQueryable<PostReactions> GetReactionsByUserId(Guid userId, bool trackChange, CancellationToken ct = default);
+
 	}
 }
