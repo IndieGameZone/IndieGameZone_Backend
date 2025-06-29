@@ -8,6 +8,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Posts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Posts;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Quartz;
 
 namespace IndieGameZone.Application.PostServices
@@ -26,6 +27,38 @@ namespace IndieGameZone.Application.PostServices
 			this.blobService = blobService;
 			this.schedulerFactory = schedulerFactory;
 		}
+
+		private async Task CheckPostAchievement(Guid userId, CancellationToken ct = default)
+		{
+			var postCount = await repositoryManager.PostRepository.GetPostsByUserId(userId, false).CountAsync();
+			var userAchievements = repositoryManager.UserAchievementRepository.GetUserAchievementsByUserId(userId, false);
+			if (postCount == 1 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("b0ea7c96-6d5c-4199-9029-7f04e7502f66")))
+			{
+				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
+				{
+					UserId = userId,
+					AchievementId = Guid.Parse("b0ea7c96-6d5c-4199-9029-7f04e7502f66")
+				});
+			}
+			else if (postCount == 10 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("5291fbd1-9926-4904-92bc-7f36c738c189")))
+			{
+				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
+				{
+					UserId = userId,
+					AchievementId = Guid.Parse("5291fbd1-9926-4904-92bc-7f36c738c189")
+				});
+			}
+			else if (postCount == 50 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("47c0b28f-43d2-496e-bfcb-f9df5aa2048d")))
+			{
+				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
+				{
+					UserId = userId,
+					AchievementId = Guid.Parse("47c0b28f-43d2-496e-bfcb-f9df5aa2048d")
+				});
+			}
+			await repositoryManager.SaveAsync(ct);
+		}
+
 		public async Task CreatePost(Guid userId, Guid gameId, PostForCreationDto postForCreationDto, CancellationToken ct = default)
 		{
 			var postEntity = mapper.Map<Posts>(postForCreationDto);
@@ -63,6 +96,8 @@ namespace IndieGameZone.Application.PostServices
 			var scheduler = await schedulerFactory.GetScheduler(ct);
 
 			await scheduler.ScheduleJob(job, trigger, ct);
+
+			await CheckPostAchievement(userId, ct);
 		}
 
 		public async Task DeletePost(Guid userId, Guid postId, CancellationToken ct = default)

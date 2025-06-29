@@ -23,5 +23,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				ct
 			);
 		}
+
+		public IQueryable<UserAchievements> GetUserAchievementsByUserId(Guid userId, bool trackChange, CancellationToken ct = default) => FindByCondition(x => x.UserId == userId, trackChange);
 	}
 }

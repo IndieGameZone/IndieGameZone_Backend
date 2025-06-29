@@ -36,5 +36,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Sort();
 			return PagedList<Posts>.ToPagedList(posts, postParameters.PageNumber, postParameters.PageSize, ct);
 		}
+
+		public IQueryable<Posts> GetPostsByUserId(Guid userId, bool trackChange = false, CancellationToken ct = default) => FindByCondition(p => p.UserId.Equals(userId), trackChange);
 	}
 }

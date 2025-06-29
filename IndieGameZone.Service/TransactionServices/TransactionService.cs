@@ -97,7 +97,9 @@ namespace IndieGameZone.Application.TransactionServices
 		private async Task CheckGameAchievements(Guid userId)
 		{
 			int libraryCount = await repositoryManager.LibraryRepository.GetLibraryByUserId(userId, false).CountAsync();
-			if (libraryCount == 1)
+			var userAchievements = repositoryManager.UserAchievementRepository.GetUserAchievementsByUserId(userId, false);
+
+			if (libraryCount == 1 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("fef0c70d-cf7b-4c90-9865-383e660fda8a")))
 			{
 				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
 				{
@@ -105,7 +107,7 @@ namespace IndieGameZone.Application.TransactionServices
 					AchievementId = Guid.Parse("fef0c70d-cf7b-4c90-9865-383e660fda8a")
 				});
 			}
-			else if (libraryCount == 10)
+			else if (libraryCount == 10 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("56e5cd8d-2d46-45dc-9006-f71920beea40")))
 			{
 				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
 				{
@@ -113,7 +115,7 @@ namespace IndieGameZone.Application.TransactionServices
 					AchievementId = Guid.Parse("56e5cd8d-2d46-45dc-9006-f71920beea40")
 				});
 			}
-			else if (libraryCount == 50)
+			else if (libraryCount == 50 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("9c60bc27-9c8a-4be3-9e0d-1f4e96cb59a7")))
 			{
 				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
 				{
