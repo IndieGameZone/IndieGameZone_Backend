@@ -13,7 +13,6 @@ namespace IndieGameZone.Domain.Entities
 		public DateTime CreatedAt { get; set; }
 		public Guid UserId { get; set; }
 		public Guid? GameId { get; set; }
-		public Guid? CommercialRegistrationId { get; set; }
 
 		// Navigation properties
 		public virtual CommercialRegistration? CommercialRegistration { get; set; } = null!;

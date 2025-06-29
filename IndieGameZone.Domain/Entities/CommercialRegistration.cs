@@ -7,6 +7,7 @@
 		public DateTime EndDate { get; set; }
 		public Guid GameId { get; set; }
 		public Guid CommercialPackageId { get; set; }
+		public Guid TransactionId { get; set; }
 
 		//Navigation properties
 		public Transactions Transaction { get; set; }
