@@ -19,7 +19,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Users
         [Required]
         public required DateOnly Birthday { get; init; }
         [Required]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[^\s]{12,}$", ErrorMessage = "Password must be at least 12 characters long and include uppercase, lowercase, number, and special character.")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[^\s]{6,}$", ErrorMessage = "Password must be at least 6 characters long and include uppercase, lowercase, number, and special character.")]
         public required string Password { get; init; }
         [Required]
         [Compare("Password")]
