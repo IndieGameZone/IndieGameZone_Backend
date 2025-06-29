@@ -39,7 +39,7 @@ namespace IndieGameZone.Application.BanHistoryServices
             if (user == null)
                 throw new UserNotFoundException();
 
-            if (await repositoryManager.BanHistoryRepository.HasActiveBanAsync(banHistoryForCreationDto.UserId, ct))
+            if (await repositoryManager.BanHistoryRepository.HasActiveBanAsync(banHistoryForCreationDto.UserId, DateTime.Now, ct))
                 throw new InvalidOperationException("User already has an active ban.");
 
             user.IsActive = false;
@@ -88,7 +88,7 @@ namespace IndieGameZone.Application.BanHistoryServices
         public async Task UnbanUser(Guid userId, CancellationToken ct = default)
         {
 
-            if (!await repositoryManager.BanHistoryRepository.HasActiveBanAsync(userId, ct))
+            if (!await repositoryManager.BanHistoryRepository.HasActiveBanAsync(userId, DateTime.Now, ct))
                 throw new InvalidOperationException("User don't has an active ban.");
 
             var banHistoryEntity = await repositoryManager.BanHistoryRepository.GetLatestBanHistoryByUserId(userId, true, ct);

@@ -38,12 +38,12 @@ namespace IndieGameZone.Infrastructure.Repositories
             return await PagedList<BanHistories>.ToPagedList(banHistoryEntities, banHistoryParameters.PageNumber, banHistoryParameters.PageSize, ct);
         }
 
-        public async Task<bool> HasActiveBanAsync(Guid userId, CancellationToken ct = default)
+        public async Task<bool> HasActiveBanAsync(Guid userId, DateTime now, CancellationToken ct = default)
         {
             return await FindByCondition(b =>
                 b.UserId == userId &&
-                b.BanDate <= DateTime.Now &&
-                b.UnbanDate >= DateTime.Now, false)
+                b.BanDate <= now &&
+                b.UnbanDate >= now, false)
                 .AnyAsync(ct);
         }
 

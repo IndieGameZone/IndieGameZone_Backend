@@ -73,7 +73,7 @@ namespace IndieGameZone.Application.UserServices
 			if (user == null)
 				throw new UserNotFoundException();
 
-            bool hasActiveBan = await repositoryManager.BanHistoryRepository.HasActiveBanAsync(user.Id, ct);
+            bool hasActiveBan = await repositoryManager.BanHistoryRepository.HasActiveBanAsync(user.Id, DateTime.Now, ct);
 
             user.IsActive = !hasActiveBan;
             await userManager.UpdateAsync(user);
@@ -443,7 +443,7 @@ namespace IndieGameZone.Application.UserServices
 
 			foreach (var user in usersWithMetaData)
             {
-                bool hasActiveBan = await repositoryManager.BanHistoryRepository.HasActiveBanAsync(user.Id, ct);
+                bool hasActiveBan = await repositoryManager.BanHistoryRepository.HasActiveBanAsync(user.Id, DateTime.Now, ct);
 
                 user.IsActive = !hasActiveBan;
                 await userManager.UpdateAsync(user);
@@ -742,7 +742,7 @@ namespace IndieGameZone.Application.UserServices
 
         private async Task CheckAndUpdateBanStatusAsync(Users user, CancellationToken ct)
         {
-            bool hasActiveBan = await repositoryManager.BanHistoryRepository.HasActiveBanAsync(user.Id, ct);
+            bool hasActiveBan = await repositoryManager.BanHistoryRepository.HasActiveBanAsync(user.Id, DateTime.Now, ct);
 
             user.IsActive = !hasActiveBan;
             await userManager.UpdateAsync(user);
