@@ -36,15 +36,13 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/commercial-packages/{commercialPackageId:guid}/transactions/commercial-purchasing")]
-		public async Task<IActionResult> CreateTransactionForCommercialPurchase([FromRoute] Guid userId, [FromRoute] Guid commercialPackageId, CancellationToken ct)
+		public async Task<IActionResult> CreateTransactionForCommercialPurchase([FromRoute] Guid userId, [FromRoute] Guid commercialPackageId, [FromBody] TransactionForCommercialDto dto, CancellationToken ct)
 		{
-			await serviceManager.TransactionService.CreateTransactionForCommercialPurchase(userId, commercialPackageId, ct);
+			await serviceManager.TransactionService.CreateTransactionForCommercialPurchase(userId, commercialPackageId, dto, ct);
 			return StatusCode(201);
 		}
 
-
-
-		[HttpPost("transactions/hook-receiving")]
+        [HttpPost("transactions/hook-receiving")]
 		public async Task<IActionResult> IPN([FromBody] WebhookType webhookBody, CancellationToken ct)
 		{
 			var clientId = configuration.GetSection("PayOSClientID").Value;

@@ -78,7 +78,7 @@ namespace IndieGameZone.Application
 			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration, blobService, faker));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
 			wishlistService = new Lazy<IWishlistService>(() => new WishlistService(repositoryManager, mapper, recombeeService));
-			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration, recombeeService));
+			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration, recombeeService, userManager));
 			reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, mapper, aIService, recombeeService));
 			libraryService = new Lazy<ILibraryService>(() => new LibraryService(repositoryManager, mapper));
 			withdrawRequestService = new Lazy<IWithdrawRequestService>(() => new WithdrawRequestService(repositoryManager, mapper, blobService));

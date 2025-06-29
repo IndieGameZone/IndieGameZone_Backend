@@ -10,6 +10,7 @@ namespace IndieGameZone.Domain.IRepositories
 {
     public interface ICommercialRegistrationRepository
     {
+        void CreateCommercialRegistration(CommercialRegistration commercialRegistration);
         Task<CommercialRegistration?> GetCommercialRegistrationById(Guid id, bool trackChange, CancellationToken ct = default);
         Task<PagedList<CommercialRegistration>> GetCommercialRegistrations(CommercialRegistrationParameters commercialRegistrationParameters, bool trackChange, CancellationToken ct = default);
         Task<PagedList<CommercialRegistration>> GetCommercialRegistrationsByPackage(Guid commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, bool trackChange, CancellationToken ct = default);

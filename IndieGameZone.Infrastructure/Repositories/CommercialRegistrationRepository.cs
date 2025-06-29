@@ -18,6 +18,8 @@ namespace IndieGameZone.Infrastructure.Repositories
         {
         }
 
+        public void CreateCommercialRegistration(CommercialRegistration commercialRegistration) => Create(commercialRegistration);
+
         public async Task<CommercialRegistration?> GetCommercialRegistrationById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(a => a.Id.Equals(id), trackChange)
     .SingleOrDefaultAsync(ct);
 

@@ -7,6 +7,8 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Transactions;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Transactions;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Net.payOS;
 using Net.payOS.Types;
@@ -19,21 +21,88 @@ namespace IndieGameZone.Application.TransactionServices
 		private readonly IMapper mapper;
 		private readonly IConfiguration configuration;
 		private readonly IRecombeeService recombeeService;
+        private readonly UserManager<Users> userManager;
 
-		public TransactionService(IRepositoryManager repositoryManager, IMapper mapper, IConfiguration configuration, IRecombeeService recombeeService)
+        public TransactionService(IRepositoryManager repositoryManager, IMapper mapper, IConfiguration configuration, IRecombeeService recombeeService, UserManager<Users> userManager)
+        {
+            this.repositoryManager = repositoryManager;
+            this.mapper = mapper;
+            this.configuration = configuration;
+            this.recombeeService = recombeeService;
+            this.userManager = userManager;
+        }
+
+        public async Task CreateTransactionForCommercialPurchase(Guid userId, Guid commercialPackageId, TransactionForCommercialDto dto, CancellationToken ct = default)
 		{
-			this.repositoryManager = repositoryManager;
-			this.mapper = mapper;
-			this.configuration = configuration;
-			this.recombeeService = recombeeService;
-		}
+            // 1. Validate user and wallet
+            
+            var user = await userManager.Users
+                .Include(u => u.UserProfile)
+                .Include(u => u.Wallet)
+                .FirstOrDefaultAsync(u => u.Id == userId, ct);
+			if (user == null)
+                throw new NotFoundException("User not found");
 
-		public Task CreateTransactionForCommercialPurchase(Guid userId, Guid commercialPackageId, CancellationToken ct = default)
-		{
-			throw new NotImplementedException();
-		}
+            var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct)
+                ?? throw new NotFoundException("User wallet not found");
 
-		public async Task<string> CreateTransactionForDeposit(Guid userId, TransactionForCreationDto transaction, CancellationToken ct = default)
+			// 2. Validate game ownership
+            var game = await repositoryManager.GameRepository.GetGameById(dto.GameId, false, ct);
+            if (game == null)
+                    throw new NotFoundException("Game not found.");
+            if (game.DeveloperId != userId)
+                    throw new BadRequestException("You can only purchase a commercial package for your own public game.");
+
+            // 3. Validate package
+            var package = await repositoryManager.CommercialPackageRepository.GetCommercialPackageById(commercialPackageId, false, ct)
+                ?? throw new NotFoundException("Commercial package not found");
+
+            // 4. Validate dates
+            if (dto.EndDate < dto.StartDate)
+                throw new BadRequestException("End date must be after start date.");
+
+            // 5. Check wallet balance
+            if (wallet.Balance < package.Price)
+                throw new NotEnoughCreditException("You don't have enough wallet points to purchase this package.");
+
+            // 6. Deduct balance
+            wallet.Balance -= package.Price;
+
+            // 7. Create commercial registration
+            var registration = new CommercialRegistration
+            {
+                Id = Guid.NewGuid(),
+                StartDate = dto.StartDate,
+                EndDate = dto.EndDate,
+                GameId = dto.GameId,
+                CommercialPackageId = commercialPackageId
+            };
+
+            repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(registration);
+
+            // 8. Create transaction
+            var transaction = new Transactions
+            {
+                Id = Guid.NewGuid(),
+                OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+                Amount = package.Price,
+                Description = $"Wallet purchase of commercial package '{package.Name}' for game '{game.Name}'",
+                Status = TransactionStatus.Success,
+                Type = TransactionType.Purchase,
+                CreatedAt = DateTime.Now,
+                UserId = userId,
+                GameId = dto.GameId,
+                CommercialRegistrationId = registration.Id
+            };
+
+            repositoryManager.TransactionRepository.CreateTransaction(transaction);
+
+            // 9. Save changes
+            await repositoryManager.SaveAsync(ct);
+
+        }
+
+        public async Task<string> CreateTransactionForDeposit(Guid userId, TransactionForCreationDto transaction, CancellationToken ct = default)
 		{
 			Random random = new Random();
 			var transactionEntity = mapper.Map<Transactions>(transaction);
