@@ -30,10 +30,6 @@ namespace IndieGameZone.Infrastructure.Extensions
 
 		public static IQueryable<Games> FilterByPrice(this IQueryable<Games> source, double price)
 		{
-			if (price <= 0)
-			{
-				return source;
-			}
 			return source.Where(x => x.Price <= price);
 		}
 

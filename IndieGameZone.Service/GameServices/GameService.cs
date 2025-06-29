@@ -9,6 +9,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Quartz;
 
@@ -356,6 +357,16 @@ namespace IndieGameZone.Application.GameServices
 			}
 			return games;
 
+		}
+
+		public async Task<(int total, int approve, int reject, int manual, int ai)> GetNumberOfGameBasedOnCensorStatus(CancellationToken ct = default)
+		{
+			var total = await repositoryManager.GameRepository.GetGames(false).CountAsync();
+			var approve = await repositoryManager.GameRepository.GetGamesBasedOnCensorStatus(CensorStatus.Approved, false).CountAsync();
+			var reject = await repositoryManager.GameRepository.GetGamesBasedOnCensorStatus(CensorStatus.Rejected, false).CountAsync();
+			var manual = await repositoryManager.GameRepository.GetGamesBasedOnCensorStatus(CensorStatus.PendingManualReview, false).CountAsync();
+			var ai = await repositoryManager.GameRepository.GetGamesBasedOnCensorStatus(CensorStatus.PendingAIReview, false).CountAsync();
+			return (total, approve, reject, manual, ai);
 		}
 	}
 }

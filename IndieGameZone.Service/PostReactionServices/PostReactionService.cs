@@ -25,6 +25,15 @@ namespace IndieGameZone.Application.PostReactionServices
 					UserId = userId,
 					AchievementId = Guid.Parse("8e8cbf44-001f-4060-bd8a-bc6213a81cc0")
 				});
+				repositoryManager.CouponRepository.CreateCoupon(new Coupons
+				{
+					Id = Guid.NewGuid(),
+					Code = Guid.NewGuid().ToString(),
+					Percentage = 3,
+					IsUsed = false,
+					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+					UserId = userId
+				});
 			}
 			else if (likeCount == 10 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("10b1990c-cce0-45ed-bcfd-d86ed7a3ae1c")))
 			{
@@ -33,6 +42,15 @@ namespace IndieGameZone.Application.PostReactionServices
 					UserId = userId,
 					AchievementId = Guid.Parse("10b1990c-cce0-45ed-bcfd-d86ed7a3ae1c")
 				});
+				repositoryManager.CouponRepository.CreateCoupon(new Coupons
+				{
+					Id = Guid.NewGuid(),
+					Code = Guid.NewGuid().ToString(),
+					Percentage = 4,
+					IsUsed = false,
+					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+					UserId = userId
+				});
 			}
 			else if (likeCount == 50 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("d49ff353-2b75-4879-8a0b-4d7c16ed4a69")))
 			{
@@ -40,6 +58,15 @@ namespace IndieGameZone.Application.PostReactionServices
 				{
 					UserId = userId,
 					AchievementId = Guid.Parse("d49ff353-2b75-4879-8a0b-4d7c16ed4a69")
+				});
+				repositoryManager.CouponRepository.CreateCoupon(new Coupons
+				{
+					Id = Guid.NewGuid(),
+					Code = Guid.NewGuid().ToString(),
+					Percentage = 5,
+					IsUsed = false,
+					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+					UserId = userId
 				});
 			}
 			await repositoryManager.SaveAsync(ct);

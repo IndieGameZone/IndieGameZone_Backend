@@ -28,7 +28,7 @@ namespace IndieGameZone.Application.GamePlatformServices
 				gamePlatform.Id = Guid.NewGuid();
 				gamePlatform.GameId = gameId;
 				var blobName = gamePlatform.File.Split('/').Last();
-				gamePlatform.DisplayName = blobName.Split('_').Last();
+				gamePlatform.DisplayName = blobName.Split('*').Last();
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 			}
 			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatforms);

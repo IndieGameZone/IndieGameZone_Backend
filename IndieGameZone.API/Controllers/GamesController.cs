@@ -122,5 +122,19 @@ namespace IndieGameZone.API.Controllers
 			var downloadUrl = await serviceManager.GameService.IncreaseNumberOfDownload(gamePlatformId, ct);
 			return Redirect(downloadUrl);
 		}
+
+		[HttpGet("games/number-of-games")]
+		public async Task<IActionResult> GetNumberOfGameBasedOnCensorStatus(CancellationToken ct)
+		{
+			var (total, approve, reject, manual, ai) = await serviceManager.GameService.GetNumberOfGameBasedOnCensorStatus(ct);
+			return Ok(new
+			{
+				Total = total,
+				Approve = approve,
+				Reject = reject,
+				Manual = manual,
+				AI = ai
+			});
+		}
 	}
 }

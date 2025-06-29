@@ -84,6 +84,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		}
 
+		public IQueryable<Games> GetGames(bool trackChange) => FindAll(trackChange);
+
+		public IQueryable<Games> GetGamesBasedOnCensorStatus(CensorStatus censorStatus, bool trackChange) =>
+			FindByCondition(g => g.CensorStatus == censorStatus, trackChange);
+
 		public async Task<PagedList<Games>> GetGamesByDeveloperId(Guid developerId, GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var gameEntities = FindByCondition(g => g.DeveloperId == developerId, trackChange)

@@ -32,81 +32,6 @@ namespace IndieGameZone.Application.TransactionServices
 			this.userManager = userManager;
 		}
 
-		public async Task<string> CreateTransactionForCommercialPurchase(Guid userId, Guid gameId, Guid commercialPackageId, TransactionForCommercialDto dto, CancellationToken ct = default)
-		{
-			// 1. Validate user and wallet
-
-			var user = await userManager.Users
-				.Include(u => u.UserProfile).AsSplitQuery()
-				.Include(u => u.Wallet).AsSplitQuery()
-				.FirstOrDefaultAsync(u => u.Id == userId, ct);
-			if (user == null)
-				throw new NotFoundException("User not found");
-
-			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct)
-				?? throw new NotFoundException("User wallet not found");
-
-			// 2. Validate game ownership
-			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
-			if (game == null)
-				throw new NotFoundException("Game not found.");
-			if (game.DeveloperId != userId)
-				throw new BadRequestException("You can only purchase a commercial package for your own public game.");
-
-			// 3. Validate package
-			var package = await repositoryManager.CommercialPackageRepository.GetCommercialPackageById(commercialPackageId, false, ct)
-				?? throw new NotFoundException("Commercial package not found");
-
-			// 5. Check wallet balance
-			if (dto.PaymentMethod == PaymentMethod.Wallet)
-			{
-				if (wallet.Balance < package.Price)
-					throw new NotEnoughCreditException("You don't have enough wallet points to purchase this package.");
-			}
-
-			var commercialRegistration = new CommercialRegistration()
-			{
-				Id = Guid.NewGuid(),
-				StartDate = dto.StartDate,
-				GameId = gameId,
-				CommercialPackageId = commercialPackageId,
-			};
-			repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
-
-			// 6. Create transaction
-			var transaction = new Transactions
-			{
-				Id = Guid.NewGuid(),
-				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
-				Amount = package.Price,
-				Description = $"Wallet purchase of commercial package '{package.Name}' for game '{game.Name}'",
-				Status = dto.PaymentMethod == PaymentMethod.PayOS ? TransactionStatus.Pending : TransactionStatus.Success,
-				Type = TransactionType.PurchaseCommercialPackage,
-				CreatedAt = DateTime.Now,
-				UserId = userId,
-				CommercialRegistrationId = commercialRegistration.Id,
-			};
-
-			repositoryManager.TransactionRepository.CreateTransaction(transaction);
-
-			await repositoryManager.SaveAsync(ct);
-
-			if (dto.PaymentMethod == PaymentMethod.Wallet)
-			{
-				wallet.Balance -= package.Price;
-
-				var registration = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationById(commercialRegistration.Id, true, ct);
-				registration.EndDate = registration.StartDate.AddMonths(package.Duration);
-				await repositoryManager.SaveAsync(ct);
-				return string.Empty;
-			}
-			else
-			{
-				return await GetPayOSPaymentLink(transaction, TransactionType.PurchaseCommercialPackage);
-			}
-		}
-
-
 		private async Task<string> GetPayOSPaymentLink(Transactions transaction, TransactionType transactionType)
 		{
 			var clientId = configuration.GetSection("PayOSClientID").Value;
@@ -194,6 +119,15 @@ namespace IndieGameZone.Application.TransactionServices
 					UserId = userId,
 					AchievementId = Guid.Parse("fef0c70d-cf7b-4c90-9865-383e660fda8a")
 				});
+				repositoryManager.CouponRepository.CreateCoupon(new Coupons
+				{
+					Id = Guid.NewGuid(),
+					Code = Guid.NewGuid().ToString(),
+					Percentage = 3,
+					IsUsed = false,
+					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+					UserId = userId
+				});
 			}
 			else if (libraryCount == 10 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("56e5cd8d-2d46-45dc-9006-f71920beea40")))
 			{
@@ -202,6 +136,15 @@ namespace IndieGameZone.Application.TransactionServices
 					UserId = userId,
 					AchievementId = Guid.Parse("56e5cd8d-2d46-45dc-9006-f71920beea40")
 				});
+				repositoryManager.CouponRepository.CreateCoupon(new Coupons
+				{
+					Id = Guid.NewGuid(),
+					Code = Guid.NewGuid().ToString(),
+					Percentage = 4,
+					IsUsed = false,
+					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+					UserId = userId
+				});
 			}
 			else if (libraryCount == 50 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("9c60bc27-9c8a-4be3-9e0d-1f4e96cb59a7")))
 			{
@@ -209,6 +152,15 @@ namespace IndieGameZone.Application.TransactionServices
 				{
 					UserId = userId,
 					AchievementId = Guid.Parse("9c60bc27-9c8a-4be3-9e0d-1f4e96cb59a7")
+				});
+				repositoryManager.CouponRepository.CreateCoupon(new Coupons
+				{
+					Id = Guid.NewGuid(),
+					Code = Guid.NewGuid().ToString(),
+					Percentage = 5,
+					IsUsed = false,
+					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
+					UserId = userId
 				});
 			}
 			await repositoryManager.SaveAsync();
@@ -361,7 +313,7 @@ namespace IndieGameZone.Application.TransactionServices
 				{
 					var commercialRegistration = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationById((Guid)transaction.CommercialRegistrationId, true, ct);
 					var package = await repositoryManager.CommercialPackageRepository.GetCommercialPackageById(commercialRegistration.Id, false, ct);
-					commercialRegistration.EndDate = commercialRegistration.StartDate.AddMonths(package.Duration);
+					commercialRegistration.EndDate = commercialRegistration.StartDate.AddDays(package.Duration);
 				}
 
 				transaction.Status = TransactionStatus.Success;
@@ -375,6 +327,80 @@ namespace IndieGameZone.Application.TransactionServices
 			if (transaction.Type == TransactionType.PurchaseGame)
 			{
 				await CheckGameAchievements(transaction.UserId);
+			}
+		}
+
+		public async Task<string> CreateTransactionForCommercialPurchase(Guid userId, Guid gameId, Guid commercialPackageId, TransactionForCommercialDto dto, CancellationToken ct = default)
+		{
+			// 1. Validate user and wallet
+
+			var user = await userManager.Users
+				.Include(u => u.UserProfile).AsSplitQuery()
+				.Include(u => u.Wallet).AsSplitQuery()
+				.FirstOrDefaultAsync(u => u.Id == userId, ct);
+			if (user == null)
+				throw new NotFoundException("User not found");
+
+			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct)
+				?? throw new NotFoundException("User wallet not found");
+
+			// 2. Validate game ownership
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null)
+				throw new NotFoundException("Game not found.");
+			if (game.DeveloperId != userId)
+				throw new BadRequestException("You can only purchase a commercial package for your own public game.");
+
+			// 3. Validate package
+			var package = await repositoryManager.CommercialPackageRepository.GetCommercialPackageById(commercialPackageId, false, ct)
+				?? throw new NotFoundException("Commercial package not found");
+
+			// 5. Check wallet balance
+			if (dto.PaymentMethod == PaymentMethod.Wallet)
+			{
+				if (wallet.Balance < package.Price)
+					throw new NotEnoughCreditException("You don't have enough wallet points to purchase this package.");
+			}
+
+			var commercialRegistration = new CommercialRegistration()
+			{
+				Id = Guid.NewGuid(),
+				StartDate = dto.StartDate,
+				GameId = gameId,
+				CommercialPackageId = commercialPackageId,
+			};
+			repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
+
+			// 6. Create transaction
+			var transaction = new Transactions
+			{
+				Id = Guid.NewGuid(),
+				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+				Amount = package.Price,
+				Description = $"Wallet purchase of commercial package '{package.Name}' for game '{game.Name}'",
+				Status = dto.PaymentMethod == PaymentMethod.PayOS ? TransactionStatus.Pending : TransactionStatus.Success,
+				Type = TransactionType.PurchaseCommercialPackage,
+				CreatedAt = DateTime.Now,
+				UserId = userId,
+				CommercialRegistrationId = commercialRegistration.Id,
+			};
+
+			repositoryManager.TransactionRepository.CreateTransaction(transaction);
+
+			await repositoryManager.SaveAsync(ct);
+
+			if (dto.PaymentMethod == PaymentMethod.Wallet)
+			{
+				wallet.Balance -= package.Price;
+
+				var registration = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationById(commercialRegistration.Id, true, ct);
+				registration.EndDate = registration.StartDate.AddDays(package.Duration);
+				await repositoryManager.SaveAsync(ct);
+				return string.Empty;
+			}
+			else
+			{
+				return await GetPayOSPaymentLink(transaction, TransactionType.PurchaseCommercialPackage);
 			}
 		}
 
