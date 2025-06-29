@@ -3,11 +3,10 @@
 	public class CommercialRegistration
 	{
 		public Guid Id { get; set; }
-		public DateTime StartDate { get; set; }
-		public DateTime EndDate { get; set; }
+		public DateOnly StartDate { get; set; }
+		public DateOnly? EndDate { get; set; }
 		public Guid GameId { get; set; }
 		public Guid CommercialPackageId { get; set; }
-		public Guid TransactionId { get; set; }
 
 		//Navigation properties
 		public Transactions Transaction { get; set; }

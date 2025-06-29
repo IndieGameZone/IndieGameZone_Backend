@@ -22,7 +22,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(c => c.Transaction)
 				.WithOne(t => t.CommercialRegistration)
-				.HasForeignKey<CommercialRegistration>(c => c.TransactionId)
+				.HasForeignKey<Transactions>(c => c.CommercialRegistrationId)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
