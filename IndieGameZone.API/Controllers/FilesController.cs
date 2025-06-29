@@ -32,7 +32,6 @@ namespace IndieGameZone.API.Controllers
 
 			var urlResponse = await httpClient.GetAsync("https://www.virustotal.com/api/v3/files/upload_url");
 			var urlContent = await urlResponse.Content.ReadAsStringAsync();
-			Console.WriteLine(urlContent);
 			using var jsonDocUrl = JsonDocument.Parse(urlContent);
 			string uploadUrl = jsonDocUrl.RootElement.GetProperty("data").GetString() ?? string.Empty;
 			return uploadUrl;
@@ -57,7 +56,6 @@ namespace IndieGameZone.API.Controllers
 
 			var uploadResponse = await httpClient.PostAsync(uploadUrl, content);
 			var uploadContent = await uploadResponse.Content.ReadAsStringAsync();
-			Console.WriteLine(uploadContent);
 			using var jsonDocUpload = JsonDocument.Parse(uploadContent);
 			var analystId = jsonDocUpload.RootElement.GetProperty("data").GetProperty("id").GetString() ?? string.Empty;
 			return analystId;
@@ -76,7 +74,6 @@ namespace IndieGameZone.API.Controllers
 			var status = attributes.GetProperty("status").GetString() ?? string.Empty;
 			var maliciousCount = attributes.GetProperty("stats").GetProperty("malicious").GetInt32();
 			var suspiciousCount = attributes.GetProperty("stats").GetProperty("suspicious").GetInt32();
-			Console.WriteLine($"Status: {status}, Malicious: {maliciousCount}, Suspicious: {suspiciousCount}");
 
 			return (status, maliciousCount, suspiciousCount);
 		}
@@ -98,16 +95,19 @@ namespace IndieGameZone.API.Controllers
 			{
 				string uploadUrl = await GetUploadUrlAsync();
 				string analysisId = await UploadFileToVirusTotalAsync(file, uploadUrl);
-				await Task.Delay(18000);
 				var (status, maliciousCount, suspiciousCount) = await GetAnalysisResultsAsync(analysisId);
+				while (!status.Equals("completed"))
+				{
+					(status, maliciousCount, suspiciousCount) = await GetAnalysisResultsAsync(analysisId);
+				}
 
-				if ((maliciousCount > 0 || suspiciousCount > 0) && status.Equals("completed"))
+				if (maliciousCount > 0 || suspiciousCount > 0)
 				{
 					return BadRequest("File analysis failed. Please ensure the file is safe and appropriate.");
 				}
 			}
 			var uploadedUrl = await blobService.UploadBlob(
-					$"{Guid.NewGuid()}*{file.FileName}",
+					$"{Guid.NewGuid()}_{file.FileName}",
 					StorageContainer.STORAGE_CONTAINER,
 					file);
 			return Ok(uploadedUrl);
