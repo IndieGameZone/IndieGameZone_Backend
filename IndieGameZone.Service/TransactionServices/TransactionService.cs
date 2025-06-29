@@ -108,12 +108,12 @@ namespace IndieGameZone.Application.TransactionServices
             else
             {
                 await repositoryManager.SaveAsync(ct);
-                return await GetPayOSPaymentLink(transaction);
+                return await GetPayOSPaymentLink(transaction, TransactionType.PurchaseCommercialPackage);
             }
         }
 
 
-    private async Task<string> GetPayOSPaymentLink(Transactions transaction)
+    private async Task<string> GetPayOSPaymentLink(Transactions transaction, TransactionType transactionType)
 		{
 			var clientId = configuration.GetSection("PayOSClientID").Value;
 			var apiKey = configuration.GetSection("PayOSAPIKey").Value;
@@ -122,13 +122,23 @@ namespace IndieGameZone.Application.TransactionServices
 			var domain = "https://indie-game-zone.vercel.app/";
 
 			var payOS = new PayOS(clientId, apiKey, checksumKey);
+            
+			// Determine item name based on transaction type
+            string itemName = transactionType switch
+            {
+                TransactionType.Deposit => "Wallet Deposit",
+                TransactionType.PurchaseGame => "Game Purchase",
+                TransactionType.PurchaseCommercialPackage => "Commercial Package Purchase",
+                TransactionType.Donation => "Donation",
+                _ => "Unknown Transaction"
+            };
 
-			var paymentLinkRequest = new PaymentData(
+            var paymentLinkRequest = new PaymentData(
 				orderCode: transaction.OrderCode,
 				amount: (int)transaction.Amount,
 				description: transaction.Description,
-				items: [new("PurchaseGame", 1, (int)transaction.Amount)],
-				cancelUrl: domain + "?canceled=true",
+                items: [new(itemName, 1, (int)transaction.Amount)],
+                cancelUrl: domain + "?canceled=true",
 				returnUrl: domain + "?success=true"
 			);
 			var response = await payOS.createPaymentLink(paymentLinkRequest);
@@ -223,7 +233,7 @@ namespace IndieGameZone.Application.TransactionServices
 			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
 
 			await repositoryManager.SaveAsync(ct);
-			return await GetPayOSPaymentLink(transactionEntity);
+			return await GetPayOSPaymentLink(transactionEntity, TransactionType.Deposit);
 		}
 
 		public async Task<string> CreateTransactionForGamePurchase(Guid userId, Guid gameId, TransactionForGameCreation transactionForGameCreation, CancellationToken ct = default)
@@ -275,7 +285,7 @@ namespace IndieGameZone.Application.TransactionServices
 			else
 			{
 				await repositoryManager.SaveAsync(ct);
-				return await GetPayOSPaymentLink(transactionEntity);
+				return await GetPayOSPaymentLink(transactionEntity, TransactionType.PurchaseGame);
 			}
 		}
 
@@ -300,7 +310,7 @@ namespace IndieGameZone.Application.TransactionServices
 			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
 
 			await repositoryManager.SaveAsync(ct);
-			return await GetPayOSPaymentLink(transactionEntity);
+			return await GetPayOSPaymentLink(transactionEntity, TransactionType.Donation);
 		}
 
 		public async Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
