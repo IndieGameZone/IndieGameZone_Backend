@@ -21,26 +21,33 @@ namespace IndieGameZone.API.Controllers
 			this.configuration = configuration;
 		}
 
-		[HttpPost("users/{userId:guid}transactions/deposit")]
-		public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromBody] TransactionForCreationDto transaction, CancellationToken ct)
+		[HttpPost("users/{userId:guid}/transactions/deposit")]
+		public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromBody] TransactionForDepositCreationDto transaction, CancellationToken ct)
 		{
 			var result = await serviceManager.TransactionService.CreateTransactionForDeposit(userId, transaction, ct);
 			return StatusCode(201, result);
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-purchasing")]
-		public async Task<IActionResult> CreateTransactionForPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromBody] TransactionForCreationDto transaction, CancellationToken ct)
+		public async Task<IActionResult> CreateTransactionForPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromForm] TransactionForGameCreation transactionForGameCreation, CancellationToken ct)
 		{
-			await serviceManager.TransactionService.CreateTransactionForGamePurchase(userId, gameId, transaction, ct);
-			return StatusCode(201);
+			var paymentLink = await serviceManager.TransactionService.CreateTransactionForGamePurchase(userId, gameId, transactionForGameCreation, ct);
+			return StatusCode(201, paymentLink);
 		}
 
-		[HttpPost("users/{userId:guid}/commercial-packages/{commercialPackageId:guid}/transactions/commercial-purchasing")]
-		public async Task<IActionResult> CreateTransactionForCommercialPurchase([FromRoute] Guid userId, [FromRoute] Guid commercialPackageId, [FromBody] TransactionForCommercialDto dto, CancellationToken ct)
+		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/donation")]
+		public async Task<IActionResult> CreateTransactionForDonation([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromBody] TransactionForDonationCreationDto transactionForDonationCreationDto, CancellationToken ct)
 		{
-			await serviceManager.TransactionService.CreateTransactionForCommercialPurchase(userId, commercialPackageId, dto, ct);
-			return StatusCode(201);
+			var result = await serviceManager.TransactionService.CreateTransactionForDonation(userId, gameId, transactionForDonationCreationDto, ct);
+			return StatusCode(201, result);
 		}
+
+        [HttpPost("users/{userId:guid}/commercial-packages/{commercialPackageId:guid}/transactions/commercial-purchasing")]
+        public async Task<IActionResult> CreateTransactionForCommercialPurchase([FromRoute] Guid userId, [FromRoute] Guid commercialPackageId, [FromBody] TransactionForCommercialDto dto, CancellationToken ct)
+        {
+            var result = await serviceManager.TransactionService.CreateTransactionForCommercialPurchase(userId, commercialPackageId, dto, ct);
+            return StatusCode(201, result);
+        }
 
         [HttpPost("transactions/hook-receiving")]
 		public async Task<IActionResult> IPN([FromBody] WebhookType webhookBody, CancellationToken ct)

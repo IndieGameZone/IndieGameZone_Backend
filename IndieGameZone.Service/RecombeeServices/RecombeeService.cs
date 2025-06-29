@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.IRepositories;
+﻿using IndieGameZone.Domain.Entities;
+using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using MapsterMapper;
 using Microsoft.Extensions.Configuration;
@@ -37,7 +38,11 @@ namespace IndieGameZone.Application.RecombeeServices
 
 		public async Task GetRecommendedGamesForUser(Guid userId)
 		{
+			repositoryManager.GameRecommendationRepository.RemoveRecommendations(await repositoryManager.GameRecommendationRepository.GetRecommendationsByUserId(userId, false));
 			RecommendationResponse result = await client.SendAsync(new RecommendItemsToUser(userId.ToString(), 5));
+			var gameRecommendations = result.Recomms.Select(r => new GameRecommendations() { UserId = userId, GameId = Guid.Parse(r.Id) });
+			repositoryManager.GameRecommendationRepository.AddRecommendations(gameRecommendations);
+			await repositoryManager.SaveAsync();
 		}
 
 		public async Task PushGamesToRecombee()

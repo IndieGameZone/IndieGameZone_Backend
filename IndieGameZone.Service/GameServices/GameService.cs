@@ -56,7 +56,10 @@ namespace IndieGameZone.Application.GameServices
 			var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gameId, false, ct);
 			gameDto.PriceAfterDiscount = discount is not null ? gameDto.Price - (gameDto.Price * discount.Percentage / 100) : gameDto.Price;
 
-			await recombeeService.SendDetailViewEvent(playerId, gameId);
+			if (playerId != Guid.Empty)
+			{
+				await recombeeService.SendDetailViewEvent(playerId, gameId);
+			}
 			return gameDto;
 		}
 
@@ -297,6 +300,10 @@ namespace IndieGameZone.Application.GameServices
 			{
 				await recombeeService.PushGameToRecombee(gameId);
 			}
+			else
+			{
+				await recombeeService.RemoveGameFromRecombee(gameId);
+			}
 		}
 
 		public async Task<string> IncreaseNumberOfDownload(Guid gamePlatformId, CancellationToken ct = default)
@@ -325,6 +332,30 @@ namespace IndieGameZone.Application.GameServices
 		{
 			var platformFile = mapper.Map<PlatformFileDto>(await repositoryManager.GameRepository.GetGameById(gameId, false, ct));
 			return platformFile ?? throw new NotFoundException($"Game not found.");
+		}
+
+		public async Task<IEnumerable<GameForListReturnDto>> GetRecommendedGamesForUser(Guid userId, CancellationToken ct = default)
+		{
+			await recombeeService.GetRecommendedGamesForUser(userId);
+			var gameRecommendations = await repositoryManager.GameRecommendationRepository.GetRecommendationsByUserId(userId, false, ct);
+			if (gameRecommendations is null || !gameRecommendations.Any())
+			{
+				return Enumerable.Empty<GameForListReturnDto>();
+			}
+			var games = new List<GameForListReturnDto>();
+			foreach (var recommendation in gameRecommendations)
+			{
+				var game = await repositoryManager.GameRepository.GetGameById(recommendation.GameId, false, ct);
+				if (game != null)
+				{
+					var gameDto = mapper.Map<GameForListReturnDto>(game);
+					var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(game.Id, false, ct);
+					gameDto.PriceAfterDiscount = discount is not null ? gameDto.Price - (gameDto.Price * discount.Percentage / 100) : gameDto.Price;
+					games.Add(gameDto);
+				}
+			}
+			return games;
+
 		}
 	}
 }

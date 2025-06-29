@@ -21,5 +21,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 			return await PagedList<Libraries>.ToPagedList(libraryEntities, libraryParameters.PageNumber, libraryParameters.PageSize, ct);
 		}
+
+		public IQueryable<Libraries> GetLibraryByUserId(Guid userId, bool trackChange) => FindByCondition(x => x.UserId == userId, trackChange);
 	}
 }

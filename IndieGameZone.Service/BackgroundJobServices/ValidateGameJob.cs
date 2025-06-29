@@ -79,6 +79,10 @@ namespace IndieGameZone.Application.BackgroundJobServices
 			{
 				await recombeeService.PushGameToRecombee(game.Id);
 			}
+			else
+			{
+				await recombeeService.RemoveGameFromRecombee(game.Id);
+			}
 		}
 	}
 }
