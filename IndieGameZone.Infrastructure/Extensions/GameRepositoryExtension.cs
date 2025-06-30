@@ -28,9 +28,14 @@ namespace IndieGameZone.Infrastructure.Extensions
 			return source.Where(x => x.CensorStatus == censorStatus);
 		}
 
-		public static IQueryable<Games> FilterByPrice(this IQueryable<Games> source, double price)
+		public static IQueryable<Games> FilterByPrice(this IQueryable<Games> source, string? price)
 		{
-			return source.Where(x => x.Price <= price);
+			double priceValue;
+			if (string.IsNullOrEmpty(price) || !double.TryParse(price, out priceValue))
+			{
+				return source;
+			}
+			return source.Where(x => x.Price <= priceValue);
 		}
 
 		public static IQueryable<Games> FilterByTags(this IQueryable<Games> source, ICollection<Guid> tags)
