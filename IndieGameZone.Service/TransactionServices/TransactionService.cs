@@ -320,6 +320,14 @@ namespace IndieGameZone.Application.TransactionServices
 			}
 			else
 			{
+				if (transaction.Type == TransactionType.PurchaseCommercialPackage)
+				{
+					var commercialRegistration = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationById((Guid)transaction.CommercialRegistrationId, false, ct);
+					if (commercialRegistration != null)
+					{
+						repositoryManager.CommercialRegistrationRepository.DeleteCommercialRegistration(commercialRegistration);
+					}
+				}
 				transaction.Status = TransactionStatus.Failed;
 			}
 
@@ -416,6 +424,14 @@ namespace IndieGameZone.Application.TransactionServices
 			if (transaction == null)
 			{
 				throw new NotFoundException("Transaction not found");
+			}
+			if (transaction.Type == TransactionType.PurchaseCommercialPackage)
+			{
+				var commercialRegistration = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationById((Guid)transaction.CommercialRegistrationId, false, ct);
+				if (commercialRegistration != null)
+				{
+					repositoryManager.CommercialRegistrationRepository.DeleteCommercialRegistration(commercialRegistration);
+				}
 			}
 			transaction.Status = TransactionStatus.Cancel;
 			await repositoryManager.SaveAsync(ct);
