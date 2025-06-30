@@ -34,6 +34,7 @@ namespace IndieGameZone.Application.FileServices
 		}
 		private void ScanFile(IFormFile file)
 		{
+			if (file.FileName.EndsWith(".jpg") || file.FileName.EndsWith(".png") || file.FileName.EndsWith(".webp")) return;
 			var cloudmersiveConfiguration = new Configuration();
 			cloudmersiveConfiguration.AddApiKey("Apikey", configuration.GetSection("CloudmersiveAPIKey").Value);
 			var apiInstance = new ScanApi(cloudmersiveConfiguration);
