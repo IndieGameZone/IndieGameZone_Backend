@@ -65,7 +65,7 @@ namespace IndieGameZone.Application.BlobService
 					MaximumConcurrency = 4
 				}
 			};
-			var result = await blobClient.UploadAsync(file.OpenReadStream(), uploadOptions);
+			var result = await blobClient.UploadAsync(file.OpenReadStream(), overwrite: true);
 			if (result is not null)
 			{
 				return await GetBlob(blobName, containerName);
