@@ -368,5 +368,11 @@ namespace IndieGameZone.Application.GameServices
 			var ai = await repositoryManager.GameRepository.GetGamesBasedOnCensorStatus(CensorStatus.PendingAIReview, false).CountAsync();
 			return (total, approve, reject, manual, ai);
 		}
+
+		public async Task<bool> CheckGameOwnership(Guid userId, Guid gameId, CancellationToken ct = default)
+		{
+			var gameLibrary = await repositoryManager.LibraryRepository.GetLibraryByUserIdAndGameId(userId, gameId, false, ct);
+			return gameLibrary != null;
+		}
 	}
 }

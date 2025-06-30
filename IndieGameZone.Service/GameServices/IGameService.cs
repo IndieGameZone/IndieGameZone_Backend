@@ -19,5 +19,6 @@ namespace IndieGameZone.Application.GameServices
 		Task<PlatformFileDto> GetGamePlatformFile(Guid gameId, CancellationToken ct = default);
 		Task<IEnumerable<GameForListReturnDto>> GetRecommendedGamesForUser(Guid userId, CancellationToken ct = default);
 		Task<(int total, int approve, int reject, int manual, int ai)> GetNumberOfGameBasedOnCensorStatus(CancellationToken ct = default);
+		Task<bool> CheckGameOwnership(Guid userId, Guid gameId, CancellationToken ct = default);
 	}
 }

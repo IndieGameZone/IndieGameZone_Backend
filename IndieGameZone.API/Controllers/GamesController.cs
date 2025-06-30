@@ -136,5 +136,12 @@ namespace IndieGameZone.API.Controllers
 				AI = ai
 			});
 		}
+
+		[HttpGet("users/{userId:guid}games/{gameId:guid}/ownership-checking")]
+		public async Task<IActionResult> CheckGameOwnership([FromRoute] Guid userId, [FromRoute] Guid gameId, CancellationToken ct)
+		{
+			var isOwned = await serviceManager.GameService.CheckGameOwnership(userId, gameId, ct);
+			return Ok(isOwned);
+		}
 	}
 }

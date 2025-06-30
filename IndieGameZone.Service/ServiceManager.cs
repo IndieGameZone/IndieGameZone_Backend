@@ -24,7 +24,6 @@ using IndieGameZone.Application.ReportServices;
 using IndieGameZone.Application.ReviewServices;
 using IndieGameZone.Application.TagServices;
 using IndieGameZone.Application.TransactionServices;
-using IndieGameZone.Application.UserAchievementServices;
 using IndieGameZone.Application.UserFollowServices;
 using IndieGameZone.Application.UserServices;
 using IndieGameZone.Application.WishlistServices;
@@ -66,7 +65,6 @@ namespace IndieGameZone.Application
 		private readonly Lazy<INotificationService> notificationService;
 		private readonly Lazy<IBanHistoryService> banHistoryService;
 		private readonly Lazy<IGameCensorLogService> gameCensorLogService;
-		private readonly Lazy<IUserAchievementService> userAchievementService;
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker, IAIService aIService, IRecombeeService recombeeService)
 		{
@@ -95,7 +93,6 @@ namespace IndieGameZone.Application
 			notificationService = new Lazy<INotificationService>(() => new NotificationService(repositoryManager, mapper));
 			banHistoryService = new Lazy<IBanHistoryService>(() => new BanHistoryService(repositoryManager, mapper, userManager));
 			gameCensorLogService = new Lazy<IGameCensorLogService>(() => new GameCensorLogService(repositoryManager, mapper));
-			userAchievementService = new Lazy<IUserAchievementService>(() => new UserAchievementService(repositoryManager, mapper));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -147,7 +144,5 @@ namespace IndieGameZone.Application
 		public IBanHistoryService BanHistoryService => banHistoryService.Value;
 
 		public IGameCensorLogService GameCensorLogService => gameCensorLogService.Value;
-
-		public IUserAchievementService UserAchievementService => userAchievementService.Value;
 	}
 }

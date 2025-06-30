@@ -3,6 +3,7 @@ using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Infrastructure.Extensions;
 using IndieGameZone.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Infrastructure.Repositories
 {
@@ -23,5 +24,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 		}
 
 		public IQueryable<Libraries> GetLibraryByUserId(Guid userId, bool trackChange) => FindByCondition(x => x.UserId == userId, trackChange);
+
+		public async Task<Libraries?> GetLibraryByUserIdAndGameId(Guid userId, Guid gameId, bool trackChange, CancellationToken ct = default) => await
+			FindByCondition(x => x.UserId == userId && x.GameId == gameId, trackChange)
+			.FirstOrDefaultAsync(ct);
 	}
 }
