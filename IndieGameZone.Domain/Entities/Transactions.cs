@@ -8,6 +8,7 @@ namespace IndieGameZone.Domain.Entities
 		public long OrderCode { get; set; }
 		public double Amount { get; set; }
 		public string Description { get; set; } = string.Empty;
+		public PaymentMethod PaymentMethod { get; set; }
 		public TransactionStatus Status { get; set; }
 		public TransactionType Type { get; set; }
 		public DateTime CreatedAt { get; set; }

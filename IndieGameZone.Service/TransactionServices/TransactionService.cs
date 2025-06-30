@@ -175,6 +175,7 @@ namespace IndieGameZone.Application.TransactionServices
 			transactionEntity.Description = "Deposit to wallet";
 			transactionEntity.Status = TransactionStatus.Pending;
 			transactionEntity.Type = TransactionType.Deposit;
+			transactionEntity.PaymentMethod = PaymentMethod.PayOS;
 			transactionEntity.CreatedAt = DateTime.Now;
 			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
 
@@ -207,6 +208,7 @@ namespace IndieGameZone.Application.TransactionServices
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.PurchaseGame,
 				Status = transactionForGameCreation.PaymentMethod == PaymentMethod.PayOS ? TransactionStatus.Pending : TransactionStatus.Success,
+				PaymentMethod = transactionForGameCreation.PaymentMethod
 			};
 			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
 
@@ -251,7 +253,8 @@ namespace IndieGameZone.Application.TransactionServices
 				Description = $"Donation for game {game.Name}",
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.Donation,
-				Status = TransactionStatus.Pending
+				Status = TransactionStatus.Pending,
+				PaymentMethod = PaymentMethod.PayOS,
 			};
 			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
 
@@ -325,6 +328,7 @@ namespace IndieGameZone.Application.TransactionServices
 					var commercialRegistration = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationById((Guid)transaction.CommercialRegistrationId, false, ct);
 					if (commercialRegistration != null)
 					{
+						transaction.CommercialRegistrationId = null;
 						repositoryManager.CommercialRegistrationRepository.DeleteCommercialRegistration(commercialRegistration);
 					}
 				}
@@ -430,6 +434,7 @@ namespace IndieGameZone.Application.TransactionServices
 				var commercialRegistration = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationById((Guid)transaction.CommercialRegistrationId, false, ct);
 				if (commercialRegistration != null)
 				{
+					transaction.CommercialRegistrationId = null;
 					repositoryManager.CommercialRegistrationRepository.DeleteCommercialRegistration(commercialRegistration);
 				}
 			}

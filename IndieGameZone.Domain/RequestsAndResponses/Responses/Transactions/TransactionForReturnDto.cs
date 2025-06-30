@@ -10,6 +10,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Transactions
 		public string Description { get; init; }
 		public TransactionStatus Status { get; init; }
 		public TransactionType Type { get; init; }
+		public PaymentMethod PaymentMethod { get; init; }
 		public DateTime CreatedAt { get; init; }
 	}
 }
