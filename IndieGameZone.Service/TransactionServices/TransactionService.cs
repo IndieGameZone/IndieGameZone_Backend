@@ -107,13 +107,18 @@ namespace IndieGameZone.Application.TransactionServices
 			return orderCode;
 		}
 
-		private async Task CheckGameAchievements(Guid userId)
+		private async Task CheckGameAchievements(Guid userId, CancellationToken ct = default)
 		{
-			int libraryCount = await repositoryManager.LibraryRepository.GetLibraryByUserId(userId, false).CountAsync();
-			var userAchievements = repositoryManager.UserAchievementRepository.GetUserAchievementsByUserId(userId, false);
+			int libraryCount = await repositoryManager.LibraryRepository.GetLibraryByUserId(userId, false).CountAsync(ct);
+			var userAchievements = repositoryManager.UserAchievementRepository.GetUserAchievementsByUserId(userId, false, ct);
 
 			if (libraryCount == 1 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("fef0c70d-cf7b-4c90-9865-383e660fda8a")))
 			{
+				var achievement = await repositoryManager.AchievementRepository.GetAchievementById(Guid.Parse("fef0c70d-cf7b-4c90-9865-383e660fda8a"), false, ct);
+				if (achievement == null)
+				{
+					throw new NotFoundException("Achievement does not exist");
+				}
 				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
 				{
 					UserId = userId,
@@ -128,9 +133,22 @@ namespace IndieGameZone.Application.TransactionServices
 					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
 					UserId = userId
 				});
+				repositoryManager.NotificationRepository.CreateNotification(new Notifications
+				{
+					Id = Guid.NewGuid(),
+					UserId = userId,
+					Message = $"Congratulations! You have earned the {achievement.Name} achievement and a 3% discount coupon.",
+					IsRead = false,
+					CreatedAt = DateTime.Now
+				});
 			}
 			else if (libraryCount == 10 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("56e5cd8d-2d46-45dc-9006-f71920beea40")))
 			{
+				var achievement = await repositoryManager.AchievementRepository.GetAchievementById(Guid.Parse("56e5cd8d-2d46-45dc-9006-f71920beea40"), false, ct);
+				if (achievement == null)
+				{
+					throw new NotFoundException("Achievement does not exist");
+				}
 				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
 				{
 					UserId = userId,
@@ -145,9 +163,22 @@ namespace IndieGameZone.Application.TransactionServices
 					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
 					UserId = userId
 				});
+				repositoryManager.NotificationRepository.CreateNotification(new Notifications
+				{
+					Id = Guid.NewGuid(),
+					UserId = userId,
+					Message = $"Congratulations! You have earned the {achievement.Name} achievement and a 4% discount coupon.",
+					IsRead = false,
+					CreatedAt = DateTime.Now
+				});
 			}
 			else if (libraryCount == 50 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("9c60bc27-9c8a-4be3-9e0d-1f4e96cb59a7")))
 			{
+				var achievement = await repositoryManager.AchievementRepository.GetAchievementById(Guid.Parse("9c60bc27-9c8a-4be3-9e0d-1f4e96cb59a7"), false, ct);
+				if (achievement == null)
+				{
+					throw new NotFoundException("Achievement does not exist");
+				}
 				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
 				{
 					UserId = userId,
@@ -162,8 +193,16 @@ namespace IndieGameZone.Application.TransactionServices
 					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
 					UserId = userId
 				});
+				repositoryManager.NotificationRepository.CreateNotification(new Notifications
+				{
+					Id = Guid.NewGuid(),
+					UserId = userId,
+					Message = $"Congratulations! You have earned the {achievement.Name} achievement and a 5% discount coupon.",
+					IsRead = false,
+					CreatedAt = DateTime.Now
+				});
 			}
-			await repositoryManager.SaveAsync();
+			await repositoryManager.SaveAsync(ct);
 		}
 
 		public async Task<string> CreateTransactionForDeposit(Guid userId, TransactionForDepositCreationDto transaction, CancellationToken ct = default)

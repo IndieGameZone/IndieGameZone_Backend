@@ -26,6 +26,9 @@ namespace IndieGameZone.Application.PostCommentServices
 			var commentCount = await repositoryManager.PostCommentRepository.GetCommentsByUserId(userId, false).CountAsync();
 			if (commentCount == 1 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("f3e1b3e3-9ac3-41e3-83a6-83b44b76446b")))
 			{
+				var achievement = await repositoryManager.AchievementRepository.GetAchievementById(Guid.Parse("f3e1b3e3-9ac3-41e3-83a6-83b44b76446b"), false, ct);
+				if (achievement is null)
+					throw new NotFoundException("Achievement not found.");
 				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
 				{
 					UserId = userId,
@@ -40,9 +43,20 @@ namespace IndieGameZone.Application.PostCommentServices
 					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
 					UserId = userId
 				});
+				repositoryManager.NotificationRepository.CreateNotification(new Notifications
+				{
+					Id = Guid.NewGuid(),
+					UserId = userId,
+					Message = $"Congratulations! You have earned the {achievement.Name} achievement and a 3% discount coupon.",
+					IsRead = false,
+					CreatedAt = DateTime.Now
+				});
 			}
 			else if (commentCount == 10 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("d55f9b9a-d660-4c9a-bc35-94d7ef5a4eb3")))
 			{
+				var achievement = await repositoryManager.AchievementRepository.GetAchievementById(Guid.Parse("d55f9b9a-d660-4c9a-bc35-94d7ef5a4eb3"), false, ct);
+				if (achievement is null)
+					throw new NotFoundException("Achievement not found.");
 				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
 				{
 					UserId = userId,
@@ -57,9 +71,20 @@ namespace IndieGameZone.Application.PostCommentServices
 					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
 					UserId = userId
 				});
+				repositoryManager.NotificationRepository.CreateNotification(new Notifications
+				{
+					Id = Guid.NewGuid(),
+					UserId = userId,
+					Message = $"Congratulations! You have earned the {achievement.Name} achievement and a 4% discount coupon.",
+					IsRead = false,
+					CreatedAt = DateTime.Now
+				});
 			}
 			else if (commentCount == 50 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("2190f97e-1533-4c91-9152-f7ae9ec6f8c0")))
 			{
+				var achievement = await repositoryManager.AchievementRepository.GetAchievementById(Guid.Parse("2190f97e-1533-4c91-9152-f7ae9ec6f8c0"), false, ct);
+				if (achievement is null)
+					throw new NotFoundException("Achievement not found.");
 				repositoryManager.UserAchievementRepository.AddUserAchievement(new UserAchievements
 				{
 					UserId = userId,
@@ -74,6 +99,15 @@ namespace IndieGameZone.Application.PostCommentServices
 					EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(30)),
 					UserId = userId
 				});
+				repositoryManager.NotificationRepository.CreateNotification(new Notifications
+				{
+					Id = Guid.NewGuid(),
+					UserId = userId,
+					Message = $"Congratulations! You have earned the {achievement.Name} achievement and a 5% discount coupon.",
+					IsRead = false,
+					CreatedAt = DateTime.Now
+				});
+
 			}
 			await repositoryManager.SaveAsync(ct);
 		}

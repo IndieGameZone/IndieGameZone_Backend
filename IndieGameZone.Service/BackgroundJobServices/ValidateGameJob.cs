@@ -73,6 +73,17 @@ namespace IndieGameZone.Application.BackgroundJobServices
 				CreatedAt = DateTime.Now
 			};
 			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
+			if (game.CensorStatus == CensorStatus.Approved)
+			{
+				repositoryManager.NotificationRepository.CreateNotification(new Domain.Entities.Notifications
+				{
+					Id = Guid.NewGuid(),
+					UserId = game.DeveloperId,
+					Message = $"Your game '{game.Name}' has been approved.",
+					CreatedAt = DateTime.Now,
+					IsRead = false
+				});
+			}
 			await repositoryManager.SaveAsync();
 
 			if (game.Visibility == GameVisibility.Public)

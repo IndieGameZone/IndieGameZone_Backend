@@ -13,6 +13,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 		}
 
+		public void CreateNotification(Notifications notification) => Create(notification);
+
 		public async Task<Notifications?> GetNotificationById(Guid id, bool trackChange, CancellationToken ct = default) => await
 			FindByCondition(n => n.Id.Equals(id), trackChange).FirstOrDefaultAsync(ct);
 

@@ -7,5 +7,6 @@ namespace IndieGameZone.Domain.IRepositories
 	{
 		Task<PagedList<Notifications>> GetNotificationByUserId(Guid userId, bool trackChange, NotificationParameters notificationParameters, CancellationToken ct = default);
 		Task<Notifications?> GetNotificationById(Guid id, bool trackChange, CancellationToken ct = default);
+		void CreateNotification(Notifications notification);
 	}
 }

@@ -295,6 +295,29 @@ namespace IndieGameZone.Application.GameServices
 			};
 			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
 
+			if (gameActivationDto.CensorStatus == CensorStatus.Approved)
+			{
+				repositoryManager.NotificationRepository.CreateNotification(new Domain.Entities.Notifications
+				{
+					Id = Guid.NewGuid(),
+					UserId = gameEntity.DeveloperId,
+					Message = $"Your game '{gameEntity.Name}' has been approved.",
+					CreatedAt = DateTime.Now,
+					IsRead = false
+				});
+			}
+			else if (gameActivationDto.CensorStatus == CensorStatus.Rejected)
+			{
+				repositoryManager.NotificationRepository.CreateNotification(new Domain.Entities.Notifications
+				{
+					Id = Guid.NewGuid(),
+					UserId = gameEntity.DeveloperId,
+					Message = $"Your game '{gameEntity.Name}' has been rejected. Reason: {gameActivationDto.CensorReason}",
+					CreatedAt = DateTime.Now,
+					IsRead = false
+				});
+			}
+
 			await repositoryManager.SaveAsync(ct);
 
 			if (gameEntity.Visibility == GameVisibility.Public && gameEntity.CensorStatus == CensorStatus.Approved)
