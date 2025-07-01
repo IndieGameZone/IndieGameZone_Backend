@@ -319,11 +319,6 @@ namespace IndieGameZone.Application.TransactionServices
 		{
 			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(webhookData.orderCode, true);
 
-			var clientId = configuration.GetSection("PayOSClientID").Value;
-			var apiKey = configuration.GetSection("PayOSAPIKey").Value;
-			var checksumKey = configuration.GetSection("PayOSChecksumKey").Value;
-
-			var payOS = new PayOS(clientId, apiKey, checksumKey);
 			if (isSuccess)
 			{
 				if (transaction.Type == TransactionType.Deposit)
@@ -353,24 +348,22 @@ namespace IndieGameZone.Application.TransactionServices
 				}
 				else if (transaction.Type == TransactionType.PurchaseCommercialPackage)
 				{
-					//var commercialRegistration = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationById((Guid)transaction.CommercialRegistrationId, true, ct);
-					//var package = await repositoryManager.CommercialPackageRepository.GetCommercialPackageById(commercialRegistration.Id, false, ct);
-					//commercialRegistration.EndDate = commercialRegistration.StartDate.AddDays(package.Duration);
-				}
+                    var commercialRegistration = new CommercialRegistration()
+                    {
+                        Id = Guid.NewGuid(),
+                        StartDate = (DateOnly)transaction.CommercialRegistrationStartDate!,
+                        EndDate = transaction.CommercialRegistrationEndDate,
+                        GameId = (Guid)transaction.GameId!,
+                        CommercialPackageId = (Guid)transaction.CommercialPackageId!,
+                        TransactionId = transaction.Id
+                    };
+                    repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
+                }
 
 				transaction.Status = TransactionStatus.Success;
 			}
 			else
 			{
-				if (transaction.Type == TransactionType.PurchaseCommercialPackage)
-				{
-					//var commercialRegistration = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationById((Guid)transaction.CommercialRegistrationId, false, ct);
-					//if (commercialRegistration != null)
-					//{
-					//	transaction.CommercialRegistrationId = null;
-					//	repositoryManager.CommercialRegistrationRepository.DeleteCommercialRegistration(commercialRegistration);
-					//}
-				}
 				transaction.Status = TransactionStatus.Failed;
 			}
 
@@ -406,23 +399,14 @@ namespace IndieGameZone.Application.TransactionServices
 			var package = await repositoryManager.CommercialPackageRepository.GetCommercialPackageById(commercialPackageId, false, ct)
 				?? throw new NotFoundException("Commercial package not found");
 
-			// 5. Check wallet balance
+			// 4. Check wallet balance
 			if (dto.PaymentMethod == PaymentMethod.Wallet)
 			{
 				if (wallet.Balance < package.Price)
 					throw new NotEnoughCreditException("You don't have enough wallet points to purchase this package.");
 			}
 
-			var commercialRegistration = new CommercialRegistration()
-			{
-				Id = Guid.NewGuid(),
-				StartDate = dto.StartDate,
-				GameId = gameId,
-				CommercialPackageId = commercialPackageId,
-			};
-			repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
-
-			// 6. Create transaction
+			// 5. Create transaction
 			var transaction = new Transactions
 			{
 				Id = Guid.NewGuid(),
@@ -433,25 +417,36 @@ namespace IndieGameZone.Application.TransactionServices
 				Type = TransactionType.PurchaseCommercialPackage,
 				CreatedAt = DateTime.Now,
 				UserId = userId,
-				//CommercialRegistrationId = commercialRegistration.Id,
-			};
+                GameId = gameId,
+                CommercialPackageId = commercialPackageId,
+                CommercialRegistrationStartDate = dto.StartDate,
+                CommercialRegistrationEndDate = dto.StartDate.AddDays(package.Duration)
+            };
 
 			repositoryManager.TransactionRepository.CreateTransaction(transaction);
-
-			await repositoryManager.SaveAsync(ct);
 
 			if (dto.PaymentMethod == PaymentMethod.Wallet)
 			{
 				wallet.Balance -= package.Price;
 
-				var registration = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationById(commercialRegistration.Id, true, ct);
-				registration.EndDate = registration.StartDate.AddDays(package.Duration);
+                var commercialRegistration = new CommercialRegistration()
+                {
+                    Id = Guid.NewGuid(),
+                    StartDate = dto.StartDate,
+                    EndDate = dto.StartDate.AddDays(package.Duration),
+                    GameId = gameId,
+                    CommercialPackageId = commercialPackageId,
+                    TransactionId = transaction.Id
+                };
+                repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
+
 				await repositoryManager.SaveAsync(ct);
 				return string.Empty;
 			}
 			else
 			{
-				return await GetPayOSPaymentLink(transaction, TransactionType.PurchaseCommercialPackage);
+                await repositoryManager.SaveAsync(ct);
+                return await GetPayOSPaymentLink(transaction, TransactionType.PurchaseCommercialPackage);
 			}
 		}
 
@@ -468,18 +463,8 @@ namespace IndieGameZone.Application.TransactionServices
 			{
 				throw new NotFoundException("Transaction not found");
 			}
-			if (transaction.Type == TransactionType.PurchaseCommercialPackage)
-			{
-				//var commercialRegistration = await repositoryManager.CommercialRegistrationRepository.GetCommercialRegistrationById((Guid)transaction.CommercialRegistrationId, false, ct);
-				//if (commercialRegistration != null)
-				//{
-				//	transaction.CommercialRegistrationId = null;
-				//	repositoryManager.CommercialRegistrationRepository.DeleteCommercialRegistration(commercialRegistration);
-				//}
-			}
 			transaction.Status = TransactionStatus.Cancel;
 			await repositoryManager.SaveAsync(ct);
-
 
 			await payOS.cancelPaymentLink(orderCode);
 		}

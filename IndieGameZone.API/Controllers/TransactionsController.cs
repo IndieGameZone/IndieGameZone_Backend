@@ -58,7 +58,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/commercial-packages/{commercialPackageId:guid}/transactions/commercial-purchasing")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> CreateTransactionForCommercialPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromRoute] Guid commercialPackageId, [FromBody] TransactionForCommercialDto dto, CancellationToken ct)
 		{
 			var result = await serviceManager.TransactionService.CreateTransactionForCommercialPurchase(userId, gameId, commercialPackageId, dto, ct);
