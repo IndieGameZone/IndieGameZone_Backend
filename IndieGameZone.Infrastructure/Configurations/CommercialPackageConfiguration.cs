@@ -18,9 +18,14 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(c => c.CommercialPackage)
 				.HasForeignKey(c => c.CommercialPackageId)
 				.OnDelete(DeleteBehavior.Restrict);
+            builder.HasMany(c => c.Transactions)
+			    .WithOne(t => t.CommercialPackage)
+				.HasForeignKey(t => t.CommercialPackageId)
+				.OnDelete(DeleteBehavior.Restrict);
 
 
-			builder.HasData(
+
+            builder.HasData(
 				new CommercialPackages
 				{
 					Id = Guid.Parse("856314ae-b364-4d83-94ba-f11600c88cff"),

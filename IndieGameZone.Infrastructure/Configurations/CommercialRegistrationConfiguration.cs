@@ -13,7 +13,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(c => c.EndDate);
 
 			builder.HasOne(c => c.Game)
-				.WithMany(c => c.CommercialRegistration)
+				.WithMany(c => c.CommercialRegistrations)
 				.HasForeignKey(c => c.GameId)
 				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(c => c.CommercialPackage)
@@ -22,7 +22,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(c => c.Transaction)
 				.WithOne(t => t.CommercialRegistration)
-				.HasForeignKey<Transactions>(c => c.CommercialRegistrationId)
+				.HasForeignKey<CommercialRegistration>(c => c.TransactionId)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}

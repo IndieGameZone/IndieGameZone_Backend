@@ -7,10 +7,12 @@
 		public DateOnly? EndDate { get; set; }
 		public Guid GameId { get; set; }
 		public Guid CommercialPackageId { get; set; }
+        public Guid TransactionId { get; set; }
 
-		//Navigation properties
-		public Transactions Transaction { get; set; }
+        //Navigation properties
 		public Games Game { get; set; }
 		public CommercialPackages CommercialPackage { get; set; }
-	}
+        public Transactions Transaction { get; set; }
+
+    }
 }

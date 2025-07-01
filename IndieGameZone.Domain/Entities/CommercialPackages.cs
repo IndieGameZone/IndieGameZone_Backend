@@ -10,5 +10,6 @@
 
 		//Navigation properties
 		public ICollection<CommercialRegistration> CommercialRegistrations { get; set; } = new List<CommercialRegistration>();
-	}
+        public ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
+    }
 }
