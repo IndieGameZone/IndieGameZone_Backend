@@ -1,5 +1,7 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Discounts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
@@ -15,6 +17,7 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
 		[HttpPost("games/{gameId:guid}/discounts")]
 		public async Task<IActionResult> CreateDiscount(Guid gameId, [FromBody] DiscountForCreationDto createDiscountDto, CancellationToken ct)
 		{

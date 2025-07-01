@@ -1,5 +1,7 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Tags;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
@@ -16,6 +18,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> GetTags(CancellationToken ct)
 		{
 			var tags = await serviceManager.TagService.GetTags();
@@ -23,6 +26,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
+		[Authorize]
 		public async Task<IActionResult> GetTag([FromRoute] Guid id, CancellationToken ct)
 		{
 			var tag = await serviceManager.TagService.GetTagById(id, ct);
@@ -30,6 +34,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> CreateTag([FromBody] TagForCreationDto tagDto, CancellationToken ct)
 		{
 			await serviceManager.TagService.CreateTag(tagDto, ct);
@@ -37,6 +42,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> UpdateTag([FromRoute] Guid id, [FromBody] TagForUpdateDto tagDto, CancellationToken ct)
 		{
 			await serviceManager.TagService.UpdateTag(id, tagDto, ct);
@@ -44,6 +50,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpDelete("{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> DeleteTag([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.TagService.DeleteTag(id, ct);

@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application.FileServices;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
@@ -16,6 +17,7 @@ namespace IndieGameZone.API.Controllers
 
 
 		[HttpPost("files")]
+		[Authorize]
 		public async Task<IActionResult> UploadImage(IFormFile file)
 		{
 			return Ok(await fileService.UploadScanFile(file));

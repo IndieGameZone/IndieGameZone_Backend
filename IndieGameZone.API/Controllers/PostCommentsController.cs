@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Application;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.PostComments;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -18,6 +19,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("posts/{postId:guid}/post-comments")]
+		[Authorize]
 		public async Task<IActionResult> GetPostComments([FromRoute] Guid postId, [FromQuery] PostCommentParameters postCommentParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.PostCommentService.GetCommentsByPostId(postId, postCommentParameters, ct);
@@ -26,6 +28,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("posts/{postId:guid}/users/{userId:guid}/post-comments")]
+		[Authorize]
 		public async Task<IActionResult> CreatePostComment([FromRoute] Guid userId, [FromRoute] Guid postId, [FromBody] PostCommentForCreationDto postCommentForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.PostCommentService.CreateComment(userId, postId, postCommentForCreationDto, ct);
@@ -33,6 +36,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("users/{userId:guid}/post-comments/{commentId:guid}")]
+		[Authorize]
 		public async Task<IActionResult> UpdatePostComment([FromRoute] Guid userId, [FromRoute] Guid commentId, [FromBody] PostCommentForUpdateDto postCommentForUpdateDto, CancellationToken ct)
 		{
 			await serviceManager.PostCommentService.UpdateComment(userId, commentId, postCommentForUpdateDto, ct);
@@ -40,6 +44,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpDelete("users/{userId:guid}/post-comments/{commentId:guid}")]
+		[Authorize]
 		public async Task<IActionResult> DeletePostComment([FromRoute] Guid userId, [FromRoute] Guid commentId, CancellationToken ct)
 		{
 			await serviceManager.PostCommentService.DeleteComment(userId, commentId, ct);

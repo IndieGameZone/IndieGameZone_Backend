@@ -1,6 +1,8 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Reviews;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -18,6 +20,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("games/{gameId:guid}/reviews")]
+		[Authorize]
 		public async Task<IActionResult> GetReviewsForGame([FromRoute] Guid gameId, [FromQuery] ReviewParameters reviewParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.ReviewService.GetReviewsByGameId(gameId, reviewParameters, ct);
@@ -26,6 +29,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("games/{gameId:guid}/reviews-summary")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> GetReviewsSummary([FromRoute] Guid gameId, CancellationToken ct)
 		{
 			var summary = await serviceManager.ReviewService.GetSummaryReviewByGameId(gameId, ct);
@@ -33,6 +37,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/reviews")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
 		public async Task<IActionResult> CreateReview([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromBody] ReviewForCreationDto reviewForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.ReviewService.CreateReview(userId, gameId, reviewForCreationDto, ct);

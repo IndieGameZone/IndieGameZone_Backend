@@ -1,5 +1,7 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Platforms;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
@@ -16,6 +18,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> GetPlatforms(CancellationToken ct)
 		{
 			var platforms = await serviceManager.PlatformService.GetPlatforms(ct);
@@ -23,6 +26,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
+		[Authorize]
 		public async Task<IActionResult> GetPlatform([FromRoute] Guid id, CancellationToken ct)
 		{
 			var platform = await serviceManager.PlatformService.GetPlatformById(id, ct);
@@ -30,6 +34,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> CreatePlatform([FromBody] PlatformForCreationDto platformDto, CancellationToken ct)
 		{
 			await serviceManager.PlatformService.CreatePlatform(platformDto, ct);
@@ -37,6 +42,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> UpdatePlatform([FromRoute] Guid id, [FromBody] PlatformForUpdateDto platformDto, CancellationToken ct)
 		{
 			await serviceManager.PlatformService.UpdatePlatform(id, platformDto, ct);
@@ -44,6 +50,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpDelete("{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> DeletePlatform([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.PlatformService.DeletePlatform(id, ct);

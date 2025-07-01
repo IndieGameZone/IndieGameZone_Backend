@@ -1,5 +1,7 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.ReportReasons;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
@@ -16,6 +18,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> GetReportReasons(CancellationToken ct)
 		{
 			var reportReasons = await serviceManager.ReportReasonService.GetReportReasons(ct);
@@ -23,6 +26,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
+		[Authorize]
 		public async Task<IActionResult> GetReportReason([FromRoute] Guid id, CancellationToken ct)
 		{
 			var reportReason = await serviceManager.ReportReasonService.GetReportReasonById(id, ct);
@@ -30,6 +34,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> CreateReportReason([FromBody] ReportReasonForCreationDto reportReasonDto, CancellationToken ct)
 		{
 			await serviceManager.ReportReasonService.CreateReportReason(reportReasonDto, ct);
@@ -37,6 +42,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> UpdateReportReason([FromRoute] Guid id, [FromBody] ReportReasonForUpdateDto reportReasonDto, CancellationToken ct)
 		{
 			await serviceManager.ReportReasonService.UpdateReportReason(id, reportReasonDto, ct);
@@ -44,6 +50,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpDelete("{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> DeleteReportReason([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.ReportReasonService.DeleteReportReason(id, ct);

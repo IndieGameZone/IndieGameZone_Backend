@@ -1,5 +1,7 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.AgeRestrictions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
@@ -16,6 +18,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> GetAgeRestrictions(CancellationToken ct)
 		{
 			var ageRestrictions = await serviceManager.AgeRestrictionService.GetAgeRestrictions(ct);
@@ -23,6 +26,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
+		[Authorize]
 		public async Task<IActionResult> GetAgeRestriction([FromRoute] Guid id, CancellationToken ct)
 		{
 			var ageRestriction = await serviceManager.AgeRestrictionService.GetAgeRestrictionById(id, ct);
@@ -30,6 +34,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> CreateAgeRestriction([FromBody] AgeRestrictionForCreationDto ageRestrictionDto, CancellationToken ct)
 		{
 			await serviceManager.AgeRestrictionService.CreateAgeRestriction(ageRestrictionDto, ct);
@@ -37,6 +42,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> UpdateAgeRestriction([FromRoute] Guid id, [FromBody] AgeRestrictionForUpdateDto ageRestrictionDto, CancellationToken ct)
 		{
 			await serviceManager.AgeRestrictionService.UpdateAgeRestriction(id, ageRestrictionDto, ct);
@@ -44,6 +50,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpDelete("{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> DeleteAgeRestriction([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.AgeRestrictionService.DeleteAgeRestriction(id, ct);

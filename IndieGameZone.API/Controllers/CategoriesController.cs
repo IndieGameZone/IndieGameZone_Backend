@@ -1,5 +1,7 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Categories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
@@ -16,6 +18,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet]
+		[Authorize]
 		public async Task<IActionResult> GetCategories(CancellationToken ct)
 		{
 			var categories = await serviceManager.CategoryService.GetCategories(ct);
@@ -23,6 +26,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
+		[Authorize]
 		public async Task<IActionResult> GetCategory([FromRoute] Guid id, CancellationToken ct)
 		{
 			var category = await serviceManager.CategoryService.GetCategoryById(id, ct);
@@ -30,6 +34,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> CreateCategory([FromBody] CategoryForCreationDto categoryDto, CancellationToken ct)
 		{
 			await serviceManager.CategoryService.CreateCategory(categoryDto, ct);
@@ -37,6 +42,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> UpdateCategory([FromRoute] Guid id, [FromBody] CategoryForUpdateDto categoryDto, CancellationToken ct)
 		{
 			await serviceManager.CategoryService.UpdateCategory(id, categoryDto, ct);
@@ -44,6 +50,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpDelete("{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> DeleteCategory([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.CategoryService.DeleteCategory(id, ct);

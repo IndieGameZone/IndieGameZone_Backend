@@ -1,6 +1,8 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Transactions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
@@ -22,6 +24,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/transactions/deposit")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
 		public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromBody] TransactionForDepositCreationDto transaction, CancellationToken ct)
 		{
 			var paymentLink = await serviceManager.TransactionService.CreateTransactionForDeposit(userId, transaction, ct);
@@ -29,6 +32,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-purchasing")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
 		public async Task<IActionResult> CreateTransactionForPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromForm] TransactionForGameCreation transactionForGameCreation, CancellationToken ct)
 		{
 			var paymentLink = await serviceManager.TransactionService.CreateTransactionForGamePurchase(userId, gameId, transactionForGameCreation, ct);
@@ -36,6 +40,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/donation")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
 		public async Task<IActionResult> CreateTransactionForDonation([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromBody] TransactionForDonationCreationDto transactionForDonationCreationDto, CancellationToken ct)
 		{
 			var result = await serviceManager.TransactionService.CreateTransactionForDonation(userId, gameId, transactionForDonationCreationDto, ct);
@@ -53,6 +58,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/commercial-packages/{commercialPackageId:guid}/transactions/commercial-purchasing")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
 		public async Task<IActionResult> CreateTransactionForCommercialPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromRoute] Guid commercialPackageId, [FromBody] TransactionForCommercialDto dto, CancellationToken ct)
 		{
 			var result = await serviceManager.TransactionService.CreateTransactionForCommercialPurchase(userId, gameId, commercialPackageId, dto, ct);
@@ -76,6 +82,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{userId}/transactions")]
+		[Authorize]
 		public async Task<IActionResult> GetTransactionsByUserId(Guid userId, [FromQuery] TransactionParameters transactionParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.TransactionService.GetTransactionsByUserId(userId, transactionParameters, false, ct);
@@ -84,6 +91,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("transactions")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> GetTransactions([FromQuery] TransactionParameters transactionParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.TransactionService.GetTransactions(transactionParameters, false, ct);

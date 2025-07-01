@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
@@ -15,6 +16,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/posts/{postId:guid}/post-reactions")]
+		[Authorize]
 		public async Task<IActionResult> AddPostReactionAsync([FromRoute] Guid userId, [FromRoute] Guid postId, CancellationToken ct)
 		{
 			await serviceManager.PostReactionService.CreateOrDeleteReactions(userId, postId, ct);
@@ -22,6 +24,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("posts/{postId:guid}/number-of-reactions")]
+		[Authorize]
 		public async Task<IActionResult> GetNumberOfReactionsAsync([FromRoute] Guid postId, CancellationToken ct)
 		{
 			var numberOfReactions = await serviceManager.PostReactionService.GetNumberOfLikesByPostId(postId, ct);
@@ -29,6 +32,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{userId:guid}/posts/{postId:guid}/post-reactions")]
+		[Authorize]
 		public async Task<IActionResult> IsPostLikedByUser([FromRoute] Guid userId, [FromRoute] Guid postId, CancellationToken ct)
 		{
 			var reaction = await serviceManager.PostReactionService.IsPostLikedByUser(userId, postId, ct);

@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application;
 using IndieGameZone.Domain.RequestFeatures;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -17,6 +18,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("achievements")]
+		[Authorize]
 		public async Task<IActionResult> GetAchievements([FromQuery] AchievementParameters achievementParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.AchievementService.GetAchievements(achievementParameters, ct);
@@ -25,6 +27,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("achievements/{id:guid}")]
+		[Authorize]
 		public async Task<IActionResult> GetAchievementById([FromRoute] Guid id, CancellationToken ct)
 		{
 			var achievement = await serviceManager.AchievementService.GetAchievementById(id, ct);
@@ -32,6 +35,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{userId:guid}/obtained-achievements")]
+		[Authorize]
 		public async Task<IActionResult> GetObtainedAchievements([FromRoute] Guid userId, [FromQuery] AchievementParameters achievementParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.AchievementService.GetObtainedAchievementsByUser(userId, achievementParameters, ct);
@@ -40,6 +44,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{userId:guid}/none-obtained-achievements")]
+		[Authorize]
 		public async Task<IActionResult> GetUnobtainedAchievements([FromRoute] Guid userId, [FromQuery] AchievementParameters achievementParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.AchievementService.GetUnobtainedAchievementsByUser(userId, achievementParameters, ct);

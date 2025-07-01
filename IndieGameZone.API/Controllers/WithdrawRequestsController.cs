@@ -1,6 +1,8 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.WithdrawRequests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -18,6 +20,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("withdraw-requests")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)}")]
 		public async Task<IActionResult> GetWithdrawRequests(WithdrawRequestParameter withdrawRequestParameter, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.WithdrawRequestService.GetWithdrawRequests(withdrawRequestParameter, ct);
@@ -26,6 +29,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{userId:guid}/withdraw-requests")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> GetWithdrawRequestsByUserId([FromRoute] Guid userId, [FromQuery] WithdrawRequestParameter withdrawRequestParameter, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.WithdrawRequestService.GetWithdrawRequestsByUserId(userId, withdrawRequestParameter, ct);
@@ -34,6 +38,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/withdraw-requests")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> CreateWithdrawRequest([FromRoute] Guid userId, [FromBody] WithdrawRequestForCreationDto withdrawRequestForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.WithdrawRequestService.CreateWithdrawRequest(userId, withdrawRequestForCreationDto, ct);
@@ -41,7 +46,8 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("withdraw-requests/{transactionId:guid}")]
-		public async Task<IActionResult> UpdateWithdrawRequest([FromRoute] Guid transactionId, IFormFile imageProof, CancellationToken ct)
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)}")]
+		public async Task<IActionResult> UpdateWithdrawRequestImageProof([FromRoute] Guid transactionId, IFormFile imageProof, CancellationToken ct)
 		{
 			await serviceManager.WithdrawRequestService.UpdateWithdrawRequest(transactionId, imageProof, ct);
 			return NoContent();

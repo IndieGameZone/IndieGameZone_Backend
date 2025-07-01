@@ -1,7 +1,9 @@
 ﻿using IndieGameZone.Application;
 using IndieGameZone.Application.RecombeeServices;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -24,6 +26,7 @@ namespace IndieGameZone.API.Controllers
 		/// Gets all the games for moderators and admins.
 		/// </summary>
 		[HttpGet("games")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> GetGames([FromQuery] GameParameters gameParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.GameService.GetGames(gameParameters, ct);
@@ -39,6 +42,7 @@ namespace IndieGameZone.API.Controllers
 		//}
 
 		[HttpGet("users/{playerId:guid}/recommended-games")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
 		public async Task<IActionResult> GetRecommendedGames([FromRoute] Guid playerId, CancellationToken ct)
 		{
 			return Ok(await serviceManager.GameService.GetRecommendedGamesForUser(playerId, ct));
@@ -63,6 +67,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{developerId:guid}/active-games")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
 		public async Task<IActionResult> GetActiveGamesByDeveloperId([FromRoute] Guid developerId, [FromQuery] ActiveGameParameters activeGameParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.GameService.GetActiveGamesByDeveloperId(developerId, activeGameParameters, ct);
@@ -71,6 +76,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpDelete("users/{developerId:guid}/games/{gameId:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> DeleteGame([FromRoute] Guid developerId, [FromRoute] Guid gameId, CancellationToken ct)
 		{
 			await serviceManager.GameService.DeleteGame(developerId, gameId, ct);
@@ -78,6 +84,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{developerId:guid}/games")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> CreateGame([FromRoute] Guid developerId, [FromForm] GameForCreationDto game, CancellationToken ct)
 		{
 			var gameid = await serviceManager.GameService.CreateGame(developerId, game, ct);
@@ -85,6 +92,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("users/{developerId:guid}/games/{gameId:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> UpdateGame([FromRoute] Guid developerId, [FromRoute] Guid gameId, [FromForm] GameForUpdateDto game, CancellationToken ct)
 		{
 			await serviceManager.GameService.UpdateGame(developerId, gameId, game, ct);
@@ -95,6 +103,7 @@ namespace IndieGameZone.API.Controllers
 		/// Gets all the games pass all the censor and visibility is public.
 		/// </summary>
 		[HttpGet("active-games")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
 		public async Task<IActionResult> GetActiveGames([FromQuery] ActiveGameParameters activeGameParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.GameService.GetActiveGames(activeGameParameters, ct);
@@ -103,6 +112,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("users/{moderatorId:guid}/games/{gameId:guid}/activation")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> ActivateGame([FromRoute] Guid gameId, [FromRoute] Guid moderatorId, [FromForm] GameActivationDto gameActivationDto, CancellationToken ct)
 		{
 			await serviceManager.GameService.UpdateActiveStatus(moderatorId, gameId, gameActivationDto, ct);
@@ -110,6 +120,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("games/{gameId:guid}/platform-file")]
+		[Authorize]
 		public async Task<IActionResult> GetGamePlatformFile([FromRoute] Guid gameId, CancellationToken ct)
 		{
 			var platformFile = await serviceManager.GameService.GetGamePlatformFile(gameId, ct);
@@ -117,6 +128,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("games/{gamePlatformId:guid}/number-of-download")]
+		[Authorize]
 		public async Task<IActionResult> IncreaseNumberOfDownload([FromRoute] Guid gamePlatformId, CancellationToken ct)
 		{
 			var downloadUrl = await serviceManager.GameService.IncreaseNumberOfDownload(gamePlatformId, ct);
@@ -124,6 +136,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("games/number-of-games")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)}")]
 		public async Task<IActionResult> GetNumberOfGameBasedOnCensorStatus(CancellationToken ct)
 		{
 			var (total, approve, reject, manual, ai) = await serviceManager.GameService.GetNumberOfGameBasedOnCensorStatus(ct);
@@ -138,6 +151,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{userId:guid}games/{gameId:guid}/ownership-checking")]
+		[Authorize]
 		public async Task<IActionResult> CheckGameOwnership([FromRoute] Guid userId, [FromRoute] Guid gameId, CancellationToken ct)
 		{
 			var isOwned = await serviceManager.GameService.CheckGameOwnership(userId, gameId, ct);

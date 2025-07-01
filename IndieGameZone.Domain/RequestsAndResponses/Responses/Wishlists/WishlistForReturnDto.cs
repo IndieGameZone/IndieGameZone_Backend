@@ -1,9 +1,10 @@
-﻿namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Wishlists
+﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
+
+namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Wishlists
 {
 	public class WishlistForReturnDto
 	{
-		public Guid UserId { get; init; }
-		public Guid GameId { get; init; }
+		public virtual GameForRecommendationDto Game { get; init; }
 		public DateTime AddedAt { get; init; }
 	}
 }

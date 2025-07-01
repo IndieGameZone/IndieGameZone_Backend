@@ -1,6 +1,8 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Reports;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -18,6 +20,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("reports")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)}")]
 		public async Task<IActionResult> GetReports([FromQuery] ReportParameters reportParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.ReportService.GetReports(reportParameters, ct);
@@ -26,6 +29,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("reports/{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)}")]
 		public async Task<IActionResult> GetReportById(Guid id, CancellationToken ct)
 		{
 			var report = await serviceManager.ReportService.GetReportById(id, ct);
@@ -33,6 +37,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{reportingUserId:guid}/reports")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
 		public async Task<IActionResult> CreateReport([FromRoute] Guid reportingUserId, [FromBody] ReportForCreationDto reportForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.ReportService.CreateReport(reportingUserId, reportForCreationDto, ct);

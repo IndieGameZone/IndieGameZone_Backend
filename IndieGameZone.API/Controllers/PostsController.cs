@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Application;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Posts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -18,6 +19,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/posts")]
+		[Authorize]
 		public async Task<IActionResult> CreatePost(Guid userId, Guid gameId, [FromForm] PostForCreationDto postForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.PostService.CreatePost(userId, gameId, postForCreationDto, ct);
@@ -25,6 +27,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpDelete("users/{userId:guid}/posts/{postId:guid}")]
+		[Authorize]
 		public async Task<IActionResult> DeletePost(Guid userId, Guid postId, CancellationToken ct)
 		{
 			await serviceManager.PostService.DeletePost(userId, postId, ct);
@@ -32,6 +35,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("posts/{postId:guid}")]
+		[Authorize]
 		public async Task<IActionResult> GetPostById(Guid postId, CancellationToken ct = default)
 		{
 			var post = await serviceManager.PostService.GetPostById(postId, ct);
@@ -39,6 +43,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("games/{gameId:guid}/posts")]
+		[Authorize]
 		public async Task<IActionResult> GetPostsByGameId(Guid gameId, [FromQuery] PostParameters postParameters, CancellationToken ct = default)
 		{
 			var pagedResult = await serviceManager.PostService.GetPostsByGameId(gameId, postParameters, ct);
@@ -47,6 +52,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{userId:guid}/posts")]
+		[Authorize]
 		public async Task<IActionResult> GetPostsByUserId(Guid userId, [FromQuery] PostParameters postParameters, CancellationToken ct = default)
 		{
 			var pagedResult = await serviceManager.PostService.GetPostsByUserId(userId, postParameters, ct);
@@ -55,6 +61,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("users/{userId:guid}/posts/{postId:guid}")]
+		[Authorize]
 		public async Task<IActionResult> UpdatePost(Guid userId, Guid postId, [FromForm] PostForUpdateDto postForUpdateDto, CancellationToken ct = default)
 		{
 			await serviceManager.PostService.UpdatePost(userId, postId, postForUpdateDto, ct);
