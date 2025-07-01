@@ -18,6 +18,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<PagedList<Libraries>> GetLibraryByUserId(Guid userId, LibraryParameters libraryParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var libraryEntities = FindByCondition(x => x.UserId == userId, trackChange)
+				.Include(x => x.Game).ThenInclude(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
+				.Include(x => x.Game).ThenInclude(x => x.Category).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Libraries>.ToPagedList(libraryEntities, libraryParameters.PageNumber, libraryParameters.PageSize, ct);

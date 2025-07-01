@@ -35,7 +35,7 @@ namespace IndieGameZone.Application.ReviewServices
 			repositoryManager.ReviewRepository.CreateReview(reviewEntities);
 			await repositoryManager.SaveAsync(ct);
 
-			await recombeeService.SendRatingEvent(userId, gameId, reviewEntities.Rating);
+			await recombeeService.SendRatingEvent(userId, gameId, (reviewEntities.Rating - 3) / 2.0);
 		}
 
 		//public async Task DeleteReview(Guid userId, Guid id, CancellationToken ct = default)
