@@ -17,8 +17,9 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(u => u.YoutubeChannelLink);
 			builder.Property(u => u.BankName);
 			builder.Property(u => u.BankAccount);
+            builder.Property(u => u.LastPingAt);
 
-			builder.HasOne(u => u.User)
+            builder.HasOne(u => u.User)
 				.WithOne(u => u.UserProfile)
 				.HasForeignKey<UserProfiles>(u => u.UserId)
 				.OnDelete(DeleteBehavior.Restrict);
