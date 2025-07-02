@@ -70,10 +70,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(r => r.ReportingUser)
 				.HasForeignKey(r => r.ReportingUserId)
 				.OnDelete(DeleteBehavior.Restrict);
-			builder.HasMany(u => u.ReportedUsers)
-				.WithOne(r => r.ReportedUser)
-				.HasForeignKey(r => r.ReportedUserId)
-				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(u => u.FollowingUsers)
 				.WithOne(f => f.FollowingUser)
 				.HasForeignKey(f => f.FollowingUserId)

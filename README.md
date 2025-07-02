@@ -16,7 +16,6 @@ A modern, scalable backend API for indie game distribution platforms (inspired b
   - `Infrastructure` (Repositories, DbContext)
   - `Service` (Business logic)
   - `API` (REST endpoints)
-- **.NET Aspire** for cloud-native orchestration
 - **Docker** container support
 - Repository Pattern + Unit of Work
 - JWT Authentication
@@ -28,7 +27,6 @@ IndieGameZone_Backend/ <br>
 ├── IndieGameZone.Domain/ # Domain Models/Entities <br>
 ├── IndieGameZone.Infrastructure/ # Data Access (EF Core) <br>
 ├── IndieGameZone.Service/ # Business Logic <br>
-└── IndieGameZone.AppHost/ # .NET Aspire Orchestration <br>
 
 ## 🛠️ Prerequisites
 
@@ -75,17 +73,19 @@ We welcome contributions! Please follow these guidelines:
 
 ## 👥 Development Team
 
-| Student ID   | Name          | Role                                 | Responsibilities                  |
-|--------------|---------------|--------------------------------------|-----------------------------------|
-| SE173551     | Trần Minh Tâm | Backend & Database Architect	        | API Development, Architecture     |
-| DEF456       | Jane DevOps   | DevOps & Backend Dev	                | Docker, CI/CD Pipelines           |
-| GHI789       | Alex QA       | Frontend Developer                   | Unit/Integration Tests            |
-| JKL012       | Sam DBA       | Frontend Developer                   | EF Core, Migrations               |
+| Student ID   | Name                  | Role                                 | Responsibilities                      |
+|--------------|-----------------------|--------------------------------------|---------------------------------------|
+| SE173551     | Trần Minh Tâm         | Backend & Database Architect	      | API Development, Architecture         |
+| SE184706     | Nguyễn Lê Tấn Nghiệp  | DevOps & Backend Dev	               | API Development, Architecture         |
+| SE173305     | Lê Văn Hoàng Vũ       | Frontend Developer                   | Design UI/UX and build frontend page  |
+| SE173222     | Ngô Gia Huy           | Frontend Developer                   | Design UI/UX and build frontend page  |
 
 ## 🔗 Related Links
 - [📋 Project Board](https://github.com/orgs/IndieGameZone/projects?query=is%3Aopen)
 - [🐛 Issue Tracker](https://github.com/IndieGameZone/IndieGameZone_Backend/issues)
 - [📈 Insight](https://github.com/IndieGameZone/IndieGameZone_Backend/network/dependencies)
+- [Backend Deploy Link](https://indiegamezonese101.azurewebsites.net/swagger) 
+- [Frontend Deploy Link](https://indie-game-zone.vercel.app)
 
 ---
 

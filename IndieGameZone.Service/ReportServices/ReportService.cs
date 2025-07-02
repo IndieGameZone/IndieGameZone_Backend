@@ -18,7 +18,30 @@ namespace IndieGameZone.Application.ReportServices
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 		}
-		public async Task CreateReport(Guid reportingUserId, ReportForCreationDto reportForCreationDto, CancellationToken ct = default)
+
+		public async Task CreateCommentReport(Guid reportingUserId, ReportCommentForCreationDto reportForCreationDto, CancellationToken ct = default)
+		{
+			var reportEntity = mapper.Map<Reports>(reportForCreationDto);
+			reportEntity.ReportingUserId = reportingUserId;
+			reportEntity.Id = Guid.NewGuid();
+			reportEntity.CreatedAt = DateTime.Now;
+
+			repositoryManager.ReportRepository.CreateReport(reportEntity);
+			await repositoryManager.SaveAsync(ct);
+		}
+
+		public async Task CreateGameReport(Guid reportingUserId, ReportGameForCreationDto reportForCreationDto, CancellationToken ct = default)
+		{
+			var reportEntity = mapper.Map<Reports>(reportForCreationDto);
+			reportEntity.ReportingUserId = reportingUserId;
+			reportEntity.Id = Guid.NewGuid();
+			reportEntity.CreatedAt = DateTime.Now;
+
+			repositoryManager.ReportRepository.CreateReport(reportEntity);
+			await repositoryManager.SaveAsync(ct);
+		}
+
+		public async Task CreatePostReport(Guid reportingUserId, ReportPostForCreationDto reportForCreationDto, CancellationToken ct = default)
 		{
 			var reportEntity = mapper.Map<Reports>(reportForCreationDto);
 			reportEntity.ReportingUserId = reportingUserId;

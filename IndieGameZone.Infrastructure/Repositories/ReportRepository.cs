@@ -20,7 +20,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return await FindByCondition(r => r.Id.Equals(id), trackChange)
 				.Include(r => r.ReportingUser).AsSplitQuery()
 				.Include(r => r.ReportReason).AsSplitQuery()
-				.Include(r => r.ReportedUser).AsSplitQuery()
 				.Include(r => r.Post).AsSplitQuery()
 				.Include(r => r.Game).AsSplitQuery()
 				.Include(r => r.PostComment).AsSplitQuery()

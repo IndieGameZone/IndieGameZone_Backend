@@ -36,11 +36,27 @@ namespace IndieGameZone.API.Controllers
 			return Ok(report);
 		}
 
-		[HttpPost("users/{reportingUserId:guid}/reports")]
+		[HttpPost("users/{userId:guid}/game-reports")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
-		public async Task<IActionResult> CreateReport([FromRoute] Guid reportingUserId, [FromBody] ReportForCreationDto reportForCreationDto, CancellationToken ct)
+		public async Task<IActionResult> CreateGameReport([FromRoute] Guid userId, [FromBody] ReportGameForCreationDto reportForCreationDto, CancellationToken ct)
 		{
-			await serviceManager.ReportService.CreateReport(reportingUserId, reportForCreationDto, ct);
+			await serviceManager.ReportService.CreateGameReport(userId, reportForCreationDto, ct);
+			return NoContent();
+		}
+
+		[HttpPost("users/{userId:guid}/post-reports")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		public async Task<IActionResult> CreatePostReport([FromRoute] Guid userId, [FromBody] ReportPostForCreationDto reportForCreationDto, CancellationToken ct)
+		{
+			await serviceManager.ReportService.CreatePostReport(userId, reportForCreationDto, ct);
+			return NoContent();
+		}
+
+		[HttpPost("users/{userId:guid}/comment-reports")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		public async Task<IActionResult> CreateCommentReport([FromRoute] Guid userId, [FromBody] ReportCommentForCreationDto reportForCreationDto, CancellationToken ct)
+		{
+			await serviceManager.ReportService.CreateCommentReport(userId, reportForCreationDto, ct);
 			return NoContent();
 		}
 	}
