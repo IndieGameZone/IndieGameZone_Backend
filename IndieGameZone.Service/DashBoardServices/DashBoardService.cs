@@ -70,5 +70,24 @@ namespace IndieGameZone.Application.DashBoardServices
 
             return result.OrderByDescending(x => x.AverageRating);
         }
+
+        public async Task<IEnumerable<GameForListReturnDto>> GetRecentlyPublishedGamesAsync(int top = 10, CancellationToken ct = default)
+        {
+            var gameEntities = await repositoryManager.GameRepository.GetRecentlyPublishedGames(top, trackChange: false, ct);
+
+            var games = mapper.Map<List<GameForListReturnDto>>(gameEntities);
+
+            for (int i = 0; i < games.Count; i++)
+            {
+                var discount = await repositoryManager.DiscountRepository
+                    .GetActiveDiscountByGameId(gameEntities.ElementAt(i).Id, trackChange: false, ct);
+
+                games[i].PriceAfterDiscount = discount is not null
+                    ? games[i].Price - (games[i].Price * discount.Percentage / 100)
+                    : games[i].Price;
+            }
+
+            return games;
+        }
     }
 }

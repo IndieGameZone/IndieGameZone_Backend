@@ -140,5 +140,16 @@ namespace IndieGameZone.Infrastructure.Repositories
             ));
         }
 
+        public async Task<IEnumerable<Games>> GetRecentlyPublishedGames(int top = 10, bool trackChange = false, CancellationToken ct = default)
+        {
+            return await AppDbContext.Games
+                .Where(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved)
+                .OrderByDescending(g => g.CreatedAt)
+                .Include(g => g.Category).AsSplitQuery()
+                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                .Take(top)
+                .ToListAsync(ct);
+        }
+
     }
 }

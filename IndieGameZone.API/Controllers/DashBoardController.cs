@@ -37,5 +37,13 @@ namespace IndieGameZone.API.Controllers
             var result = await serviceManager.DashBoardService.GetTopRatedGamesAsync(top, ct);
             return Ok(result);
         }
+
+        [HttpGet("recently-published")]
+        public async Task<ActionResult<IEnumerable<GameForListReturnDto>>> GetRecentlyPublishedGames([FromQuery] int top = 10, CancellationToken ct = default)
+        {
+            var games = await serviceManager.DashBoardService.GetRecentlyPublishedGamesAsync(top, ct);
+            return Ok(games);
+        }
+
     }
 }
