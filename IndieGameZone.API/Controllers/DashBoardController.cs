@@ -52,5 +52,12 @@ namespace IndieGameZone.API.Controllers
             var count = await serviceManager.DashBoardService.GetOnlineUserCountAsync(ct);
             return Ok(count);
         }
+
+        [HttpGet("total-users")]
+        public async Task<ActionResult<int>> GetTotalUsers(CancellationToken ct)
+        {
+            var count = await serviceManager.DashBoardService.GetTotalUserCountAsync(ct);
+            return Ok(count);
+        }
     }
 }

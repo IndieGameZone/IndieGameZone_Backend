@@ -14,6 +14,7 @@ namespace IndieGameZone.Application.DashBoardServices
         Task<IEnumerable<GameWithRatingDto>> GetTopRatedGamesAsync(int top = 10, CancellationToken ct = default);
         Task<IEnumerable<GameForListReturnDto>> GetRecentlyPublishedGamesAsync(int top = 10, CancellationToken ct = default);
         Task<int> GetOnlineUserCountAsync(CancellationToken ct = default);
+        Task<int> GetTotalUserCountAsync(CancellationToken ct = default);
 
     }
 }

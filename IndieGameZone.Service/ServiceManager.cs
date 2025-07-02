@@ -95,7 +95,7 @@ namespace IndieGameZone.Application
 			notificationService = new Lazy<INotificationService>(() => new NotificationService(repositoryManager, mapper));
 			banHistoryService = new Lazy<IBanHistoryService>(() => new BanHistoryService(repositoryManager, mapper, userManager));
 			gameCensorLogService = new Lazy<IGameCensorLogService>(() => new GameCensorLogService(repositoryManager, mapper));
-            dashBoardService = new Lazy<IDashBoardService>(() => new DashBoardService(repositoryManager, mapper));
+            dashBoardService = new Lazy<IDashBoardService>(() => new DashBoardService(repositoryManager, mapper, userManager));
         }
 
 		public ILanguageService LanguageService => languageService.Value;

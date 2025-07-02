@@ -1,6 +1,9 @@
-﻿using IndieGameZone.Domain.IRepositories;
+﻿using IndieGameZone.Domain.Entities;
+using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,11 +16,13 @@ namespace IndieGameZone.Application.DashBoardServices
     {
         private readonly IRepositoryManager repositoryManager;
         private readonly IMapper mapper;
+        private readonly UserManager<Users> userManager;
 
-        public DashBoardService(IRepositoryManager repositoryManager, IMapper mapper)
+        public DashBoardService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager)
         {
             this.repositoryManager = repositoryManager;
             this.mapper = mapper;
+            this.userManager = userManager;
         }
 
         public async Task<IEnumerable<GameWithDownloadsDto>> GetTopDownloadedGamesAsync(int top = 10, CancellationToken ct = default)
@@ -96,5 +101,9 @@ namespace IndieGameZone.Application.DashBoardServices
             return await repositoryManager.UserProfileRepository.CountUsersPingedAfter(threshold, ct);
         }
 
+        public async Task<int> GetTotalUserCountAsync(CancellationToken ct = default)
+        {
+            return await userManager.Users.CountAsync(ct);
+        }
     }
 }
