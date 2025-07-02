@@ -11,8 +11,9 @@
 		public string? FacebookLink { get; set; } = string.Empty;
 		public string? BankName { get; set; } = string.Empty;
 		public string? BankAccount { get; set; } = string.Empty;
+        public DateTime? LastPingAt { get; set; }
 
-		// Navigation properties
-		public virtual Users User { get; set; } = null!;
+        // Navigation properties
+        public virtual Users User { get; set; } = null!;
 	}
 }

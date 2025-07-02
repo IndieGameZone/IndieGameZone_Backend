@@ -12,5 +12,6 @@ namespace IndieGameZone.Domain.IRepositories
     {
         Task<UserProfiles?> GetUserProfileById(Guid id, bool trackChange, CancellationToken ct = default);
         void CreateUserProfile(UserProfiles userProfile);
+        Task<int> CountUsersPingedAfter(DateTime threshold, CancellationToken ct = default);
     }
 }

@@ -751,5 +751,23 @@ namespace IndieGameZone.Application.UserServices
                 throw new UserBadRequestException("Your account is currently banned.");
 
         }
+
+        public async Task PingAsync(string jwt, CancellationToken ct = default)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(jwt);
+            var userId = token.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+
+            if (!Guid.TryParse(userId, out var guidUserId))
+                throw new NotAuthenticatedException("Invalid user ID in token.");
+
+            var userProfile = await repositoryManager.UserProfileRepository.GetUserProfileById(guidUserId, trackChange: true, ct);
+
+            if (userProfile == null)
+                throw new NotFoundException("User profile not found.");
+
+            userProfile.LastPingAt = DateTime.Now;
+            await repositoryManager.SaveAsync(ct);
+        }
     }
 }

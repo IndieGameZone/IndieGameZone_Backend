@@ -11,7 +11,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public string CoverImage { get; init; }
 		public double Price { get; init; }
 		public double PriceAfterDiscount { get; set; }
-		public string ShortDescription { get; init; }
+        public string ShortDescription { get; init; }
 		public CensorStatus CensorStatus { get; init; }
 		public DateTime CreatedAt { get; init; }
 		public DateTime? CensoredAt { get; init; }

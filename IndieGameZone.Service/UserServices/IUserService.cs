@@ -31,5 +31,6 @@ namespace IndieGameZone.Application.UserServices
         Task<TokenDto> LoginWithGoogleAsync(GoogleLoginDto dto, CancellationToken ct = default);
         Task UpdateBirthday(Guid userId, DateOnly birthday, CancellationToken ct);
         Task UpdateUsername(Guid userId, string newUsername, CancellationToken ct = default);
+        Task PingAsync(string jwt, CancellationToken ct = default);
     }
 }

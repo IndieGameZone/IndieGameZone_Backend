@@ -21,5 +21,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 
         public void CreateUserProfile(UserProfiles userProfile) => Create(userProfile);
 
+        public async Task<int> CountUsersPingedAfter(DateTime threshold, CancellationToken ct = default)
+        {
+            return await FindByCondition(u => u.LastPingAt != null && u.LastPingAt >= threshold, trackChanges: false)
+                .CountAsync(ct);
+        }
+
     }
 }
