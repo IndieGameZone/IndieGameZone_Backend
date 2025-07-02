@@ -101,5 +101,16 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);
 		}
-	}
+
+        public async Task<IEnumerable<Games>> GetTop10MostDownloadedGames(bool trackChange, CancellationToken ct = default)
+        {
+            return await FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
+                .OrderByDescending(g => g.NumberOfDownloads)
+                .Take(10)
+                .Include(g => g.Category).AsSplitQuery()
+                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                .ToListAsync(ct);
+        }
+
+    }
 }

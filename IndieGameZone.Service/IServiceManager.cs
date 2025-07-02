@@ -3,6 +3,7 @@ using IndieGameZone.Application.AgeRestrictionServices;
 using IndieGameZone.Application.BanHistoryServices;
 using IndieGameZone.Application.CategoryServices;
 using IndieGameZone.Application.CommercialPackageServices;
+using IndieGameZone.Application.DashBoardServices;
 using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.GameCensorLogServices;
 using IndieGameZone.Application.GamePlatformServices;
@@ -53,5 +54,6 @@ namespace IndieGameZone.Application
 		INotificationService NotificationService { get; }
 		IBanHistoryService BanHistoryService { get; }
 		IGameCensorLogService GameCensorLogService { get; }
+		IDashBoardService DashBoardService { get; }
 	}
 }
