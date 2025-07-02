@@ -31,6 +31,11 @@ namespace IndieGameZone.API.Controllers
             return Ok(result);
         }
 
-
+        [HttpGet("top-rated")]
+        public async Task<ActionResult<IEnumerable<GameWithRatingDto>>> GetTopRatedGames([FromQuery] int top = 10, CancellationToken ct = default)
+        {
+            var result = await serviceManager.DashBoardService.GetTopRatedGamesAsync(top, ct);
+            return Ok(result);
+        }
     }
 }

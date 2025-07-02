@@ -17,6 +17,7 @@ namespace IndieGameZone.Domain.IRepositories
 		IQueryable<Games> GetGamesBasedOnCensorStatus(CensorStatus censorStatus, bool trackChange);
 		IQueryable<Games> GetGames(bool trackChange);
         Task<IEnumerable<Games>> GetTopDownloadedGames(int top, bool trackChange, CancellationToken ct = default);
+        Task<IEnumerable<(Games game, double averageRating)>> GetTopRatedGames(int top = 10, bool trackChange = false, CancellationToken ct = default);
 
     }
 }

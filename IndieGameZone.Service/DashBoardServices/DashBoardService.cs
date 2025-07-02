@@ -45,7 +45,6 @@ namespace IndieGameZone.Application.DashBoardServices
             return games;
         }
 
-
         public async Task<IEnumerable<GameWithSalesDto>> GetTopSellingGamesWithCountAsync(int top = 10, CancellationToken ct = default)
         {
             var gameWithCounts = await repositoryManager.LibraryRepository.GetTopSellingGames(top, ct);
@@ -57,6 +56,19 @@ namespace IndieGameZone.Application.DashBoardServices
             });
 
             return result.OrderByDescending(x => x.PurchaseCount);
+        }
+
+        public async Task<IEnumerable<GameWithRatingDto>> GetTopRatedGamesAsync(int top = 10, CancellationToken ct = default)
+        {
+            var ratedGames = await repositoryManager.GameRepository.GetTopRatedGames(top, false, ct);
+
+            var result = ratedGames.Select(pair => new GameWithRatingDto
+            {
+                Game = mapper.Map<GameForListReturnDto>(pair.game),
+                AverageRating = Math.Round(pair.averageRating, 2)
+            });
+
+            return result.OrderByDescending(x => x.AverageRating);
         }
     }
 }
