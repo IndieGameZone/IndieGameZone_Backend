@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.Intrinsics.X86;
@@ -45,5 +46,11 @@ namespace IndieGameZone.API.Controllers
             return Ok(games);
         }
 
+        [HttpGet("online-count")]
+        public async Task<ActionResult<int>> GetOnlineUserCount(CancellationToken ct)
+        {
+            var count = await serviceManager.DashBoardService.GetOnlineUserCountAsync(ct);
+            return Ok(count);
+        }
     }
 }

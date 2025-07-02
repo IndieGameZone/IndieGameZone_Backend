@@ -89,5 +89,12 @@ namespace IndieGameZone.Application.DashBoardServices
 
             return games;
         }
+
+        public async Task<int> GetOnlineUserCountAsync(CancellationToken ct = default)
+        {
+            var threshold = DateTime.Now.AddMinutes(-5);
+            return await repositoryManager.UserProfileRepository.CountUsersPingedAfter(threshold, ct);
+        }
+
     }
 }

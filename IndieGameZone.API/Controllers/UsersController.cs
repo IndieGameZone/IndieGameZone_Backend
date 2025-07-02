@@ -77,5 +77,14 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.UserService.UpdateBirthday(userId, dto.Birthday, ct);
 			return NoContent();
 		}
-	}
+
+        [HttpPost("ping")]
+        [Authorize]
+        public async Task<IActionResult> Ping(CancellationToken ct)
+        {
+            var jwt = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            await serviceManager.UserService.PingAsync(jwt, ct);
+            return NoContent();
+        }
+    }
 }
