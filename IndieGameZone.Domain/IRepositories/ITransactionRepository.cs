@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.RequestFeatures;
 
 namespace IndieGameZone.Domain.IRepositories
@@ -11,5 +12,7 @@ namespace IndieGameZone.Domain.IRepositories
 		Task<PagedList<Transactions>> GetTransactionsByUserId(Guid userId, TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default);
 		Task<PagedList<Transactions>> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default);
         Task<bool> IsOrderCodeExistsAsync(long orderCode, CancellationToken ct = default);
+        Task<double> GetTotalRevenueFromGamePurchase(RevenueRange range, CancellationToken ct = default);
+		Task<double> GetTotalRevenueFromCommercialPackagePurchase(RevenueRange range, CancellationToken ct = default);
     }
 }

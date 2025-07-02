@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using MapsterMapper;
@@ -104,6 +105,16 @@ namespace IndieGameZone.Application.DashBoardServices
         public async Task<int> GetTotalUserCountAsync(CancellationToken ct = default)
         {
             return await userManager.Users.CountAsync(ct);
+        }
+
+        public async Task<double> GetTotalRevenueFromGamePurchaseAsync(RevenueRange range, CancellationToken ct = default)
+        {
+            return await repositoryManager.TransactionRepository.GetTotalRevenueFromGamePurchase(range, ct);
+        }
+
+        public async Task<double> GetTotalRevenueFromCommercialPackagePurchaseAsync(RevenueRange range, CancellationToken ct = default)
+        {
+            return await repositoryManager.TransactionRepository.GetTotalRevenueFromCommercialPackagePurchase(range, ct);
         }
     }
 }

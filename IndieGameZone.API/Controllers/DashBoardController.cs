@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -59,5 +60,20 @@ namespace IndieGameZone.API.Controllers
             var count = await serviceManager.DashBoardService.GetTotalUserCountAsync(ct);
             return Ok(count);
         }
+
+        [HttpGet("revenue/games")]
+        public async Task<ActionResult<double>> GetGamePurchaseRevenue([FromQuery] RevenueRange range = RevenueRange.AllTime, CancellationToken ct = default)
+        {
+            var total = await serviceManager.DashBoardService.GetTotalRevenueFromGamePurchaseAsync(range, ct);
+            return Ok(total);
+        }
+
+        [HttpGet("revenue/commercial-packages")]
+        public async Task<ActionResult<double>> GetCommercialPackageRevenue([FromQuery] RevenueRange range = RevenueRange.AllTime, CancellationToken ct = default)
+        {
+            var total = await serviceManager.DashBoardService.GetTotalRevenueFromCommercialPackagePurchaseAsync(range, ct);
+            return Ok(total);
+        }
+
     }
 }

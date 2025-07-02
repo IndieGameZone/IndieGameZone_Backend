@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace IndieGameZone.Application.DashBoardServices
         Task<IEnumerable<GameForListReturnDto>> GetRecentlyPublishedGamesAsync(int top = 10, CancellationToken ct = default);
         Task<int> GetOnlineUserCountAsync(CancellationToken ct = default);
         Task<int> GetTotalUserCountAsync(CancellationToken ct = default);
-
+        Task<double> GetTotalRevenueFromGamePurchaseAsync(RevenueRange range, CancellationToken ct = default);
+        Task<double> GetTotalRevenueFromCommercialPackagePurchaseAsync(RevenueRange range, CancellationToken ct = default);
     }
 }
