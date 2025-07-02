@@ -49,7 +49,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("games/{gameId:guid}")]
-		[Authorize]
 		public async Task<IActionResult> GetGame([FromQuery] Guid playerId, [FromRoute] Guid gameId, CancellationToken ct)
 		{
 			var game = await serviceManager.GameService.GetGameById(playerId, gameId, ct);
@@ -69,7 +68,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{developerId:guid}/active-games")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> GetActiveGamesByDeveloperId([FromRoute] Guid developerId, [FromQuery] ActiveGameParameters activeGameParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.GameService.GetActiveGamesByDeveloperId(developerId, activeGameParameters, ct);
@@ -105,7 +103,6 @@ namespace IndieGameZone.API.Controllers
 		/// Gets all the games pass all the censor and visibility is public.
 		/// </summary>
 		[HttpGet("active-games")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> GetActiveGames([FromQuery] ActiveGameParameters activeGameParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.GameService.GetActiveGames(activeGameParameters, ct);
