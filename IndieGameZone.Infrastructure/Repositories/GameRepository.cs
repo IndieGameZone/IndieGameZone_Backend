@@ -102,11 +102,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);
 		}
 
-        public async Task<IEnumerable<Games>> GetTop10MostDownloadedGames(bool trackChange, CancellationToken ct = default)
+        public async Task<IEnumerable<Games>> GetTopDownloadedGames(int top, bool trackChange, CancellationToken ct = default)
         {
             return await FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
                 .OrderByDescending(g => g.NumberOfDownloads)
-                .Take(10)
+                .Take(top)
                 .Include(g => g.Category).AsSplitQuery()
                 .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
                 .ToListAsync(ct);

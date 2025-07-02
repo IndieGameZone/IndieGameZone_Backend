@@ -20,21 +20,43 @@ namespace IndieGameZone.Application.DashBoardServices
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<GameForListReturnDto>> GetTop10MostDownloadedGamesAsync(CancellationToken ct = default)
+        public async Task<IEnumerable<GameWithDownloadsDto>> GetTopDownloadedGamesAsync(int top = 10, CancellationToken ct = default)
         {
-            var gameEntities = await repositoryManager.GameRepository.GetTop10MostDownloadedGames(trackChange: false, ct);
-            var games = mapper.Map<List<GameForListReturnDto>>(gameEntities);
+            var gameEntities = await repositoryManager.GameRepository.GetTopDownloadedGames(top, trackChange: false, ct);
 
+            // Map and build a list of GameWithDownloadsDto
+            var games = gameEntities.Select(game => new GameWithDownloadsDto
+            {
+                Game = mapper.Map<GameForListReturnDto>(game),
+                NumberOfDownloads = game.NumberOfDownloads
+            }).ToList(); // Convert to list so we can index it
+
+            // Apply discount logic
             for (int i = 0; i < games.Count; i++)
             {
-                var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gameEntities.ElementAt(i).Id, trackChange: false, ct);
-                games[i].PriceAfterDiscount = discount is not null
-                    ? games[i].Price - (games[i].Price * discount.Percentage / 100)
-                    : games[i].Price;
+                var discount = await repositoryManager.DiscountRepository
+                    .GetActiveDiscountByGameId(gameEntities.ElementAt(i).Id, trackChange: false, ct);
+
+                games[i].Game.PriceAfterDiscount = discount is not null
+                    ? games[i].Game.Price - (games[i].Game.Price * discount.Percentage / 100)
+                    : games[i].Game.Price;
             }
 
             return games;
         }
 
+
+        public async Task<IEnumerable<GameWithSalesDto>> GetTopSellingGamesWithCountAsync(int top = 10, CancellationToken ct = default)
+        {
+            var gameWithCounts = await repositoryManager.LibraryRepository.GetTopSellingGames(top, ct);
+
+            var result = gameWithCounts.Select(pair => new GameWithSalesDto
+            {
+                Game = mapper.Map<GameForListReturnDto>(pair.game),
+                PurchaseCount = pair.purchaseCount
+            });
+
+            return result.OrderByDescending(x => x.PurchaseCount);
+        }
     }
 }

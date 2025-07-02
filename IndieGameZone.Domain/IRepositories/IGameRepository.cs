@@ -16,7 +16,7 @@ namespace IndieGameZone.Domain.IRepositories
 		void DeleteGame(Games game);
 		IQueryable<Games> GetGamesBasedOnCensorStatus(CensorStatus censorStatus, bool trackChange);
 		IQueryable<Games> GetGames(bool trackChange);
-        Task<IEnumerable<Games>> GetTop10MostDownloadedGames(bool trackChange, CancellationToken ct = default);
+        Task<IEnumerable<Games>> GetTopDownloadedGames(int top, bool trackChange, CancellationToken ct = default);
 
     }
 }

@@ -9,6 +9,8 @@ namespace IndieGameZone.Application.DashBoardServices
 {
     public interface IDashBoardService
     {
-        Task<IEnumerable<GameForListReturnDto>> GetTop10MostDownloadedGamesAsync(CancellationToken ct = default);
+        Task<IEnumerable<GameWithDownloadsDto>> GetTopDownloadedGamesAsync(int top = 10, CancellationToken ct = default);
+        Task<IEnumerable<GameWithSalesDto>> GetTopSellingGamesWithCountAsync(int top = 10, CancellationToken ct = default);
+
     }
 }

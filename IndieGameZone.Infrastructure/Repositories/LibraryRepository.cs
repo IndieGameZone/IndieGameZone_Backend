@@ -1,9 +1,11 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Infrastructure.Extensions;
 using IndieGameZone.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace IndieGameZone.Infrastructure.Repositories
 {
@@ -30,5 +32,33 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<Libraries?> GetLibraryByUserIdAndGameId(Guid userId, Guid gameId, bool trackChange, CancellationToken ct = default) => await
 			FindByCondition(x => x.UserId == userId && x.GameId == gameId, trackChange)
 			.FirstOrDefaultAsync(ct);
-	}
+
+        public async Task<IEnumerable<(Games game, int purchaseCount)>> GetTopSellingGames(int top = 10, CancellationToken ct = default)
+        {
+            var topGames = await AppDbContext.Libraries
+                .GroupBy(l => l.GameId)
+                .Select(g => new
+                {
+                    GameId = g.Key,
+                    PurchaseCount = g.Count()
+                })
+                .OrderByDescending(g => g.PurchaseCount)
+                .Take(top)
+                .ToListAsync(ct);
+
+            var gameIds = topGames.Select(g => g.GameId).ToList();
+
+            var games = await AppDbContext.Games
+                .Where(g => gameIds.Contains(g.Id) && g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved)
+                .Include(g => g.Category).AsSplitQuery()
+                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                .ToListAsync(ct);
+
+            return games.Select(game => (
+                game,
+                purchaseCount: topGames.First(t => t.GameId == game.Id).PurchaseCount
+            ));
+        }
+
+    }
 }

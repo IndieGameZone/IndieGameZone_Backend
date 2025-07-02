@@ -2,6 +2,7 @@
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.Intrinsics.X86;
 
 namespace IndieGameZone.API.Controllers
 {
@@ -17,12 +18,18 @@ namespace IndieGameZone.API.Controllers
         }
 
         [HttpGet("top-downloaded-games")]
-        public async Task<ActionResult<IEnumerable<GameForListReturnDto>>> GetTopDownloadedGames(CancellationToken ct)
+        public async Task<ActionResult<IEnumerable<GameWithDownloadsDto>>> GetTopDownloadedGames([FromQuery] int top = 10, CancellationToken ct = default)
         {
-            var games = await serviceManager.DashBoardService.GetTop10MostDownloadedGamesAsync(ct);
+            var games = await serviceManager.DashBoardService.GetTopDownloadedGamesAsync(top, ct);
             return Ok(games);
         }
-
+        
+        [HttpGet("top-selling")]
+        public async Task<ActionResult<IEnumerable<GameWithSalesDto>>> GetTopSellingGames([FromQuery] int top = 10, CancellationToken ct = default)
+        {
+            var result = await serviceManager.DashBoardService.GetTopSellingGamesWithCountAsync(top, ct);
+            return Ok(result);
+        }
 
 
     }
