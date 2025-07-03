@@ -42,7 +42,7 @@ namespace IndieGameZone.API.Controllers
 		//}
 
 		[HttpGet("users/{playerId:guid}/recommended-games")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)},{nameof(RoleEnum.Developer)}")]
+		[Authorize]
 		public async Task<IActionResult> GetRecommendedGames([FromRoute] Guid playerId, CancellationToken ct)
 		{
 			return Ok(await serviceManager.GameService.GetRecommendedGamesForUser(playerId, ct));
@@ -84,7 +84,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{developerId:guid}/games")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> CreateGame([FromRoute] Guid developerId, [FromForm] GameForCreationDto game, CancellationToken ct)
 		{
 			var gameid = await serviceManager.GameService.CreateGame(developerId, game, ct);
@@ -92,7 +92,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("users/{developerId:guid}/games/{gameId:guid}")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> UpdateGame([FromRoute] Guid developerId, [FromRoute] Guid gameId, [FromForm] GameForUpdateDto game, CancellationToken ct)
 		{
 			await serviceManager.GameService.UpdateGame(developerId, gameId, game, ct);

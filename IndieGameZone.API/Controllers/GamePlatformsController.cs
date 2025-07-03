@@ -18,7 +18,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost]
-		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> CreateGamePlatform([FromRoute] Guid gameId, [FromBody] ICollection<GamePlatformForCreationDto> gamePlatformForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.GamePlatformService.CreateGamePlatform(gameId, gamePlatformForCreationDto, ct);
@@ -26,7 +26,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut]
-		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> UpdateGamePlatform([FromRoute] Guid gameId, [FromBody] ICollection<GamePlatformForUpdateDto> gamePlatformForUpdateDtos, CancellationToken ct)
 		{
 			await serviceManager.GamePlatformService.UpdateGamePlatform(gameId, gamePlatformForUpdateDtos, ct);

@@ -24,7 +24,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/transactions/deposit")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize]
 		public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromBody] TransactionForDepositCreationDto transaction, CancellationToken ct)
 		{
 			var paymentLink = await serviceManager.TransactionService.CreateTransactionForDeposit(userId, transaction, ct);
@@ -32,7 +32,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-purchasing")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize]
 		public async Task<IActionResult> CreateTransactionForPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromForm] TransactionForGameCreation transactionForGameCreation, CancellationToken ct)
 		{
 			var paymentLink = await serviceManager.TransactionService.CreateTransactionForGamePurchase(userId, gameId, transactionForGameCreation, ct);
@@ -40,7 +40,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/donation")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize]
 		public async Task<IActionResult> CreateTransactionForDonation([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromBody] TransactionForDonationCreationDto transactionForDonationCreationDto, CancellationToken ct)
 		{
 			var result = await serviceManager.TransactionService.CreateTransactionForDonation(userId, gameId, transactionForDonationCreationDto, ct);
@@ -58,7 +58,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/commercial-packages/{commercialPackageId:guid}/transactions/commercial-purchasing")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Developer)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> CreateTransactionForCommercialPurchase([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromRoute] Guid commercialPackageId, [FromBody] TransactionForCommercialDto dto, CancellationToken ct)
 		{
 			var result = await serviceManager.TransactionService.CreateTransactionForCommercialPurchase(userId, gameId, commercialPackageId, dto, ct);

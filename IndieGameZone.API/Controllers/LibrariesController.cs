@@ -1,5 +1,4 @@
 ﻿using IndieGameZone.Application;
-using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +18,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{userId:guid}/libraries")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize]
 		public async Task<IActionResult> GetUserLibraries([FromRoute] Guid userId, [FromQuery] LibraryParameters libraryParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.LibraryService.GetLibrariesByUserId(userId, libraryParameters, ct);
