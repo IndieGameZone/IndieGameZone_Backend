@@ -109,20 +109,6 @@ namespace IndieGameZone.Application.GameServices
 
 		private async Task DeleteOldContentBeforeUpdate(Guid gameId, CancellationToken ct = default)
 		{
-			//Handle Game Image Entities
-			var existingGameImages = await repositoryManager.GameImageRepository.GetGameImagesByGameId(gameId, false, ct);
-			if (existingGameImages is not null && existingGameImages.Any())
-			{
-				foreach (var info in existingGameImages)
-				{
-					if (info.Image != null)
-					{
-						await blobService.DeleteBlob(info.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-					}
-				}
-			}
-			repositoryManager.GameImageRepository.DeleteGameImage(existingGameImages);
-
 			//Handle Game Language
 			repositoryManager.GameLanguageRepository.DeleteGameLanguage(await repositoryManager.GameLanguageRepository.GetGameLanguagesByGameId(gameId, false, ct));
 
@@ -141,6 +127,10 @@ namespace IndieGameZone.Application.GameServices
 
 		public async Task<Guid> CreateGame(Guid developerId, GameForCreationDto game, CancellationToken ct = default)
 		{
+			if (game.GameImages is null || !game.GameImages.Any())
+			{
+				throw new BadRequestException("No images provided.");
+			}
 			var gameEntity = mapper.Map<Games>(game);
 			gameEntity.Id = Guid.NewGuid();
 			gameEntity.DeveloperId = developerId;
@@ -214,19 +204,6 @@ namespace IndieGameZone.Application.GameServices
 			mapper.Map(game, gameEntity);
 			gameEntity.UpdatedAt = DateTime.Now;
 			gameEntity.CensorStatus = CensorStatus.PendingAIReview;
-
-			//Handle Game Images
-			var gameImageEntities = new List<GameImages>();
-			foreach (var image in game.GameImages)
-			{
-				gameImageEntities.Add(new GameImages
-				{
-					Id = Guid.NewGuid(),
-					GameId = gameEntity.Id,
-					Image = image,
-				});
-			}
-			repositoryManager.GameImageRepository.CreateGameImage(gameImageEntities);
 
 			//Handle Game Language
 			var gameLanguageEntitys = game.LanguageIds.Select(id => new GameLanguages { LanguageId = id, GameId = gameEntity.Id });

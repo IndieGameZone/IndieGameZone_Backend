@@ -16,6 +16,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public string CoverImage { get; init; }
 		public string VideoLink { get; init; }
 		//public string InstallInstruction { get; init; }
+		public bool AllowDonation { get; set; }
 		public string ShortDescription { get; init; }
 		public string Description { get; init; }
 		public double Price { get; init; }

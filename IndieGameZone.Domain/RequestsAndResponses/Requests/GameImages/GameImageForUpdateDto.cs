@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace IndieGameZone.Domain.RequestsAndResponses.Requests.GameImages
+﻿namespace IndieGameZone.Domain.RequestsAndResponses.Requests.GameImages
 {
 	public class GameImageForUpdateDto
 	{
-		public IFormFile? Image { get; init; }
+		public string Image { get; init; }
 	}
 }

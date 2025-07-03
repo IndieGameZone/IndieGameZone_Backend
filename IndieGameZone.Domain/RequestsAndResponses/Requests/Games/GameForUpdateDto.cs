@@ -19,6 +19,5 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
 		public Guid CategoryId { get; init; }
 		public ICollection<Guid> LanguageIds { get; init; }
 		public ICollection<Guid> TagIds { get; init; }
-		public ICollection<string> GameImages { get; init; }
 	}
 }

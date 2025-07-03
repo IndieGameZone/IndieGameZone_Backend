@@ -55,30 +55,47 @@ namespace IndieGameZone.Application.AIService
 
 			var documents = new List<string> { combinedText };
 
-			var actions = new TextAnalyticsActions
+			ExtractiveSummarizeOperation operation = textAnalyticClient.ExtractiveSummarize(WaitUntil.Completed, documents);
+
+			await foreach (ExtractiveSummarizeResultCollection documentsInPage in operation.Value)
 			{
-				ExtractiveSummarizeActions = new List<ExtractiveSummarizeAction> { new ExtractiveSummarizeAction() }
-			};
-
-			// Run the action
-			var operation = await textAnalyticClient.StartAnalyzeActionsAsync(documents, actions);
-
-			await operation.WaitForCompletionAsync();
-
-			var summarySentences = new List<string>();
-
-			await foreach (var result in operation.Value)
-			{
-				foreach (var extractSummaryResult in result.ExtractiveSummarizeResults)
+				foreach (ExtractiveSummarizeResult documentResult in documentsInPage)
 				{
-					foreach (var doc in extractSummaryResult.DocumentsResults)
+					foreach (ExtractiveSummarySentence sentence in documentResult.Sentences)
 					{
-						summarySentences.AddRange(doc.Sentences.Select(s => s.Text));
+						return sentence.Text;
 					}
 				}
 			}
 
-			return string.Join(" ", summarySentences);
+			return string.Empty;
+
+			//var actions = new TextAnalyticsActions
+			//{
+			//	ExtractiveSummarizeActions = new List<ExtractiveSummarizeAction> { new ExtractiveSummarizeAction() }
+			//};
+
+			//// Run the action
+			//var operation = await textAnalyticClient.StartAnalyzeActionsAsync(documents, actions);
+
+			//var response = await textAnalyticClient.Ex
+
+			//await operation.WaitForCompletionAsync();
+
+			//var summarySentences = new List<string>();
+
+			//await foreach (var result in operation.Value)
+			//{
+			//	foreach (var extractSummaryResult in result.ExtractiveSummarizeResults)
+			//	{
+			//		foreach (var doc in extractSummaryResult.DocumentsResults)
+			//		{
+			//			summarySentences.AddRange(doc.Sentences.Select(s => s.Text));
+			//		}
+			//	}
+			//}
+
+			//return string.Join(" ", summarySentences);
 		}
 	}
 }

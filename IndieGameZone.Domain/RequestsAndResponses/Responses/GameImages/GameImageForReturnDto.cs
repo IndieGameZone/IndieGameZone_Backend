@@ -3,6 +3,6 @@
 	public class GameImageForReturnDto
 	{
 		public Guid Id { get; init; }
-		public string? Image { get; init; }
+		public string Image { get; init; }
 	}
 }

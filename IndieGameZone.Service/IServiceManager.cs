@@ -6,6 +6,7 @@ using IndieGameZone.Application.CommercialPackageServices;
 using IndieGameZone.Application.DashBoardServices;
 using IndieGameZone.Application.DiscountServices;
 using IndieGameZone.Application.GameCensorLogServices;
+using IndieGameZone.Application.GameImageServices;
 using IndieGameZone.Application.GamePlatformServices;
 using IndieGameZone.Application.GameServices;
 using IndieGameZone.Application.LanguageServices;
@@ -55,5 +56,6 @@ namespace IndieGameZone.Application
 		IBanHistoryService BanHistoryService { get; }
 		IGameCensorLogService GameCensorLogService { get; }
 		IDashBoardService DashBoardService { get; }
+		IGameImageService GameImageService { get; }
 	}
 }
