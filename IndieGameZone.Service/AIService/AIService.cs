@@ -1,23 +1,21 @@
 ﻿using Azure;
 using Azure.AI.ContentSafety;
-using Azure.AI.TextAnalytics;
 using Microsoft.Extensions.Configuration;
+using OpenAI.Chat;
 
 namespace IndieGameZone.Application.AIService
 {
 	public sealed class AIService : IAIService
 	{
-		private readonly TextAnalyticsClient textAnalyticClient;
 		private readonly ContentSafetyClient contentSafetyClient;
+		private readonly IConfiguration configuration;
 
 		public AIService(IConfiguration configuration)
 		{
 			contentSafetyClient = new ContentSafetyClient(
 				new Uri(configuration.GetSection("ContentSafetyEndpoint").Value),
 				new AzureKeyCredential(configuration.GetSection("ContentSafetyKey").Value));
-			textAnalyticClient = new TextAnalyticsClient(
-				new Uri(configuration.GetSection("TextAnalyticsEndpoint").Value),
-				new AzureKeyCredential(configuration.GetSection("TextAnalyticsKey").Value));
+			this.configuration = configuration;
 		}
 
 		public async Task<bool> AnalyzeImage(string? imageUrl, CancellationToken ct = default)
@@ -51,51 +49,11 @@ namespace IndieGameZone.Application.AIService
 
 		public async Task<string> SummarizeReviews(ICollection<string> text, CancellationToken ct = default)
 		{
-			string combinedText = string.Join(" ", text);
-
-			var documents = new List<string> { combinedText };
-
-			ExtractiveSummarizeOperation operation = textAnalyticClient.ExtractiveSummarize(WaitUntil.Completed, documents);
-
-			await foreach (ExtractiveSummarizeResultCollection documentsInPage in operation.Value)
-			{
-				foreach (ExtractiveSummarizeResult documentResult in documentsInPage)
-				{
-					foreach (ExtractiveSummarySentence sentence in documentResult.Sentences)
-					{
-						return sentence.Text;
-					}
-				}
-			}
-
-			return string.Empty;
-
-			//var actions = new TextAnalyticsActions
-			//{
-			//	ExtractiveSummarizeActions = new List<ExtractiveSummarizeAction> { new ExtractiveSummarizeAction() }
-			//};
-
-			//// Run the action
-			//var operation = await textAnalyticClient.StartAnalyzeActionsAsync(documents, actions);
-
-			//var response = await textAnalyticClient.Ex
-
-			//await operation.WaitForCompletionAsync();
-
-			//var summarySentences = new List<string>();
-
-			//await foreach (var result in operation.Value)
-			//{
-			//	foreach (var extractSummaryResult in result.ExtractiveSummarizeResults)
-			//	{
-			//		foreach (var doc in extractSummaryResult.DocumentsResults)
-			//		{
-			//			summarySentences.AddRange(doc.Sentences.Select(s => s.Text));
-			//		}
-			//	}
-			//}
-
-			//return string.Join(" ", summarySentences);
+			var combineText = string.Join(" ", text);
+			ChatClient client = new(model: "gpt-4o-mini", apiKey: configuration.GetSection("OpenAIKey").Value);
+			string prompt = $"You are a helpful assistant that summarizes game reviews. Please provide a concise summary of the overall sentiment and key points from the following reviews.\n{combineText}";
+			ChatCompletion completion = client.CompleteChat(prompt);
+			return completion.Content[0].Text;
 		}
 	}
 }

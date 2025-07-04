@@ -1,4 +1,6 @@
-﻿namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Reviews
+﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
+
+namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Reviews
 {
 	public class ReviewForReturnDto
 	{
@@ -6,7 +8,6 @@
 		public double Rating { get; init; }
 		public string Comment { get; init; }
 		public DateTime CreatedAt { get; init; }
-		public Guid UserId { get; init; }
-		public Guid GameId { get; init; }
+		public UserShortForReturnDto User { get; init; }
 	}
 }
