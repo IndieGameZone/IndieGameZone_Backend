@@ -17,14 +17,25 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public void CreateTransaction(Transactions transaction) => Create(transaction);
 
 		public async Task<Transactions?> GetTransactionById(Guid id, bool trackChange, CancellationToken ct = default) => await
-			FindByCondition(x => x.Id == id, trackChange).FirstOrDefaultAsync(ct);
+			FindByCondition(x => x.Id == id, trackChange)
+			.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
+			.Include(t => t.Game).AsSplitQuery()
+			.Include(t => t.CommercialPackage).AsSplitQuery()
+			.FirstOrDefaultAsync(ct);
 
 		public Task<Transactions?> GetTransactionById(long orderCode, bool trackChange, CancellationToken ct = default) =>
-			FindByCondition(x => x.OrderCode == orderCode, trackChange).Include(t => t.Game).FirstOrDefaultAsync(ct);
+			FindByCondition(x => x.OrderCode == orderCode, trackChange)
+			.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
+			.Include(t => t.Game).AsSplitQuery()
+			.Include(t => t.CommercialPackage).AsSplitQuery()
+			.FirstOrDefaultAsync(ct);
 
 		public Task<PagedList<Transactions>> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var transactionEntities = FindAll(trackChange)
+				.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
+				.Include(t => t.Game).AsSplitQuery()
+				.Include(t => t.CommercialPackage).AsSplitQuery()
 				.Sort();
 
 			return PagedList<Transactions>.ToPagedList(transactionEntities, transactionParameters.PageNumber, transactionParameters.PageSize, ct);
@@ -33,61 +44,64 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public Task<PagedList<Transactions>> GetTransactionsByUserId(Guid userId, TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var transactionEntities = FindByCondition(x => x.UserId == userId, trackChange)
+				.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
+				.Include(t => t.Game).AsSplitQuery()
+				.Include(t => t.CommercialPackage).AsSplitQuery()
 				.Sort();
 
 			return PagedList<Transactions>.ToPagedList(transactionEntities, transactionParameters.PageNumber, transactionParameters.PageSize, ct);
 		}
 
-        public async Task<bool> IsOrderCodeExistsAsync(long orderCode, CancellationToken ct = default)
-        {
-            return await AppDbContext.Transactions.AnyAsync(t => t.OrderCode == orderCode, ct);
-        }
+		public async Task<bool> IsOrderCodeExistsAsync(long orderCode, CancellationToken ct = default)
+		{
+			return await AppDbContext.Transactions.AnyAsync(t => t.OrderCode == orderCode, ct);
+		}
 
-        public async Task<double> GetTotalRevenueFromGamePurchase(RevenueRange range, CancellationToken ct = default)
-        {
-            return await CalculateTotalRevenue(TransactionType.PurchaseGame, range, ct);
-        }
+		public async Task<double> GetTotalRevenueFromGamePurchase(RevenueRange range, CancellationToken ct = default)
+		{
+			return await CalculateTotalRevenue(TransactionType.PurchaseGame, range, ct);
+		}
 
-        public async Task<double> GetTotalRevenueFromCommercialPackagePurchase(RevenueRange range, CancellationToken ct = default)
-        {
-            return await CalculateTotalRevenue(TransactionType.PurchaseCommercialPackage, range, ct);
-        }
-        private async Task<double> CalculateTotalRevenue(TransactionType type, RevenueRange range, CancellationToken ct)
-        {
-            var now = DateTime.Now;
-            DateTime rangeStart;
+		public async Task<double> GetTotalRevenueFromCommercialPackagePurchase(RevenueRange range, CancellationToken ct = default)
+		{
+			return await CalculateTotalRevenue(TransactionType.PurchaseCommercialPackage, range, ct);
+		}
+		private async Task<double> CalculateTotalRevenue(TransactionType type, RevenueRange range, CancellationToken ct)
+		{
+			var now = DateTime.Now;
+			DateTime rangeStart;
 
-            switch (range)
-            {
-                case RevenueRange.Day:
-                    rangeStart = now.Date;
-                    break;
+			switch (range)
+			{
+				case RevenueRange.Day:
+					rangeStart = now.Date;
+					break;
 
-                case RevenueRange.Week:
-                    int diff = (7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7;
-                    rangeStart = now.Date.AddDays(-diff); // start of current week (Monday)
-                    break;
+				case RevenueRange.Week:
+					int diff = (7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7;
+					rangeStart = now.Date.AddDays(-diff); // start of current week (Monday)
+					break;
 
-                case RevenueRange.Month:
-                    rangeStart = new DateTime(now.Year, now.Month, 1);
-                    break;
+				case RevenueRange.Month:
+					rangeStart = new DateTime(now.Year, now.Month, 1);
+					break;
 
-                case RevenueRange.Year:
-                    rangeStart = new DateTime(now.Year, 1, 1);
-                    break;
+				case RevenueRange.Year:
+					rangeStart = new DateTime(now.Year, 1, 1);
+					break;
 
-                default:
-                    rangeStart = DateTime.MinValue;
-                    break;
-            }
+				default:
+					rangeStart = DateTime.MinValue;
+					break;
+			}
 
-            return await FindAll(false)
-                .Where(t =>
-                    t.Type == type &&
-                    t.Status == TransactionStatus.Success &&
-                    t.CreatedAt >= rangeStart &&
-                    t.CreatedAt <= now)
-                .SumAsync(t => t.Amount, ct);
-        }
-    }
+			return await FindAll(false)
+				.Where(t =>
+					t.Type == type &&
+					t.Status == TransactionStatus.Success &&
+					t.CreatedAt >= rangeStart &&
+					t.CreatedAt <= now)
+				.SumAsync(t => t.Amount, ct);
+		}
+	}
 }

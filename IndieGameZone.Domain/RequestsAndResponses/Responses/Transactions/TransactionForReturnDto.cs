@@ -1,4 +1,7 @@
 ﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Transactions
 {
@@ -12,5 +15,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Transactions
 		public TransactionType Type { get; init; }
 		public PaymentMethod PaymentMethod { get; init; }
 		public DateTime CreatedAt { get; init; }
+		public virtual UserShortForReturnDto PurchaseUser { get; init; }
+		public virtual GameForRecommendationDto? Game { get; set; }
+		public virtual CommercialPackageForReturnDto? CommercialPackage { get; set; }
 	}
 }

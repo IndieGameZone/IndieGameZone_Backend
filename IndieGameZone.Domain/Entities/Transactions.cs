@@ -13,16 +13,18 @@ namespace IndieGameZone.Domain.Entities
 		public TransactionType Type { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public Guid UserId { get; set; }
+		public Guid PurchaseUserId { get; set; }
 		public Guid? GameId { get; set; }
 		public Guid? CommercialPackageId { get; set; }
-        public DateOnly? CommercialRegistrationStartDate { get; set; }
-        public DateOnly? CommercialRegistrationEndDate { get; set; }
+		public DateOnly? CommercialRegistrationStartDate { get; set; }
+		public DateOnly? CommercialRegistrationEndDate { get; set; }
 
-        // Navigation properties
-        public virtual Users User { get; set; } = null!;
+		// Navigation properties
+		public virtual Users User { get; set; } = null!;
+		public virtual Users PurchaseUser { get; set; } = null!;
 		public virtual Games? Game { get; set; } = null!;
 		public virtual CommercialPackages? CommercialPackage { get; set; } = null!;
-        public virtual WithdrawRequests? WithdrawRequest { get; set; } = null!;
+		public virtual WithdrawRequests? WithdrawRequest { get; set; } = null!;
 		public virtual CommercialRegistration? CommercialRegistration { get; set; } = null!;
-    }
+	}
 }

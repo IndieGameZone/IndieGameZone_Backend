@@ -7,7 +7,7 @@ namespace IndieGameZone.Domain.Entities
 		public Guid Id { get; set; }
 		public string Name { get; set; } = string.Empty;
 		public string CoverImage { get; set; } = string.Empty;
-		public string VideoLink { get; set; } = string.Empty;
+		public string? VideoLink { get; set; } = string.Empty;
 		public string ShortDescription { get; set; } = string.Empty;
 		public string InstallInstruction { get; set; } = string.Empty;
 		public string Description { get; set; } = string.Empty;

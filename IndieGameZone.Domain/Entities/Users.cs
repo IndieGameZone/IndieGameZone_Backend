@@ -21,6 +21,7 @@ namespace IndieGameZone.Domain.Entities
 		public virtual ICollection<Wishlists> Wishlists { get; set; } = new List<Wishlists>();
 		public virtual ICollection<Libraries> Libraries { get; set; } = new List<Libraries>();
 		public virtual ICollection<Coupons> Coupons { get; set; } = new List<Coupons>();
+		public virtual ICollection<Transactions> PurchaseTransactions { get; set; } = new List<Transactions>();
 		public virtual ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
 		public virtual UserProfiles UserProfile { get; set; } = null!;
 		public virtual ICollection<Posts> Posts { get; set; } = new List<Posts>();

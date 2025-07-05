@@ -210,6 +210,7 @@ namespace IndieGameZone.Application.TransactionServices
 			var transactionEntity = mapper.Map<Transactions>(transaction);
 			transactionEntity.Id = Guid.NewGuid();
 			transactionEntity.UserId = userId;
+			transactionEntity.PurchaseUserId = userId;
 			transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
 			transactionEntity.Description = "Deposit to wallet";
 			transactionEntity.Status = TransactionStatus.Pending;
@@ -240,6 +241,7 @@ namespace IndieGameZone.Application.TransactionServices
 			{
 				Id = Guid.NewGuid(),
 				UserId = userId,
+				PurchaseUserId = userId,
 				GameId = gameId,
 				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
 				Amount = gamePriceAfterDiscount,
@@ -253,9 +255,13 @@ namespace IndieGameZone.Application.TransactionServices
 
 			if (transactionForGameCreation.PaymentMethod == PaymentMethod.Wallet)
 			{
+				var devWallet = await repositoryManager.WalletRepository.GetWalletByUserId(game.DeveloperId, true, ct);
+				var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
+
+				// Update balances for player wallet
 				wallet.Balance -= transactionEntity.Amount;
-				var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(game.DeveloperId, true, ct);
-				developerWallet.Balance += transactionEntity.Amount * 0.8; // 80% to developer
+
+				// Add game to library
 				var libraryEntity = new Libraries
 				{
 					UserId = userId,
@@ -263,6 +269,43 @@ namespace IndieGameZone.Application.TransactionServices
 					PurchasedAt = DateTime.Now
 				};
 				repositoryManager.LibraryRepository.AddGameToLibrary(libraryEntity);
+
+				// Create transactions for developer and update balance
+				var transactionForDeveloper = new Transactions()
+				{
+					Id = Guid.NewGuid(),
+					UserId = game.DeveloperId,
+					PurchaseUserId = userId,
+					GameId = gameId,
+					OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+					Amount = transactionEntity.Amount * 0.8, // 80% to developer
+					Description = $"80% of purchase for game {game.Name}",
+					CreatedAt = DateTime.Now,
+					Type = TransactionType.PurchaseGame,
+					Status = TransactionStatus.Success,
+					PaymentMethod = PaymentMethod.Wallet
+				};
+				devWallet.Balance += transactionForDeveloper.Amount;
+				repositoryManager.TransactionRepository.CreateTransaction(transactionForDeveloper);
+
+				// Create transaction for system (admin) and update balance
+				var transactionForSystem = new Transactions()
+				{
+					Id = Guid.NewGuid(),
+					UserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
+					PurchaseUserId = userId,
+					GameId = gameId,
+					OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+					Amount = transactionEntity.Amount * 0.2, // 80% to developer
+					Description = $"20% of purchase for game {game.Name}",
+					CreatedAt = DateTime.Now,
+					Type = TransactionType.PurchaseGame,
+					Status = TransactionStatus.Success,
+					PaymentMethod = PaymentMethod.Wallet
+				};
+				adminWallet.Balance += transactionForSystem.Amount;
+				repositoryManager.TransactionRepository.CreateTransaction(transactionForSystem);
+
 				await repositoryManager.SaveAsync(ct);
 				await recombeeService.SendPurchaseEvent(userId, gameId);
 
@@ -283,10 +326,11 @@ namespace IndieGameZone.Application.TransactionServices
 			{
 				throw new NotFoundException("Game does not exist");
 			}
-			var transactionEntity = new Transactions()
+			var transactionEntityForDonor = new Transactions()
 			{
 				Id = Guid.NewGuid(),
 				UserId = userId,
+				PurchaseUserId = userId,
 				GameId = gameId,
 				Amount = transactionForDonationCreationDto.Amount,
 				Description = $"Donation for game {game.Name}",
@@ -295,10 +339,11 @@ namespace IndieGameZone.Application.TransactionServices
 				Status = TransactionStatus.Pending,
 				PaymentMethod = PaymentMethod.PayOS,
 			};
-			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
+
+			repositoryManager.TransactionRepository.CreateTransaction(transactionEntityForDonor);
 
 			await repositoryManager.SaveAsync(ct);
-			return await GetPayOSPaymentLink(transactionEntity, TransactionType.Donation);
+			return await GetPayOSPaymentLink(transactionEntityForDonor, TransactionType.Donation);
 		}
 
 		public async Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
@@ -317,7 +362,7 @@ namespace IndieGameZone.Application.TransactionServices
 
 		public async Task IPNAsync(WebhookData webhookData, bool isSuccess, CancellationToken ct = default)
 		{
-			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(webhookData.orderCode, true);
+			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(webhookData.orderCode, true, ct);
 
 			if (isSuccess)
 			{
@@ -328,15 +373,34 @@ namespace IndieGameZone.Application.TransactionServices
 				}
 				else if (transaction.Type == TransactionType.Donation)
 				{
+					var game = await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId!, false, ct);
 					var developerId = transaction.Game.DeveloperId;
 					var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
-					developerWallet.Balance += transaction.Amount;
+
+					var transactionEntityForDeveloper = new Transactions()
+					{
+						Id = Guid.NewGuid(),
+						UserId = game.DeveloperId,
+						PurchaseUserId = transaction.UserId,
+						GameId = game.Id,
+						Amount = transaction.Amount,
+						Description = $"Donation money for game {game.Name}",
+						CreatedAt = DateTime.Now,
+						Type = TransactionType.Donation,
+						Status = TransactionStatus.Pending,
+						PaymentMethod = PaymentMethod.PayOS,
+					};
+					developerWallet.Balance += transactionEntityForDeveloper.Amount;
+					repositoryManager.TransactionRepository.CreateTransaction(transactionEntityForDeveloper);
 				}
 				else if (transaction.Type == TransactionType.PurchaseGame)
 				{
+					var game = await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId!, false, ct);
 					var developerId = transaction.Game.DeveloperId;
-					var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
-					developerWallet.Balance += transaction.Amount * 0.8; // 80% to developer
+					var devWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
+					var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
+
+					// Addgame to library
 					var libraryEntity = new Libraries
 					{
 						UserId = transaction.UserId,
@@ -344,21 +408,77 @@ namespace IndieGameZone.Application.TransactionServices
 						PurchasedAt = DateTime.Now
 					};
 					repositoryManager.LibraryRepository.AddGameToLibrary(libraryEntity);
+
+					// Create transactions for developer and update balance
+					var transactionForDeveloper = new Transactions()
+					{
+						Id = Guid.NewGuid(),
+						UserId = game.DeveloperId,
+						PurchaseUserId = transaction.UserId,
+						GameId = game.Id,
+						OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+						Amount = transaction.Amount * 0.8, // 80% to developer
+						Description = $"80% of purchase for game {game.Name}",
+						CreatedAt = DateTime.Now,
+						Type = TransactionType.PurchaseGame,
+						Status = TransactionStatus.Success,
+						PaymentMethod = PaymentMethod.PayOS
+					};
+					devWallet.Balance += transactionForDeveloper.Amount;
+					repositoryManager.TransactionRepository.CreateTransaction(transactionForDeveloper);
+
+					// Create transaction for system (admin) and update balance
+					var transactionForSystem = new Transactions()
+					{
+						Id = Guid.NewGuid(),
+						UserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
+						PurchaseUserId = transaction.UserId,
+						GameId = game.Id,
+						OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+						Amount = transaction.Amount * 0.2, // 20% to admin
+						Description = $"20% of purchase for game {game.Name}",
+						CreatedAt = DateTime.Now,
+						Type = TransactionType.PurchaseGame,
+						Status = TransactionStatus.Success,
+						PaymentMethod = PaymentMethod.PayOS
+					};
+					adminWallet.Balance += transactionForSystem.Amount;
+					repositoryManager.TransactionRepository.CreateTransaction(transactionForSystem);
+
+					await CheckGameAchievements(transaction.UserId);
 					await recombeeService.SendPurchaseEvent(transaction.UserId, (Guid)transaction.GameId);
 				}
 				else if (transaction.Type == TransactionType.PurchaseCommercialPackage)
 				{
-                    var commercialRegistration = new CommercialRegistration()
-                    {
-                        Id = Guid.NewGuid(),
-                        StartDate = (DateOnly)transaction.CommercialRegistrationStartDate!,
-                        EndDate = transaction.CommercialRegistrationEndDate,
-                        GameId = (Guid)transaction.GameId!,
-                        CommercialPackageId = (Guid)transaction.CommercialPackageId!,
-                        TransactionId = transaction.Id
-                    };
-                    repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
-                }
+					var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
+					var commercialRegistration = new CommercialRegistration()
+					{
+						Id = Guid.NewGuid(),
+						StartDate = (DateOnly)transaction.CommercialRegistrationStartDate!,
+						EndDate = transaction.CommercialRegistrationEndDate,
+						GameId = (Guid)transaction.GameId!,
+						CommercialPackageId = (Guid)transaction.CommercialPackageId!,
+						TransactionId = transaction.Id
+					};
+					repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
+
+					var transactionForSystem = new Transactions
+					{
+						Id = Guid.NewGuid(),
+						UserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
+						PurchaseUserId = transaction.UserId,
+						CommercialPackageId = transaction.CommercialPackageId,
+						OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+						Amount = transaction.Amount,
+						Description = $"Purchase for commercial package",
+						CreatedAt = DateTime.Now,
+						Type = TransactionType.PurchaseCommercialPackage,
+						Status = TransactionStatus.Success,
+						PaymentMethod = PaymentMethod.Wallet
+					};
+					adminWallet.Balance += transactionForSystem.Amount;
+					repositoryManager.TransactionRepository.CreateTransaction(transactionForSystem);
+				}
 
 				transaction.Status = TransactionStatus.Success;
 			}
@@ -368,10 +488,6 @@ namespace IndieGameZone.Application.TransactionServices
 			}
 
 			await repositoryManager.SaveAsync(ct);
-			if (transaction.Type == TransactionType.PurchaseGame)
-			{
-				await CheckGameAchievements(transaction.UserId);
-			}
 		}
 
 		public async Task<string> CreateTransactionForCommercialPurchase(Guid userId, Guid gameId, Guid commercialPackageId, TransactionForCommercialDto dto, CancellationToken ct = default)
@@ -417,36 +533,54 @@ namespace IndieGameZone.Application.TransactionServices
 				Type = TransactionType.PurchaseCommercialPackage,
 				CreatedAt = DateTime.Now,
 				UserId = userId,
-                GameId = gameId,
-                CommercialPackageId = commercialPackageId,
-                CommercialRegistrationStartDate = dto.StartDate,
-                CommercialRegistrationEndDate = dto.StartDate.AddDays(package.Duration)
-            };
+				PurchaseUserId = userId,
+				CommercialPackageId = commercialPackageId,
+				PaymentMethod = dto.PaymentMethod,
+				CommercialRegistrationStartDate = dto.StartDate,
+				CommercialRegistrationEndDate = dto.StartDate.AddDays(package.Duration)
+			};
 
 			repositoryManager.TransactionRepository.CreateTransaction(transaction);
 
 			if (dto.PaymentMethod == PaymentMethod.Wallet)
 			{
+				var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
 				wallet.Balance -= package.Price;
+				var commercialRegistration = new CommercialRegistration()
+				{
+					Id = Guid.NewGuid(),
+					StartDate = dto.StartDate,
+					EndDate = dto.StartDate.AddDays(package.Duration),
+					GameId = gameId,
+					CommercialPackageId = commercialPackageId,
+					TransactionId = transaction.Id
+				};
+				repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
 
-                var commercialRegistration = new CommercialRegistration()
-                {
-                    Id = Guid.NewGuid(),
-                    StartDate = dto.StartDate,
-                    EndDate = dto.StartDate.AddDays(package.Duration),
-                    GameId = gameId,
-                    CommercialPackageId = commercialPackageId,
-                    TransactionId = transaction.Id
-                };
-                repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
+				var transactionForSystem = new Transactions
+				{
+					Id = Guid.NewGuid(),
+					UserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
+					PurchaseUserId = userId,
+					CommercialPackageId = commercialPackageId,
+					OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+					Amount = package.Price,
+					Description = $"Purchase for commercial package {package.Name} for game {game.Name}",
+					CreatedAt = DateTime.Now,
+					Type = TransactionType.PurchaseCommercialPackage,
+					Status = TransactionStatus.Success,
+					PaymentMethod = PaymentMethod.Wallet
+				};
+				adminWallet.Balance += transactionForSystem.Amount;
+				repositoryManager.TransactionRepository.CreateTransaction(transactionForSystem);
 
 				await repositoryManager.SaveAsync(ct);
 				return string.Empty;
 			}
 			else
 			{
-                await repositoryManager.SaveAsync(ct);
-                return await GetPayOSPaymentLink(transaction, TransactionType.PurchaseCommercialPackage);
+				await repositoryManager.SaveAsync(ct);
+				return await GetPayOSPaymentLink(transaction, TransactionType.PurchaseCommercialPackage);
 			}
 		}
 

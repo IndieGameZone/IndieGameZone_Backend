@@ -34,6 +34,18 @@ namespace IndieGameZone.Application.GameServices
 			this.recombeeService = recombeeService;
 		}
 
+		private async Task CheckGamePriceChangeWithin28Days(Games gameEntity, GameForUpdateDto game)
+		{
+			if (gameEntity.Price != game.Price && gameEntity.UpdatedAt != null && (DateTime.Now - (DateTime)gameEntity.UpdatedAt).Days < 28)
+			{
+				throw new BadRequestException("You can only update the game once every 28 days.");
+			}
+			else if (gameEntity.Price != game.Price && gameEntity.UpdatedAt == null && (DateTime.Now - gameEntity.CreatedAt).Days < 28)
+			{
+				throw new BadRequestException("You can only update the game once every 28 days.");
+			}
+		}
+
 		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetGames(GameParameters gameParameters, CancellationToken ct = default)
 		{
 			var gamesWithMetaData = await repositoryManager.GameRepository.GetGames(gameParameters, false, ct);
@@ -191,7 +203,6 @@ namespace IndieGameZone.Application.GameServices
 
 		public async Task UpdateGame(Guid developerId, Guid gameId, GameForUpdateDto game, CancellationToken ct = default)
 		{
-			await DeleteOldContentBeforeUpdate(gameId, ct);
 			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, true, ct);
 			if (gameEntity is null)
 			{
@@ -201,6 +212,8 @@ namespace IndieGameZone.Application.GameServices
 			{
 				throw new ForbiddenException("You do not have permission to update this game.");
 			}
+			await CheckGamePriceChangeWithin28Days(gameEntity, game);
+			await DeleteOldContentBeforeUpdate(gameId, ct);
 			mapper.Map(game, gameEntity);
 			gameEntity.UpdatedAt = DateTime.Now;
 			gameEntity.CensorStatus = CensorStatus.PendingAIReview;
