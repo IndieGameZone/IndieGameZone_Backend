@@ -332,7 +332,13 @@ namespace IndieGameZone.Application.GameServices
 		public async Task<PlatformFileDto> GetGamePlatformFile(Guid gameId, CancellationToken ct = default)
 		{
 			var platformFile = mapper.Map<PlatformFileDto>(await repositoryManager.GameRepository.GetGameById(gameId, false, ct));
-			return platformFile ?? throw new NotFoundException($"Game not found.");
+			return platformFile ?? throw new NotFoundException($"Game file not found.");
+		}
+
+		public async Task<PlatformFileDto> GetActiveGamePlatformFile(Guid gameId, CancellationToken ct = default)
+		{
+			var platformFile = mapper.Map<PlatformFileDto>(await repositoryManager.GameRepository.GetGameByIdWithActiveFile(gameId, false, ct));
+			return platformFile ?? throw new NotFoundException($"Game file not found.");
 		}
 
 		public async Task<IEnumerable<GameForListReturnDto>> GetRecommendedGamesForUser(Guid userId, CancellationToken ct = default)

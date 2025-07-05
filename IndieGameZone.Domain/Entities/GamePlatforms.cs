@@ -8,6 +8,7 @@
 		public string DisplayName { get; set; } = string.Empty;
 		public string File { get; set; } = string.Empty;
 		public double Size { get; set; }
+		public bool IsActive { get; set; }
 
 		// Navigation properties
 		public virtual Games Game { get; set; } = null!;

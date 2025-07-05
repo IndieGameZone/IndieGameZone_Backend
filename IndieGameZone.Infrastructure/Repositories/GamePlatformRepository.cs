@@ -18,6 +18,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void DeleteGamePlatform(IEnumerable<GamePlatforms> gamePlatforms) => appDbContext.GamePlatforms.RemoveRange(gamePlatforms);
 
+		public async Task<IEnumerable<GamePlatforms>> GetGameActivePlatformsByGameId(Guid gameId, bool trackChanges, CancellationToken ct = default) => await
+			FindByCondition(gp => gp.GameId.Equals(gameId) && gp.IsActive, trackChanges).ToListAsync(ct);
+
 		public async Task<IEnumerable<GamePlatforms>> GetGamePlatformsByGameId(Guid gameId, bool trackChanges, CancellationToken ct = default) => await
 			FindByCondition(gp => gp.GameId.Equals(gameId), trackChanges).ToListAsync(ct);
 

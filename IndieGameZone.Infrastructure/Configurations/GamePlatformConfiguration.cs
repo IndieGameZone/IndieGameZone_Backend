@@ -11,6 +11,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasKey(gp => gp.Id);
 			builder.Property(gp => gp.File);
 			builder.Property(gp => gp.DisplayName).HasMaxLength(150);
+			builder.Property(gp => gp.Size);
+			builder.Property(gp => gp.IsActive);
 			builder.HasOne(gp => gp.Game)
 				.WithMany(g => g.GamePlatforms)
 				.HasForeignKey(gp => gp.GameId)
@@ -28,7 +30,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "TheDeadseat_Window.zip",
 					Size = 179,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseat_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseat_Window.zip",
+					IsActive = true
 				},
 
 				// MidnightShift
@@ -39,7 +42,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "MidnightShift_Window.zip",
 					Size = 84.6,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/MidnightShift_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/MidnightShift_Window.zip",
+					IsActive = true
 				},
 
 				// Broken Relic
@@ -50,7 +54,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "BrokenRelic_Window.zip",
 					Size = 99.3,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic_Window.zip",
+					IsActive = true
 				},
 				new GamePlatforms
 				{
@@ -59,7 +64,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("574cb883-e637-4f18-9518-269e4d22312c"),
 					DisplayName = "BrokenRelic_Mac.zip",
 					Size = 99.7,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic_Macos.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic_Macos.zip",
+					IsActive = true
 				},
 				new GamePlatforms
 				{
@@ -68,7 +74,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("db498cbb-c76f-4166-9836-8ecb462419e6"),
 					DisplayName = "BrokenRelic_Linux.zip",
 					Size = 100,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic_Linux.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic_Linux.zip",
+					IsActive = true
 				},
 
 				// Moldwasher
@@ -79,7 +86,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Moldwasher_Window.zip",
 					Size = 31,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Moldwasher_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Moldwasher_Window.zip",
+					IsActive = true
 				},
 
 				// Latestop
@@ -90,7 +98,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Latestop_Window.zip",
 					Size = 87.6,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Latestop_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Latestop_Window.zip",
+					IsActive = true
 				},
 
 				// QuietPlace
@@ -101,7 +110,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "QuietPlace_Window.rar",
 					Size = 58.6,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/QuietPlace_Window.rar"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/QuietPlace_Window.rar",
+					IsActive = true
 				},
 
 				// Pacside
@@ -112,7 +122,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Pacside_Window.rar",
 					Size = 163,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Pacside_Window.rar"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Pacside_Window.rar",
+					IsActive = true
 				},
 
 				// Sheepy
@@ -123,7 +134,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Sheepy_Window.zip",
 					Size = 239,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Sheepy_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Sheepy_Window.zip",
+					IsActive = true
 				},
 
 				// Daughter
@@ -134,7 +146,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Daughter_Window.zip",
 					Size = 181,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Daughter_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Daughter_Window.zip",
+					IsActive = true
 				},
 
 				// Missing
@@ -145,7 +158,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Missing_Window.zip",
 					Size = 138,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Missing_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Missing_Window.zip",
+					IsActive = true
 				},
 				new GamePlatforms
 				{
@@ -154,7 +168,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("574cb883-e637-4f18-9518-269e4d22312c"),
 					DisplayName = "Missing_Mac.zip",
 					Size = 246,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Missing_Mac.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Missing_Mac.zip",
+					IsActive = true
 				},
 
 				//Bloddymall
@@ -165,7 +180,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Bloddymall_Window.zip",
 					Size = 93.8,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Bloddymall_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Bloddymall_Window.zip",
+					IsActive = true
 				},
 				new GamePlatforms
 				{
@@ -174,7 +190,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("db498cbb-c76f-4166-9836-8ecb462419e6"),
 					DisplayName = "Bloddymall_Linux.zip",
 					Size = 94.9,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Bloddymall_Linux.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Bloddymall_Linux.zip",
+					IsActive = true
 				},
 
 				//Thunderhead
@@ -185,7 +202,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Thunderhead_Window.zip",
 					Size = 153,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Thunderhead_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Thunderhead_Window.zip",
+					IsActive = true
 				},
 
 				//Evaluation
@@ -196,7 +214,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Evaluation_Window.zip",
 					Size = 224,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Evaluation_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Evaluation_Window.zip",
+					IsActive = true
 				},
 
 				//Dominoid
@@ -207,7 +226,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Dominoid_Window.zip",
 					Size = 109,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Dominoid_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Dominoid_Window.zip",
+					IsActive = true
 				},
 
 				//DiggingHour
@@ -218,7 +238,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "DiggingHour_Window.zip",
 					Size = 48,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/DiggingHour_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/DiggingHour_Window.zip",
+					IsActive = true
 				},
 
 				//Dispatched
@@ -229,7 +250,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Dispatched_Window.zip",
 					Size = 585,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Dispatched_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Dispatched_Window.zip",
+					IsActive = true
 				},
 
 				//SecurityBooth
@@ -240,7 +262,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "SecurityBooth_Window.zip",
 					Size = 127,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/SecurityBooth_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/SecurityBooth_Window.zip",
+					IsActive = true
 				},
 
 				//Atlyss
@@ -251,7 +274,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Atlyss_Window.zip",
 					Size = 126,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Atlyss_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Atlyss_Window.zip",
+					IsActive = true
 				},
 
 				//Tomato
@@ -262,7 +286,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Tomato_Window.exe",
 					Size = 224,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Tomato_Window.exe"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Tomato_Window.exe",
+					IsActive = true
 				},
 
 				//Leftovers
@@ -273,7 +298,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "Leftovers_Window.zip",
 					Size = 33.8,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Leftovers_Window.zip"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Leftovers_Window.zip",
+					IsActive = true
 				},
 
 				//TheStation
@@ -284,7 +310,8 @@ namespace IndieGameZone.Infrastructure.Configurations
 					PlatformId = Guid.Parse("a47b287d-6ed7-4bb0-be73-c2581dcb9b3e"),
 					DisplayName = "TheStation_Window.rar",
 					Size = 102,
-					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheStation_Window.rar"
+					File = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheStation_Window.rar",
+					IsActive = true
 				}
 			);
 		}

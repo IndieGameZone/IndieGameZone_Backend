@@ -119,10 +119,18 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("games/{gameId:guid}/platform-file")]
-		[Authorize]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> GetGamePlatformFile([FromRoute] Guid gameId, CancellationToken ct)
 		{
 			var platformFile = await serviceManager.GameService.GetGamePlatformFile(gameId, ct);
+			return Ok(platformFile);
+		}
+
+		[HttpGet("games/{gameId:guid}/active-platform-file")]
+		[Authorize]
+		public async Task<IActionResult> GetActiveGamePlatformFile([FromRoute] Guid gameId, CancellationToken ct)
+		{
+			var platformFile = await serviceManager.GameService.GetActiveGamePlatformFile(gameId, ct);
 			return Ok(platformFile);
 		}
 

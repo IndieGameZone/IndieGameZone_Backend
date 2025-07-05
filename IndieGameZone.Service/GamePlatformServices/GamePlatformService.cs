@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Application.BlobService;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
+using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.GamePlatforms;
 using MapsterMapper;
@@ -30,6 +31,7 @@ namespace IndieGameZone.Application.GamePlatformServices
 				var blobName = gamePlatform.File.Split('/').Last();
 				gamePlatform.DisplayName = blobName;
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
+				gamePlatform.IsActive = true;
 			}
 			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatforms);
 			await repositoryManager.SaveAsync(ct);
@@ -58,9 +60,26 @@ namespace IndieGameZone.Application.GamePlatformServices
 				var blobName = gamePlatform.File.Split('/').Last();
 				gamePlatform.DisplayName = blobName.Split('.').First();
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
+				gamePlatform.IsActive = true;
 			}
 
 			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatforms);
+			await repositoryManager.SaveAsync(ct);
+		}
+
+		public async Task UpdateGamePlatformActivationStatus(Guid developerId, Guid gamePlatformId, bool isActive, CancellationToken ct = default)
+		{
+			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, true, ct);
+			if (gamePlatform is null)
+			{
+				throw new NotFoundException($"Game platform not found.");
+			}
+			var game = await repositoryManager.GameRepository.GetGameById(gamePlatform.GameId, false, ct);
+			if (game.DeveloperId != developerId)
+			{
+				throw new ForbiddenException($"You are not authorized to update the game platform for this game.");
+			}
+			gamePlatform.IsActive = isActive;
 			await repositoryManager.SaveAsync(ct);
 		}
 	}

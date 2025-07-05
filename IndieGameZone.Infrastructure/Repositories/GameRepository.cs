@@ -5,7 +5,6 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Infrastructure.Extensions;
 using IndieGameZone.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System;
 
 namespace IndieGameZone.Infrastructure.Repositories
 {
@@ -71,6 +70,20 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.FirstOrDefaultAsync(ct);
 		}
 
+		public async Task<Games?> GetGameByIdWithActiveFile(Guid id, bool trackChange, CancellationToken ct = default)
+		{
+			return await FindByCondition(x => x.Id.Equals(id), trackChange)
+				.Include(x => x.Category).AsSplitQuery()
+				.Include(x => x.AgeRestriction).AsSplitQuery()
+				.Include(x => x.Developer).ThenInclude(x => x.UserProfile).AsSplitQuery()
+				.Include(x => x.GamePlatforms).ThenInclude(x => x.Platform).Where(x => x.GamePlatforms.All(y => y.IsActive)).AsSplitQuery()
+				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
+				.Include(x => x.GameLanguages).ThenInclude(x => x.Language).AsSplitQuery()
+				.Include(x => x.GameImages).AsSplitQuery()
+				.Include(x => x.Discounts).AsSplitQuery()
+				.FirstOrDefaultAsync(ct);
+		}
+
 		public async Task<PagedList<Games>> GetGames(GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var gameEntities = FindAll(trackChange)
@@ -103,53 +116,52 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return await PagedList<Games>.ToPagedList(gameEntities, gameParameters.PageNumber, gameParameters.PageSize, ct);
 		}
 
-        public async Task<IEnumerable<Games>> GetTopDownloadedGames(int top, bool trackChange, CancellationToken ct = default)
-        {
-            return await FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
-                .OrderByDescending(g => g.NumberOfDownloads)
-                .Take(top)
-                .Include(g => g.Category).AsSplitQuery()
-                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                .ToListAsync(ct);
-        }
+		public async Task<IEnumerable<Games>> GetTopDownloadedGames(int top, bool trackChange, CancellationToken ct = default)
+		{
+			return await FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
+				.OrderByDescending(g => g.NumberOfDownloads)
+				.Take(top)
+				.Include(g => g.Category).AsSplitQuery()
+				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+				.ToListAsync(ct);
+		}
 
-        public async Task<IEnumerable<(Games game, double averageRating)>> GetTopRatedGames(int top = 10, bool trackChange = false, CancellationToken ct = default)
-        {
-            var gameRatings = await AppDbContext.Reviews
-                .GroupBy(r => r.GameId)
-                .Select(g => new
-                {
-                    GameId = g.Key,
-                    AverageRating = g.Average(r => r.Rating)
-                })
-                .OrderByDescending(g => g.AverageRating)
-                .Take(top)
-                .ToListAsync(ct);
+		public async Task<IEnumerable<(Games game, double averageRating)>> GetTopRatedGames(int top = 10, bool trackChange = false, CancellationToken ct = default)
+		{
+			var gameRatings = await AppDbContext.Reviews
+				.GroupBy(r => r.GameId)
+				.Select(g => new
+				{
+					GameId = g.Key,
+					AverageRating = g.Average(r => r.Rating)
+				})
+				.OrderByDescending(g => g.AverageRating)
+				.Take(top)
+				.ToListAsync(ct);
 
-            var gameIds = gameRatings.Select(x => x.GameId).ToList();
+			var gameIds = gameRatings.Select(x => x.GameId).ToList();
 
-            var games = await AppDbContext.Games
-                .Where(g => gameIds.Contains(g.Id) && g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved)
-                .Include(g => g.Category).AsSplitQuery()
-                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                .ToListAsync(ct);
+			var games = await AppDbContext.Games
+				.Where(g => gameIds.Contains(g.Id) && g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved)
+				.Include(g => g.Category).AsSplitQuery()
+				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+				.ToListAsync(ct);
 
-            return games.Select(g => (
-                g,
-                averageRating: gameRatings.First(x => x.GameId == g.Id).AverageRating
-            ));
-        }
+			return games.Select(g => (
+				g,
+				averageRating: gameRatings.First(x => x.GameId == g.Id).AverageRating
+			));
+		}
 
-        public async Task<IEnumerable<Games>> GetRecentlyPublishedGames(int top = 10, bool trackChange = false, CancellationToken ct = default)
-        {
-            return await AppDbContext.Games
-                .Where(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved)
-                .OrderByDescending(g => g.CreatedAt)
-                .Include(g => g.Category).AsSplitQuery()
-                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                .Take(top)
-                .ToListAsync(ct);
-        }
-
-    }
+		public async Task<IEnumerable<Games>> GetRecentlyPublishedGames(int top = 10, bool trackChange = false, CancellationToken ct = default)
+		{
+			return await AppDbContext.Games
+				.Where(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved)
+				.OrderByDescending(g => g.CreatedAt)
+				.Include(g => g.Category).AsSplitQuery()
+				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+				.Take(top)
+				.ToListAsync(ct);
+		}
+	}
 }

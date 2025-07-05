@@ -17,6 +17,7 @@ namespace IndieGameZone.Application.GameServices
 		Task UpdateActiveStatus(Guid moderatorId, Guid gameId, GameActivationDto gameActivationDto, CancellationToken ct = default);
 		Task<string> IncreaseNumberOfDownload(Guid gamePlatformId, CancellationToken ct = default);
 		Task<PlatformFileDto> GetGamePlatformFile(Guid gameId, CancellationToken ct = default);
+		Task<PlatformFileDto> GetActiveGamePlatformFile(Guid gameId, CancellationToken ct = default);
 		Task<IEnumerable<GameForListReturnDto>> GetRecommendedGamesForUser(Guid userId, CancellationToken ct = default);
 		Task<(int total, int approve, int reject, int manual, int ai)> GetNumberOfGameBasedOnCensorStatus(CancellationToken ct = default);
 		Task<bool> CheckGameOwnership(Guid userId, Guid gameId, CancellationToken ct = default);

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers
 {
-	[Route("api/games/{gameId:guid}/game-platforms")]
+	[Route("api")]
 	[ApiController]
 	public class GamePlatformsController : ControllerBase
 	{
@@ -17,7 +17,7 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
-		[HttpPost]
+		[HttpPost("games/{gameId:guid}/game-platforms")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> CreateGamePlatform([FromRoute] Guid gameId, [FromBody] ICollection<GamePlatformForCreationDto> gamePlatformForCreationDto, CancellationToken ct)
 		{
@@ -25,11 +25,19 @@ namespace IndieGameZone.API.Controllers
 			return StatusCode(201);
 		}
 
-		[HttpPut]
+		[HttpPut("games/{gameId:guid}/game-platforms")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> UpdateGamePlatform([FromRoute] Guid gameId, [FromBody] ICollection<GamePlatformForUpdateDto> gamePlatformForUpdateDtos, CancellationToken ct)
 		{
 			await serviceManager.GamePlatformService.UpdateGamePlatform(gameId, gamePlatformForUpdateDtos, ct);
+			return NoContent();
+		}
+
+		[HttpPut("developers/{developerId}/game-platforms/{gamePlatformId:guid}/activation")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
+		public async Task<IActionResult> UpdateGamePlatformActivationStatus([FromRoute] Guid developerId, [FromRoute] Guid gamePlatformId, [FromForm] bool isActive, CancellationToken ct)
+		{
+			await serviceManager.GamePlatformService.UpdateGamePlatformActivationStatus(developerId, gamePlatformId, isActive, ct);
 			return NoContent();
 		}
 	}
