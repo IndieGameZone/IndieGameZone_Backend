@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Application.AIService;
 using IndieGameZone.Application.RecombeeServices;
 using IndieGameZone.Domain.Entities;
+using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Reviews;
@@ -24,8 +25,19 @@ namespace IndieGameZone.Application.ReviewServices
 			this.recombeeService = recombeeService;
 		}
 
+		private async Task<bool> CheckGameOwnership(Guid userId, Guid gameId, CancellationToken ct = default)
+		{
+			var gameLibrary = await repositoryManager.LibraryRepository.GetLibraryByUserIdAndGameId(userId, gameId, false, ct);
+			return gameLibrary != null;
+		}
+
 		public async Task CreateReview(Guid userId, Guid gameId, ReviewForCreationDto reviewForCreationDto, CancellationToken ct = default)
 		{
+			if (!await CheckGameOwnership(userId, gameId, ct))
+			{
+				throw new NotFoundException("You must own this game to create a review.");
+			}
+
 			var reviewEntities = mapper.Map<Reviews>(reviewForCreationDto);
 			reviewEntities.Id = Guid.NewGuid();
 			reviewEntities.UserId = userId;

@@ -17,18 +17,18 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("players/{playerId:guid}/developers/{developerId:guid}/user-follows")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
-		public async Task<IActionResult> FollowDeveloperAsync([FromRoute] Guid playerId, [FromRoute] Guid developerId, CancellationToken ct)
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)},{nameof(RoleEnum.Developer)}")]
+		public async Task<IActionResult> FollowDeveloperAsync([FromRoute] Guid followingUserId, [FromRoute] Guid followedUserId, CancellationToken ct)
 		{
-			await serviceManager.UserFollowService.FollowOrUnfollowUser(playerId, developerId, ct);
+			await serviceManager.UserFollowService.FollowOrUnfollowUser(followingUserId, followedUserId, ct);
 			return StatusCode(201);
 		}
 
 		[HttpGet("players/{playerId:guid}/developers/{developerId:guid}/user-follows")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
-		public async Task<IActionResult> IsDeveloperFollowedByPlayerAsync([FromRoute] Guid playerId, [FromRoute] Guid developerId, CancellationToken ct)
+		[Authorize(Roles = $"{nameof(RoleEnum.Player)},{nameof(RoleEnum.Developer)}")]
+		public async Task<IActionResult> IsDeveloperFollowedByPlayerAsync([FromRoute] Guid followingUserId, [FromRoute] Guid followedUserId, CancellationToken ct)
 		{
-			var isFollowed = await serviceManager.UserFollowService.IsFollowing(playerId, developerId, ct);
+			var isFollowed = await serviceManager.UserFollowService.IsFollowing(followingUserId, followedUserId, ct);
 			return Ok(isFollowed);
 		}
 

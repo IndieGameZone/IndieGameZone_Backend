@@ -18,7 +18,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet]
-		[Authorize]
 		public async Task<IActionResult> GetTags(CancellationToken ct)
 		{
 			var tags = await serviceManager.TagService.GetTags();
@@ -26,7 +25,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
-		[Authorize]
 		public async Task<IActionResult> GetTag([FromRoute] Guid id, CancellationToken ct)
 		{
 			var tag = await serviceManager.TagService.GetTagById(id, ct);

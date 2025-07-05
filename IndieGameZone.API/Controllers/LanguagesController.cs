@@ -18,7 +18,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet]
-		[Authorize]
 		public async Task<IActionResult> GetLanguages(CancellationToken ct)
 		{
 			var languages = await serviceManager.LanguageService.GetLanguages(ct);
@@ -26,7 +25,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
-		[Authorize]
 		public async Task<IActionResult> GetLanguage([FromRoute] Guid id, CancellationToken ct)
 		{
 			var language = await serviceManager.LanguageService.GetLanguageById(id, ct);

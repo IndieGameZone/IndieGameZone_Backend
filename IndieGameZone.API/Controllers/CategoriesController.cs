@@ -18,7 +18,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet]
-		[Authorize]
 		public async Task<IActionResult> GetCategories(CancellationToken ct)
 		{
 			var categories = await serviceManager.CategoryService.GetCategories(ct);
@@ -26,7 +25,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
-		[Authorize]
 		public async Task<IActionResult> GetCategory([FromRoute] Guid id, CancellationToken ct)
 		{
 			var category = await serviceManager.CategoryService.GetCategoryById(id, ct);
