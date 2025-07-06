@@ -35,7 +35,7 @@ namespace IndieGameZone.Application.ReviewServices
 		{
 			if (!await CheckGameOwnership(userId, gameId, ct))
 			{
-				throw new NotFoundException("You must own this game to create a review.");
+				throw new BadRequestException("You must own this game to create a review.");
 			}
 
 			var reviewEntities = mapper.Map<Reviews>(reviewForCreationDto);
