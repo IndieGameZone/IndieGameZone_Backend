@@ -77,7 +77,7 @@ namespace IndieGameZone.Application
 			categoryService = new Lazy<ICategoryService>(() => new CategoryService(repositoryManager, mapper));
 			platformService = new Lazy<IPlatformService>(() => new PlatformService(repositoryManager, mapper));
 			ageRestrictionService = new Lazy<IAgeRestrictionService>(() => new AgeRestrictionService(repositoryManager, mapper));
-			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService, configuration, schedulerFactory, recombeeService));
+			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService, schedulerFactory, recombeeService));
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
 			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration, blobService, faker));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
@@ -98,7 +98,7 @@ namespace IndieGameZone.Application
 			banHistoryService = new Lazy<IBanHistoryService>(() => new BanHistoryService(repositoryManager, mapper, userManager));
 			gameCensorLogService = new Lazy<IGameCensorLogService>(() => new GameCensorLogService(repositoryManager, mapper));
 			dashBoardService = new Lazy<IDashBoardService>(() => new DashBoardService(repositoryManager, mapper, userManager));
-			gameImageService = new Lazy<IGameImageService>(() => new GameImageService(repositoryManager, blobService));
+			gameImageService = new Lazy<IGameImageService>(() => new GameImageService(repositoryManager, blobService, schedulerFactory));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;

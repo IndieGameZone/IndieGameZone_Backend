@@ -10,7 +10,6 @@ using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Quartz;
 
 namespace IndieGameZone.Application.GameServices
@@ -20,16 +19,14 @@ namespace IndieGameZone.Application.GameServices
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 		private readonly IBlobService blobService;
-		private readonly IConfiguration configuration;
 		private readonly ISchedulerFactory schedulerFactory;
 		private readonly IRecombeeService recombeeService;
 
-		public GameService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, IConfiguration configuration, ISchedulerFactory schedulerFactory, IRecombeeService recombeeService)
+		public GameService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, ISchedulerFactory schedulerFactory, IRecombeeService recombeeService)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.blobService = blobService;
-			this.configuration = configuration;
 			this.schedulerFactory = schedulerFactory;
 			this.recombeeService = recombeeService;
 		}

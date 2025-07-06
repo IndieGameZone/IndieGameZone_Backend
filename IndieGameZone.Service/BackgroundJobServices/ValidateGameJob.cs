@@ -22,6 +22,7 @@ namespace IndieGameZone.Application.BackgroundJobServices
 
 		public async Task Execute(IJobExecutionContext context)
 		{
+			Console.WriteLine("ValidateGameJob started");
 			var dataMap = context.MergedJobDataMap;
 			Guid gameId = Guid.Parse(dataMap.GetString("gameId"));
 
