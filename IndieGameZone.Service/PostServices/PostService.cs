@@ -208,6 +208,10 @@ namespace IndieGameZone.Application.PostServices
 				throw new NotFoundException($"Post not found.");
 			if (post.UserId != userId)
 				throw new ForbiddenException("You are not authorized to update this post.");
+			if (!string.IsNullOrEmpty(post.Image) && post.Image != postForUpdateDto.Image)
+			{
+				await blobService.DeleteBlob(post.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+			}
 			mapper.Map(postForUpdateDto, post);
 			post.UpdatedAt = DateTime.Now;
 			post.Status = PostStatus.PendingAIReview;

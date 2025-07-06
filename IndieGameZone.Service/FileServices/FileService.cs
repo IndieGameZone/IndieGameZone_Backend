@@ -6,6 +6,7 @@ using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System.Text.RegularExpressions;
 
 namespace IndieGameZone.Application.FileServices
 {
@@ -53,7 +54,10 @@ namespace IndieGameZone.Application.FileServices
 		{
 			CheckingFile(file);
 			ScanFile(file);
-			return await blobService.UploadBlob(file.FileName, StorageContainer.STORAGE_CONTAINER, file);
+			return await blobService.UploadBlob(
+				$"{Regex.Replace(Path.GetFileNameWithoutExtension(file.FileName), "[^a-zA-Z0-9]", "")}{Path.GetExtension(file.FileName)}",
+				StorageContainer.STORAGE_CONTAINER,
+				file);
 		}
 	}
 }

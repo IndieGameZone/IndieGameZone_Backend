@@ -22,15 +22,18 @@ namespace IndieGameZone.Application.GameImageServices
 			this.schedulerFactory = schedulerFactory;
 		}
 
-		private async Task DeleteOldGameImages(Guid gameId, CancellationToken ct)
+		private async Task DeleteOldGameImages(Guid gameId, IEnumerable<string> newGameImages, CancellationToken ct)
 		{
 			var existingGameImages = await repositoryManager.GameImageRepository.GetGameImagesByGameId(gameId, false, ct);
-			if (existingGameImages is not null && existingGameImages.Any())
+			var existingImageUrls = existingGameImages.Select(x => x.Image).ToList();
+			if (existingImageUrls is null || !existingImageUrls.Any())
 			{
-				foreach (var info in existingGameImages)
-				{
-					await blobService.DeleteBlob(info.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-				}
+				return;
+			}
+			var imagesToDelete = existingImageUrls.Except(newGameImages);
+			foreach (var image in imagesToDelete)
+			{
+				await blobService.DeleteBlob(image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
 			}
 			repositoryManager.GameImageRepository.DeleteGameImage(existingGameImages);
 			await repositoryManager.SaveAsync(ct);
@@ -43,7 +46,7 @@ namespace IndieGameZone.Application.GameImageServices
 				throw new BadRequestException("No images provided.");
 			}
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
-			await DeleteOldGameImages(gameId, ct);
+			await DeleteOldGameImages(gameId, images, ct);
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, true, ct);
 			game.UpdatedAt = DateTime.Now;
 			game.CensorStatus = CensorStatus.PendingAIReview;

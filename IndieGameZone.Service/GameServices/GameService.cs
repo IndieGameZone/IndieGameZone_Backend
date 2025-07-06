@@ -213,6 +213,10 @@ namespace IndieGameZone.Application.GameServices
 			{
 				throw new ForbiddenException("You do not have permission to update this game.");
 			}
+			if (game.CoverImage != gameEntity.CoverImage)
+			{
+				await blobService.DeleteBlob(gameEntity.CoverImage.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+			}
 			mapper.Map(game, gameEntity);
 			gameEntity.UpdatedAt = DateTime.Now;
 			gameEntity.CensorStatus = CensorStatus.PendingAIReview;
@@ -238,7 +242,7 @@ namespace IndieGameZone.Application.GameServices
 
 			dbTransaction.Commit();
 
-			IJobDetail job = JobBuilder.Create<ValidatePostJob>()
+			IJobDetail job = JobBuilder.Create<ValidateGameJob>()
 				.WithIdentity("GameJob", "GameGroup")
 				.UsingJobData("gameId", gameEntity.Id.ToString())
 				.Build();
