@@ -203,7 +203,11 @@ namespace IndieGameZone.Application.GameServices
 
 		public async Task UpdateGame(Guid developerId, Guid gameId, GameForUpdateDto game, CancellationToken ct = default)
 		{
+			var dbTransaction = await repositoryManager.BeginTransaction(ct);
+
+			await DeleteOldContentBeforeUpdate(gameId, ct);
 			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, true, ct);
+			await CheckGamePriceChangeWithin28Days(gameEntity, game);
 			if (gameEntity is null)
 			{
 				throw new NotFoundException($"Game not found.");
@@ -212,8 +216,6 @@ namespace IndieGameZone.Application.GameServices
 			{
 				throw new ForbiddenException("You do not have permission to update this game.");
 			}
-			await CheckGamePriceChangeWithin28Days(gameEntity, game);
-			await DeleteOldContentBeforeUpdate(gameId, ct);
 			mapper.Map(game, gameEntity);
 			gameEntity.UpdatedAt = DateTime.Now;
 			gameEntity.CensorStatus = CensorStatus.PendingAIReview;
@@ -236,6 +238,8 @@ namespace IndieGameZone.Application.GameServices
 			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
 
 			await repositoryManager.SaveAsync(ct);
+
+			dbTransaction.Commit();
 
 			IJobDetail job = JobBuilder.Create<ValidatePostJob>()
 				.WithIdentity("GameJob", "GameGroup")
