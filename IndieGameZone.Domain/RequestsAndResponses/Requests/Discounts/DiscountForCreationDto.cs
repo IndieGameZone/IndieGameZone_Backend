@@ -1,9 +1,14 @@
-﻿namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Discounts
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Discounts
 {
 	public class DiscountForCreationDto
 	{
+		[Required]
 		public double Percentage { get; init; }
+		[Required]
 		public DateOnly StartDate { get; init; }
+		[Required]
 		public DateOnly EndDate { get; init; }
 	}
 }
