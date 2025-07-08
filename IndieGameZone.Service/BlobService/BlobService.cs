@@ -49,6 +49,20 @@ namespace IndieGameZone.Application.BlobService
 			return blobClient.Uri.AbsoluteUri;
 		}
 
+		public async Task<string> GetBlobOriginalName(string blobName, string containerName)
+		{
+			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+			BlobClient blobClient = containerClient.GetBlobClient(blobName);
+			var exists = await blobClient.ExistsAsync();
+			if (!exists.Value)
+			{
+				throw new FileNotFoundException($"Blob '{blobName}' not found.");
+			}
+			var metadata = (await blobClient.GetPropertiesAsync()).Value.Metadata;
+			var originalFileName = metadata.ContainsKey("OriginalName") ? metadata["OriginalName"] : blobName;
+			return originalFileName;
+		}
+
 		public async Task<double> GetBlobSize(string blobName, string containerName)
 		{
 			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
@@ -67,10 +81,6 @@ namespace IndieGameZone.Application.BlobService
 			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
 			BlobClient blobClient = containerClient.GetBlobClient(blobName);
 
-			//var httpHeaders = new BlobHttpHeaders
-			//{
-			//	ContentType = file.ContentType
-			//};
 			BlobUploadOptions uploadOptions = new BlobUploadOptions
 			{
 				TransferOptions = new StorageTransferOptions
@@ -91,29 +101,6 @@ namespace IndieGameZone.Application.BlobService
 				return await GetBlob(blobName, containerName);
 			}
 			return "";
-		}
-
-		public async Task<List<string>> UploadBlobs(string blobName, string containerName, IFormFileCollection files)
-		{
-			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
-			BlobClient blobClient = containerClient.GetBlobClient(blobName);
-			List<string> uploadedBlobUrls = new List<string>();
-			foreach (var file in files)
-			{
-				if (file.Length > 0)
-				{
-					var httpHeaders = new BlobHttpHeaders
-					{
-						ContentType = file.ContentType
-					};
-					var result = await blobClient.UploadAsync(file.OpenReadStream(), httpHeaders);
-					if (result is not null)
-					{
-						uploadedBlobUrls.Add(blobClient.Uri.AbsoluteUri);
-					}
-				}
-			}
-			return uploadedBlobUrls;
 		}
 	}
 }

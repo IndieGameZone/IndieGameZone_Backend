@@ -7,8 +7,8 @@ namespace IndieGameZone.Application.BlobService
 		Task<string> GetBlob(string blobName, string containerName);
 		Task<bool> DeleteBlob(string blobName, string containerName);
 		Task<string> UploadBlob(string blobName, string containerName, IFormFile file);
-		Task<List<string>> UploadBlobs(string blobName, string containerName, IFormFileCollection files);
 		Task<double> GetBlobSize(string blobName, string containerName);
+		Task<string> GetBlobOriginalName(string blobName, string containerName);
 		Task<(Stream content, string type, string filename)> DownloadFile(string blobName, string containerName);
 	}
 }

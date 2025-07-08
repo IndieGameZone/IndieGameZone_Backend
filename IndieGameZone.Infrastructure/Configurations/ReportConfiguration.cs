@@ -11,6 +11,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasKey(r => r.Id);
 			builder.Property(r => r.Message);
 			builder.Property(r => r.CreatedAt);
+			builder.Property(r => r.IsResolved);
 
 			builder.HasOne(r => r.ReportingUser)
 				.WithMany(u => u.ReportingUsers)

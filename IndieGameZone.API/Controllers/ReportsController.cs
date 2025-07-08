@@ -59,5 +59,13 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.ReportService.CreateCommentReport(userId, reportForCreationDto, ct);
 			return NoContent();
 		}
+
+		[HttpPut("reports/{id:guid}/resolve-status")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)}")]
+		public async Task<IActionResult> UpdateResolveStatus([FromRoute] Guid id, CancellationToken ct)
+		{
+			await serviceManager.ReportService.UpdateResolveStatus(id, ct);
+			return NoContent();
+		}
 	}
 }

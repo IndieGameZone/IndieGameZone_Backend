@@ -11,5 +11,6 @@ namespace IndieGameZone.Application.ReportServices
 		Task CreateCommentReport(Guid reportingUserId, ReportCommentForCreationDto reportForCreationDto, CancellationToken ct = default);
 		Task<(IEnumerable<ReportForListReturnDto> reports, MetaData metaData)> GetReports(ReportParameters reportParameters, CancellationToken ct = default);
 		Task<ReportForSingleReturnDto> GetReportById(Guid id, CancellationToken ct = default);
+		Task UpdateResolveStatus(Guid id, CancellationToken ct = default);
 	}
 }

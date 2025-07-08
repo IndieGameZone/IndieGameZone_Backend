@@ -68,5 +68,26 @@ namespace IndieGameZone.Application.ReportServices
 			var reports = mapper.Map<IEnumerable<ReportForListReturnDto>>(reportsWithMetaData);
 			return (reports, reportsWithMetaData.MetaData);
 		}
+
+		public async Task UpdateResolveStatus(Guid id, CancellationToken ct = default)
+		{
+			var reportEntity = await repositoryManager.ReportRepository.GetReportById(id, true, ct);
+			if (reportEntity == null)
+			{
+				throw new NotFoundException($"Report not found.");
+			}
+			reportEntity.IsResolved = true;
+
+			repositoryManager.NotificationRepository.CreateNotification(new Notifications
+			{
+				Id = Guid.NewGuid(),
+				UserId = reportEntity.ReportingUserId,
+				Message = $"Your report has been resolved - {reportEntity.Message}",
+				CreatedAt = DateTime.Now,
+				IsRead = false
+			});
+
+			await repositoryManager.SaveAsync(ct);
+		}
 	}
 }

@@ -370,6 +370,15 @@ namespace IndieGameZone.Application.TransactionServices
 				{
 					var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(transaction.UserId, true, ct);
 					wallet.Balance += transaction.Amount;
+
+					repositoryManager.NotificationRepository.CreateNotification(new Notifications
+					{
+						Id = Guid.NewGuid(),
+						UserId = transaction.UserId,
+						Message = $"You have successfully added {transaction.Amount} points to your wallet",
+						CreatedAt = DateTime.Now,
+						IsRead = false
+					});
 				}
 				else if (transaction.Type == TransactionType.Donation)
 				{

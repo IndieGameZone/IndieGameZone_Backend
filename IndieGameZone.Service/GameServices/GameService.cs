@@ -9,6 +9,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -21,14 +22,16 @@ namespace IndieGameZone.Application.GameServices
 		private readonly IBlobService blobService;
 		private readonly ISchedulerFactory schedulerFactory;
 		private readonly IRecombeeService recombeeService;
+		private readonly UserManager<Users> userManager;
 
-		public GameService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, ISchedulerFactory schedulerFactory, IRecombeeService recombeeService)
+		public GameService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, ISchedulerFactory schedulerFactory, IRecombeeService recombeeService, UserManager<Users> userManager)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.blobService = blobService;
 			this.schedulerFactory = schedulerFactory;
 			this.recombeeService = recombeeService;
+			this.userManager = userManager;
 		}
 
 		private async Task CheckGamePriceChangeWithin28Days(Games gameEntity, GameForUpdateDto game)
@@ -292,7 +295,7 @@ namespace IndieGameZone.Application.GameServices
 
 			if (gameActivationDto.CensorStatus == CensorStatus.Approved)
 			{
-				repositoryManager.NotificationRepository.CreateNotification(new Domain.Entities.Notifications
+				repositoryManager.NotificationRepository.CreateNotification(new Notifications
 				{
 					Id = Guid.NewGuid(),
 					UserId = gameEntity.DeveloperId,
@@ -303,7 +306,7 @@ namespace IndieGameZone.Application.GameServices
 			}
 			else if (gameActivationDto.CensorStatus == CensorStatus.Rejected)
 			{
-				repositoryManager.NotificationRepository.CreateNotification(new Domain.Entities.Notifications
+				repositoryManager.NotificationRepository.CreateNotification(new Notifications
 				{
 					Id = Guid.NewGuid(),
 					UserId = gameEntity.DeveloperId,
@@ -325,11 +328,17 @@ namespace IndieGameZone.Application.GameServices
 			}
 		}
 
-		public async Task<(Stream content, string type, string filename)> IncreaseNumberOfDownload(Guid gamePlatformId, CancellationToken ct = default)
+		public async Task<(Stream content, string type, string filename)> IncreaseNumberOfDownload(Guid userId, Guid gamePlatformId, CancellationToken ct = default)
 		{
+
+
 			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, false, ct);
 			var game = await repositoryManager.GameRepository.GetGameById(gamePlatform.GameId, true, ct);
-			game.NumberOfDownloads++;
+			var roles = await userManager.GetRolesAsync(await userManager.FindByIdAsync(userId.ToString()));
+			if (roles.Contains(RoleEnum.Player.ToString()) || userId != game.DeveloperId)
+			{
+				game.NumberOfDownloads++;
+			}
 			await repositoryManager.SaveAsync(ct);
 
 			var blobName = gamePlatform.File.Split('/').Last();

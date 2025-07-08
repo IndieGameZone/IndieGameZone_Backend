@@ -29,7 +29,7 @@ namespace IndieGameZone.Application.GamePlatformServices
 				gamePlatform.Id = Guid.NewGuid();
 				gamePlatform.GameId = gameId;
 				var blobName = gamePlatform.File.Split('/').Last();
-				gamePlatform.DisplayName = blobName;
+				gamePlatform.DisplayName = await blobService.GetBlobOriginalName(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.IsActive = true;
 			}

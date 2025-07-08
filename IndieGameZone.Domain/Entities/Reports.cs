@@ -5,6 +5,7 @@
 		public Guid Id { get; set; }
 		public string Message { get; set; } = string.Empty;
 		public DateTime CreatedAt { get; set; }
+		public bool IsResolved { get; set; }
 		public Guid ReportingUserId { get; set; }
 		public Guid? PostId { get; set; }
 		public Guid ReportReasonId { get; set; }
