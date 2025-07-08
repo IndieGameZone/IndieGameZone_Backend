@@ -22,6 +22,26 @@ namespace IndieGameZone.Application.BlobService
 			return await blobClient.DeleteIfExistsAsync();
 		}
 
+		public async Task<object> DownloadFile(string blobName, string containerName)
+		{
+			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+			BlobClient blobClient = containerClient.GetBlobClient(blobName);
+			var exists = await blobClient.ExistsAsync();
+			if (!exists.Value)
+			{
+				throw new FileNotFoundException($"Blob '{blobName}' not found.");
+			}
+			var blob = await blobClient.DownloadAsync();
+			var metadata = (await blobClient.GetPropertiesAsync()).Value.Metadata;
+			var originalFileName = metadata.ContainsKey("OriginalName") ? metadata["OriginalName"] : blobName;
+			return new
+			{
+				Content = blob.Value.Content,
+				ContentType = blob.Value.Details.ContentType,
+				FileName = originalFileName
+			};
+		}
+
 		public async Task<string> GetBlob(string blobName, string containerName)
 		{
 			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
@@ -63,9 +83,14 @@ namespace IndieGameZone.Application.BlobService
 					InitialTransferSize = 4 * 1024 * 1024, // 4MB
 					MaximumTransferSize = 4 * 1024 * 1024, // 4MB
 					MaximumConcurrency = 4
+				},
+				Metadata = new Dictionary<string, string>
+				{
+					{ "OriginalName", file.FileName },
+					{ "UploadDate", DateTime.Now.ToString("o") }
 				}
 			};
-			var result = await blobClient.UploadAsync(file.OpenReadStream(), overwrite: true);
+			var result = await blobClient.UploadAsync(file.OpenReadStream(), uploadOptions);
 			if (result is not null)
 			{
 				return await GetBlob(blobName, containerName);

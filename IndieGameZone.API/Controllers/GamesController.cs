@@ -119,7 +119,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("games/{gameId:guid}/platform-file")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
+		[Authorize]
 		public async Task<IActionResult> GetGamePlatformFile([FromRoute] Guid gameId, CancellationToken ct)
 		{
 			var platformFile = await serviceManager.GameService.GetGamePlatformFile(gameId, ct);
