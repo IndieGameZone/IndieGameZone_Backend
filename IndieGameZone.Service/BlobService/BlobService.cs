@@ -22,7 +22,7 @@ namespace IndieGameZone.Application.BlobService
 			return await blobClient.DeleteIfExistsAsync();
 		}
 
-		public async Task<object> DownloadFile(string blobName, string containerName)
+		public async Task<(Stream content, string type, string filename)> DownloadFile(string blobName, string containerName)
 		{
 			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
 			BlobClient blobClient = containerClient.GetBlobClient(blobName);
@@ -34,12 +34,7 @@ namespace IndieGameZone.Application.BlobService
 			var blob = await blobClient.DownloadAsync();
 			var metadata = (await blobClient.GetPropertiesAsync()).Value.Metadata;
 			var originalFileName = metadata.ContainsKey("OriginalName") ? metadata["OriginalName"] : blobName;
-			return new
-			{
-				Content = blob.Value.Content,
-				ContentType = blob.Value.Details.ContentType,
-				FileName = originalFileName
-			};
+			return (blob.Value.Content, blob.Value.Details.ContentType, originalFileName);
 		}
 
 		public async Task<string> GetBlob(string blobName, string containerName)

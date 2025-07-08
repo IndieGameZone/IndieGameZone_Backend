@@ -134,12 +134,12 @@ namespace IndieGameZone.API.Controllers
 			return Ok(platformFile);
 		}
 
-		[HttpPut("games/{gamePlatformId:guid}/number-of-download")]
+		[HttpPut("games/{gamePlatformId:guid}/file-downloading")]
 		[Authorize]
 		public async Task<IActionResult> IncreaseNumberOfDownload([FromRoute] Guid gamePlatformId, CancellationToken ct)
 		{
-			var downloadUrl = await serviceManager.GameService.IncreaseNumberOfDownload(gamePlatformId, ct);
-			return Redirect(downloadUrl);
+			var (content, type, filename) = await serviceManager.GameService.IncreaseNumberOfDownload(gamePlatformId, ct);
+			return File(content, type, filename);
 		}
 
 		[HttpGet("games/number-of-games")]

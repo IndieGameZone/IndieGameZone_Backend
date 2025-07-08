@@ -325,14 +325,16 @@ namespace IndieGameZone.Application.GameServices
 			}
 		}
 
-		public async Task<string> IncreaseNumberOfDownload(Guid gamePlatformId, CancellationToken ct = default)
+		public async Task<(Stream content, string type, string filename)> IncreaseNumberOfDownload(Guid gamePlatformId, CancellationToken ct = default)
 		{
 			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, false, ct);
 			var game = await repositoryManager.GameRepository.GetGameById(gamePlatform.GameId, true, ct);
 			game.NumberOfDownloads++;
 			await repositoryManager.SaveAsync(ct);
 
-			return gamePlatform.File;
+			var blobName = gamePlatform.File.Split('/').Last();
+
+			return await blobService.DownloadFile(blobName, StorageContainer.STORAGE_CONTAINER);
 		}
 
 		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetActiveGamesByDeveloperId(Guid developerId, ActiveGameParameters activeGameParameters, CancellationToken ct = default)
