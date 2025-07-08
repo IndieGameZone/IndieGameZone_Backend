@@ -134,7 +134,7 @@ namespace IndieGameZone.API.Controllers
 			return Ok(platformFile);
 		}
 
-		[HttpPut("users/{userId:guid}games/{gamePlatformId:guid}/file-downloading")]
+		[HttpPut("users/{userId:guid}/games/{gamePlatformId:guid}/file-downloading")]
 		[Authorize]
 		public async Task<IActionResult> IncreaseNumberOfDownload([FromRoute] Guid userId, [FromRoute] Guid gamePlatformId, CancellationToken ct)
 		{
@@ -157,7 +157,7 @@ namespace IndieGameZone.API.Controllers
 			});
 		}
 
-		[HttpGet("users/{userId:guid}games/{gameId:guid}/ownership-checking")]
+		[HttpGet("users/{userId:guid}/games/{gameId:guid}/ownership-checking")]
 		[Authorize]
 		public async Task<IActionResult> CheckGameOwnership([FromRoute] Guid userId, [FromRoute] Guid gameId, CancellationToken ct)
 		{
