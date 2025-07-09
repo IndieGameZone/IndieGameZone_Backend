@@ -62,14 +62,15 @@ namespace IndieGameZone.API.Controllers
 
 		[HttpGet("registrations")]
 		public async Task<IActionResult> GetCommercialRegistrations(
-	[FromQuery] Guid? gameId,
+    [FromQuery] Guid? userId,
+    [FromQuery] Guid? gameId,
 	[FromQuery] Guid? commercialPackageId,
 	[FromQuery] CommercialRegistrationParameters parameters,
 	CancellationToken ct)
 		{
 			var pagedResult = await serviceManager
 				.CommercialPackageService
-				.GetFilteredCommercialRegistrations(gameId, commercialPackageId, parameters, ct);
+				.GetFilteredCommercialRegistrations(userId, gameId, commercialPackageId, parameters, ct);
 
 			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
 			return Ok(pagedResult.commercialRegistrations);

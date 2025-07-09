@@ -9,8 +9,9 @@ namespace IndieGameZone.Domain.IRepositories
 		void DeleteCommercialRegistration(CommercialRegistration commercialRegistration);
 		Task<CommercialRegistration?> GetCommercialRegistrationById(Guid id, bool trackChange, CancellationToken ct = default);
 		Task<PagedList<CommercialRegistration>> GetCommercialRegistrations(CommercialRegistrationParameters commercialRegistrationParameters, bool trackChange, CancellationToken ct = default);
-		Task<PagedList<CommercialRegistration>> GetCommercialRegistrationsByPackage(Guid commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, bool trackChange, CancellationToken ct = default);
-		Task<PagedList<CommercialRegistration>> GetCommercialRegistrationsByGame(Guid gameId, CommercialRegistrationParameters commercialRegistrationParameters, bool trackChange, CancellationToken ct = default);
+		Task<PagedList<CommercialRegistration>> GetCommercialRegistrationsByUser(Guid userId, CommercialRegistrationParameters commercialRegistrationParameters, bool trackChange, CancellationToken ct = default);
+        Task<PagedList<CommercialRegistration>> GetCommercialRegistrationsByGame(Guid gameId, CommercialRegistrationParameters commercialRegistrationParameters, bool trackChange, CancellationToken ct = default);
+        Task<PagedList<CommercialRegistration>> GetCommercialRegistrationsByPackage(Guid commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, bool trackChange, CancellationToken ct = default);
 		//Task<bool> IsCommercialRegistrationExists(Guid userId, Guid commercialPackageId, CancellationToken ct = default);
 		//Task<bool> IsCommercialRegistrationExistsById(Guid id, CancellationToken ct = default);
 		//Task CreateCommercialRegistrationAsync(Guid userId, Guid commercialPackageId, CancellationToken ct = default);
