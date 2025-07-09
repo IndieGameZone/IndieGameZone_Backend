@@ -20,7 +20,7 @@ namespace IndieGameZone.Application.BanHistoryServices
     {
         private readonly IRepositoryManager repositoryManager;
         private readonly IMapper mapper;
-		private readonly UserManager<Users> userManager;
+        private readonly UserManager<Users> userManager;
 
         public BanHistoryService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager)
         {
@@ -44,7 +44,7 @@ namespace IndieGameZone.Application.BanHistoryServices
 
             user.IsActive = false;
             await userManager.UpdateAsync(user);
-            
+
             var banHistoryEntity = mapper.Map<BanHistories>(banHistoryForCreationDto);
             banHistoryEntity.Id = Guid.NewGuid();
             banHistoryEntity.BanDate = DateTime.Now;
@@ -83,6 +83,13 @@ namespace IndieGameZone.Application.BanHistoryServices
                 throw new NotFoundException($"Ban History not found.");
             }
             return mapper.Map<BanHistoryForReturnDto>(banHistoryEntity);
+        }
+
+        public async Task<(IEnumerable<BanHistoryForReturnDto> banHistories, MetaData metaData)> GetBanHistoriesByUserId(Guid userId, BanHistoryParameters banHistoryParameters, bool trackChanges = false, CancellationToken ct = default)
+        {
+            var banHistoriesWithMetaData = await repositoryManager.BanHistoryRepository.GetBanHistoriesByUserId(userId, banHistoryParameters, trackChanges, ct);
+            var banHistories = mapper.Map<IEnumerable<BanHistoryForReturnDto>>(banHistoriesWithMetaData);
+            return (banHistories, banHistoriesWithMetaData.MetaData);
         }
 
         public async Task UnbanUser(Guid userId, CancellationToken ct = default)

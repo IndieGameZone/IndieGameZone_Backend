@@ -17,6 +17,6 @@ namespace IndieGameZone.Domain.IRepositories
         void DeleteBanHistory(BanHistories banHistory);
         Task<bool> HasActiveBanAsync(Guid userId, DateTime now, CancellationToken ct = default);
         Task<bool> HasFutureBanAsync(Guid userId, Guid excludeBanId, DateTime currentBanDate, CancellationToken ct = default);
-
+        Task<PagedList<BanHistories>> GetBanHistoriesByUserId(Guid userId, BanHistoryParameters banHistoryParameters, bool trackChanges = false, CancellationToken ct = default);
     }
 }

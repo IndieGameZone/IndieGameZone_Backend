@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Application;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.BanHistories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
@@ -31,6 +32,14 @@ namespace IndieGameZone.API.Controllers
         {
             var banHistory = await serviceManager.BanHistoryService.GetBanHistoryById(id, ct);
             return Ok(banHistory);
+        }
+
+        [HttpGet("users/{userId:guid}")]
+        public async Task<IActionResult> GetBanHistoriesByUserId(Guid userId, [FromQuery] BanHistoryParameters banHistoryParameters, CancellationToken ct)
+        {
+            var pagedResult = await serviceManager.BanHistoryService.GetBanHistoriesByUserId(userId, banHistoryParameters, false, ct);
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+            return Ok(pagedResult.banHistories);
         }
 
         [HttpPost]

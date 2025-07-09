@@ -17,5 +17,6 @@ namespace IndieGameZone.Application.BanHistoryServices
         Task DeleteBanHistory(Guid id, CancellationToken ct = default);
         Task<BanHistoryForReturnDto> GetBanHistoryById(Guid id, CancellationToken ct = default);
         Task<(IEnumerable<BanHistoryForReturnDto> banHistories, MetaData metaData)> GetBanHistories(BanHistoryParameters banHistoryParameters, CancellationToken ct = default);
+        Task<(IEnumerable<BanHistoryForReturnDto> banHistories, MetaData metaData)> GetBanHistoriesByUserId(Guid userId, BanHistoryParameters banHistoryParameters, bool trackChanges = false, CancellationToken ct = default);
     }
 }
