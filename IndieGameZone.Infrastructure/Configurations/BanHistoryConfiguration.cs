@@ -12,10 +12,14 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(b => b.BanDate);
 			builder.Property(b => b.UnbanDate);
 			builder.Property(b => b.Reason);
-			builder.HasOne(builder => builder.User)
-				.WithMany(user => user.BanHistories)
-				.HasForeignKey(b => b.UserId)
+			builder.HasOne(builder => builder.BannedUser)
+				.WithMany(user => user.BansReceived)
+				.HasForeignKey(b => b.BannedUserId)
 				.OnDelete(DeleteBehavior.Restrict);
-		}
+            builder.HasOne(builder => builder.BannedByUser)
+                .WithMany(user => user.BansPerformed)
+                .HasForeignKey(b => b.BannedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
 	}
 }

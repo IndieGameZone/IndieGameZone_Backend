@@ -25,7 +25,7 @@ namespace IndieGameZone.Infrastructure.Repositories
         public async Task<BanHistories?> GetBanHistoryById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(b => b.Id.Equals(id), trackChange)
             .SingleOrDefaultAsync(ct);
 
-        public async Task<BanHistories?> GetLatestBanHistoryByUserId(Guid userId, bool trackChange, CancellationToken ct = default) => await FindByCondition(b => b.UserId.Equals(userId), trackChange)
+        public async Task<BanHistories?> GetLatestBanHistoryByUserId(Guid userId, bool trackChange, CancellationToken ct = default) => await FindByCondition(b => b.BannedUserId.Equals(userId), trackChange)
         .OrderByDescending(b => b.UnbanDate)
         .FirstOrDefaultAsync(ct);
 
@@ -40,7 +40,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
         public async Task<PagedList<BanHistories>> GetBanHistoriesByUserId(Guid userId, BanHistoryParameters banHistoryParameters, bool trackChange, CancellationToken ct = default)
         {
-            var banHistoryEntities = FindByCondition(b => b.UserId == userId, trackChange)
+            var banHistoryEntities = FindByCondition(b => b.BannedUserId == userId, trackChange)
                 .Sort();
 
             return await PagedList<BanHistories>.ToPagedList(banHistoryEntities, banHistoryParameters.PageNumber, banHistoryParameters.PageSize, ct);
@@ -49,7 +49,7 @@ namespace IndieGameZone.Infrastructure.Repositories
         public async Task<bool> HasActiveBanAsync(Guid userId, DateTime now, CancellationToken ct = default)
         {
             return await FindByCondition(b =>
-                b.UserId == userId &&
+                b.BannedUserId == userId &&
                 b.BanDate <= now &&
                 b.UnbanDate >= now, false)
                 .AnyAsync(ct);
@@ -58,7 +58,7 @@ namespace IndieGameZone.Infrastructure.Repositories
         public async Task<bool> HasFutureBanAsync(Guid userId, Guid excludeBanId, DateTime currentBanDate, CancellationToken ct = default)
         {
             return await FindByCondition(b =>
-                b.UserId == userId &&
+                b.BannedUserId == userId &&
                 b.Id != excludeBanId &&
                 b.BanDate > currentBanDate, false)
                 .AnyAsync(ct);

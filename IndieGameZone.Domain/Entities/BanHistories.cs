@@ -6,9 +6,11 @@
 		public DateTime BanDate { get; set; }
 		public DateTime UnbanDate { get; set; }
 		public string Reason { get; set; } = string.Empty;
-		public Guid UserId { get; set; }
+        public Guid BannedUserId { get; set; }
+        public Guid BannedByUserId { get; set; }
 
-		//Navigation Properties
-		public virtual Users User { get; set; } = null!;
-	}
+        // Navigation Properties
+        public virtual Users BannedUser { get; set; } = null!;
+        public virtual Users BannedByUser { get; set; } = null!;
+    }
 }

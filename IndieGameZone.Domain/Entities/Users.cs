@@ -13,8 +13,9 @@ namespace IndieGameZone.Domain.Entities
 
 		//Navigation Properties
 		public virtual Wallets Wallet { get; set; } = null!;
-		public virtual ICollection<BanHistories> BanHistories { get; set; } = null!;
-		public virtual ICollection<UserAchievements> UserAchievements { get; set; } = new List<UserAchievements>();
+        public virtual ICollection<BanHistories> BansReceived { get; set; } = new List<BanHistories>();
+        public virtual ICollection<BanHistories> BansPerformed { get; set; } = new List<BanHistories>();
+        public virtual ICollection<UserAchievements> UserAchievements { get; set; } = new List<UserAchievements>();
 		public virtual ICollection<Notifications> Notifications { get; set; } = null!;
 		public virtual ICollection<Games> Games { get; set; } = null!;
 		public virtual ICollection<Reviews> Reviews { get; set; } = new List<Reviews>();

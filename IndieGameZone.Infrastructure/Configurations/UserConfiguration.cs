@@ -22,10 +22,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(u => u.RefreshTokenExpiryTime);
 			builder.Property(u => u.LastUsernameChangedDate);
 
-			builder.HasMany(u => u.BanHistories)
-				.WithOne(b => b.User)
-				.HasForeignKey(b => b.UserId)
-				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasMany(u => u.UserAchievements)
 				.WithOne(ua => ua.User)
 				.HasForeignKey(ua => ua.UserId)

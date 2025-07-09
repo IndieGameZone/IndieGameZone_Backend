@@ -60,7 +60,7 @@ namespace IndieGameZone.Application.BanHistoryServices
             {
                 throw new NotFoundException($"Ban History not found.");
             }
-            var user = await userManager.FindByIdAsync(banHistoryEntity.UserId.ToString());
+            var user = await userManager.FindByIdAsync(banHistoryEntity.BannedUserId.ToString());
             if (user == null) throw new UserNotFoundException();
             user.IsActive = true;
             await userManager.UpdateAsync(user);
@@ -121,7 +121,7 @@ namespace IndieGameZone.Application.BanHistoryServices
 
             // ✅ Check if there's a newer ban for the same user
             var hasFutureBan = await repositoryManager.BanHistoryRepository
-                .HasFutureBanAsync(banHistoryEntity.UserId, banHistoryEntity.Id, banHistoryEntity.BanDate, ct);
+                .HasFutureBanAsync(banHistoryEntity.BannedUserId, banHistoryEntity.Id, banHistoryEntity.BanDate, ct);
 
             if (hasFutureBan && banHistoryForUpdateDto.UnbanDate != banHistoryEntity.UnbanDate)
                 throw new InvalidOperationException("Cannot update unban date because a newer ban already exists for this user.");
@@ -129,7 +129,7 @@ namespace IndieGameZone.Application.BanHistoryServices
 
             mapper.Map(banHistoryForUpdateDto, banHistoryEntity);
 
-            var user = await userManager.FindByIdAsync(banHistoryEntity.UserId.ToString());
+            var user = await userManager.FindByIdAsync(banHistoryEntity.BannedUserId.ToString());
             if (user == null) throw new UserNotFoundException();
             // Only deactivate the user if they are currently within the ban period
             if (DateTime.Now >= banHistoryEntity.BanDate && DateTime.Now <= banHistoryForUpdateDto.UnbanDate)
