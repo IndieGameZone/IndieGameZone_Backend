@@ -19,6 +19,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithMany(u => u.Coupons)
 				.HasForeignKey(c => c.UserId)
 				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne(c => c.Transaction)
+				.WithOne(t => t.Coupon)
+				.HasForeignKey<Transactions>(c => c.CouponId)
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

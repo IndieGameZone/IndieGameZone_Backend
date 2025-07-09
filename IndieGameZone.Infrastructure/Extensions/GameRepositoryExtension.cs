@@ -10,6 +10,15 @@ namespace IndieGameZone.Infrastructure.Extensions
 			return source.OrderByDescending(x => x.CreatedAt);
 		}
 
+		public static IQueryable<Games> FilterByCategory(this IQueryable<Games> source, Guid? category)
+		{
+			if (category == null)
+			{
+				return source;
+			}
+			return source.Where(x => x.CategoryId == category);
+		}
+
 		public static IQueryable<Games> Search(this IQueryable<Games> source, string? searchTerm)
 		{
 			if (string.IsNullOrWhiteSpace(searchTerm))

@@ -6,6 +6,9 @@
 		Withdraw,
 		PurchaseGame,
 		PurchaseCommercialPackage,
-		Donation
+		Donation,
+		PurchaseGameRevenue,
+		PurchaseCommercialPackageRevenue,
+		DonationRevenue
 	}
 }

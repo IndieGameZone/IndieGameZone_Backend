@@ -5,7 +5,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Transactions
 {
 	public class TransactionForGameCreation
 	{
-		public string? CouponCode { get; init; }
+		public double Amount { get; init; }
+		public Guid? CouponId { get; init; }
 		[Required]
 		public PaymentMethod PaymentMethod { get; init; }
 	}

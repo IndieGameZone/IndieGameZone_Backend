@@ -65,16 +65,16 @@ namespace IndieGameZone.Application.TransactionServices
 			return response.checkoutUrl;
 		}
 
-		private async Task<double> GetGamePriceAfterApplyingCoupon(Games game, string? couponCode, CancellationToken ct = default)
+		private async Task<double> GetGamePriceAfterApplyingCoupon(Games game, Guid? couponId, CancellationToken ct = default)
 		{
 			double gamePriceAfterDiscount = 0;
-			if (couponCode == null || couponCode.Trim().Equals(string.Empty))
+			if (couponId == null)
 			{
 				gamePriceAfterDiscount = game.Price;
 			}
 			else
 			{
-				var coupon = await repositoryManager.CouponRepository.GetCouponByCode(couponCode, true, ct);
+				var coupon = await repositoryManager.CouponRepository.GetCouponById((Guid)couponId, true, ct);
 				if (coupon == null)
 				{
 					throw new NotFoundException("Coupon does not exist");
@@ -227,13 +227,13 @@ namespace IndieGameZone.Application.TransactionServices
 		{
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
 			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct);
-			double gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, transactionForGameCreation.CouponCode);
+			double gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, transactionForGameCreation.CouponId);
 
 			if (transactionForGameCreation.PaymentMethod == PaymentMethod.Wallet)
 			{
-				if (wallet.Balance < gamePriceAfterDiscount)
+				if (wallet.Balance < transactionForGameCreation.Amount)
 				{
-					throw new NotEnoughCreditException("You don't have enough credits to buy this game");
+					throw new NotEnoughCreditException("You don't have enough points");
 				}
 			}
 
@@ -244,9 +244,10 @@ namespace IndieGameZone.Application.TransactionServices
 				PurchaseUserId = userId,
 				GameId = gameId,
 				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
-				Amount = gamePriceAfterDiscount,
+				Amount = transactionForGameCreation.Amount,
 				Description = $"Purchase transaction of game {game.Name} for player",
 				CreatedAt = DateTime.Now,
+				CouponId = transactionForGameCreation.CouponId,
 				Type = TransactionType.PurchaseGame,
 				Status = transactionForGameCreation.PaymentMethod == PaymentMethod.PayOS ? TransactionStatus.Pending : TransactionStatus.Success,
 				PaymentMethod = transactionForGameCreation.PaymentMethod
@@ -259,7 +260,7 @@ namespace IndieGameZone.Application.TransactionServices
 				var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
 
 				// Update balances for player wallet
-				wallet.Balance -= transactionEntity.Amount;
+				wallet.Balance -= transactionForGameCreation.Amount;
 
 				// Add game to library
 				var libraryEntity = new Libraries
@@ -270,6 +271,27 @@ namespace IndieGameZone.Application.TransactionServices
 				};
 				repositoryManager.LibraryRepository.AddGameToLibrary(libraryEntity);
 
+				//Check if amount include donation
+				if (transactionForGameCreation.Amount > gamePriceAfterDiscount)
+				{
+					var transactionDonationForDeveloper = new Transactions()
+					{
+						Id = Guid.NewGuid(),
+						UserId = game.DeveloperId,
+						PurchaseUserId = userId,
+						GameId = gameId,
+						OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+						Amount = transactionForGameCreation.Amount - gamePriceAfterDiscount,
+						Description = $"Donation money for game {game.Name} for developer",
+						CreatedAt = DateTime.Now,
+						Type = TransactionType.DonationRevenue,
+						Status = TransactionStatus.Success,
+						PaymentMethod = PaymentMethod.Wallet
+					};
+					devWallet.Balance += transactionDonationForDeveloper.Amount;
+					repositoryManager.TransactionRepository.CreateTransaction(transactionDonationForDeveloper);
+				}
+
 				// Create transactions for developer and update balance
 				var transactionForDeveloper = new Transactions()
 				{
@@ -278,10 +300,10 @@ namespace IndieGameZone.Application.TransactionServices
 					PurchaseUserId = userId,
 					GameId = gameId,
 					OrderCode = await GenerateUniqueOrderCodeAsync(ct),
-					Amount = transactionEntity.Amount * 0.8, // 80% to developer
+					Amount = gamePriceAfterDiscount * 0.8, // 80% to developer
 					Description = $"80% of purchase transaction for game {game.Name} for developer",
 					CreatedAt = DateTime.Now,
-					Type = TransactionType.PurchaseGame,
+					Type = TransactionType.PurchaseGameRevenue,
 					Status = TransactionStatus.Success,
 					PaymentMethod = PaymentMethod.Wallet
 				};
@@ -296,10 +318,10 @@ namespace IndieGameZone.Application.TransactionServices
 					PurchaseUserId = userId,
 					GameId = gameId,
 					OrderCode = await GenerateUniqueOrderCodeAsync(ct),
-					Amount = transactionEntity.Amount * 0.2, // 80% to developer
+					Amount = gamePriceAfterDiscount * 0.2, // 80% to developer
 					Description = $"20% of purchase transaction for game {game.Name} for system",
 					CreatedAt = DateTime.Now,
-					Type = TransactionType.PurchaseGame,
+					Type = TransactionType.PurchaseGameRevenue,
 					Status = TransactionStatus.Success,
 					PaymentMethod = PaymentMethod.Wallet
 				};
@@ -333,7 +355,7 @@ namespace IndieGameZone.Application.TransactionServices
 				PurchaseUserId = userId,
 				GameId = gameId,
 				Amount = transactionForDonationCreationDto.Amount,
-				Description = $"Donation money for game {game.Name} for player",
+				Description = $"Donation money for game {game.Name} for developer",
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.Donation,
 				Status = TransactionStatus.Pending,
@@ -395,7 +417,7 @@ namespace IndieGameZone.Application.TransactionServices
 						Amount = transaction.Amount,
 						Description = $"Donation money for game {game.Name} for developer",
 						CreatedAt = DateTime.Now,
-						Type = TransactionType.Donation,
+						Type = TransactionType.DonationRevenue,
 						Status = TransactionStatus.Pending,
 						PaymentMethod = PaymentMethod.PayOS,
 					};
@@ -405,6 +427,7 @@ namespace IndieGameZone.Application.TransactionServices
 				else if (transaction.Type == TransactionType.PurchaseGame)
 				{
 					var game = await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId!, false, ct);
+					var gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, transaction.CouponId, ct);
 					var developerId = transaction.Game.DeveloperId;
 					var devWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
 					var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
@@ -418,6 +441,27 @@ namespace IndieGameZone.Application.TransactionServices
 					};
 					repositoryManager.LibraryRepository.AddGameToLibrary(libraryEntity);
 
+					//Check if amount include donation
+					if (transaction.Amount > gamePriceAfterDiscount)
+					{
+						var transactionDonationForDeveloper = new Transactions()
+						{
+							Id = Guid.NewGuid(),
+							UserId = game.DeveloperId,
+							PurchaseUserId = transaction.UserId,
+							GameId = game.Id,
+							OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+							Amount = transaction.Amount - gamePriceAfterDiscount,
+							Description = $"Donation money for game {game.Name} for developer",
+							CreatedAt = DateTime.Now,
+							Type = TransactionType.DonationRevenue,
+							Status = TransactionStatus.Success,
+							PaymentMethod = PaymentMethod.PayOS
+						};
+						devWallet.Balance += transactionDonationForDeveloper.Amount;
+						repositoryManager.TransactionRepository.CreateTransaction(transactionDonationForDeveloper);
+					}
+
 					// Create transactions for developer and update balance
 					var transactionForDeveloper = new Transactions()
 					{
@@ -426,10 +470,10 @@ namespace IndieGameZone.Application.TransactionServices
 						PurchaseUserId = transaction.UserId,
 						GameId = game.Id,
 						OrderCode = await GenerateUniqueOrderCodeAsync(ct),
-						Amount = transaction.Amount * 0.8, // 80% to developer
+						Amount = gamePriceAfterDiscount * 0.8, // 80% to developer
 						Description = $"80% of purchase for game {game.Name} for developer",
 						CreatedAt = DateTime.Now,
-						Type = TransactionType.PurchaseGame,
+						Type = TransactionType.PurchaseGameRevenue,
 						Status = TransactionStatus.Success,
 						PaymentMethod = PaymentMethod.PayOS
 					};
@@ -444,10 +488,10 @@ namespace IndieGameZone.Application.TransactionServices
 						PurchaseUserId = transaction.UserId,
 						GameId = game.Id,
 						OrderCode = await GenerateUniqueOrderCodeAsync(ct),
-						Amount = transaction.Amount * 0.2, // 20% to admin
+						Amount = gamePriceAfterDiscount * 0.2, // 20% to admin
 						Description = $"20% of purchase for game {game.Name} for system",
 						CreatedAt = DateTime.Now,
-						Type = TransactionType.PurchaseGame,
+						Type = TransactionType.PurchaseGameRevenue,
 						Status = TransactionStatus.Success,
 						PaymentMethod = PaymentMethod.PayOS
 					};
@@ -481,7 +525,7 @@ namespace IndieGameZone.Application.TransactionServices
 						Amount = transaction.Amount,
 						Description = $"Purchase for commercial package with a specific period of time",
 						CreatedAt = DateTime.Now,
-						Type = TransactionType.PurchaseCommercialPackage,
+						Type = TransactionType.PurchaseCommercialPackageRevenue,
 						Status = TransactionStatus.Success,
 						PaymentMethod = PaymentMethod.Wallet
 					};
@@ -576,7 +620,7 @@ namespace IndieGameZone.Application.TransactionServices
 					Amount = package.Price,
 					Description = $"Purchase for commercial package {package.Name} for game {game.Name}",
 					CreatedAt = DateTime.Now,
-					Type = TransactionType.PurchaseCommercialPackage,
+					Type = TransactionType.PurchaseCommercialPackageRevenue,
 					Status = TransactionStatus.Success,
 					PaymentMethod = PaymentMethod.Wallet
 				};

@@ -27,7 +27,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.GameTags).ThenInclude(x => x.Tag).FilterByTags(activeGameParameters.Tags).AsSplitQuery()
 				.Include(x => x.GamePlatforms).FilterByPlatform(activeGameParameters.Platforms).AsSplitQuery()
 				.Include(x => x.GameLanguages).FilterByLanguages(activeGameParameters.Languages).AsSplitQuery()
-				.Include(x => x.Category).AsSplitQuery()
+				.Include(x => x.Category).FilterByCategory(activeGameParameters.Category).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Games>.ToPagedList(gameEntities, activeGameParameters.PageNumber, activeGameParameters.PageSize, ct);
@@ -50,7 +50,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.GameTags).ThenInclude(x => x.Tag).FilterByTags(activeGameParameters.Tags).AsSplitQuery()
 				.Include(x => x.GamePlatforms).FilterByPlatform(activeGameParameters.Platforms).AsSplitQuery()
 				.Include(x => x.GameLanguages).FilterByLanguages(activeGameParameters.Languages).AsSplitQuery()
-				.Include(x => x.Category).AsSplitQuery()
+				.Include(x => x.Category).FilterByCategory(activeGameParameters.Category).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Games>.ToPagedList(gameEntities, activeGameParameters.PageNumber, activeGameParameters.PageSize, ct);

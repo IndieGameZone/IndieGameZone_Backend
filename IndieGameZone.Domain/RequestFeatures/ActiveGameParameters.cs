@@ -7,5 +7,6 @@
 		public ICollection<Guid> Tags { get; set; } = new List<Guid>();
 		public ICollection<Guid> Platforms { get; set; } = new List<Guid>();
 		public ICollection<Guid> Languages { get; set; } = new List<Guid>();
+		public Guid? Category { get; set; }
 	}
 }

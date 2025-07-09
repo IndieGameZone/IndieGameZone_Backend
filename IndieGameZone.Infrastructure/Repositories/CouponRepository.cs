@@ -13,9 +13,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void CreateCoupon(Coupons coupon) => Create(coupon);
 
-		public async Task<Coupons?> GetCouponByCode(string code, bool trackChange, CancellationToken ct = default) => await
-			FindByCondition(c => c.Code == code, trackChange)
-			.SingleOrDefaultAsync(ct);
+		public async Task<Coupons?> GetCouponById(Guid id, bool trackChange, CancellationToken ct = default) => await
+			FindByCondition(c => c.Id == id, trackChange)
+			.FirstOrDefaultAsync(ct);
 
 		public async Task<IEnumerable<Coupons>> GetCouponsByUserId(Guid userId, bool trackChange, CancellationToken ct = default) => await
 			FindByCondition(c => c.UserId == userId, trackChange)
