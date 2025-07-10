@@ -13,6 +13,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.BanHistories
         public DateTime BanDate { get; init; }
         public DateTime UnbanDate { get; init; }
         public string Reason { get; init; } = string.Empty;
-        public Guid UserId { get; init; }
+        public Guid BannedUserId { get; init; }
+        public Guid BannedByUserId { get; init; }
+
     }
 }

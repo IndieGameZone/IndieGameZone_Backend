@@ -34,10 +34,22 @@ namespace IndieGameZone.API.Controllers
             return Ok(banHistory);
         }
 
-        [HttpGet("users/{userId:guid}")]
-        public async Task<IActionResult> GetBanHistoriesByUserId(Guid userId, [FromQuery] BanHistoryParameters banHistoryParameters, CancellationToken ct)
+        [HttpGet("banned-users/{bannedUserId:guid}")]
+        public async Task<IActionResult> GetBansReceivedByUser(Guid bannedUserId, [FromQuery] BanHistoryParameters banHistoryParameters, CancellationToken ct)
         {
-            var pagedResult = await serviceManager.BanHistoryService.GetBanHistoriesByUserId(userId, banHistoryParameters, false, ct);
+            var pagedResult = await serviceManager.BanHistoryService
+                .GetBanHistoriesByBannedUserId(bannedUserId, banHistoryParameters, ct);
+
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+            return Ok(pagedResult.banHistories);
+        }
+
+        [HttpGet("banned-by/{bannedByUserId:guid}")]
+        public async Task<IActionResult> GetBansPerformedByUser(Guid bannedByUserId, [FromQuery] BanHistoryParameters banHistoryParameters, CancellationToken ct)
+        {
+            var pagedResult = await serviceManager.BanHistoryService
+                .GetBanHistoriesByBannedByUserId(bannedByUserId, banHistoryParameters, ct);
+
             Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
             return Ok(pagedResult.banHistories);
         }
@@ -62,12 +74,5 @@ namespace IndieGameZone.API.Controllers
             await serviceManager.BanHistoryService.UnbanUser(userId, ct);
             return NoContent();
         }
-
-        //[HttpDelete("{id:guid}")]
-        //public async Task<IActionResult> DeleteBanHistory([FromRoute] Guid id, CancellationToken ct)
-        //{
-        //    await serviceManager.BanHistoryService.DeleteBanHistory(id, ct);
-        //    return NoContent();
-        //}
     }
 }

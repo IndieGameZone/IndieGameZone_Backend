@@ -14,6 +14,9 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.BanHistories
         [Required]
         public string Reason { get; init; } = string.Empty;
         [Required]
-        public Guid UserId { get; init; }
+        public Guid BannedUserId { get; init; }
+        [Required]
+        public Guid BannedByUserId { get; init; }
+
     }
 }
