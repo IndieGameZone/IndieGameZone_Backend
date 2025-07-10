@@ -31,10 +31,12 @@ namespace IndieGameZone.Application.BlobService
 			{
 				throw new FileNotFoundException($"Blob '{blobName}' not found.");
 			}
-			var blob = await blobClient.DownloadAsync();
-			var metadata = (await blobClient.GetPropertiesAsync()).Value.Metadata;
+			var stream = await blobClient.OpenReadAsync();
+			var props = await blobClient.GetPropertiesAsync();
+			var metadata = props.Value.Metadata;
+			var contentType = props.Value.ContentType;
 			var originalFileName = metadata.ContainsKey("OriginalName") ? metadata["OriginalName"] : blobName;
-			return (blob.Value.Content, blob.Value.Details.ContentType, originalFileName);
+			return (stream, contentType, originalFileName);
 		}
 
 		public async Task<string> GetBlob(string blobName, string containerName)
@@ -89,10 +91,10 @@ namespace IndieGameZone.Application.BlobService
 					MaximumTransferSize = 4 * 1024 * 1024, // 4MB
 					MaximumConcurrency = 4
 				},
-				Metadata = new Dictionary<string, string>
+				HttpHeaders = new BlobHttpHeaders
 				{
-					{ "OriginalName", file.FileName },
-					{ "UploadDate", DateTime.Now.ToString("o") }
+					ContentType = file.ContentType,
+					ContentDisposition = $"attachment; filename=\"{file.FileName}\""
 				}
 			};
 			var result = await blobClient.UploadAsync(file.OpenReadStream(), uploadOptions);

@@ -138,8 +138,8 @@ namespace IndieGameZone.API.Controllers
 		[Authorize]
 		public async Task<IActionResult> IncreaseNumberOfDownload([FromRoute] Guid userId, [FromRoute] Guid gamePlatformId, CancellationToken ct)
 		{
-			var (content, type, filename) = await serviceManager.GameService.IncreaseNumberOfDownload(userId, gamePlatformId, ct);
-			return File(content, type, filename);
+			var downloadUrl = await serviceManager.GameService.IncreaseNumberOfDownload(userId, gamePlatformId, ct);
+			return Ok(downloadUrl);
 		}
 
 		[HttpGet("games/number-of-games")]
