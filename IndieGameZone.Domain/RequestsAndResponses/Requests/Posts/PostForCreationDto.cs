@@ -9,7 +9,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Posts
 		[Required]
 		public string Content { get; init; }
 		public string? Image { get; init; }
-		[Required]
-		public ICollection<Guid> Tags { get; init; }
+		public ICollection<Guid>? Tags { get; init; }
 	}
 }

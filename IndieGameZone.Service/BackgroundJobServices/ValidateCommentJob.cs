@@ -1,37 +1,33 @@
 ﻿using IndieGameZone.Application.AIService;
-using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.IRepositories;
 using Quartz;
 
 namespace IndieGameZone.Application.BackgroundJobServices
 {
-	public class ValidatePostJob : IJob
+	public class ValidateCommentJob : IJob
 	{
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IAIService aIService;
 
-		public ValidatePostJob(IRepositoryManager repositoryManager, IAIService aIService)
+		public ValidateCommentJob(IRepositoryManager repositoryManager, IAIService aIService)
 		{
 			this.repositoryManager = repositoryManager;
 			this.aIService = aIService;
 		}
-
 		public async Task Execute(IJobExecutionContext context)
 		{
 			var dataMap = context.MergedJobDataMap;
-			Guid postId = Guid.Parse(dataMap.GetString("postId"));
+			Guid commentId = Guid.Parse(dataMap.GetString("commentId"));
 
-			var post = await repositoryManager.PostRepository.GetPostById(postId, true);
-
-			if (await aIService.AnalyzeText(post.Title) && await aIService.AnalyzeText(post.Content))
+			var comment = await repositoryManager.PostCommentRepository.GetCommentById(commentId, true);
+			if (await aIService.AnalyzeText(comment.Content))
 			{
-				post.Status = PostStatus.Approved;
+				comment.IsActive = true;
 			}
 			else
 			{
-				post.Status = PostStatus.PendingManualReview;
+				comment.IsActive = false;
 			}
-			post.CensoredAt = DateTime.Now;
 			await repositoryManager.SaveAsync();
 		}
 	}

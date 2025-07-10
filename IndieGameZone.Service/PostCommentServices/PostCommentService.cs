@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Application.BackgroundJobServices;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
@@ -6,6 +7,7 @@ using IndieGameZone.Domain.RequestsAndResponses.Requests.PostComments;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.PostComments;
 using MapsterMapper;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 
 namespace IndieGameZone.Application.PostCommentServices
 {
@@ -13,11 +15,13 @@ namespace IndieGameZone.Application.PostCommentServices
 	{
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
+		private readonly ISchedulerFactory schedulerFactory;
 
-		public PostCommentService(IRepositoryManager repositoryManager, IMapper mapper)
+		public PostCommentService(IRepositoryManager repositoryManager, IMapper mapper, ISchedulerFactory schedulerFactory)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
+			this.schedulerFactory = schedulerFactory;
 		}
 
 		private async Task CheckCommentAchievements(Guid userId, CancellationToken ct = default)
@@ -119,12 +123,26 @@ namespace IndieGameZone.Application.PostCommentServices
 			postComment.UserId = userId;
 			postComment.PostId = postId;
 			postComment.CreatedAt = DateTime.Now;
-			postComment.IsActive = true;
+			postComment.IsActive = false;
 
 			repositoryManager.PostCommentRepository.CreateComment(postComment);
 			await repositoryManager.SaveAsync(ct);
 
 			await CheckCommentAchievements(userId, ct);
+
+			IJobDetail job = JobBuilder.Create<ValidateCommentJob>()
+				.WithIdentity("CommentJob", "CommentGroup")
+				.UsingJobData("commentId", postComment.Id.ToString())
+				.Build();
+
+			ITrigger trigger = TriggerBuilder.Create()
+				.WithIdentity("CommentTrigger", "CommentGroup")
+				.StartNow()
+				.Build();
+
+			var scheduler = await schedulerFactory.GetScheduler(ct);
+
+			await scheduler.ScheduleJob(job, trigger, ct);
 		}
 
 		public async Task DeleteComment(Guid userId, Guid commentId, CancellationToken ct = default)
@@ -162,8 +180,23 @@ namespace IndieGameZone.Application.PostCommentServices
 			}
 
 			mapper.Map(postCommentForUpdateDto, postComment);
+			postComment.IsActive = false;
 			postComment.UpdatedAt = DateTime.Now;
 			await repositoryManager.SaveAsync(ct);
+
+			IJobDetail job = JobBuilder.Create<ValidateCommentJob>()
+				.WithIdentity("CommentJob", "CommentGroup")
+				.UsingJobData("commentId", postComment.Id.ToString())
+				.Build();
+
+			ITrigger trigger = TriggerBuilder.Create()
+				.WithIdentity("CommentTrigger", "CommentGroup")
+				.StartNow()
+				.Build();
+
+			var scheduler = await schedulerFactory.GetScheduler(ct);
+
+			await scheduler.ScheduleJob(job, trigger, ct);
 		}
 	}
 }

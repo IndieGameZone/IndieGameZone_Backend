@@ -16,7 +16,7 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
-		[HttpPost("players/{playerId:guid}/developers/{developerId:guid}/user-follows")]
+		[HttpPost("players/{followingUserId:guid}/developers/{followedUserId:guid}/user-follows")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Player)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> FollowDeveloperAsync([FromRoute] Guid followingUserId, [FromRoute] Guid followedUserId, CancellationToken ct)
 		{
@@ -24,7 +24,7 @@ namespace IndieGameZone.API.Controllers
 			return StatusCode(201);
 		}
 
-		[HttpGet("players/{playerId:guid}/developers/{developerId:guid}/user-follows")]
+		[HttpGet("players/{followingUserId:guid}/developers/{followedUserId:guid}/user-follows")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Player)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> IsDeveloperFollowedByPlayerAsync([FromRoute] Guid followingUserId, [FromRoute] Guid followedUserId, CancellationToken ct)
 		{
