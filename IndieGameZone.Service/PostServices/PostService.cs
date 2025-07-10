@@ -129,18 +129,22 @@ namespace IndieGameZone.Application.PostServices
 			postEntity.Status = PostStatus.PendingAIReview;
 
 			IList<PostTags> postTags = new List<PostTags>();
-			foreach (var tagId in postForCreationDto.Tags)
+			if (postForCreationDto.Tags != null)
 			{
-				var postTag = new PostTags
+				foreach (var tagId in postForCreationDto.Tags)
 				{
-					PostId = postEntity.Id,
-					TagId = tagId
-				};
-				postTags.Add(postTag);
+					var postTag = new PostTags
+					{
+						PostId = postEntity.Id,
+						TagId = tagId
+					};
+					postTags.Add(postTag);
+				}
+				repositoryManager.PostTagRepository.CreatePostTag(postTags);
 			}
 
 			repositoryManager.PostRepository.CreatePost(postEntity);
-			repositoryManager.PostTagRepository.CreatePostTag(postTags);
+
 			await repositoryManager.SaveAsync(ct);
 
 			IJobDetail job = JobBuilder.Create<ValidatePostJob>()
@@ -217,16 +221,20 @@ namespace IndieGameZone.Application.PostServices
 			post.Status = PostStatus.PendingAIReview;
 
 			IList<PostTags> postTags = new List<PostTags>();
-			foreach (var tagId in postForUpdateDto.Tags)
+			if (postForUpdateDto.Tags != null)
 			{
-				var postTag = new PostTags
+				foreach (var tagId in postForUpdateDto.Tags)
 				{
-					PostId = postId,
-					TagId = tagId
-				};
-				postTags.Add(postTag);
+					var postTag = new PostTags
+					{
+						PostId = postId,
+						TagId = tagId
+					};
+					postTags.Add(postTag);
+				}
+				repositoryManager.PostTagRepository.CreatePostTag(postTags);
 			}
-			repositoryManager.PostTagRepository.CreatePostTag(postTags);
+
 
 			await repositoryManager.SaveAsync(ct);
 

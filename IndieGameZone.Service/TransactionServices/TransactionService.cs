@@ -356,7 +356,7 @@ namespace IndieGameZone.Application.TransactionServices
 				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
 				GameId = gameId,
 				Amount = transactionForDonationCreationDto.Amount,
-				Description = $"Donation money for game {game.Name} for developer",
+				Description = $"Donation money for game {game.Name} for specific developer",
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.Donation,
 				Status = TransactionStatus.Pending,
