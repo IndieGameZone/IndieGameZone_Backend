@@ -22,23 +22,6 @@ namespace IndieGameZone.Application.BlobService
 			return await blobClient.DeleteIfExistsAsync();
 		}
 
-		public async Task<(Stream content, string type, string filename)> DownloadFile(string blobName, string containerName)
-		{
-			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
-			BlobClient blobClient = containerClient.GetBlobClient(blobName);
-			var exists = await blobClient.ExistsAsync();
-			if (!exists.Value)
-			{
-				throw new FileNotFoundException($"Blob '{blobName}' not found.");
-			}
-			var stream = await blobClient.OpenReadAsync();
-			var props = await blobClient.GetPropertiesAsync();
-			var metadata = props.Value.Metadata;
-			var contentType = props.Value.ContentType;
-			var originalFileName = metadata.ContainsKey("OriginalName") ? metadata["OriginalName"] : blobName;
-			return (stream, contentType, originalFileName);
-		}
-
 		public async Task<string> GetBlob(string blobName, string containerName)
 		{
 			BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
@@ -95,6 +78,11 @@ namespace IndieGameZone.Application.BlobService
 				{
 					ContentType = file.ContentType,
 					ContentDisposition = $"attachment; filename=\"{file.FileName}\""
+				},
+				Metadata = new Dictionary<string, string>
+				{
+					{ "OriginalName", file.FileName },
+					{ "UploadDate", DateTime.Now.ToString("o") }
 				}
 			};
 			var result = await blobClient.UploadAsync(file.OpenReadStream(), uploadOptions);
