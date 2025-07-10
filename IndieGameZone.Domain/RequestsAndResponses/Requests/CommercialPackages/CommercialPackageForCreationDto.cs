@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IndieGameZone.Domain.Constants;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -17,5 +18,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.CommercialPackages
         public double Duration { get; init; }
         [Required]
         public double Price { get; init; }
+        [Required]
+        public CommercialPackageType Type { get; init; }
+
     }
 }
