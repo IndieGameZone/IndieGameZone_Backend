@@ -119,8 +119,26 @@ namespace IndieGameZone.Application.PostServices
 			await repositoryManager.SaveAsync(ct);
 		}
 
+		private async Task DeleteOldPostImage(Guid postId, IEnumerable<string> newPostImages, CancellationToken ct)
+		{
+			var existingPostImages = await repositoryManager.PostImageRepository.GetPostImagesByPostId(postId, false, ct);
+			var existingImageUrls = existingPostImages.Select(x => x.Image).ToList();
+			if (existingImageUrls is null || !existingImageUrls.Any())
+			{
+				return;
+			}
+			var imagesToDelete = existingImageUrls.Except(newPostImages);
+			foreach (var image in imagesToDelete)
+			{
+				await blobService.DeleteBlob(image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+			}
+			repositoryManager.PostImageRepository.DeletePostImages(existingPostImages);
+			await repositoryManager.SaveAsync(ct);
+		}
+
 		public async Task CreatePost(Guid userId, Guid gameId, PostForCreationDto postForCreationDto, CancellationToken ct = default)
 		{
+			var dbTransaction = await repositoryManager.BeginTransaction();
 			var postEntity = mapper.Map<Posts>(postForCreationDto);
 			postEntity.Id = Guid.NewGuid();
 			postEntity.UserId = userId;
@@ -128,24 +146,32 @@ namespace IndieGameZone.Application.PostServices
 			postEntity.CreatedAt = DateTime.Now;
 			postEntity.Status = PostStatus.PendingAIReview;
 
-			IList<PostTags> postTags = new List<PostTags>();
+			var postImages = postForCreationDto.Images.Select(image => new PostImages
+			{
+				Id = Guid.NewGuid(),
+				PostId = postEntity.Id,
+				Image = image
+			}).ToList();
+			repositoryManager.PostImageRepository.CreatePostImages(postImages);
+
+
 			if (postForCreationDto.Tags != null)
 			{
-				foreach (var tagId in postForCreationDto.Tags)
+				var postTags = postForCreationDto.Tags.Select(tagId => new PostTags
 				{
-					var postTag = new PostTags
-					{
-						PostId = postEntity.Id,
-						TagId = tagId
-					};
-					postTags.Add(postTag);
-				}
+					PostId = postEntity.Id,
+					TagId = tagId
+				}).ToList();
 				repositoryManager.PostTagRepository.CreatePostTag(postTags);
 			}
 
 			repositoryManager.PostRepository.CreatePost(postEntity);
 
 			await repositoryManager.SaveAsync(ct);
+
+			await CheckPostAchievement(userId, ct);
+
+			dbTransaction.Commit();
 
 			IJobDetail job = JobBuilder.Create<ValidatePostJob>()
 				.WithIdentity("PostJob", "PostGroup")
@@ -160,23 +186,26 @@ namespace IndieGameZone.Application.PostServices
 			var scheduler = await schedulerFactory.GetScheduler(ct);
 
 			await scheduler.ScheduleJob(job, trigger, ct);
-
-			await CheckPostAchievement(userId, ct);
 		}
 
 		public async Task DeletePost(Guid userId, Guid postId, CancellationToken ct = default)
 		{
+			var dbTransaction = await repositoryManager.BeginTransaction();
 			var post = await repositoryManager.PostRepository.GetPostById(postId, false, ct);
 			if (post is null)
 				throw new NotFoundException($"Post not found.");
 			if (post.UserId != userId)
 				throw new ForbiddenException("You are not authorized to delete this post.");
-			//if (!string.IsNullOrEmpty(post.Image))
-			//{
-			//	await blobService.DeleteBlob(post.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-			//}
+			var postImages = await repositoryManager.PostImageRepository.GetPostImagesByPostId(postId, false, ct);
+			foreach (var image in postImages)
+			{
+				await blobService.DeleteBlob(image.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+			}
+			repositoryManager.PostImageRepository.DeletePostImages(postImages);
+
 			repositoryManager.PostRepository.DeletePost(post);
 			await repositoryManager.SaveAsync(ct);
+			dbTransaction.Commit();
 		}
 
 		public async Task<PostForSingleReturnDto> GetPostById(Guid postId, CancellationToken ct = default)
@@ -203,6 +232,9 @@ namespace IndieGameZone.Application.PostServices
 
 		public async Task UpdatePost(Guid userId, Guid postId, PostForUpdateDto postForUpdateDto, CancellationToken ct = default)
 		{
+			var dbTransaction = await repositoryManager.BeginTransaction();
+			await DeleteOldPostImage(postId, postForUpdateDto.Images, ct);
+
 			var existingPostTag = await repositoryManager.PostTagRepository.GetPostTagsByPostId(postId, false, ct);
 			repositoryManager.PostTagRepository.DeletePostTag(existingPostTag);
 			await repositoryManager.SaveAsync(ct);
@@ -212,31 +244,32 @@ namespace IndieGameZone.Application.PostServices
 				throw new NotFoundException($"Post not found.");
 			if (post.UserId != userId)
 				throw new ForbiddenException("You are not authorized to update this post.");
-			//if (!string.IsNullOrEmpty(post.Image) && post.Image != postForUpdateDto.Image)
-			//{
-			//	await blobService.DeleteBlob(post.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-			//}
 			mapper.Map(postForUpdateDto, post);
 			post.UpdatedAt = DateTime.Now;
 			post.Status = PostStatus.PendingAIReview;
 
-			IList<PostTags> postTags = new List<PostTags>();
+			var postImages = postForUpdateDto.Images.Select(image => new PostImages
+			{
+				Id = Guid.NewGuid(),
+				PostId = postId,
+				Image = image
+			}).ToList();
+			repositoryManager.PostImageRepository.CreatePostImages(postImages);
+
 			if (postForUpdateDto.Tags != null)
 			{
-				foreach (var tagId in postForUpdateDto.Tags)
+				var postTags = postForUpdateDto.Tags.Select(tagId => new PostTags
 				{
-					var postTag = new PostTags
-					{
-						PostId = postId,
-						TagId = tagId
-					};
-					postTags.Add(postTag);
-				}
+					PostId = postId,
+					TagId = tagId
+				}).ToList();
 				repositoryManager.PostTagRepository.CreatePostTag(postTags);
 			}
 
 
 			await repositoryManager.SaveAsync(ct);
+
+			dbTransaction.Commit();
 
 			IJobDetail job = JobBuilder.Create<ValidatePostJob>()
 				.WithIdentity("PostJob", "PostGroup")
