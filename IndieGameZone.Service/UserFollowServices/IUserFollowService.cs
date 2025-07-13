@@ -2,9 +2,9 @@
 {
 	public interface IUserFollowService
 	{
-		Task FollowOrUnfollowUser(Guid followingUserId, Guid followedUserId, CancellationToken ct = default);
-		Task<bool> IsFollowing(Guid followingUserId, Guid followedUserId, CancellationToken ct = default);
-		Task<int> GetFollowedUserNumber(Guid userId, CancellationToken ct = default);
-		Task<int> GetFollowingUserNumber(Guid userId, CancellationToken ct = default);
+		Task FollowOrUnfollowUser(Guid followerId, Guid followeeId, CancellationToken ct = default);
+		Task<bool> IsFollowing(Guid followerId, Guid followeeId, CancellationToken ct = default);
+		Task<int> GetNumberOfFollowee(Guid userId, CancellationToken ct = default);
+		Task<int> GetNumberOfFollower(Guid userId, CancellationToken ct = default);
 	}
 }

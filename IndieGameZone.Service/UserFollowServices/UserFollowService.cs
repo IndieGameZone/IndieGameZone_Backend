@@ -17,7 +17,7 @@ namespace IndieGameZone.Application.UserFollowServices
 		private async Task CheckFollowAchievements(Guid userId, CancellationToken ct = default)
 		{
 			var userAchievements = repositoryManager.UserAchievementRepository.GetUserAchievementsByUserId(userId, false);
-			var followingCount = await repositoryManager.UserFollowRepository.GetFollowingUsersByUserId(userId, false).CountAsync(ct);
+			var followingCount = await repositoryManager.UserFollowRepository.GetFolloweesByUserId(userId, false).CountAsync(ct);
 			if (followingCount == 5 && !userAchievements.Any(u => u.AchievementId == Guid.Parse("b83dc1f6-cc35-4955-9a5d-3ae89a90e5d6")))
 			{
 				var achievement = await repositoryManager.AchievementRepository.GetAchievementById(Guid.Parse("b83dc1f6-cc35-4955-9a5d-3ae89a90e5d6"), false, ct);
@@ -105,14 +105,14 @@ namespace IndieGameZone.Application.UserFollowServices
 			await repositoryManager.SaveAsync(ct);
 		}
 
-		public async Task FollowOrUnfollowUser(Guid followedUserId, Guid followingUserId, CancellationToken ct = default)
+		public async Task FollowOrUnfollowUser(Guid followeeId, Guid followerId, CancellationToken ct = default)
 		{
-			var userFollow = await repositoryManager.UserFollowRepository.GetFollow(followingUserId, followedUserId, false, ct);
+			var userFollow = await repositoryManager.UserFollowRepository.GetFollow(followerId, followeeId, false, ct);
 			if (userFollow == null)
 			{
-				repositoryManager.UserFollowRepository.CreateFollow(new UserFollows { FolloweeId = followedUserId, FollowerId = followingUserId });
+				repositoryManager.UserFollowRepository.CreateFollow(new UserFollows { FolloweeId = followeeId, FollowerId = followerId });
 				await repositoryManager.SaveAsync(ct);
-				await CheckFollowAchievements(followingUserId, ct);
+				await CheckFollowAchievements(followerId, ct);
 			}
 			else
 			{
@@ -121,14 +121,14 @@ namespace IndieGameZone.Application.UserFollowServices
 			}
 		}
 
-		public Task<int> GetFollowedUserNumber(Guid userId, CancellationToken ct = default)
+		public Task<int> GetNumberOfFollowee(Guid userId, CancellationToken ct = default)
 		{
-			return repositoryManager.UserFollowRepository.GetFollowedUsersByUserId(userId, false, ct).CountAsync(ct);
+			return repositoryManager.UserFollowRepository.GetFolloweesByUserId(userId, false, ct).CountAsync(ct);
 		}
 
-		public Task<int> GetFollowingUserNumber(Guid userId, CancellationToken ct = default)
+		public Task<int> GetNumberOfFollower(Guid userId, CancellationToken ct = default)
 		{
-			return repositoryManager.UserFollowRepository.GetFollowingUsersByUserId(userId, false, ct).CountAsync(ct);
+			return repositoryManager.UserFollowRepository.GetFollowersByUserId(userId, false, ct).CountAsync(ct);
 		}
 
 		public async Task<bool> IsFollowing(Guid followedUserId, Guid followingUserId, CancellationToken ct = default)
