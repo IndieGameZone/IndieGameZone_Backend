@@ -7,7 +7,6 @@ namespace IndieGameZone.Domain.Entities
 		public Guid Id { get; set; }
 		public string Title { get; set; } = string.Empty;
 		public string Content { get; set; } = string.Empty;
-		public string Image { get; set; } = string.Empty;
 		public DateTime CreatedAt { get; set; }
 		public DateTime? CensoredAt { get; set; }
 		public DateTime? UpdatedAt { get; set; }
@@ -18,6 +17,7 @@ namespace IndieGameZone.Domain.Entities
 		//Navigation properties
 		public virtual Users User { get; set; } = null!;
 		public virtual Games Game { get; set; } = null!;
+		public virtual ICollection<PostImages> PostImages { get; set; } = new List<PostImages>();
 		public virtual ICollection<PostReactions> PostReactions { get; set; } = new List<PostReactions>();
 		public virtual ICollection<PostComments> PostComments { get; set; } = new List<PostComments>();
 		public virtual ICollection<PostTags> PostTags { get; set; } = new List<PostTags>();

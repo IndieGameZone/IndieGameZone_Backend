@@ -1,6 +1,5 @@
 ﻿using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
-using IndieGameZone.Domain.RequestsAndResponses.Requests.Posts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 using Mapster;
@@ -11,10 +10,6 @@ namespace IndieGameZone.Application.Extensions
 	{
 		public void Register(TypeAdapterConfig config)
 		{
-			config.NewConfig<PostForCreationDto, Posts>()
-				.Ignore(dest => dest.Image);
-			config.NewConfig<PostForUpdateDto, Posts>()
-				.Ignore(dest => dest.Image);
 
 			config.NewConfig<GameForCreationDto, Games>()
 				.Ignore(dest => dest.GameImages);

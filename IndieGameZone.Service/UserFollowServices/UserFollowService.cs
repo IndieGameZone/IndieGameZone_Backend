@@ -110,7 +110,7 @@ namespace IndieGameZone.Application.UserFollowServices
 			var userFollow = await repositoryManager.UserFollowRepository.GetFollow(followingUserId, followedUserId, false, ct);
 			if (userFollow == null)
 			{
-				repositoryManager.UserFollowRepository.CreateFollow(new UserFollows { FollowedUserId = followedUserId, FollowingUserId = followingUserId });
+				repositoryManager.UserFollowRepository.CreateFollow(new UserFollows { FolloweeId = followedUserId, FollowerId = followingUserId });
 				await repositoryManager.SaveAsync(ct);
 				await CheckFollowAchievements(followingUserId, ct);
 			}

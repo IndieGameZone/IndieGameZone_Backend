@@ -8,17 +8,17 @@ namespace IndieGameZone.Infrastructure.Configurations
 	{
 		public void Configure(EntityTypeBuilder<UserFollows> builder)
 		{
-			builder.HasKey(uf => new { uf.FollowingUserId, uf.FollowedUserId });
+			builder.HasKey(uf => new { uf.FollowerId, uf.FolloweeId });
 			builder.Property(uf => uf.FollowedAt);
 
-			builder.HasOne(uf => uf.FollowingUser)
-				.WithMany(u => u.FollowingUsers)
-				.HasForeignKey(uf => uf.FollowingUserId)
+			builder.HasOne(uf => uf.Follower)
+				.WithMany(u => u.Followers)
+				.HasForeignKey(uf => uf.FollowerId)
 				.OnDelete(DeleteBehavior.Restrict);
 
-			builder.HasOne(uf => uf.FollowedUser)
-				.WithMany(u => u.FollowedUsers)
-				.HasForeignKey(uf => uf.FollowedUserId)
+			builder.HasOne(uf => uf.Followee)
+				.WithMany(u => u.Followees)
+				.HasForeignKey(uf => uf.FolloweeId)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}

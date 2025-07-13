@@ -16,10 +16,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public void DeleteFollow(UserFollows userFollow) => Delete(userFollow);
 
 		public async Task<UserFollows?> GetFollow(Guid followingUserId, Guid followedUserId, bool trackChange, CancellationToken ct = default) => await
-			FindByCondition(x => x.FollowingUserId == followingUserId && x.FollowedUserId == followedUserId, trackChange).FirstOrDefaultAsync(ct);
+			FindByCondition(x => x.FollowerId == followingUserId && x.FolloweeId == followedUserId, trackChange).FirstOrDefaultAsync(ct);
 
-		public IQueryable<UserFollows> GetFollowedUsersByUserId(Guid followedUserId, bool trackChange, CancellationToken ct = default) => FindByCondition(x => x.FollowedUserId == followedUserId, trackChange);
+		public IQueryable<UserFollows> GetFollowedUsersByUserId(Guid followedUserId, bool trackChange, CancellationToken ct = default) => FindByCondition(x => x.FolloweeId == followedUserId, trackChange);
 
-		public IQueryable<UserFollows> GetFollowingUsersByUserId(Guid followingUserId, bool trackChange, CancellationToken ct = default) => FindByCondition(x => x.FollowingUserId == followingUserId, trackChange);
+		public IQueryable<UserFollows> GetFollowingUsersByUserId(Guid followingUserId, bool trackChange, CancellationToken ct = default) => FindByCondition(x => x.FollowerId == followingUserId, trackChange);
 	}
 }

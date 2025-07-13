@@ -2,12 +2,12 @@
 {
 	public class UserFollows
 	{
-		public Guid FollowingUserId { get; set; }
-		public Guid FollowedUserId { get; set; }
+		public Guid FollowerId { get; set; }
+		public Guid FolloweeId { get; set; }
 		public DateTime FollowedAt { get; set; }
 
 		// Navigation properties
-		public virtual Users FollowingUser { get; set; } = null!;
-		public virtual Users FollowedUser { get; set; } = null!;
+		public virtual Users Follower { get; set; } = null!;
+		public virtual Users Followee { get; set; } = null!;
 	}
 }
