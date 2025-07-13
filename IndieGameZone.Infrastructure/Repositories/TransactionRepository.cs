@@ -33,6 +33,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public Task<PagedList<Transactions>> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var transactionEntities = FindAll(trackChange)
+				.FilterByTransactionTypes(transactionParameters.TransactionTypes)
 				.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
 				.Include(t => t.Game).AsSplitQuery()
 				.Include(t => t.CommercialPackage).AsSplitQuery()
@@ -44,6 +45,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public Task<PagedList<Transactions>> GetTransactionsByUserId(Guid userId, TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var transactionEntities = FindByCondition(x => x.UserId == userId, trackChange)
+				.FilterByTransactionTypes(transactionParameters.TransactionTypes)
 				.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
 				.Include(t => t.Game).AsSplitQuery()
 				.Include(t => t.CommercialPackage).AsSplitQuery()
