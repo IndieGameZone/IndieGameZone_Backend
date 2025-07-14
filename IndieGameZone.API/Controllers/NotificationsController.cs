@@ -1,4 +1,4 @@
-﻿using IndieGameZone.Application;
+﻿using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using Microsoft.AspNetCore.Authorization;

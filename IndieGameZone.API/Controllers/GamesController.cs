@@ -1,5 +1,4 @@
-﻿using IndieGameZone.Application;
-using IndieGameZone.Application.RecombeeServices;
+﻿using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
