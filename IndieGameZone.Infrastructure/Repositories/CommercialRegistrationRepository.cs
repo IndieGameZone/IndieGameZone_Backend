@@ -1,9 +1,12 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Infrastructure.Extensions;
 using IndieGameZone.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq.Expressions;
 
 namespace IndieGameZone.Infrastructure.Repositories
 {
@@ -74,5 +77,20 @@ namespace IndieGameZone.Infrastructure.Repositories
         }
 
         public void DeleteCommercialRegistration(CommercialRegistration commercialRegistration) => Delete(commercialRegistration);
-	}
+
+        public async Task<List<CommercialRegistration>> GetRelevantRegistrationsForDateCheckAsync(CommercialPackageType packageType, Guid? categoryId, CancellationToken ct = default)
+        {
+            var registrations = FindByCondition(
+        r => r.CommercialPackage.Type == packageType &&
+            (packageType == CommercialPackageType.HomepageBanner ||
+             (packageType == CommercialPackageType.CategoryBanner && r.Game.CategoryId == categoryId)),
+        trackChanges: false)
+        .Include(r => r.CommercialPackage)
+        .Include(r => r.Game)
+        .Sort();
+
+            return await registrations.ToListAsync(ct);
+        }
+
+    }
 }

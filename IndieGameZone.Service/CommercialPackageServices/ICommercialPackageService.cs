@@ -17,6 +17,7 @@ namespace IndieGameZone.Application.CommercialPackageServices
         Task<CommercialPackageForReturnDto> GetCommercialPackageById(Guid id, CancellationToken ct = default);
         Task<(IEnumerable<CommercialPackageForReturnDto> commercialPackages, MetaData metaData)> GetCommercialPackages(CommercialPackageParameters commercialPackagesParameters, CancellationToken ct = default);
         Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetFilteredCommercialRegistrations(Guid? userId, Guid? gameId, Guid? commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default);
+        Task<List<string>> GetUnavailableDatesAsync(Guid packageId, Guid gameId, Guid userId, CancellationToken ct);
 
     }
 }

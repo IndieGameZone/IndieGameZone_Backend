@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
@@ -160,6 +161,67 @@ namespace IndieGameZone.Application.CommercialPackageServices
 
             return (commercialRegistrations, commercialRegistrationsWithMetaData.MetaData);
         }
+
+        public async Task<List<string>> GetUnavailableDatesAsync(Guid packageId, Guid gameId, Guid userId, CancellationToken ct = default)
+        {
+            // Validate game existence and ownership
+            var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct)
+                       ?? throw new NotFoundException("Game not found.");
+
+            if (game.DeveloperId != userId)
+                throw new ForbiddenException("You are not allowed to register ads for a game you do not own.");
+
+            // Validate package existence
+            var package = await repositoryManager.CommercialPackageRepository.GetCommercialPackageById(packageId, false, ct)
+                          ?? throw new NotFoundException("Commercial package not found.");
+
+            // Fetch relevant registrations using package type and game category
+            var relevantRegistrations = await repositoryManager.CommercialRegistrationRepository
+                .GetRelevantRegistrationsForDateCheckAsync(package.Type, game.CategoryId, ct);
+
+            var dateCounter = new Dictionary<DateOnly, int>();
+            var gameSpecificDates = new HashSet<DateOnly>();
+
+            foreach (var reg in relevantRegistrations)
+            {
+                if (reg.GameId == gameId)
+                {
+                    // This game already has a registration on these dates
+                    for (var date = reg.StartDate; date < reg.EndDate!.Value; date = date.AddDays(1))
+                        gameSpecificDates.Add(date);
+                }
+
+                for (var date = reg.StartDate; date < reg.EndDate!.Value; date = date.AddDays(1))
+                {
+                    if (!dateCounter.ContainsKey(date))
+                        dateCounter[date] = 0;
+
+                    dateCounter[date]++;
+                }
+            }
+
+            var unavailableDates = new List<DateOnly>();
+
+            foreach (var kvp in dateCounter)
+            {
+                if ((package.Type == CommercialPackageType.HomepageBanner && kvp.Value >= 10) ||
+                    (package.Type == CommercialPackageType.CategoryBanner && kvp.Value >= 10))
+                {
+                    unavailableDates.Add(kvp.Key);
+                }
+            }
+
+            // Add dates already taken by this game
+            unavailableDates.AddRange(gameSpecificDates);
+
+            // Format as dd/MM/yyyy and remove duplicates
+            return unavailableDates
+                .Distinct()
+                .OrderBy(d => d)
+                .Select(d => d.ToString("dd/MM/yyyy"))
+                .ToList();
+        }
+
 
     }
 }

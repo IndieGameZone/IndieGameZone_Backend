@@ -4,6 +4,8 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.CommercialPackages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text.Json;
 
 namespace IndieGameZone.API.Controllers
@@ -62,11 +64,11 @@ namespace IndieGameZone.API.Controllers
 
 		[HttpGet("registrations")]
 		public async Task<IActionResult> GetCommercialRegistrations(
-    [FromQuery] Guid? userId,
-    [FromQuery] Guid? gameId,
-	[FromQuery] Guid? commercialPackageId,
-	[FromQuery] CommercialRegistrationParameters parameters,
-	CancellationToken ct)
+			[FromQuery] Guid? userId,
+			[FromQuery] Guid? gameId,
+			[FromQuery] Guid? commercialPackageId,
+			[FromQuery] CommercialRegistrationParameters parameters,
+			CancellationToken ct)
 		{
 			var pagedResult = await serviceManager
 				.CommercialPackageService
@@ -76,5 +78,24 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.commercialRegistrations);
 		}
 
-	}
+        [HttpGet("{id:guid}/unavailable-dates")]
+        public async Task<IActionResult> GetUnavailableDates([FromRoute] Guid id, [FromQuery] Guid gameId, CancellationToken ct)
+        {
+            var jwt = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var handler = new JwtSecurityTokenHandler();
+            var token = handler.ReadJwtToken(jwt);
+            var userIdString = token.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+
+            if (!Guid.TryParse(userIdString, out var userId))
+            {
+                return BadRequest("Invalid user ID in token.");
+            }
+
+            var unavailableDates = await serviceManager.CommercialPackageService
+                .GetUnavailableDatesAsync(id, gameId, userId, ct);
+
+            return Ok(unavailableDates);
+        }
+
+    }
 }
