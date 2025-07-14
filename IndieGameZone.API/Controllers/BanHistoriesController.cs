@@ -27,32 +27,32 @@ namespace IndieGameZone.API.Controllers
             return Ok(pagedResult.banHistories);
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetBanHistoryById([FromRoute] Guid id, CancellationToken ct)
-        {
-            var banHistory = await serviceManager.BanHistoryService.GetBanHistoryById(id, ct);
-            return Ok(banHistory);
-        }
+        //[HttpGet("{id:guid}")]
+        //public async Task<IActionResult> GetBanHistoryById([FromRoute] Guid id, CancellationToken ct)
+        //{
+        //    var banHistory = await serviceManager.BanHistoryService.GetBanHistoryById(id, ct);
+        //    return Ok(banHistory);
+        //}
 
-        [HttpGet("banned-users/{bannedUserId:guid}")]
-        public async Task<IActionResult> GetBansReceivedByUser(Guid bannedUserId, [FromQuery] BanHistoryParameters banHistoryParameters, CancellationToken ct)
+        [HttpGet("{userId:guid}")]
+        public async Task<IActionResult> GetBansReceivedByUser(Guid userId, [FromQuery] BanHistoryParameters banHistoryParameters, CancellationToken ct)
         {
             var pagedResult = await serviceManager.BanHistoryService
-                .GetBanHistoriesByBannedUserId(bannedUserId, banHistoryParameters, ct);
+                .GetBanHistoriesByBannedUserId(userId, banHistoryParameters, ct);
 
             Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
             return Ok(pagedResult.banHistories);
         }
 
-        [HttpGet("banned-by/{bannedByUserId:guid}")]
-        public async Task<IActionResult> GetBansPerformedByUser(Guid bannedByUserId, [FromQuery] BanHistoryParameters banHistoryParameters, CancellationToken ct)
-        {
-            var pagedResult = await serviceManager.BanHistoryService
-                .GetBanHistoriesByBannedByUserId(bannedByUserId, banHistoryParameters, ct);
+        //[HttpGet("banned-by/{bannedByUserId:guid}")]
+        //public async Task<IActionResult> GetBansPerformedByUser(Guid bannedByUserId, [FromQuery] BanHistoryParameters banHistoryParameters, CancellationToken ct)
+        //{
+        //    var pagedResult = await serviceManager.BanHistoryService
+        //        .GetBanHistoriesByBannedByUserId(bannedByUserId, banHistoryParameters, ct);
 
-            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
-            return Ok(pagedResult.banHistories);
-        }
+        //    Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+        //    return Ok(pagedResult.banHistories);
+        //}
 
         [HttpPost]
         public async Task<IActionResult> CreateBanHistory([FromBody] BanHistoryForCreationDto banHistoryForCreationDto, CancellationToken ct)

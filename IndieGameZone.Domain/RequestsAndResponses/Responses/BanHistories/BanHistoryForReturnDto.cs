@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -13,8 +14,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.BanHistories
         public DateTime BanDate { get; init; }
         public DateTime UnbanDate { get; init; }
         public string Reason { get; init; } = string.Empty;
-        public Guid BannedUserId { get; init; }
-        public Guid BannedByUserId { get; init; }
-
+        public UserShortForReturnDto BannedUser { get; init; } = null!;
+        public UserShortForReturnDto BannedByUser { get; init; } = null!;
+    
     }
 }

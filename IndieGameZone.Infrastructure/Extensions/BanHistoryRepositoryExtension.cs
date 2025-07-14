@@ -13,5 +13,10 @@ namespace IndieGameZone.Infrastructure.Extensions
         {
             return source.OrderBy(a => a.BanDate);
         }
+
+        public static IQueryable<BanHistories> SortForLogging(this IQueryable<BanHistories> source)
+        {
+            return source.OrderByDescending(a => a.BanDate);
+        }
     }
 }

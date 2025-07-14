@@ -21,18 +21,24 @@ namespace IndieGameZone.Infrastructure.Repositories
         public async Task<PagedList<BanHistories>> GetBanHistories(BanHistoryParameters banHistoryParameters, bool trackChange, CancellationToken ct = default)
         {
             var banHistoryEntities = FindAll(trackChange)
+                .Include(b => b.BannedUser).ThenInclude(u => u.UserProfile)
+                .Include(b => b.BannedByUser).ThenInclude(u => u.UserProfile)
                 .Sort();
 
             return await PagedList<BanHistories>.ToPagedList(banHistoryEntities, banHistoryParameters.PageNumber, banHistoryParameters.PageSize, ct);
         }
 
         public async Task<BanHistories?> GetBanHistoryById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(b => b.Id.Equals(id), trackChange)
+            .Include(b => b.BannedUser).ThenInclude(u => u.UserProfile)
+            .Include(b => b.BannedByUser).ThenInclude(u => u.UserProfile)
             .SingleOrDefaultAsync(ct);
 
         public async Task<PagedList<BanHistories>> GetBanHistoriesByBannedUserId(Guid bannedUserId, BanHistoryParameters banHistoryParameters, bool trackChange, CancellationToken ct = default)
         {
             var banHistoryEntities = FindByCondition(b => b.BannedUserId == bannedUserId, trackChange)
-                .Sort();
+            .Include(b => b.BannedUser).ThenInclude(u => u.UserProfile)
+            .Include(b => b.BannedByUser).ThenInclude(u => u.UserProfile)
+            .SortForLogging();
 
             return await PagedList<BanHistories>.ToPagedList(
                 banHistoryEntities,
@@ -45,7 +51,9 @@ namespace IndieGameZone.Infrastructure.Repositories
         public async Task<PagedList<BanHistories>> GetBanHistoriesByBannedByUserId(Guid bannedByUserId, BanHistoryParameters banHistoryParameters, bool trackChanges, CancellationToken ct = default)
         {
             var banHistoryEntities = FindByCondition(b => b.BannedByUserId == bannedByUserId, trackChanges)
-                .Sort();
+            .Include(b => b.BannedUser).ThenInclude(u => u.UserProfile)
+            .Include(b => b.BannedByUser).ThenInclude(u => u.UserProfile)
+            .Sort();
 
             return await PagedList<BanHistories>.ToPagedList(
                 banHistoryEntities,
@@ -76,6 +84,8 @@ namespace IndieGameZone.Infrastructure.Repositories
         }
 
         public async Task<BanHistories?> GetLatestBanHistoryByUserId(Guid userId, bool trackChange, CancellationToken ct = default) => await FindByCondition(b => b.BannedUserId.Equals(userId), trackChange)
+        .Include(b => b.BannedUser).ThenInclude(u => u.UserProfile)
+        .Include(b => b.BannedByUser).ThenInclude(u => u.UserProfile)
         .OrderByDescending(b => b.UnbanDate)
         .FirstOrDefaultAsync(ct);
 

@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.BanHistories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 using Mapster;
@@ -34,7 +35,10 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.Fullname, src => src.UserProfile.Fullname)
 				.Map(dest => dest.Avatar, src => src.UserProfile.Avatar);
 
+			config.NewConfig<BanHistories, BanHistoryForReturnDto>()
+				.Map(dest => dest.BannedUser, src => src.BannedUser)
+				.Map(dest => dest.BannedByUser, src => src.BannedByUser);
 
-		}
-	}
+        }
+    }
 }
