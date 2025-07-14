@@ -1,4 +1,4 @@
-﻿using IndieGameZone.Application;
+﻿using IndieGameZone.Application.IServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace IndieGameZone.API.Controllers

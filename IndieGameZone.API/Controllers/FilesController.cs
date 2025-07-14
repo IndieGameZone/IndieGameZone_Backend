@@ -1,4 +1,4 @@
-﻿using IndieGameZone.Application.FileServices;
+﻿using IndieGameZone.Application.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

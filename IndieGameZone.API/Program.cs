@@ -1,11 +1,9 @@
 using Azure.Identity;
 using Bogus;
 using IndieGameZone.API.Extensions;
-using IndieGameZone.Application.AIService;
-using IndieGameZone.Application.EmailServices;
 using IndieGameZone.Application.Extensions;
-using IndieGameZone.Application.FileServices;
-using IndieGameZone.Application.RecombeeServices;
+using IndieGameZone.Application.IServices;
+using IndieGameZone.Application.Services;
 using IndieGameZone.Domain.Entities;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;

@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Infrastructure.Extensions;
@@ -22,6 +23,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<Achievements?> GetAchievementById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(a => a.Id.Equals(id), trackChange)
 			.SingleOrDefaultAsync(ct);
+
+		public async Task<Achievements?> GetAchievementByLevelAndType(double progressLevel, AchievementType type, bool trackChange, CancellationToken ct = default) => await FindByCondition(a => a.ProgressLevel == progressLevel && a.Type == type, trackChange)
+				.SingleOrDefaultAsync(ct);
 
 		public async Task<PagedList<Achievements>> GetAchievements(AchievementParameters achievementParameters, bool trackChange, CancellationToken ct = default)
 		{

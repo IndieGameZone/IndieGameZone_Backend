@@ -6,8 +6,8 @@ namespace IndieGameZone.Domain.IRepositories
 	{
 		void CreateFollow(UserFollows userFollow);
 		void DeleteFollow(UserFollows userFollow);
-		Task<UserFollows?> GetFollow(Guid followingUserId, Guid followedUserId, bool trackChange, CancellationToken ct = default);
-		IQueryable<UserFollows> GetFollowedUsersByUserId(Guid followedUserId, bool trackChange, CancellationToken ct = default);
-		IQueryable<UserFollows> GetFollowingUsersByUserId(Guid followingUserId, bool trackChange, CancellationToken ct = default);
+		Task<UserFollows?> GetFollow(Guid followerId, Guid followeeId, bool trackChange, CancellationToken ct = default);
+		IQueryable<UserFollows> GetFolloweesByUserId(Guid followeeId, bool trackChange, CancellationToken ct = default);
+		IQueryable<UserFollows> GetFollowersByUserId(Guid followerId, bool trackChange, CancellationToken ct = default);
 	}
 }

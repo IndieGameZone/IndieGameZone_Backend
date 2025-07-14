@@ -5,11 +5,11 @@ VisualStudioVersion = 17.13.35931.197
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.API", "IndieGameZone.API\IndieGameZone.API.csproj", "{AA8A3B33-41CA-4D35-A8D1-03466E16EE70}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IndieGameZone.Application", "IndieGameZone.Service\IndieGameZone.Application.csproj", "{37532F34-CDB1-453F-9494-501DC1C9FB04}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.Domain", "IndieGameZone.Domain\IndieGameZone.Domain.csproj", "{CB504D0A-A70D-4D19-8F8A-188AA854383B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.Infrastructure", "IndieGameZone.Infrastructure\IndieGameZone.Infrastructure.csproj", "{28845834-F752-451D-BEE2-E0F95E651964}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IndieGameZone.Application", "IndieGameZone.Application\IndieGameZone.Application.csproj", "{7CA4F373-F260-E933-A604-CB732A135E79}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +21,6 @@ Global
 		{AA8A3B33-41CA-4D35-A8D1-03466E16EE70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA8A3B33-41CA-4D35-A8D1-03466E16EE70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA8A3B33-41CA-4D35-A8D1-03466E16EE70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{37532F34-CDB1-453F-9494-501DC1C9FB04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{37532F34-CDB1-453F-9494-501DC1C9FB04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{37532F34-CDB1-453F-9494-501DC1C9FB04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{37532F34-CDB1-453F-9494-501DC1C9FB04}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CB504D0A-A70D-4D19-8F8A-188AA854383B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CB504D0A-A70D-4D19-8F8A-188AA854383B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CB504D0A-A70D-4D19-8F8A-188AA854383B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{28845834-F752-451D-BEE2-E0F95E651964}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28845834-F752-451D-BEE2-E0F95E651964}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28845834-F752-451D-BEE2-E0F95E651964}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7CA4F373-F260-E933-A604-CB732A135E79}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CA4F373-F260-E933-A604-CB732A135E79}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CA4F373-F260-E933-A604-CB732A135E79}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CA4F373-F260-E933-A604-CB732A135E79}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

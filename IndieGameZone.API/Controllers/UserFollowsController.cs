@@ -1,4 +1,4 @@
-﻿using IndieGameZone.Application;
+﻿using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,35 +16,35 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
-		[HttpPost("players/{followingUserId:guid}/developers/{followedUserId:guid}/user-follows")]
+		[HttpPost("followers/{followerId:guid}/followees/{followeeId:guid}/user-follows")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Player)},{nameof(RoleEnum.Developer)}")]
-		public async Task<IActionResult> FollowDeveloperAsync([FromRoute] Guid followingUserId, [FromRoute] Guid followedUserId, CancellationToken ct)
+		public async Task<IActionResult> FollowDeveloperAsync([FromRoute] Guid followerId, [FromRoute] Guid followeeId, CancellationToken ct)
 		{
-			await serviceManager.UserFollowService.FollowOrUnfollowUser(followingUserId, followedUserId, ct);
+			await serviceManager.UserFollowService.FollowOrUnfollowUser(followerId, followeeId, ct);
 			return StatusCode(201);
 		}
 
-		[HttpGet("players/{followingUserId:guid}/developers/{followedUserId:guid}/user-follows")]
+		[HttpGet("followers/{followerId:guid}/followees/{followeeId:guid}/user-follows")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Player)},{nameof(RoleEnum.Developer)}")]
-		public async Task<IActionResult> IsDeveloperFollowedByPlayerAsync([FromRoute] Guid followingUserId, [FromRoute] Guid followedUserId, CancellationToken ct)
+		public async Task<IActionResult> IsDeveloperFollowedByPlayerAsync([FromRoute] Guid followerId, [FromRoute] Guid followeeId, CancellationToken ct)
 		{
-			var isFollowed = await serviceManager.UserFollowService.IsFollowing(followingUserId, followedUserId, ct);
+			var isFollowed = await serviceManager.UserFollowService.IsFollowing(followerId, followeeId, ct);
 			return Ok(isFollowed);
 		}
 
-		[HttpGet("players/{playerId:guid}/number-of-developers")]
+		[HttpGet("followees/{followeeId:guid}/number-of-followers")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
-		public async Task<IActionResult> GetNumberOfFollowingUsers([FromRoute] Guid playerId, CancellationToken ct)
+		public async Task<IActionResult> GetNumberOfFollowers([FromRoute] Guid followeeId, CancellationToken ct)
 		{
-			var numberOfFollowers = await serviceManager.UserFollowService.GetFollowingUserNumber(playerId, ct);
+			var numberOfFollowers = await serviceManager.UserFollowService.GetNumberOfFollower(followeeId, ct);
 			return Ok(numberOfFollowers);
 		}
 
-		[HttpGet("developers/{developerId:guid}/number-of-players")]
+		[HttpGet("followers/{followerId:guid}/number-of-followees")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
-		public async Task<IActionResult> GetNumberOfFollowedUsers([FromRoute] Guid developerId, CancellationToken ct)
+		public async Task<IActionResult> GetNumberOfFollowees([FromRoute] Guid followerId, CancellationToken ct)
 		{
-			var numberOfFollowers = await serviceManager.UserFollowService.GetFollowedUserNumber(developerId, ct);
+			var numberOfFollowers = await serviceManager.UserFollowService.GetNumberOfFollowee(followerId, ct);
 			return Ok(numberOfFollowers);
 		}
 	}

@@ -11,7 +11,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasKey(p => p.Id);
 			builder.Property(p => p.Title).HasMaxLength(150);
 			builder.Property(p => p.Content);
-			builder.Property(p => p.Image);
 			builder.Property(p => p.CreatedAt);
 			builder.Property(p => p.CensoredAt);
 			builder.Property(p => p.UpdatedAt);

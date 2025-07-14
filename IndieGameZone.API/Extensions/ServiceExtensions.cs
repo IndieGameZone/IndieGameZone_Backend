@@ -1,8 +1,8 @@
 ﻿using Azure.Storage.Blobs;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
-using IndieGameZone.Application;
-using IndieGameZone.Application.BlobService;
+using IndieGameZone.Application.IServices;
+using IndieGameZone.Application.Services;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Infrastructure.Persistence;

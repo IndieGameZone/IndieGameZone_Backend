@@ -13,9 +13,9 @@ namespace IndieGameZone.Domain.Entities
 
 		//Navigation Properties
 		public virtual Wallets Wallet { get; set; } = null!;
-        public virtual ICollection<BanHistories> BansReceived { get; set; } = new List<BanHistories>();
-        public virtual ICollection<BanHistories> BansPerformed { get; set; } = new List<BanHistories>();
-        public virtual ICollection<UserAchievements> UserAchievements { get; set; } = new List<UserAchievements>();
+		public virtual ICollection<BanHistories> BansReceived { get; set; } = new List<BanHistories>();
+		public virtual ICollection<BanHistories> BansPerformed { get; set; } = new List<BanHistories>();
+		public virtual ICollection<UserAchievements> UserAchievements { get; set; } = new List<UserAchievements>();
 		public virtual ICollection<Notifications> Notifications { get; set; } = null!;
 		public virtual ICollection<Games> Games { get; set; } = null!;
 		public virtual ICollection<Reviews> Reviews { get; set; } = new List<Reviews>();
@@ -30,8 +30,8 @@ namespace IndieGameZone.Domain.Entities
 		public virtual ICollection<PostComments> PostComments { get; set; } = new List<PostComments>();
 		public virtual ICollection<Reports> ReportingUsers { get; set; } = new List<Reports>();
 		public virtual ICollection<Reports> ReportedUsers { get; set; } = new List<Reports>();
-		public virtual ICollection<UserFollows> FollowingUsers { get; set; } = new List<UserFollows>();
-		public virtual ICollection<UserFollows> FollowedUsers { get; set; } = new List<UserFollows>();
+		public virtual ICollection<UserFollows> Followers { get; set; } = new List<UserFollows>();
+		public virtual ICollection<UserFollows> Followees { get; set; } = new List<UserFollows>();
 		public virtual ICollection<GameRecommendations> GameRecommendations { get; set; } = new List<GameRecommendations>();
 		public virtual ICollection<GameCensorLogs> GameCensorLogs { get; set; } = new List<GameCensorLogs>();
 

@@ -32,8 +32,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\IndieGameZone.Application\IndieGameZone.Application.csproj" />
     <ProjectReference Include="..\IndieGameZone.Infrastructure\IndieGameZone.Infrastructure.csproj" />
-    <ProjectReference Include="..\IndieGameZone.Service\IndieGameZone.Application.csproj" />
   </ItemGroup>
 
 </Project>
