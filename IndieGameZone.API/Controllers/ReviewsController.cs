@@ -36,7 +36,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/reviews")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize]
 		public async Task<IActionResult> CreateReview([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromBody] ReviewForCreationDto reviewForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.ReviewService.CreateReview(userId, gameId, reviewForCreationDto, ct);
