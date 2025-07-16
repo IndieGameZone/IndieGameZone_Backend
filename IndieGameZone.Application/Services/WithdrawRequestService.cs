@@ -25,6 +25,11 @@ namespace IndieGameZone.Application.Services
 		}
 		public async Task CreateWithdrawRequest(Guid userId, WithdrawRequestForCreationDto withdrawRequestForCreationDto, CancellationToken ct = default)
 		{
+			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, false, ct);
+			if (withdrawRequestForCreationDto.Amount > wallet.Balance)
+			{
+				throw new BadRequestException("Insufficient balance in wallet");
+			}
 			Random random = new Random();
 			var transaction = new Transactions
 			{
