@@ -15,7 +15,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(t => t.Amount);
 			builder.Property(t => t.Description);
 			builder.Property(t => t.Status).HasConversion<string>().HasMaxLength(10);
-			builder.Property(t => t.Type).HasConversion<string>().HasMaxLength(30);
+			builder.Property(t => t.Type).HasConversion<string>().HasMaxLength(50);
 			builder.Property(t => t.CreatedAt);
 			builder.Property(t => t.CommercialRegistrationStartDate);
 			builder.Property(t => t.CommercialRegistrationEndDate);
