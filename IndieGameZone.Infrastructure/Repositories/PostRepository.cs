@@ -18,7 +18,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public void DeletePost(Posts posts) => Delete(posts);
 
 		public async Task<Posts?> GetPostById(Guid postId, bool trackChange, CancellationToken ct = default) => await
-			FindByCondition(p => p.Id.Equals(postId), trackChange).Include(p => p.PostTags).ThenInclude(p => p.Tag).FirstOrDefaultAsync(ct);
+			FindByCondition(p => p.Id.Equals(postId), trackChange)
+			.Include(p => p.PostTags).ThenInclude(p => p.Tag).AsSplitQuery()
+			.Include(p => p.PostImages)
+			.FirstOrDefaultAsync(ct);
 
 		public async Task<PagedList<Posts>> GetPostsByGameId(Guid gameId, PostParameters postParameters, bool trackChange, CancellationToken ct = default)
 		{

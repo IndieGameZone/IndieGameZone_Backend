@@ -25,7 +25,8 @@ namespace IndieGameZone.Application.Services
 		}
 		public async Task CreateWithdrawRequest(Guid userId, WithdrawRequestForCreationDto withdrawRequestForCreationDto, CancellationToken ct = default)
 		{
-			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, false, ct);
+			var dbTransaction = await repositoryManager.BeginTransaction(ct);
+			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct);
 			if (withdrawRequestForCreationDto.Amount > wallet.Balance)
 			{
 				throw new BadRequestException("Insufficient balance in wallet");
@@ -52,10 +53,12 @@ namespace IndieGameZone.Application.Services
 				CreatedAt = DateTime.Now,
 				ImageProof = string.Empty,
 			};
+			wallet.Balance -= withdrawRequestForCreationDto.Amount;
 
 			repositoryManager.TransactionRepository.CreateTransaction(transaction);
 			repositoryManager.WithdrawRequestRepository.CreateWithdrawRequest(withdrawRequest);
 			await repositoryManager.SaveAsync(ct);
+			dbTransaction.Commit();
 		}
 
 		public async Task<(IEnumerable<WithdrawRequestForReturnDto> withdrawRequests, MetaData metaData)> GetWithdrawRequests(WithdrawRequestParameter withdrawRequestParameter, CancellationToken ct = default)

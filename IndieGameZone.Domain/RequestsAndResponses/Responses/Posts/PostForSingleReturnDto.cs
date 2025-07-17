@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.PostTags;
+﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.PostImages;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.PostTags;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Posts
 {
@@ -7,7 +8,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Posts
 		public Guid Id { get; init; }
 		public string Title { get; init; }
 		public string Content { get; init; }
-		public string Image { get; init; }
+		public ICollection<PostImageForReturnDto> PostImages { get; init; }
 		public ICollection<PostTagForReturnDto> PostTags { get; init; }
 	}
 }
