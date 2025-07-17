@@ -25,6 +25,11 @@ namespace IndieGameZone.Application.Services
 		}
 		public async Task CreateWithdrawRequest(Guid userId, WithdrawRequestForCreationDto withdrawRequestForCreationDto, CancellationToken ct = default)
 		{
+			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, false, ct);
+			if (withdrawRequestForCreationDto.Amount > wallet.Balance)
+			{
+				throw new BadRequestException("Insufficient balance in wallet");
+			}
 			Random random = new Random();
 			var transaction = new Transactions
 			{
@@ -35,7 +40,9 @@ namespace IndieGameZone.Application.Services
 				Status = TransactionStatus.Pending,
 				Type = TransactionType.Withdraw,
 				CreatedAt = DateTime.Now,
-				UserId = userId
+				UserId = userId,
+				PurchaseUserId = userId,
+				PaymentMethod = PaymentMethod.Wallet
 			};
 
 			var withdrawRequest = new WithdrawRequests
@@ -68,6 +75,15 @@ namespace IndieGameZone.Application.Services
 		public async Task UpdateWithdrawRequest(Guid transactionId, IFormFile imageProof, CancellationToken ct = default)
 		{
 			var withdrawRequest = await repositoryManager.WithdrawRequestRepository.GetWithdrawRequestByTransactionId(transactionId, true, ct);
+			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(transactionId, true, ct);
+			var notification = new Notifications
+			{
+				Id = Guid.NewGuid(),
+				UserId = transaction.UserId,
+				Message = "Your withdraw request has been resolved. Please check your bank account",
+				CreatedAt = DateTime.Now,
+				IsRead = false
+			};
 			if (withdrawRequest is null)
 			{
 				throw new NotFoundException("Withdraw request not found");
@@ -75,6 +91,8 @@ namespace IndieGameZone.Application.Services
 			string fileName = $"{transactionId}_{DateTime.Now:yyyyMMddHHmmssfff}{Path.GetExtension(imageProof.FileName)}";
 			withdrawRequest.ImageProof = await blobService.UploadBlob(fileName, StorageContainer.STORAGE_CONTAINER, imageProof);
 			withdrawRequest.IsTransfered = true;
+			transaction.Status = TransactionStatus.Success;
+			repositoryManager.NotificationRepository.CreateNotification(notification);
 			await repositoryManager.SaveAsync(ct);
 		}
 	}
