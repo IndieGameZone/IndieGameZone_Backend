@@ -27,15 +27,15 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasMany(p => p.PostReactions)
 				.WithOne(pr => pr.Post)
 				.HasForeignKey(pr => pr.PostId)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.Cascade);
 			builder.HasMany(p => p.PostComments)
 				.WithOne(pc => pc.Post)
 				.HasForeignKey(pc => pc.PostId)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.Cascade);
 			builder.HasMany(pt => pt.PostTags)
 				.WithOne(pt => pt.Post)
 				.HasForeignKey(pt => pt.PostId)
-				.OnDelete(DeleteBehavior.Restrict);
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

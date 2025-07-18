@@ -44,6 +44,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<ICouponRepository> couponRepository;
 		private readonly Lazy<IUserAchievementRepository> userAchievementRepository;
 		private readonly Lazy<PostImageRepository> postImageRepository;
+		private readonly Lazy<IDownloadSlotRepository> downloadSlotRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -84,6 +85,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			couponRepository = new Lazy<ICouponRepository>(() => new CouponRepository(appDbContext));
 			userAchievementRepository = new Lazy<IUserAchievementRepository>(() => new UserAchievementRepository(appDbContext));
 			postImageRepository = new Lazy<PostImageRepository>(() => new PostImageRepository(appDbContext));
+			downloadSlotRepository = new Lazy<IDownloadSlotRepository>(() => new DownloadSlotRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
@@ -157,6 +159,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public IUserAchievementRepository UserAchievementRepository => userAchievementRepository.Value;
 
 		public IPostImageRepository PostImageRepository => postImageRepository.Value;
+
+		public IDownloadSlotRepository DownloadSlotRepository => downloadSlotRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{

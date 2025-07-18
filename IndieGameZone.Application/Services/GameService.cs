@@ -329,13 +329,18 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<string> IncreaseNumberOfDownload(Guid userId, Guid gamePlatformId, CancellationToken ct = default)
 		{
-
-
 			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, false, ct);
 			var game = await repositoryManager.GameRepository.GetGameById(gamePlatform.GameId, true, ct);
 			var roles = await userManager.GetRolesAsync(await userManager.FindByIdAsync(userId.ToString()));
 			if (roles.Contains(RoleEnum.Player.ToString()) || userId != game.DeveloperId)
 			{
+				var downlaodSlot = new DownloadSlots
+				{
+					Id = Guid.NewGuid(),
+					UserId = userId,
+					GameId = game.Id
+				};
+				repositoryManager.DownloadSlotRepository.CreateDownloadSlot(downlaodSlot);
 				game.NumberOfDownloads++;
 			}
 			await repositoryManager.SaveAsync(ct);

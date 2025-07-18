@@ -42,5 +42,6 @@ namespace IndieGameZone.Domain.IRepositories
 		ICouponRepository CouponRepository { get; }
 		IUserAchievementRepository UserAchievementRepository { get; }
 		IPostImageRepository PostImageRepository { get; }
+		IDownloadSlotRepository DownloadSlotRepository { get; }
 	}
 }
