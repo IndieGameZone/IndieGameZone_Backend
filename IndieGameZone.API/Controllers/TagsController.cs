@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Tags;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -18,9 +19,9 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet]
-		public async Task<IActionResult> GetTags(CancellationToken ct)
+		public async Task<IActionResult> GetTags([FromQuery] TagParameters tagParameters, CancellationToken ct)
 		{
-			var tags = await serviceManager.TagService.GetTags();
+			var tags = await serviceManager.TagService.GetTags(tagParameters, ct);
 			return Ok(tags);
 		}
 

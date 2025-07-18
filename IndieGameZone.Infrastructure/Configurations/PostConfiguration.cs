@@ -14,7 +14,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(p => p.CreatedAt);
 			builder.Property(p => p.CensoredAt);
 			builder.Property(p => p.UpdatedAt);
-			builder.Property(p => p.Status);
+			builder.Property(p => p.Status).HasConversion<string>().HasMaxLength(50);
 
 			builder.HasOne(p => p.User)
 				.WithMany(u => u.Posts)

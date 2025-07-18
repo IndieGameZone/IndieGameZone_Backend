@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.ReportReasons;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,9 @@ namespace IndieGameZone.API.Controllers
 
 		[HttpGet]
 		[Authorize]
-		public async Task<IActionResult> GetReportReasons(CancellationToken ct)
+		public async Task<IActionResult> GetReportReasons([FromQuery] ReportReasonParameters reportReasonParameters, CancellationToken ct)
 		{
-			var reportReasons = await serviceManager.ReportReasonService.GetReportReasons(ct);
+			var reportReasons = await serviceManager.ReportReasonService.GetReportReasons(reportReasonParameters, ct);
 			return Ok(reportReasons);
 		}
 

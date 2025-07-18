@@ -2,6 +2,7 @@
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.BanHistories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Posts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 using Mapster;
 
@@ -11,6 +12,9 @@ namespace IndieGameZone.Application.Extensions
 	{
 		public void Register(TypeAdapterConfig config)
 		{
+			config.NewConfig<Posts, PostForListReturnDto>()
+				.Map(dest => dest.NumberOfComments, src => src.PostComments.Count)
+				.Map(dest => dest.NumberOfLikes, src => src.PostReactions.Count);
 
 			config.NewConfig<GameForCreationDto, Games>()
 				.Ignore(dest => dest.GameImages);
@@ -39,6 +43,6 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.BannedUser, src => src.BannedUser)
 				.Map(dest => dest.BannedByUser, src => src.BannedByUser);
 
-        }
-    }
+		}
+	}
 }

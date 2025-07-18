@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
+using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.ReportReasons;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.ReportReasons;
 using MapsterMapper;
@@ -16,9 +17,9 @@ namespace IndieGameZone.Application.Services
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 		}
-		public async Task<IEnumerable<ReportReasonForReturnDto>> GetReportReasons(CancellationToken ct = default)
+		public async Task<IEnumerable<ReportReasonForReturnDto>> GetReportReasons(ReportReasonParameters reportReasonParameters, CancellationToken ct = default)
 		{
-			var reportReasons = await repositoryManager.ReportReasonRepository.GetReportReasons(false, ct);
+			var reportReasons = await repositoryManager.ReportReasonRepository.GetReportReasons(reportReasonParameters, false, ct);
 			return mapper.Map<IEnumerable<ReportReasonForReturnDto>>(reportReasons);
 		}
 		public async Task<ReportReasonForReturnDto?> GetReportReasonById(Guid id, CancellationToken ct = default)

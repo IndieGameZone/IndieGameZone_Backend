@@ -20,13 +20,18 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<Posts?> GetPostById(Guid postId, bool trackChange, CancellationToken ct = default) => await
 			FindByCondition(p => p.Id.Equals(postId), trackChange)
 			.Include(p => p.PostTags).ThenInclude(p => p.Tag).AsSplitQuery()
-			.Include(p => p.PostImages)
+			.Include(p => p.PostImages).AsSplitQuery()
+			.Include(p => p.PostReactions).AsSplitQuery()
+			.Include(p => p.PostComments).ThenInclude(pc => pc.User).AsSplitQuery()
 			.FirstOrDefaultAsync(ct);
 
 		public async Task<PagedList<Posts>> GetPostsByGameId(Guid gameId, PostParameters postParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var posts = FindByCondition(p => p.GameId.Equals(gameId), trackChange)
-				.Include(p => p.PostTags).ThenInclude(p => p.Tag)
+				.Include(p => p.PostTags).ThenInclude(p => p.Tag).AsSplitQuery()
+				.Include(p => p.PostImages).AsSplitQuery()
+				.Include(p => p.PostReactions).AsSplitQuery()
+				.Include(p => p.PostComments).ThenInclude(pc => pc.User).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Posts>.ToPagedList(posts, postParameters.PageNumber, postParameters.PageSize, ct);
@@ -35,7 +40,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public Task<PagedList<Posts>> GetPostsByUserId(Guid userId, PostParameters postParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var posts = FindByCondition(p => p.UserId.Equals(userId), trackChange)
-				.Include(p => p.PostTags).ThenInclude(p => p.Tag)
+				.Include(p => p.PostTags).ThenInclude(p => p.Tag).AsSplitQuery()
+				.Include(p => p.PostImages).AsSplitQuery()
+				.Include(p => p.PostReactions).AsSplitQuery()
+				.Include(p => p.PostComments).ThenInclude(pc => pc.User).AsSplitQuery()
 				.Sort();
 			return PagedList<Posts>.ToPagedList(posts, postParameters.PageNumber, postParameters.PageSize, ct);
 		}

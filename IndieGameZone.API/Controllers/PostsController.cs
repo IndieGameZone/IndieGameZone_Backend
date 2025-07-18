@@ -43,7 +43,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("games/{gameId:guid}/posts")]
-		[Authorize]
 		public async Task<IActionResult> GetPostsByGameId(Guid gameId, [FromQuery] PostParameters postParameters, CancellationToken ct = default)
 		{
 			var pagedResult = await serviceManager.PostService.GetPostsByGameId(gameId, postParameters, ct);

@@ -2,6 +2,7 @@
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
+using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Tags;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Tags;
 using MapsterMapper;
@@ -47,9 +48,9 @@ namespace IndieGameZone.Application.Services
 			return mapper.Map<TagForReturnDto>(tagEntity);
 		}
 
-		public async Task<IEnumerable<TagForReturnDto>> GetTags(CancellationToken ct = default)
+		public async Task<IEnumerable<TagForReturnDto>> GetTags(TagParameters tagParameters, CancellationToken ct = default)
 		{
-			var tagEntities = await repositoryManager.TagRepository.GetTags(false, ct);
+			var tagEntities = await repositoryManager.TagRepository.GetTags(tagParameters, false, ct);
 			return mapper.Map<IEnumerable<TagForReturnDto>>(tagEntities);
 		}
 

@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
+using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Infrastructure.Extensions;
 using IndieGameZone.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +20,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<ReportReasons?> GetReportReasonById(Guid id, bool trackChange, CancellationToken ct = default) => await
 			FindByCondition(x => x.Id.Equals(id), trackChange).FirstOrDefaultAsync(ct);
 
-		public async Task<IEnumerable<ReportReasons>> GetReportReasons(bool trackChange, CancellationToken ct = default)
+		public async Task<IEnumerable<ReportReasons>> GetReportReasons(ReportReasonParameters reportReasonParameters, bool trackChange, CancellationToken ct = default)
 		{
 			return await FindAll(trackChange)
+				.FilterByType(reportReasonParameters.ReportReasonType)
 				.Sort()
 				.ToListAsync(ct);
 		}

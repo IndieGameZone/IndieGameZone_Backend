@@ -10,5 +10,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Posts
 		public string Content { get; init; }
 		public ICollection<PostImageForReturnDto> PostImages { get; init; }
 		public ICollection<PostTagForReturnDto> PostTags { get; init; }
+		public int NumberOfComments { get; init; }
+		public int NumberOfLikes { get; init; }
 	}
 }
