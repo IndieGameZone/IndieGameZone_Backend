@@ -14,5 +14,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Posts
 		public int NumberOfComments { get; init; }
 		public int NumberOfLikes { get; init; }
 		public UserShortForReturnDto User { get; init; }
+		public DateTime CreatedAt { get; init; }
 	}
 }

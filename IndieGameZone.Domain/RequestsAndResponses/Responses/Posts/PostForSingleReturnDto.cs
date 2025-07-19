@@ -12,5 +12,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Posts
 		public ICollection<PostTagForReturnDto> PostTags { get; init; }
 		public int NumberOfComments { get; init; }
 		public int NumberOfLikes { get; init; }
+		public DateTime CreatedAt { get; init; }
 	}
 }
