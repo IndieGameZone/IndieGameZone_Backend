@@ -6,6 +6,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.GamePlatforms
 	{
 		public Guid Id { get; init; }
 		public string DisplayName { get; init; }
+		public string Version { get; init; }
 		public double Size { get; init; }
 		public string File { get; init; }
 		public bool IsActive { get; init; }

@@ -11,8 +11,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasKey(gp => gp.Id);
 			builder.Property(gp => gp.File);
 			builder.Property(gp => gp.DisplayName).HasMaxLength(150);
+			builder.Property(gp => gp.Version).HasMaxLength(51);
 			builder.Property(gp => gp.Size);
 			builder.Property(gp => gp.IsActive);
+			builder.Property(gp => gp.CreatedAt);
 			builder.HasOne(gp => gp.Game)
 				.WithMany(g => g.GamePlatforms)
 				.HasForeignKey(gp => gp.GameId)

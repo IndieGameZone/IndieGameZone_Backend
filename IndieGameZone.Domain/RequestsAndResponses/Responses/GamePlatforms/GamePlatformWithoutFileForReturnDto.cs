@@ -7,5 +7,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.GamePlatforms
 		public string DisplayName { get; init; }
 		public double Size { get; init; }
 		public virtual PlatformForReturnDto Platform { get; init; }
+		public string Version { get; init; }
 	}
 }

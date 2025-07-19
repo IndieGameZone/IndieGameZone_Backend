@@ -14,6 +14,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(g => g.CoverImage);
 			builder.Property(g => g.VideoLink);
 			builder.Property(g => g.Description);
+			builder.Property(g => g.VersionDescription);
 			builder.Property(g => g.AllowDonation);
 			builder.Property(g => g.Status).HasConversion<string>().HasMaxLength(50);
 			builder.Property(g => g.Visibility).HasConversion<string>().HasMaxLength(50);

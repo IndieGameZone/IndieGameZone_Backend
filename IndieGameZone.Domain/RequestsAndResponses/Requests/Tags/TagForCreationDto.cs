@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using IndieGameZone.Domain.Constants;
+using System.ComponentModel.DataAnnotations;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Tags
 {
@@ -6,5 +7,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Tags
 	{
 		[Required]
 		public string Name { get; init; }
+		[Required]
+		public TagTypeEnum Type { get; init; }
 	}
 }

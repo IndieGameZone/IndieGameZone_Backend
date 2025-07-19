@@ -16,6 +16,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
 		public string ShortDescription { get; init; }
 		[Required]
 		public string InstallInstruction { get; init; }
+		public string VersionDescription { get; init; }
 		[Required]
 		public bool AllowDonation { get; init; }
 		[Required]

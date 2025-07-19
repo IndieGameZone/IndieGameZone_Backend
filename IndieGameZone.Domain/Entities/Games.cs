@@ -9,6 +9,7 @@ namespace IndieGameZone.Domain.Entities
 		public string CoverImage { get; set; } = string.Empty;
 		public string? VideoLink { get; set; } = string.Empty;
 		public string ShortDescription { get; set; } = string.Empty;
+		public string VersionDescription { get; set; } = string.Empty;
 		public string InstallInstruction { get; set; } = string.Empty;
 		public string Description { get; set; } = string.Empty;
 		public bool AllowDonation { get; set; }

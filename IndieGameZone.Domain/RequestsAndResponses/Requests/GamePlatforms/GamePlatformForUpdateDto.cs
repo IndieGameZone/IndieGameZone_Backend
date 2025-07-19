@@ -8,5 +8,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.GamePlatforms
 		public Guid PlatformId { get; init; }
 		[Required]
 		public string? File { get; init; }
+		[Required]
+		[MaxLength(150)]
+		public string Version { get; init; }
 	}
 }

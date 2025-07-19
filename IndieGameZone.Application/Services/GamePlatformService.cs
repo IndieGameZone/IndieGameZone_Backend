@@ -21,6 +21,23 @@ namespace IndieGameZone.Application.Services
 			this.blobService = blobService;
 		}
 
+		private async Task DeleteOldGamePlatform(Guid gameId, IEnumerable<string> newGamePlatformsFile, CancellationToken ct)
+		{
+			var existingGamePlatforms = await repositoryManager.GamePlatformRepository.GetGamePlatformsByGameId(gameId, false, ct);
+			var existingGameFileUrls = existingGamePlatforms.Select(gp => gp.File).ToList();
+			if (existingGameFileUrls is null || !existingGameFileUrls.Any())
+			{
+				return;
+			}
+			var platformsToDelete = existingGameFileUrls.Except(newGamePlatformsFile);
+			foreach (var platform in platformsToDelete)
+			{
+				await blobService.DeleteBlob(platform.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+			}
+			repositoryManager.GamePlatformRepository.DeleteGamePlatform(existingGamePlatforms);
+			await repositoryManager.SaveAsync(ct);
+		}
+
 		public async Task CreateGamePlatform(Guid gameId, ICollection<GamePlatformForCreationDto> gamePlatformForCreationDto, CancellationToken ct = default)
 		{
 			var gamePlatforms = mapper.Map<ICollection<GamePlatforms>>(gamePlatformForCreationDto);
@@ -32,6 +49,7 @@ namespace IndieGameZone.Application.Services
 				gamePlatform.DisplayName = await blobService.GetBlobOriginalName(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.IsActive = true;
+				gamePlatform.CreatedAt = DateTime.Now;
 			}
 			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatforms);
 			await repositoryManager.SaveAsync(ct);
@@ -39,18 +57,8 @@ namespace IndieGameZone.Application.Services
 
 		public async Task UpdateGamePlatform(Guid gameId, ICollection<GamePlatformForUpdateDto> gamePlatformForUpdateDto, CancellationToken ct = default)
 		{
-			var existingGamePlatforms = await repositoryManager.GamePlatformRepository.GetGamePlatformsByGameId(gameId, false, ct);
-			if (existingGamePlatforms is not null && existingGamePlatforms.Any())
-			{
-				foreach (var platform in existingGamePlatforms)
-				{
-					if (platform.File != null)
-					{
-						await blobService.DeleteBlob(platform.File.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-					}
-				}
-			}
-			repositoryManager.GamePlatformRepository.DeleteGamePlatform(existingGamePlatforms);
+			var dbTransaction = await repositoryManager.BeginTransaction(ct);
+			await DeleteOldGamePlatform(gameId, gamePlatformForUpdateDto.Select(gp => gp.File), ct);
 
 			var gamePlatforms = mapper.Map<ICollection<GamePlatforms>>(gamePlatformForUpdateDto);
 			foreach (var gamePlatform in gamePlatforms)
@@ -61,10 +69,12 @@ namespace IndieGameZone.Application.Services
 				gamePlatform.DisplayName = blobName.Split('.').First();
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.IsActive = true;
+				gamePlatform.CreatedAt = DateTime.Now;
 			}
 
 			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatforms);
 			await repositoryManager.SaveAsync(ct);
+			dbTransaction.Commit();
 		}
 
 		public async Task UpdateGamePlatformActivationStatus(Guid developerId, Guid gamePlatformId, bool isActive, CancellationToken ct = default)
