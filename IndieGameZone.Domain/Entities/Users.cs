@@ -35,6 +35,7 @@ namespace IndieGameZone.Domain.Entities
 		public virtual ICollection<GameRecommendations> GameRecommendations { get; set; } = new List<GameRecommendations>();
 		public virtual ICollection<GameCensorLogs> GameCensorLogs { get; set; } = new List<GameCensorLogs>();
 		public virtual ICollection<DownloadSlots> DownloadSlots { get; set; } = new List<DownloadSlots>();
+		public virtual ICollection<WithdrawRequests> WithdrawRequests { get; set; } = new List<WithdrawRequests>();
 
 	}
 }

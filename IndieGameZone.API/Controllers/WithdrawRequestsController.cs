@@ -45,11 +45,11 @@ namespace IndieGameZone.API.Controllers
 			return StatusCode(201);
 		}
 
-		[HttpPut("withdraw-requests/{transactionId:guid}")]
+		[HttpPut("withdraw-requests/{id:guid}")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)}")]
-		public async Task<IActionResult> UpdateWithdrawRequestImageProof([FromRoute] Guid transactionId, IFormFile imageProof, CancellationToken ct)
+		public async Task<IActionResult> UpdateWithdrawRequestImageProof([FromRoute] Guid id, IFormFile imageProof, CancellationToken ct)
 		{
-			await serviceManager.WithdrawRequestService.UpdateWithdrawRequest(transactionId, imageProof, ct);
+			await serviceManager.WithdrawRequestService.UpdateWithdrawRequest(id, imageProof, ct);
 			return NoContent();
 		}
 	}

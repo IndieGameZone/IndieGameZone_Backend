@@ -13,6 +13,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 		public void Configure(EntityTypeBuilder<DownloadSlots> builder)
 		{
 			builder.HasKey(ds => ds.Id);
+			builder.Property(ds => ds.DownloadAt);
 			builder.HasOne(ds => ds.Game)
 				.WithMany(g => g.DownloadSlots)
 				.HasForeignKey(ds => ds.GameId)

@@ -2,13 +2,14 @@
 {
 	public class WithdrawRequests
 	{
-		public Guid TransactionId { get; set; }
+		public Guid Id { get; set; }
 		public string ImageProof { get; set; } = string.Empty;
 		public bool IsTransfered { get; set; }
 		public DateTime CreatedAt { get; set; }
+		public Guid UserId { get; set; }
 
 
 		// Navigation properties
-		public virtual Transactions Transaction { get; set; } = null!;
+		public virtual Users User { get; set; } = null!;
 	}
 }

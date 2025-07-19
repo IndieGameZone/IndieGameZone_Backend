@@ -15,7 +15,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void CreateWithdrawRequest(WithdrawRequests withdrawRequest) => Create(withdrawRequest);
 
-		public async Task<WithdrawRequests?> GetWithdrawRequestByTransactionId(Guid transactionId, bool trackChange, CancellationToken ct = default) => await FindByCondition(w => w.TransactionId == transactionId, trackChange)
+		public async Task<WithdrawRequests?> GetWithdrawRequestById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(w => w.Id == id, trackChange)
 			.FirstOrDefaultAsync(ct);
 
 		public async Task<PagedList<WithdrawRequests>> GetWithdrawRequests(WithdrawRequestParameter withdrawRequestParameter, bool trackChange, CancellationToken ct = default)
@@ -29,7 +29,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public Task<PagedList<WithdrawRequests>> GetWithdrawRequestsByUserId(Guid userId, WithdrawRequestParameter withdrawRequestParameter, bool trackChange, CancellationToken ct = default)
 		{
 			var withdrawRequests = FindAll(trackChange)
-				.Include(w => w.Transaction).Where(w => w.Transaction.UserId == userId)
 				.Sort();
 			return PagedList<WithdrawRequests>.ToPagedList(withdrawRequests, withdrawRequestParameter.PageNumber, withdrawRequestParameter.PageSize, ct);
 		}

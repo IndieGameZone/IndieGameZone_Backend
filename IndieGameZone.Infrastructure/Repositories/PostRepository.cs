@@ -23,6 +23,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			.Include(p => p.PostImages).AsSplitQuery()
 			.Include(p => p.PostReactions).AsSplitQuery()
 			.Include(p => p.PostComments).ThenInclude(pc => pc.User).AsSplitQuery()
+			.Include(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
 			.FirstOrDefaultAsync(ct);
 
 		public async Task<PagedList<Posts>> GetPostsByGameId(Guid gameId, PostParameters postParameters, bool trackChange, CancellationToken ct = default)
@@ -32,6 +33,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(p => p.PostImages).AsSplitQuery()
 				.Include(p => p.PostReactions).AsSplitQuery()
 				.Include(p => p.PostComments).ThenInclude(pc => pc.User).AsSplitQuery()
+				.Include(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Posts>.ToPagedList(posts, postParameters.PageNumber, postParameters.PageSize, ct);
@@ -44,6 +46,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(p => p.PostImages).AsSplitQuery()
 				.Include(p => p.PostReactions).AsSplitQuery()
 				.Include(p => p.PostComments).ThenInclude(pc => pc.User).AsSplitQuery()
+				.Include(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
 				.Sort();
 			return PagedList<Posts>.ToPagedList(posts, postParameters.PageNumber, postParameters.PageSize, ct);
 		}

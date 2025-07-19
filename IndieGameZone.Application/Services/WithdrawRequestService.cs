@@ -48,7 +48,7 @@ namespace IndieGameZone.Application.Services
 
 			var withdrawRequest = new WithdrawRequests
 			{
-				TransactionId = transaction.Id,
+				Id = Guid.NewGuid(),
 				IsTransfered = false,
 				CreatedAt = DateTime.Now,
 				ImageProof = string.Empty,
@@ -75,10 +75,10 @@ namespace IndieGameZone.Application.Services
 			return (withdrawRequests, withdrawRequestWithMetaData.MetaData);
 		}
 
-		public async Task UpdateWithdrawRequest(Guid transactionId, IFormFile imageProof, CancellationToken ct = default)
+		public async Task UpdateWithdrawRequest(Guid id, IFormFile imageProof, CancellationToken ct = default)
 		{
-			var withdrawRequest = await repositoryManager.WithdrawRequestRepository.GetWithdrawRequestByTransactionId(transactionId, true, ct);
-			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(transactionId, true, ct);
+			var withdrawRequest = await repositoryManager.WithdrawRequestRepository.GetWithdrawRequestById(id, true, ct);
+			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(id, true, ct);
 			var notification = new Notifications
 			{
 				Id = Guid.NewGuid(),
@@ -91,7 +91,7 @@ namespace IndieGameZone.Application.Services
 			{
 				throw new NotFoundException("Withdraw request not found");
 			}
-			string fileName = $"{transactionId}_{DateTime.Now:yyyyMMddHHmmssfff}{Path.GetExtension(imageProof.FileName)}";
+			string fileName = $"{id}_{DateTime.Now:yyyyMMddHHmmssfff}{Path.GetExtension(imageProof.FileName)}";
 			withdrawRequest.ImageProof = await blobService.UploadBlob(fileName, StorageContainer.STORAGE_CONTAINER, imageProof);
 			withdrawRequest.IsTransfered = true;
 			transaction.Status = TransactionStatus.Success;

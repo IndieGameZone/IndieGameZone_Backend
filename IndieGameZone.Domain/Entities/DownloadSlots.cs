@@ -5,6 +5,7 @@
 		public Guid Id { get; set; }
 		public Guid GameId { get; set; }
 		public Guid UserId { get; set; }
+		public DateTime DownloadAt { get; set; }
 
 		// Navigation properties
 		public virtual Games Game { get; set; }

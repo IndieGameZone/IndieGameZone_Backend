@@ -339,7 +339,8 @@ namespace IndieGameZone.Application.Services
 				{
 					Id = Guid.NewGuid(),
 					UserId = userId,
-					GameId = game.Id
+					GameId = game.Id,
+					DownloadAt = DateTime.Now,
 				};
 				repositoryManager.DownloadSlotRepository.CreateDownloadSlot(downlaodSlot);
 				game.NumberOfDownloads++;

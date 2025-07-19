@@ -8,14 +8,14 @@ namespace IndieGameZone.Infrastructure.Configurations
 	{
 		public void Configure(EntityTypeBuilder<WithdrawRequests> builder)
 		{
-			builder.HasKey(w => w.TransactionId);
+			builder.HasKey(w => w.Id);
 			builder.Property(w => w.ImageProof);
 			builder.Property(w => w.IsTransfered);
 
-			builder.HasOne(w => w.Transaction)
-				.WithOne(t => t.WithdrawRequest)
-				.HasForeignKey<WithdrawRequests>(w => w.TransactionId)
-				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne(w => w.User)
+				.WithMany(u => u.WithdrawRequests)
+				.HasForeignKey(w => w.UserId)
+				.OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }
