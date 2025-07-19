@@ -5,6 +5,11 @@ namespace IndieGameZone.Infrastructure.Extensions
 {
 	public static class GameRepositoryExtension
 	{
+		public static IQueryable<Games> Sort(this IQueryable<Games> source, IList<Guid> commercialGameId)
+		{
+			return source.OrderByDescending(x => commercialGameId.Contains(x.Id)).ThenByDescending(x => x.CreatedAt);
+		}
+
 		public static IQueryable<Games> Sort(this IQueryable<Games> source)
 		{
 			return source.OrderByDescending(x => x.CreatedAt);

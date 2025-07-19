@@ -20,6 +20,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public double AverageRating { get; init; }
 		public double NumberOfReviews { get; init; }
 		public double Discount { get; init; }
+		public bool HasCommercial { get; set; }
 		public virtual ICollection<GameTagForReturnDto> GameTags { get; init; }
 		public virtual CategoryForReturnDto Category { get; init; }
 	}

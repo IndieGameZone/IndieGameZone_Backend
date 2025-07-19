@@ -10,8 +10,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 {
 	internal sealed class GameRepository : RepositoryBase<Games>, IGameRepository
 	{
+		private readonly AppDbContext appDbContext;
+
 		public GameRepository(AppDbContext appDbContext) : base(appDbContext)
 		{
+			this.appDbContext = appDbContext;
 		}
 
 		public void CreateGame(Games game) => Create(game);
@@ -20,6 +23,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<PagedList<Games>> GetActiveGames(ActiveGameParameters activeGameParameters, bool trackChange, CancellationToken ct = default)
 		{
+			var commercialGameId = await appDbContext.CommercialRegistration
+				.Where(cr => cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner && cr.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= cr.EndDate)
+				.Select(cr => cr.GameId).ToListAsync();
+
 			var gameEntities = FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
 				.Search(activeGameParameters.SearchTerm)
 				.FilterByPrice(activeGameParameters.Price)
@@ -28,7 +35,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.GamePlatforms).FilterByPlatform(activeGameParameters.Platforms).AsSplitQuery()
 				.Include(x => x.GameLanguages).FilterByLanguages(activeGameParameters.Languages).AsSplitQuery()
 				.Include(x => x.Category).FilterByCategory(activeGameParameters.Category).AsSplitQuery()
-				.Sort();
+				.Sort(commercialGameId);
 
 			return await PagedList<Games>.ToPagedList(gameEntities, activeGameParameters.PageNumber, activeGameParameters.PageSize, ct);
 		}
@@ -43,6 +50,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<PagedList<Games>> GetActiveGamesByDeveloperId(Guid developerId, ActiveGameParameters activeGameParameters, bool trackChange, CancellationToken ct = default)
 		{
+			var commercialGameId = await appDbContext.CommercialRegistration
+				.Where(cr => cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner && cr.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= cr.EndDate)
+				.Select(cr => cr.GameId).ToListAsync();
 			var gameEntities = FindByCondition(g => g.DeveloperId == developerId && g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
 				.Search(activeGameParameters.SearchTerm)
 				.FilterByPrice(activeGameParameters.Price)
@@ -51,7 +61,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.GamePlatforms).FilterByPlatform(activeGameParameters.Platforms).AsSplitQuery()
 				.Include(x => x.GameLanguages).FilterByLanguages(activeGameParameters.Languages).AsSplitQuery()
 				.Include(x => x.Category).FilterByCategory(activeGameParameters.Category).AsSplitQuery()
-				.Sort();
+				.Sort(commercialGameId);
 
 			return await PagedList<Games>.ToPagedList(gameEntities, activeGameParameters.PageNumber, activeGameParameters.PageSize, ct);
 		}

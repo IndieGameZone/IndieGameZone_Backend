@@ -267,6 +267,7 @@ namespace IndieGameZone.Application.Services
 			{
 				var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gamesWithMetaData[i].Id, false, ct);
 				games[i].PriceAfterDiscount = discount is not null ? games[i].Price - games[i].Price * discount.Percentage / 100 : games[i].Price;
+				games[i].HasCommercial = await repositoryManager.CommercialRegistrationRepository.GetCategoryCommercialRegistrationByGameId(gamesWithMetaData[i].Id, false, ct) is not null;
 			}
 			return (games, gamesWithMetaData.MetaData);
 		}
