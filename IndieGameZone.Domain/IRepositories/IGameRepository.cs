@@ -20,6 +20,8 @@ namespace IndieGameZone.Domain.IRepositories
 		Task<IEnumerable<Games>> GetTopDownloadedGames(int top, bool trackChange, CancellationToken ct = default);
 		Task<IEnumerable<(Games game, double averageRating)>> GetTopRatedGames(int top = 10, bool trackChange = false, CancellationToken ct = default);
 		Task<IEnumerable<Games>> GetRecentlyPublishedGames(int top = 10, bool trackChange = false, CancellationToken ct = default);
+        Task<IEnumerable<Games>> GetTodayHomepageBannerGamesAsync(bool trackChange, CancellationToken ct = default);
+        Task<PagedList<Games>> GetTodayCategoryBannerGamesAsync(GameParameters gameParameters, bool trackChange, CancellationToken ct = default);
 
-	}
+    }
 }

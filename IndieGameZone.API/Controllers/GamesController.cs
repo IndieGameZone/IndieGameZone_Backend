@@ -163,5 +163,21 @@ namespace IndieGameZone.API.Controllers
 			var isOwned = await serviceManager.GameService.CheckGameOwnership(userId, gameId, ct);
 			return Ok(isOwned);
 		}
-	}
+
+        [HttpGet("games/today-homepage-banner")]
+        public async Task<IActionResult> GetTodayHomepageBannerGames(CancellationToken ct)
+        {
+            var result = await serviceManager.GameService.GetTodayHomepageBannerGamesAsync(ct);
+            return Ok(result.games);
+        }
+
+        [HttpGet("games/today-category-banner")]
+        public async Task<IActionResult> GetTodayCategoryBannerGames([FromQuery] GameParameters gameParameters, CancellationToken ct)
+        {
+            var result = await serviceManager.GameService.GetTodayCategoryBannerGamesAsync(gameParameters, ct);
+            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(result.metaData));
+            return Ok(result.games);
+        }
+
+    }
 }

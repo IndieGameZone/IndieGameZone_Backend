@@ -413,5 +413,51 @@ namespace IndieGameZone.Application.Services
 			var gameLibrary = await repositoryManager.LibraryRepository.GetLibraryByUserIdAndGameId(userId, gameId, false, ct);
 			return gameLibrary != null;
 		}
-	}
+
+        public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetTodayHomepageBannerGamesAsync(CancellationToken ct = default)
+        {
+            var gamesWithMetaData = (await repositoryManager.GameRepository
+                .GetTodayHomepageBannerGamesAsync(false, ct)).ToList();
+
+            var games = mapper.Map<List<GameForListReturnDto>>(gamesWithMetaData);
+
+            for (int i = 0; i < games.Count; i++)
+            {
+                var discount = await repositoryManager.DiscountRepository
+                    .GetActiveDiscountByGameId(gamesWithMetaData[i].Id, false, ct);
+
+                games[i].PriceAfterDiscount = discount is not null
+                    ? games[i].Price - (games[i].Price * discount.Percentage / 100)
+                    : games[i].Price;
+            }
+
+            var metaData = new MetaData
+            {
+                CurrentPage = 1,
+                PageSize = games.Count,
+                TotalCount = games.Count,
+                TotalPages = 1
+            };
+
+            return (games, metaData);
+        }
+
+        public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetTodayCategoryBannerGamesAsync(GameParameters gameParameters, CancellationToken ct = default)
+        {
+            var gamesWithMetaData = await repositoryManager.GameRepository.GetTodayCategoryBannerGamesAsync(gameParameters, false, ct);
+
+            var games = mapper.Map<IEnumerable<GameForListReturnDto>>(gamesWithMetaData).ToList();
+
+            for (int i = 0; i < games.Count; i++)
+            {
+                var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gamesWithMetaData[i].Id, false, ct);
+                games[i].PriceAfterDiscount = discount is not null
+                    ? games[i].Price - (games[i].Price * discount.Percentage / 100)
+                    : games[i].Price;
+            }
+
+            return (games, gamesWithMetaData.MetaData);
+        }
+
+    }
 }

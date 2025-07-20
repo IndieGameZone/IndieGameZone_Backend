@@ -173,5 +173,55 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Take(top)
 				.ToListAsync(ct);
 		}
-	}
+
+        public async Task<IEnumerable<Games>> GetTodayHomepageBannerGamesAsync(bool trackChange, CancellationToken ct = default)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            var gameIds = await appDbContext.CommercialRegistration
+                .Where(cr =>
+                    cr.CommercialPackage.Type == CommercialPackageType.HomepageBanner &&
+                    cr.StartDate <= today &&
+                    today <= cr.EndDate)
+                .Select(cr => cr.GameId)
+                .ToListAsync(ct);
+
+            return await FindByCondition(g =>
+                    gameIds.Contains(g.Id) &&
+                    g.Visibility == GameVisibility.Public &&
+                    g.CensorStatus == CensorStatus.Approved,
+                    trackChange)
+                .Include(g => g.Category).AsSplitQuery()
+                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                .Include(g => g.Discounts).AsSplitQuery()
+                .ToListAsync(ct);
+        }
+
+        public async Task<PagedList<Games>> GetTodayCategoryBannerGamesAsync(GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
+        {
+            var today = DateOnly.FromDateTime(DateTime.Now);
+
+            var gameIds = await appDbContext.CommercialRegistration
+                .Where(cr =>
+                    cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner &&
+                    cr.StartDate <= today &&
+                    today <= cr.EndDate)
+                .Select(cr => cr.GameId)
+                .ToListAsync(ct);
+
+            var query = FindByCondition(g =>
+                    gameIds.Contains(g.Id) &&
+                    g.Visibility == GameVisibility.Public,
+                    trackChange)
+                .FilterByCensorStatus(gameParameters.CensorStatus)
+                .Search(gameParameters.SearchTerm)
+                .Include(g => g.Discounts).AsSplitQuery()
+                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                .Include(g => g.Category).AsSplitQuery()
+                .Sort();
+
+            return await PagedList<Games>.ToPagedList(query, gameParameters.PageNumber, gameParameters.PageSize, ct);
+        }
+
+    }
 }
