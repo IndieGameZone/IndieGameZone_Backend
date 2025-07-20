@@ -4,6 +4,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.CommercialPackages;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text.Json;
@@ -79,7 +80,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
         [HttpGet("{id:guid}/unavailable-dates")]
-        public async Task<IActionResult> GetUnavailableDates([FromRoute] Guid id, [FromQuery] Guid gameId, CancellationToken ct)
+        public async Task<IActionResult> GetUnavailableDates([FromRoute] Guid id, [FromQuery, Required] Guid gameId, CancellationToken ct)
         {
             var jwt = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
             var handler = new JwtSecurityTokenHandler();

@@ -163,7 +163,7 @@ namespace IndieGameZone.Application.Services
             return (commercialRegistrations, commercialRegistrationsWithMetaData.MetaData);
         }
 
-        public async Task<List<string>> GetUnavailableDatesAsync(Guid packageId, Guid gameId, Guid userId, CancellationToken ct = default)
+        public async Task<List<DateOnly>> GetUnavailableDatesAsync(Guid packageId, Guid gameId, Guid userId, CancellationToken ct = default)
         {
             // Validate game existence and ownership
             var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct)
@@ -215,14 +215,12 @@ namespace IndieGameZone.Application.Services
             // Add dates already taken by this game
             unavailableDates.AddRange(gameSpecificDates);
 
-            // Format as dd/MM/yyyy and remove duplicates
+            // Remove duplicates and order
             return unavailableDates
                 .Distinct()
                 .OrderBy(d => d)
-                .Select(d => d.ToString("dd/MM/yyyy"))
                 .ToList();
         }
-
 
     }
 }
