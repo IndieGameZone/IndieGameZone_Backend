@@ -91,16 +91,19 @@ namespace IndieGameZone.Application.Services
 			postEntity.CreatedAt = DateTime.Now;
 			postEntity.Status = PostStatus.PendingAIReview;
 
-			var postImages = postForCreationDto.Images.Select(image => new PostImages
+			if (postForCreationDto.Images != null && postForCreationDto.Images.Any())
 			{
-				Id = Guid.NewGuid(),
-				PostId = postEntity.Id,
-				Image = image
-			}).ToList();
-			repositoryManager.PostImageRepository.CreatePostImages(postImages);
+				var postImages = postForCreationDto.Images.Select(image => new PostImages
+				{
+					Id = Guid.NewGuid(),
+					PostId = postEntity.Id,
+					Image = image
+				}).ToList();
+				repositoryManager.PostImageRepository.CreatePostImages(postImages);
+			}
 
 
-			if (postForCreationDto.Tags != null)
+			if (postForCreationDto.Tags != null && postForCreationDto.Tags.Any())
 			{
 				var postTags = postForCreationDto.Tags.Select(tagId => new PostTags
 				{
@@ -193,15 +196,19 @@ namespace IndieGameZone.Application.Services
 			post.UpdatedAt = DateTime.Now;
 			post.Status = PostStatus.PendingAIReview;
 
-			var postImages = postForUpdateDto.Images.Select(image => new PostImages
+			if (postForUpdateDto.Images != null && postForUpdateDto.Images.Any())
 			{
-				Id = Guid.NewGuid(),
-				PostId = postId,
-				Image = image
-			}).ToList();
-			repositoryManager.PostImageRepository.CreatePostImages(postImages);
+				var postImages = postForUpdateDto.Images.Select(image => new PostImages
+				{
+					Id = Guid.NewGuid(),
+					PostId = postId,
+					Image = image
+				}).ToList();
+				repositoryManager.PostImageRepository.CreatePostImages(postImages);
+			}
 
-			if (postForUpdateDto.Tags != null)
+
+			if (postForUpdateDto.Tags != null && postForUpdateDto.Tags.Any())
 			{
 				var postTags = postForUpdateDto.Tags.Select(tagId => new PostTags
 				{
