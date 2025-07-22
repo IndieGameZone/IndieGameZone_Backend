@@ -37,7 +37,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/game-reports")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize]
 		public async Task<IActionResult> CreateGameReport([FromRoute] Guid userId, [FromBody] ReportGameForCreationDto reportForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.ReportService.CreateGameReport(userId, reportForCreationDto, ct);
@@ -45,7 +45,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/post-reports")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize]
 		public async Task<IActionResult> CreatePostReport([FromRoute] Guid userId, [FromBody] ReportPostForCreationDto reportForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.ReportService.CreatePostReport(userId, reportForCreationDto, ct);
@@ -53,7 +53,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("users/{userId:guid}/comment-reports")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize]
 		public async Task<IActionResult> CreateCommentReport([FromRoute] Guid userId, [FromBody] ReportCommentForCreationDto reportForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.ReportService.CreateCommentReport(userId, reportForCreationDto, ct);

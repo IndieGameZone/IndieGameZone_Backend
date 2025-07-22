@@ -1,5 +1,7 @@
-﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.PostImages;
+﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.PostImages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.PostTags;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Posts
 {
@@ -13,5 +15,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Posts
 		public int NumberOfComments { get; init; }
 		public int NumberOfLikes { get; init; }
 		public DateTime CreatedAt { get; init; }
+		public UserShortForReturnDto User { get; init; }
+		public GameForListReturnDto Game { get; init; }
 	}
 }
