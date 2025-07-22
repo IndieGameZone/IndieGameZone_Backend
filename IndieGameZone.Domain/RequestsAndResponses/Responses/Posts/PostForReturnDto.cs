@@ -1,10 +1,9 @@
 ﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.PostImages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.PostTags;
-using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Posts
 {
-	public class PostForListReturnDto
+	public class PostForReturnDto
 	{
 		public Guid Id { get; init; }
 		public string Title { get; init; }
@@ -13,7 +12,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Posts
 		public ICollection<PostTagForReturnDto> PostTags { get; init; }
 		public int NumberOfComments { get; init; }
 		public int NumberOfLikes { get; init; }
-		public UserShortForReturnDto User { get; init; }
 		public DateTime CreatedAt { get; init; }
 	}
 }

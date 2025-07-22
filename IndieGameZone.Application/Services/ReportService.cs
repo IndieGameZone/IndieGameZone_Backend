@@ -53,20 +53,20 @@ namespace IndieGameZone.Application.Services
 			await repositoryManager.SaveAsync(ct);
 		}
 
-		public async Task<ReportForSingleReturnDto> GetReportById(Guid id, CancellationToken ct = default)
+		public async Task<ReportForReturnDto> GetReportById(Guid id, CancellationToken ct = default)
 		{
 			var reportEntity = await repositoryManager.ReportRepository.GetReportById(id, false, ct);
 			if (reportEntity == null)
 			{
 				throw new NotFoundException($"Report not found.");
 			}
-			return mapper.Map<ReportForSingleReturnDto>(reportEntity);
+			return mapper.Map<ReportForReturnDto>(reportEntity);
 		}
 
-		public async Task<(IEnumerable<ReportForListReturnDto> reports, MetaData metaData)> GetReports(ReportParameters reportParameters, CancellationToken ct = default)
+		public async Task<(IEnumerable<ReportForReturnDto> reports, MetaData metaData)> GetReports(ReportParameters reportParameters, CancellationToken ct = default)
 		{
 			var reportsWithMetaData = await repositoryManager.ReportRepository.GetReports(reportParameters, false, ct);
-			var reports = mapper.Map<IEnumerable<ReportForListReturnDto>>(reportsWithMetaData);
+			var reports = mapper.Map<IEnumerable<ReportForReturnDto>>(reportsWithMetaData);
 			return (reports, reportsWithMetaData.MetaData);
 		}
 

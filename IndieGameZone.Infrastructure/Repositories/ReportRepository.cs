@@ -29,7 +29,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<PagedList<Reports>> GetReports(ReportParameters reportParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var reports = FindAll(trackChange)
-				.Include(r => r.ReportReason)
+				.Include(r => r.ReportingUser).AsSplitQuery()
+				.Include(r => r.ReportReason).AsSplitQuery()
+				.Include(r => r.Post).AsSplitQuery()
+				.Include(r => r.Game).AsSplitQuery()
+				.Include(r => r.PostComment).AsSplitQuery()
 				.Sort();
 
 			return await PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
