@@ -12,7 +12,7 @@ namespace IndieGameZone.Application.Extensions
 	{
 		public void Register(TypeAdapterConfig config)
 		{
-			config.NewConfig<Posts, PostForListReturnDto>()
+			config.NewConfig<Posts, PostForReturnDto>()
 				.Map(dest => dest.NumberOfComments, src => src.PostComments.Count)
 				.Map(dest => dest.NumberOfLikes, src => src.PostReactions.Count);
 

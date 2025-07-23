@@ -49,21 +49,6 @@ namespace IndieGameZone.Application.Services
 			await recombeeService.SendRatingEvent(userId, gameId, (reviewEntities.Rating - 3) / 2.0);
 		}
 
-		//public async Task DeleteReview(Guid userId, Guid id, CancellationToken ct = default)
-		//{
-		//	var reviewEntity = await repositoryManager.ReviewRepository.GetReviewById(id, false, ct);
-		//	if (reviewEntity == null)
-		//	{
-		//		throw new NotFoundException("Review not found.");
-		//	}
-		//	if (reviewEntity.UserId != userId)
-		//	{
-		//		throw new ForbiddenException("You are not allowed to delete this review.");
-		//	}
-		//	repositoryManager.ReviewRepository.DeleteReview(reviewEntity);
-		//	await repositoryManager.SaveAsync(ct);
-		//}
-
 		public async Task<(IEnumerable<ReviewForReturnDto> reviews, MetaData metaData)> GetReviewsByGameId(Guid gameId, ReviewParameters reviewParameters, CancellationToken ct = default)
 		{
 			var reviewsWithMetaData = await repositoryManager.ReviewRepository.GetReviewsByGameId(gameId, reviewParameters, false, ct);
@@ -81,6 +66,22 @@ namespace IndieGameZone.Application.Services
 			var reviewTexts = reviews.Select(r => r.Comment).ToList();
 			var summary = await aIService.SummarizeReviews(reviewTexts, ct);
 			return summary;
+		}
+
+		public async Task UpdateReview(Guid userId, Guid id, ReviewForUpdateDto reviewForUpdateDto, CancellationToken ct = default)
+		{
+			var reviewEntity = await repositoryManager.ReviewRepository.GetReviewById(id, true, ct);
+			if (reviewEntity == null)
+			{
+				throw new NotFoundException("Review not found.");
+			}
+			if (reviewEntity.UserId != userId)
+			{
+				throw new BadRequestException("You can only update your own reviews.");
+			}
+			mapper.Map(reviewForUpdateDto, reviewEntity);
+			await repositoryManager.SaveAsync(ct);
+			await recombeeService.SendRatingEvent(userId, reviewEntity.GameId, (reviewForUpdateDto.Rating - 3) / 2.0);
 		}
 	}
 }

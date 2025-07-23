@@ -42,5 +42,13 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.ReviewService.CreateReview(userId, gameId, reviewForCreationDto, ct);
 			return StatusCode(201);
 		}
+
+		[HttpPut("users/{userId:guid}/reviews/{reviewId:guid}")]
+		[Authorize]
+		public async Task<IActionResult> UpdateReview([FromRoute] Guid userId, [FromRoute] Guid reviewId, [FromBody] ReviewForUpdateDto reviewForUpdateDto, CancellationToken ct)
+		{
+			await serviceManager.ReviewService.UpdateReview(userId, reviewId, reviewForUpdateDto, ct);
+			return NoContent();
+		}
 	}
 }

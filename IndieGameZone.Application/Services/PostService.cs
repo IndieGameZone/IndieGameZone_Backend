@@ -91,16 +91,19 @@ namespace IndieGameZone.Application.Services
 			postEntity.CreatedAt = DateTime.Now;
 			postEntity.Status = PostStatus.PendingAIReview;
 
-			var postImages = postForCreationDto.Images.Select(image => new PostImages
+			if (postForCreationDto.Images != null && postForCreationDto.Images.Any())
 			{
-				Id = Guid.NewGuid(),
-				PostId = postEntity.Id,
-				Image = image
-			}).ToList();
-			repositoryManager.PostImageRepository.CreatePostImages(postImages);
+				var postImages = postForCreationDto.Images.Select(image => new PostImages
+				{
+					Id = Guid.NewGuid(),
+					PostId = postEntity.Id,
+					Image = image
+				}).ToList();
+				repositoryManager.PostImageRepository.CreatePostImages(postImages);
+			}
 
 
-			if (postForCreationDto.Tags != null)
+			if (postForCreationDto.Tags != null && postForCreationDto.Tags.Any())
 			{
 				var postTags = postForCreationDto.Tags.Select(tagId => new PostTags
 				{
@@ -153,25 +156,25 @@ namespace IndieGameZone.Application.Services
 			dbTransaction.Commit();
 		}
 
-		public async Task<PostForSingleReturnDto> GetPostById(Guid postId, CancellationToken ct = default)
+		public async Task<PostForReturnDto> GetPostById(Guid postId, CancellationToken ct = default)
 		{
 			var post = await repositoryManager.PostRepository.GetPostById(postId, false, ct);
 			if (post is null)
 				throw new NotFoundException($"Post not found.");
-			return mapper.Map<PostForSingleReturnDto>(post);
+			return mapper.Map<PostForReturnDto>(post);
 		}
 
-		public async Task<(IEnumerable<PostForListReturnDto> posts, MetaData metaData)> GetPostsByGameId(Guid gameId, PostParameters postParameters, CancellationToken ct = default)
+		public async Task<(IEnumerable<PostForReturnDto> posts, MetaData metaData)> GetPostsByGameId(Guid gameId, PostParameters postParameters, CancellationToken ct = default)
 		{
 			var postWithMetaData = await repositoryManager.PostRepository.GetPostsByGameId(gameId, postParameters, false, ct);
-			var posts = mapper.Map<IEnumerable<PostForListReturnDto>>(postWithMetaData);
+			var posts = mapper.Map<IEnumerable<PostForReturnDto>>(postWithMetaData);
 			return (posts, postWithMetaData.MetaData);
 		}
 
-		public async Task<(IEnumerable<PostForListReturnDto> posts, MetaData metaData)> GetPostsByUserId(Guid userId, PostParameters postParameters, CancellationToken ct = default)
+		public async Task<(IEnumerable<PostForReturnDto> posts, MetaData metaData)> GetPostsByUserId(Guid userId, PostParameters postParameters, CancellationToken ct = default)
 		{
 			var postWithMetaData = await repositoryManager.PostRepository.GetPostsByUserId(userId, postParameters, false, ct);
-			var posts = mapper.Map<IEnumerable<PostForListReturnDto>>(postWithMetaData);
+			var posts = mapper.Map<IEnumerable<PostForReturnDto>>(postWithMetaData);
 			return (posts, postWithMetaData.MetaData);
 		}
 
@@ -193,15 +196,19 @@ namespace IndieGameZone.Application.Services
 			post.UpdatedAt = DateTime.Now;
 			post.Status = PostStatus.PendingAIReview;
 
-			var postImages = postForUpdateDto.Images.Select(image => new PostImages
+			if (postForUpdateDto.Images != null && postForUpdateDto.Images.Any())
 			{
-				Id = Guid.NewGuid(),
-				PostId = postId,
-				Image = image
-			}).ToList();
-			repositoryManager.PostImageRepository.CreatePostImages(postImages);
+				var postImages = postForUpdateDto.Images.Select(image => new PostImages
+				{
+					Id = Guid.NewGuid(),
+					PostId = postId,
+					Image = image
+				}).ToList();
+				repositoryManager.PostImageRepository.CreatePostImages(postImages);
+			}
 
-			if (postForUpdateDto.Tags != null)
+
+			if (postForUpdateDto.Tags != null && postForUpdateDto.Tags.Any())
 			{
 				var postTags = postForUpdateDto.Tags.Select(tagId => new PostTags
 				{
