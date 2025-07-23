@@ -577,8 +577,10 @@ namespace IndieGameZone.Application.Services
             // Step 5: Update last login and generate tokens
             user.LastLogin = DateTime.Now;
             await userManager.UpdateAsync(user);
-
-            return (false, await CreateToken(user, setRefreshExpiry: true, ct));
+            
+            var tokenDto = await CreateToken(user, setRefreshExpiry: true, ct);
+            await PingAsync(tokenDto.AccessToken, ct);
+            return (false, tokenDto);
         }
 
         public async Task<TokenDto> LoginWithGoogleAsync(GoogleLoginDto dto, CancellationToken ct = default)
@@ -674,7 +676,9 @@ namespace IndieGameZone.Application.Services
             user.LastLogin = DateTime.Now;
             await userManager.UpdateAsync(user);
 
-            return await CreateToken(user, setRefreshExpiry: true, ct);
+            var tokenDto = await CreateToken(user, setRefreshExpiry: true, ct);
+            await PingAsync(tokenDto.AccessToken, ct);
+            return tokenDto;
         }
 
         private async Task<string> GenerateUniqueUsernameAsync()

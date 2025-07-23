@@ -38,8 +38,10 @@ namespace IndieGameZone.API.Controllers
 
 			var tokenDto = await serviceManager.UserService.CreateToken(user, true, ct);
 
-			// Set refresh token cookie
-			Response.Cookies.Append("refreshToken", tokenDto.RefreshToken!, new CookieOptions
+            await serviceManager.UserService.PingAsync(tokenDto.AccessToken, ct);
+
+            // Set refresh token cookie
+            Response.Cookies.Append("refreshToken", tokenDto.RefreshToken!, new CookieOptions
 			{
 				HttpOnly = true,
 				Secure = true,
