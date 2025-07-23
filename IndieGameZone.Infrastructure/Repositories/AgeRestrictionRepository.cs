@@ -16,12 +16,12 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void DeleteAgeRestriction(AgeRestrictions ageRestriction) => Delete(ageRestriction);
 
-		public async Task<AgeRestrictions?> GetAgeRestrictionById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(c => c.Id.Equals(id), trackChange)
+		public async Task<AgeRestrictions?> GetAgeRestrictionById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(c => c.Id.Equals(id) && !c.IsDeleted, trackChange)
 			.SingleOrDefaultAsync(ct);
 
 		public async Task<IEnumerable<AgeRestrictions>> GetAgeRestrictions(bool trackChange, CancellationToken ct = default)
 		{
-			return await FindAll(trackChange)
+			return await FindByCondition(c => !c.IsDeleted, trackChange)
 				.Sort()
 				.ToListAsync(ct);
 		}

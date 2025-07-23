@@ -9,6 +9,7 @@ namespace IndieGameZone.Domain.Entities
 		public double ProgressLevel { get; set; }
 		public AchievementType Type { get; set; }
 		public double DiscountAward { get; set; }
+		public bool IsDeleted { get; set; }
 
 		//Navigation properties
 		public virtual ICollection<UserAchievements> UserAchievements { get; set; } = new List<UserAchievements>();

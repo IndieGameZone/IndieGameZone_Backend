@@ -12,6 +12,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasKey(rt => rt.Id);
 			builder.Property(rt => rt.Name);
 			builder.Property(t => t.Type).HasConversion<string>().HasMaxLength(10);
+			builder.Property(a => a.IsDeleted);
 
 			builder.HasMany(rt => rt.Reports)
 				.WithOne(r => r.ReportReason)

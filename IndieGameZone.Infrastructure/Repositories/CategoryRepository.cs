@@ -18,12 +18,12 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<IEnumerable<Categories>> GetCategories(bool trackChange, CancellationToken ct = default)
 		{
-			return await FindAll(trackChange)
+			return await FindByCondition(c => !c.IsDeleted, trackChange)
 				.Sort()
 				.ToListAsync(ct);
 		}
 
-		public Task<Categories?> GetCategoryById(Guid id, bool trackChange, CancellationToken ct = default) => FindByCondition(c => c.Id.Equals(id), trackChange)
+		public Task<Categories?> GetCategoryById(Guid id, bool trackChange, CancellationToken ct = default) => FindByCondition(c => c.Id.Equals(id) && !c.IsDeleted, trackChange)
 			.SingleOrDefaultAsync(ct);
 	}
 }

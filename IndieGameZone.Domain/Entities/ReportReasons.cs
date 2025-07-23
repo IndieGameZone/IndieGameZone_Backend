@@ -7,6 +7,7 @@ namespace IndieGameZone.Domain.Entities
 		public Guid Id { get; set; }
 		public string Name { get; set; } = string.Empty;
 		public ReportReasonTypeEnum Type { get; set; }
+		public bool IsDeleted { get; set; }
 
 		//Navigation properties
 		public virtual ICollection<Reports> Reports { get; set; } = new List<Reports>();

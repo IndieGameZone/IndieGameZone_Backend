@@ -26,6 +26,5 @@ namespace IndieGameZone.Domain.Entities
 		public virtual Users PurchaseUser { get; set; } = null!;
 		public virtual Games? Game { get; set; } = null!;
 		public virtual CommercialPackages? CommercialPackage { get; set; } = null!;
-		public virtual CommercialRegistration? CommercialRegistration { get; set; } = null!;
 	}
 }

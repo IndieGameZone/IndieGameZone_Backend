@@ -10,6 +10,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 		{
 			builder.HasKey(c => c.Id);
 			builder.Property(c => c.Name).HasMaxLength(100);
+			builder.Property(a => a.IsDeleted);
 
 			builder.HasMany(c => c.Games)
 				.WithOne(g => g.Category)

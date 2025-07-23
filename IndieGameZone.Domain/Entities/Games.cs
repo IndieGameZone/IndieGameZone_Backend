@@ -25,6 +25,7 @@ namespace IndieGameZone.Domain.Entities
 		public Guid AgeRestrictionId { get; set; }
 		public Guid DeveloperId { get; set; }
 		public Guid CategoryId { get; set; }
+		public bool IsDeleted { get; set; }
 
 
 		// Navigation properties

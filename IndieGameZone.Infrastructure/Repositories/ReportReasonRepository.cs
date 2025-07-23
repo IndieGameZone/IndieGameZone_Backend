@@ -18,11 +18,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public void DeleteReportReason(ReportReasons reportReason) => Delete(reportReason);
 
 		public async Task<ReportReasons?> GetReportReasonById(Guid id, bool trackChange, CancellationToken ct = default) => await
-			FindByCondition(x => x.Id.Equals(id), trackChange).FirstOrDefaultAsync(ct);
+			FindByCondition(x => x.Id.Equals(id) && x.IsDeleted, trackChange).FirstOrDefaultAsync(ct);
 
 		public async Task<IEnumerable<ReportReasons>> GetReportReasons(ReportReasonParameters reportReasonParameters, bool trackChange, CancellationToken ct = default)
 		{
-			return await FindAll(trackChange)
+			return await FindByCondition(x => !x.IsDeleted, trackChange)
 				.FilterByType(reportReasonParameters.ReportReasonType)
 				.Sort()
 				.ToListAsync(ct);

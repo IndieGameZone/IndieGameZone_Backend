@@ -11,5 +11,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.GamePlatforms
 		public string File { get; init; }
 		public bool IsActive { get; init; }
 		public virtual PlatformForReturnDto Platform { get; init; }
+		public DateTime CreatedAt { get; init; }
 	}
 }

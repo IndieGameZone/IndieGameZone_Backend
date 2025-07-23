@@ -11,6 +11,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.HasKey(a => a.Id);
 			builder.Property(a => a.Code).HasMaxLength(10);
 			builder.Property(a => a.Description).HasMaxLength(100);
+			builder.Property(a => a.IsDeleted);
 
 			builder.HasMany(a => a.Games)
 				.WithOne(g => g.AgeRestriction)

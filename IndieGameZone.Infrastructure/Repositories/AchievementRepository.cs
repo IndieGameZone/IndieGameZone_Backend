@@ -21,15 +21,15 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void DeleteAchievement(Achievements achievement) => Delete(achievement);
 
-		public async Task<Achievements?> GetAchievementById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(a => a.Id.Equals(id), trackChange)
+		public async Task<Achievements?> GetAchievementById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(a => a.Id.Equals(id) && !a.IsDeleted, trackChange)
 			.SingleOrDefaultAsync(ct);
 
-		public async Task<Achievements?> GetAchievementByLevelAndType(double progressLevel, AchievementType type, bool trackChange, CancellationToken ct = default) => await FindByCondition(a => a.ProgressLevel == progressLevel && a.Type == type, trackChange)
+		public async Task<Achievements?> GetAchievementByLevelAndType(double progressLevel, AchievementType type, bool trackChange, CancellationToken ct = default) => await FindByCondition(a => a.ProgressLevel == progressLevel && a.Type == type && !a.IsDeleted, trackChange)
 				.SingleOrDefaultAsync(ct);
 
 		public async Task<PagedList<Achievements>> GetAchievements(AchievementParameters achievementParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var achievementEntities = FindAll(trackChange)
+			var achievementEntities = FindByCondition(a => !a.IsDeleted, trackChange)
 				.Sort();
 
 			return await PagedList<Achievements>.ToPagedList(achievementEntities, achievementParameters.PageNumber, achievementParameters.PageSize, ct);

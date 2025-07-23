@@ -27,6 +27,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(g => g.UpdatedAt);
 			builder.Property(g => g.CensoredAt);
 			builder.Property(g => g.AverageSession);
+			builder.Property(a => a.IsDeleted);
 
 			builder.HasMany(g => g.GameLanguages)
 				.WithOne(gl => gl.Game)

@@ -16,12 +16,12 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void DeleteLanguage(Languages language) => Delete(language);
 
-		public async Task<Languages?> GetLanguageById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(x => x.Id == id, trackChange)
+		public async Task<Languages?> GetLanguageById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(x => x.Id == id && !x.IsDeleted, trackChange)
 			.FirstOrDefaultAsync(ct);
 
 		public async Task<IEnumerable<Languages>> GetLanguages(bool trackChange, CancellationToken ct = default)
 		{
-			return await FindAll(trackChange)
+			return await FindByCondition(x => !x.IsDeleted, trackChange)
 				.Sort()
 				.ToListAsync();
 		}

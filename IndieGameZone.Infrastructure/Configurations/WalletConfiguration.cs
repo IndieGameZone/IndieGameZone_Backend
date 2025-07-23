@@ -30,7 +30,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				new Wallets
 				{
 					UserId = Guid.Parse("23879117-e09e-40f1-b78f-1493d81baf49"),
-					Balance = 0.0,
+					Balance = 1000000,
 				},
 				new Wallets
 				{
@@ -45,7 +45,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				new Wallets
 				{
 					UserId = Guid.Parse("293191b7-f7b2-4f28-8857-5afa96866a2f"),
-					Balance = 0.0,
+					Balance = 1000000,
 				},
 				new Wallets
 				{

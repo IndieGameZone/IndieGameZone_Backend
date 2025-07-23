@@ -27,7 +27,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Where(cr => cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner && cr.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= cr.EndDate)
 				.Select(cr => cr.GameId).ToListAsync();
 
-			var gameEntities = FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
+			var gameEntities = FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved && !g.IsDeleted, trackChange)
 				.Search(activeGameParameters.SearchTerm)
 				.FilterByPrice(activeGameParameters.Price)
 				.Include(x => x.Discounts).AsSplitQuery()
@@ -42,7 +42,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<IEnumerable<Games>> GetActiveGames(bool trackChange, CancellationToken ct = default)
 		{
-			return await FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
+			return await FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved && !g.IsDeleted, trackChange)
 				.Include(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
 				.Include(x => x.Category).AsSplitQuery()
 				.Sort().ToListAsync();
@@ -53,7 +53,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			var commercialGameId = await appDbContext.CommercialRegistration
 				.Where(cr => cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner && cr.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= cr.EndDate)
 				.Select(cr => cr.GameId).ToListAsync();
-			var gameEntities = FindByCondition(g => g.DeveloperId == developerId && g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
+			var gameEntities = FindByCondition(g => g.DeveloperId == developerId && g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved && !g.IsDeleted, trackChange)
 				.Search(activeGameParameters.SearchTerm)
 				.FilterByPrice(activeGameParameters.Price)
 				.Include(x => x.Discounts).AsSplitQuery()
@@ -68,7 +68,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<Games?> GetGameById(Guid id, bool trackChange, CancellationToken ct = default)
 		{
-			return await FindByCondition(x => x.Id.Equals(id), trackChange)
+			return await FindByCondition(x => x.Id.Equals(id) && !x.IsDeleted, trackChange)
 				.Include(x => x.Category).AsSplitQuery()
 				.Include(x => x.AgeRestriction).AsSplitQuery()
 				.Include(x => x.Developer).ThenInclude(x => x.UserProfile).AsSplitQuery()
@@ -82,7 +82,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<Games?> GetGameByIdWithActiveFile(Guid id, bool trackChange, CancellationToken ct = default)
 		{
-			return await FindByCondition(x => x.Id.Equals(id), trackChange)
+			return await FindByCondition(x => x.Id.Equals(id) && !x.IsDeleted, trackChange)
 				.Include(x => x.Category).AsSplitQuery()
 				.Include(x => x.AgeRestriction).AsSplitQuery()
 				.Include(x => x.Developer).ThenInclude(x => x.UserProfile).AsSplitQuery()
@@ -96,7 +96,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<PagedList<Games>> GetGames(GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var gameEntities = FindAll(trackChange)
+			var gameEntities = FindByCondition(g => !g.IsDeleted, trackChange)
 				.FilterByCensorStatus(gameParameters.CensorStatus)
 				.Search(gameParameters.SearchTerm)
 				.Include(x => x.Discounts).AsSplitQuery()
@@ -108,14 +108,14 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		}
 
-		public IQueryable<Games> GetGames(bool trackChange) => FindAll(trackChange);
+		public IQueryable<Games> GetGames(bool trackChange) => FindByCondition(g => !g.IsDeleted, trackChange);
 
 		public IQueryable<Games> GetGamesBasedOnCensorStatus(CensorStatus censorStatus, bool trackChange) =>
-			FindByCondition(g => g.CensorStatus == censorStatus, trackChange);
+			FindByCondition(g => g.CensorStatus == censorStatus && !g.IsDeleted, trackChange);
 
 		public async Task<PagedList<Games>> GetGamesByDeveloperId(Guid developerId, GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var gameEntities = FindByCondition(g => g.DeveloperId == developerId, trackChange)
+			var gameEntities = FindByCondition(g => g.DeveloperId == developerId && !g.IsDeleted, trackChange)
 				.FilterByCensorStatus(gameParameters.CensorStatus)
 				.Search(gameParameters.SearchTerm)
 				.Include(x => x.Discounts).AsSplitQuery()
@@ -128,7 +128,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<IEnumerable<Games>> GetTopDownloadedGames(int top, bool trackChange, CancellationToken ct = default)
 		{
-			return await FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved, trackChange)
+			return await FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved && !g.IsDeleted, trackChange)
 				.OrderByDescending(g => g.NumberOfDownloads)
 				.Take(top)
 				.Include(g => g.Category).AsSplitQuery()
@@ -152,7 +152,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			var gameIds = gameRatings.Select(x => x.GameId).ToList();
 
 			var games = await AppDbContext.Games
-				.Where(g => gameIds.Contains(g.Id) && g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved)
+				.Where(g => gameIds.Contains(g.Id) && g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved && !g.IsDeleted)
 				.Include(g => g.Category).AsSplitQuery()
 				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
 				.ToListAsync(ct);
@@ -166,7 +166,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<IEnumerable<Games>> GetRecentlyPublishedGames(int top = 10, bool trackChange = false, CancellationToken ct = default)
 		{
 			return await AppDbContext.Games
-				.Where(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved)
+				.Where(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved && !g.IsDeleted)
 				.OrderByDescending(g => g.CreatedAt)
 				.Include(g => g.Category).AsSplitQuery()
 				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
@@ -174,54 +174,55 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.ToListAsync(ct);
 		}
 
-        public async Task<IEnumerable<Games>> GetTodayHomepageBannerGamesAsync(bool trackChange, CancellationToken ct = default)
-        {
-            var today = DateOnly.FromDateTime(DateTime.Now);
+		public async Task<IEnumerable<Games>> GetTodayHomepageBannerGamesAsync(bool trackChange, CancellationToken ct = default)
+		{
+			var today = DateOnly.FromDateTime(DateTime.Now);
 
-            var gameIds = await appDbContext.CommercialRegistration
-                .Where(cr =>
-                    cr.CommercialPackage.Type == CommercialPackageType.HomepageBanner &&
-                    cr.StartDate <= today &&
-                    today <= cr.EndDate)
-                .Select(cr => cr.GameId)
-                .ToListAsync(ct);
+			var gameIds = await appDbContext.CommercialRegistration
+				.Where(cr =>
+					cr.CommercialPackage.Type == CommercialPackageType.HomepageBanner &&
+					cr.StartDate <= today &&
+					today <= cr.EndDate)
+				.Select(cr => cr.GameId)
+				.ToListAsync(ct);
 
-            return await FindByCondition(g =>
-                    gameIds.Contains(g.Id) &&
-                    g.Visibility == GameVisibility.Public &&
-                    g.CensorStatus == CensorStatus.Approved,
-                    trackChange)
-                .Include(g => g.Category).AsSplitQuery()
-                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                .Include(g => g.Discounts).AsSplitQuery()
-                .ToListAsync(ct);
-        }
+			return await FindByCondition(g =>
+					gameIds.Contains(g.Id) &&
+					g.Visibility == GameVisibility.Public &&
+					g.CensorStatus == CensorStatus.Approved &&
+					!g.IsDeleted,
+					trackChange)
+				.Include(g => g.Category).AsSplitQuery()
+				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+				.Include(g => g.Discounts).AsSplitQuery()
+				.ToListAsync(ct);
+		}
 
-        public async Task<PagedList<Games>> GetTodayCategoryBannerGamesAsync(GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
-        {
-            var today = DateOnly.FromDateTime(DateTime.Now);
+		public async Task<PagedList<Games>> GetTodayCategoryBannerGamesAsync(GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
+		{
+			var today = DateOnly.FromDateTime(DateTime.Now);
 
-            var gameIds = await appDbContext.CommercialRegistration
-                .Where(cr =>
-                    cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner &&
-                    cr.StartDate <= today &&
-                    today <= cr.EndDate)
-                .Select(cr => cr.GameId)
-                .ToListAsync(ct);
+			var gameIds = await appDbContext.CommercialRegistration
+				.Where(cr =>
+					cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner &&
+					cr.StartDate <= today &&
+					today <= cr.EndDate)
+				.Select(cr => cr.GameId)
+				.ToListAsync(ct);
 
-            var query = FindByCondition(g =>
-                    gameIds.Contains(g.Id) &&
-                    g.Visibility == GameVisibility.Public,
-                    trackChange)
-                .FilterByCensorStatus(gameParameters.CensorStatus)
-                .Search(gameParameters.SearchTerm)
-                .Include(g => g.Discounts).AsSplitQuery()
-                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                .Include(g => g.Category).AsSplitQuery()
-                .Sort();
+			var query = FindByCondition(g =>
+					gameIds.Contains(g.Id) &&
+					g.Visibility == GameVisibility.Public && !g.IsDeleted,
+					trackChange)
+				.FilterByCensorStatus(gameParameters.CensorStatus)
+				.Search(gameParameters.SearchTerm)
+				.Include(g => g.Discounts).AsSplitQuery()
+				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+				.Include(g => g.Category).AsSplitQuery()
+				.Sort();
 
-            return await PagedList<Games>.ToPagedList(query, gameParameters.PageNumber, gameParameters.PageSize, ct);
-        }
+			return await PagedList<Games>.ToPagedList(query, gameParameters.PageNumber, gameParameters.PageSize, ct);
+		}
 
-    }
+	}
 }

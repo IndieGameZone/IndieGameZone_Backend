@@ -10,9 +10,10 @@ namespace IndieGameZone.Domain.Entities
 		public int Duration { get; set; }
 		public double Price { get; set; }
 		public CommercialPackageType Type { get; set; }
+		public bool IsDeleted { get; set; }
 
-        //Navigation properties
-        public ICollection<CommercialRegistration> CommercialRegistrations { get; set; } = new List<CommercialRegistration>();
-        public ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
-    }
+		//Navigation properties
+		public ICollection<CommercialRegistration> CommercialRegistrations { get; set; } = new List<CommercialRegistration>();
+		public ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
+	}
 }

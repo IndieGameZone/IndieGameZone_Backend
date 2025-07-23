@@ -450,7 +450,6 @@ namespace IndieGameZone.Application.Services
 						EndDate = transaction.CommercialRegistrationEndDate,
 						GameId = (Guid)transaction.GameId!,
 						CommercialPackageId = (Guid)transaction.CommercialPackageId!,
-						TransactionId = transaction.Id
 					};
 					repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
 
@@ -506,62 +505,62 @@ namespace IndieGameZone.Application.Services
 			var package = await repositoryManager.CommercialPackageRepository.GetCommercialPackageById(commercialPackageId, false, ct)
 				?? throw new NotFoundException("Commercial package not found");
 
-            if (dto.StartDate < DateOnly.FromDateTime(DateTime.Today))
-            {
-                throw new BadRequestException("Start date must be today or a future date.");
-            }
+			if (dto.StartDate < DateOnly.FromDateTime(DateTime.Today))
+			{
+				throw new BadRequestException("Start date must be today or a future date.");
+			}
 
-            // Check date availability (for both Wallet & PayOS)
-            var relevantRegistrations = await repositoryManager.CommercialRegistrationRepository
+			// Check date availability (for both Wallet & PayOS)
+			var relevantRegistrations = await repositoryManager.CommercialRegistrationRepository
 				.GetRelevantRegistrationsForDateCheckAsync(package.Type, game.CategoryId, ct);
 
-            var dateCounter = new Dictionary<DateOnly, int>();
-            var gameSpecificDates = new HashSet<DateOnly>();
+			var dateCounter = new Dictionary<DateOnly, int>();
+			var gameSpecificDates = new HashSet<DateOnly>();
 
-            foreach (var reg in relevantRegistrations)
-            {
-                if (reg.GameId == gameId)
-                {
-                    for (var date = reg.StartDate; date < reg.EndDate!.Value; date = date.AddDays(1))
-                        gameSpecificDates.Add(date);
-                }
+			foreach (var reg in relevantRegistrations)
+			{
+				if (reg.GameId == gameId)
+				{
+					for (var date = reg.StartDate; date < reg.EndDate!.Value; date = date.AddDays(1))
+						gameSpecificDates.Add(date);
+				}
 
-                for (var date = reg.StartDate; date < reg.EndDate!.Value; date = date.AddDays(1))
-                {
-                    if (!dateCounter.ContainsKey(date))
-                        dateCounter[date] = 0;
+				for (var date = reg.StartDate; date < reg.EndDate!.Value; date = date.AddDays(1))
+				{
+					if (!dateCounter.ContainsKey(date))
+						dateCounter[date] = 0;
 
-                    dateCounter[date]++;
-                }
-            }
+					dateCounter[date]++;
+				}
+			}
 
-            var unavailableDates = new HashSet<DateOnly>();
+			var unavailableDates = new HashSet<DateOnly>();
 
-            foreach (var kvp in dateCounter)
-            {
-                if ((package.Type == CommercialPackageType.HomepageBanner && kvp.Value >= 10) ||
-                    (package.Type == CommercialPackageType.CategoryBanner && kvp.Value >= 10))
-                {
-                    unavailableDates.Add(kvp.Key);
-                }
-            }
+			foreach (var kvp in dateCounter)
+			{
+				if ((package.Type == CommercialPackageType.HomepageBanner && kvp.Value >= 10) ||
+					(package.Type == CommercialPackageType.CategoryBanner && kvp.Value >= 10))
+				{
+					unavailableDates.Add(kvp.Key);
+				}
+			}
 
-            // Also block if already registered by this game
-            foreach (var d in gameSpecificDates)
-                unavailableDates.Add(d);
+			// Also block if already registered by this game
+			foreach (var d in gameSpecificDates)
+				unavailableDates.Add(d);
 
-            // 🔍 Now validate the selected date range
-            var selectedDates = Enumerable
-                .Range(0, package.Duration)
-                .Select(i => dto.StartDate.AddDays(i));
+			// 🔍 Now validate the selected date range
+			var selectedDates = Enumerable
+				.Range(0, package.Duration)
+				.Select(i => dto.StartDate.AddDays(i));
 
-            if (selectedDates.Any(d => unavailableDates.Contains(d)))
-            {
-                throw new BadRequestException("Selected start date leads to overlapping or full registration period. Please choose another start date.");
-            }
+			if (selectedDates.Any(d => unavailableDates.Contains(d)))
+			{
+				throw new BadRequestException("Selected start date leads to overlapping or full registration period. Please choose another start date.");
+			}
 
-            // Check wallet balance
-            if (dto.PaymentMethod == PaymentMethod.Wallet)
+			// Check wallet balance
+			if (dto.PaymentMethod == PaymentMethod.Wallet)
 			{
 				if (wallet.Balance < package.Price)
 					throw new NotEnoughCreditException("You don't have enough wallet points to purchase this package.");
@@ -587,9 +586,9 @@ namespace IndieGameZone.Application.Services
 			};
 
 			repositoryManager.TransactionRepository.CreateTransaction(transaction);
-            await repositoryManager.SaveAsync(ct);
+			await repositoryManager.SaveAsync(ct);
 
-            if (dto.PaymentMethod == PaymentMethod.Wallet)
+			if (dto.PaymentMethod == PaymentMethod.Wallet)
 			{
 				var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
 				wallet.Balance -= package.Price;
@@ -600,7 +599,6 @@ namespace IndieGameZone.Application.Services
 					EndDate = dto.StartDate.AddDays(package.Duration),
 					GameId = gameId,
 					CommercialPackageId = commercialPackageId,
-					TransactionId = transaction.Id
 				};
 				repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
 
@@ -621,31 +619,31 @@ namespace IndieGameZone.Application.Services
 				adminWallet.Balance += transactionForSystem.Amount;
 				repositoryManager.TransactionRepository.CreateTransaction(transactionForSystem);
 
-                try
-                {
-                    await repositoryManager.SaveAsync(ct);
-                }
-                catch (DbUpdateException ex)
-                {
-                    // Log the full error, or rethrow with more detail
-                    var innerMessage = ex.InnerException?.Message ?? ex.Message;
-                    throw new Exception($"Failed to save wallet transaction: {innerMessage}", ex);
-                }
-                return string.Empty;
+				try
+				{
+					await repositoryManager.SaveAsync(ct);
+				}
+				catch (DbUpdateException ex)
+				{
+					// Log the full error, or rethrow with more detail
+					var innerMessage = ex.InnerException?.Message ?? ex.Message;
+					throw new Exception($"Failed to save wallet transaction: {innerMessage}", ex);
+				}
+				return string.Empty;
 			}
 			else
 			{
-                try
-                {
-                    await repositoryManager.SaveAsync(ct);
-                }
-                catch (DbUpdateException ex)
-                {
-                    // Log the full error, or rethrow with more detail
-                    var innerMessage = ex.InnerException?.Message ?? ex.Message;
-                    throw new Exception($"Failed to save wallet transaction: {innerMessage}", ex);
-                }
-                return await GetPayOSPaymentLink(transaction, TransactionType.PurchaseCommercialPackage);
+				try
+				{
+					await repositoryManager.SaveAsync(ct);
+				}
+				catch (DbUpdateException ex)
+				{
+					// Log the full error, or rethrow with more detail
+					var innerMessage = ex.InnerException?.Message ?? ex.Message;
+					throw new Exception($"Failed to save wallet transaction: {innerMessage}", ex);
+				}
+				return await GetPayOSPaymentLink(transaction, TransactionType.PurchaseCommercialPackage);
 			}
 		}
 

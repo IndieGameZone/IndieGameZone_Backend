@@ -14,6 +14,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(a => a.ProgressLevel);
 			builder.Property(a => a.Type).HasConversion<string>().HasMaxLength(20);
 			builder.Property(a => a.DiscountAward);
+			builder.Property(a => a.IsDeleted);
 
 			builder.HasMany(a => a.UserAchievements)
 				.WithOne(ua => ua.Achievement)
