@@ -53,21 +53,21 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.achievements);
 		}
 
-		[HttpPost]
+		[HttpPost("achievements")]
 		public async Task<IActionResult> CreateAchievement([FromBody] AchievementForCreationDto achievementForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.AchievementService.CreateAchievement(achievementForCreationDto, ct);
 			return StatusCode(201);
 		}
 
-		[HttpPut("{id:guid}")]
+		[HttpPut("achievements/{id:guid}")]
 		public async Task<IActionResult> UpdateAchievement([FromRoute] Guid id, [FromBody] AchievementForUpdateDto achievementForUpdateDto, CancellationToken ct)
 		{
 			await serviceManager.AchievementService.UpdateAchievement(id, achievementForUpdateDto, ct);
 			return NoContent();
 		}
 
-		[HttpDelete("{id:guid}")]
+		[HttpDelete("achievements/{id:guid}")]
 		public async Task<IActionResult> DeleteAchievement([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.AchievementService.DeleteAchievement(id, ct);
