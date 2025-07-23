@@ -50,12 +50,12 @@ namespace IndieGameZone.Application.Services
 		}
 		public async Task DeleteReportReason(Guid id, CancellationToken ct = default)
 		{
-			var reportReasonEntity = await repositoryManager.ReportReasonRepository.GetReportReasonById(id, false, ct);
+			var reportReasonEntity = await repositoryManager.ReportReasonRepository.GetReportReasonById(id, true, ct);
 			if (reportReasonEntity is null)
 			{
 				throw new NotFoundException($"Report reason not found.");
 			}
-			repositoryManager.ReportReasonRepository.DeleteReportReason(reportReasonEntity);
+			reportReasonEntity.IsDeleted = true;
 			await repositoryManager.SaveAsync(ct);
 		}
 	}

@@ -27,12 +27,12 @@ namespace IndieGameZone.Application.Services
 
 		public async Task DeleteCategory(Guid id, CancellationToken ct = default)
 		{
-			var categoryEntity = await repositoryManager.CategoryRepository.GetCategoryById(id, false, ct);
+			var categoryEntity = await repositoryManager.CategoryRepository.GetCategoryById(id, true, ct);
 			if (categoryEntity is null)
 			{
 				throw new NotFoundException($"Category not found.");
 			}
-			repositoryManager.CategoryRepository.DeleteCategory(categoryEntity);
+			categoryEntity.IsDeleted = true;
 			await repositoryManager.SaveAsync(ct);
 		}
 

@@ -28,12 +28,12 @@ namespace IndieGameZone.Application.Services
 
 		public async Task DeleteLanguage(Guid id, CancellationToken ct = default)
 		{
-			var languageEntity = await repositoryManager.LanguageRepository.GetLanguageById(id, false, ct);
+			var languageEntity = await repositoryManager.LanguageRepository.GetLanguageById(id, true, ct);
 			if (languageEntity is null)
 			{
 				throw new NotFoundException($"Language not found.");
 			}
-			repositoryManager.LanguageRepository.DeleteLanguage(languageEntity);
+			languageEntity.IsDeleted = true;
 			await repositoryManager.SaveAsync(ct);
 		}
 

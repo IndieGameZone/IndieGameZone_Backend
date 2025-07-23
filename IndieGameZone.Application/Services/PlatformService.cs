@@ -28,12 +28,12 @@ namespace IndieGameZone.Application.Services
 
 		public async Task DeletePlatform(Guid id, CancellationToken ct = default)
 		{
-			var platformEntity = await repositoryManager.PlatformRepository.GetPlatformById(id, false, ct);
+			var platformEntity = await repositoryManager.PlatformRepository.GetPlatformById(id, true, ct);
 			if (platformEntity is null)
 			{
 				throw new NotFoundException($"Platform not found.");
 			}
-			repositoryManager.PlatformRepository.DeletePlatform(platformEntity);
+			platformEntity.IsDeleted = true;
 			await repositoryManager.SaveAsync(ct);
 		}
 

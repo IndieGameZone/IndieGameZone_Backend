@@ -29,12 +29,12 @@ namespace IndieGameZone.Application.Services
 
 		public async Task DeleteTag(Guid id, CancellationToken ct = default)
 		{
-			var tagEntity = await repositoryManager.TagRepository.GetTagById(id, false, ct);
+			var tagEntity = await repositoryManager.TagRepository.GetTagById(id, true, ct);
 			if (tagEntity is null)
 			{
 				throw new NotFoundException($"Tag not found.");
 			}
-			repositoryManager.TagRepository.DeleteTag(tagEntity);
+			tagEntity.IsDeleted = true;
 			await repositoryManager.SaveAsync(ct);
 		}
 

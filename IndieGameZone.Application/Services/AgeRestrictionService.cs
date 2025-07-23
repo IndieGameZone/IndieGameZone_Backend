@@ -27,12 +27,12 @@ namespace IndieGameZone.Application.Services
 
 		public async Task DeleteAgeRestriction(Guid id, CancellationToken ct = default)
 		{
-			var ageRestrictionEntity = await repositoryManager.AgeRestrictionRepository.GetAgeRestrictionById(id, false, ct);
+			var ageRestrictionEntity = await repositoryManager.AgeRestrictionRepository.GetAgeRestrictionById(id, true, ct);
 			if (ageRestrictionEntity is null)
 			{
 				throw new NotFoundException($"Age restriction not found.");
 			}
-			repositoryManager.AgeRestrictionRepository.DeleteAgeRestriction(ageRestrictionEntity);
+			ageRestrictionEntity.IsDeleted = true;
 			await repositoryManager.SaveAsync(ct);
 		}
 

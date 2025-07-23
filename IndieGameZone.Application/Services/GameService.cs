@@ -77,7 +77,7 @@ namespace IndieGameZone.Application.Services
 
 		public async Task DeleteGame(Guid developerId, Guid gameId, CancellationToken ct = default)
 		{
-			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, true, ct);
 			if (gameEntity is null)
 			{
 				throw new NotFoundException($"Game not found.");
@@ -95,24 +95,40 @@ namespace IndieGameZone.Application.Services
 				{
 					await blobService.DeleteBlob(platform.File.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
 				}
+				repositoryManager.GamePlatformRepository.DeleteGamePlatform(existingGamePlatforms);
 			}
 
 			//Handle Game Image Entities
-			var existingGameInfos = await repositoryManager.GameImageRepository.GetGameImagesByGameId(gameId, false, ct);
-			if (existingGameInfos is not null && existingGameInfos.Any())
+			var existingGameImages = await repositoryManager.GameImageRepository.GetGameImagesByGameId(gameId, false, ct);
+			if (existingGameImages is not null && existingGameImages.Any())
 			{
-				foreach (var info in existingGameInfos)
+				foreach (var image in existingGameImages)
 				{
-					if (info.Image != null)
+					if (image.Image != null)
 					{
-						await blobService.DeleteBlob(info.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+						await blobService.DeleteBlob(image.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
 					}
 				}
+				repositoryManager.GameImageRepository.DeleteGameImage(existingGameImages);
+			}
+
+			//Handle Game Language Entities
+			var existingGameLanguages = await repositoryManager.GameLanguageRepository.GetGameLanguagesByGameId(gameId, false, ct);
+			if (existingGameLanguages is not null && existingGameLanguages.Any())
+			{
+				repositoryManager.GameLanguageRepository.DeleteGameLanguage(existingGameLanguages);
+			}
+
+			//Handle Game Tag Entities
+			var existingGameTags = await repositoryManager.GameTagRepository.GetGameTagsByGameId(gameId, false, ct);
+			if (existingGameTags is not null && existingGameTags.Any())
+			{
+				repositoryManager.GameTagRepository.DeleteGameTag(existingGameTags);
 			}
 
 			await blobService.DeleteBlob(gameEntity.CoverImage.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
 
-			repositoryManager.GameRepository.DeleteGame(gameEntity);
+			gameEntity.IsDeleted = true;
 			await repositoryManager.SaveAsync(ct);
 
 			await recombeeService.RemoveGameFromRecombee(gameId);
@@ -414,50 +430,50 @@ namespace IndieGameZone.Application.Services
 			return gameLibrary != null;
 		}
 
-        public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetTodayHomepageBannerGamesAsync(CancellationToken ct = default)
-        {
-            var gamesWithMetaData = (await repositoryManager.GameRepository
-                .GetTodayHomepageBannerGamesAsync(false, ct)).ToList();
+		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetTodayHomepageBannerGamesAsync(CancellationToken ct = default)
+		{
+			var gamesWithMetaData = (await repositoryManager.GameRepository
+				.GetTodayHomepageBannerGamesAsync(false, ct)).ToList();
 
-            var games = mapper.Map<List<GameForListReturnDto>>(gamesWithMetaData);
+			var games = mapper.Map<List<GameForListReturnDto>>(gamesWithMetaData);
 
-            for (int i = 0; i < games.Count; i++)
-            {
-                var discount = await repositoryManager.DiscountRepository
-                    .GetActiveDiscountByGameId(gamesWithMetaData[i].Id, false, ct);
+			for (int i = 0; i < games.Count; i++)
+			{
+				var discount = await repositoryManager.DiscountRepository
+					.GetActiveDiscountByGameId(gamesWithMetaData[i].Id, false, ct);
 
-                games[i].PriceAfterDiscount = discount is not null
-                    ? games[i].Price - (games[i].Price * discount.Percentage / 100)
-                    : games[i].Price;
-            }
+				games[i].PriceAfterDiscount = discount is not null
+					? games[i].Price - (games[i].Price * discount.Percentage / 100)
+					: games[i].Price;
+			}
 
-            var metaData = new MetaData
-            {
-                CurrentPage = 1,
-                PageSize = games.Count,
-                TotalCount = games.Count,
-                TotalPages = 1
-            };
+			var metaData = new MetaData
+			{
+				CurrentPage = 1,
+				PageSize = games.Count,
+				TotalCount = games.Count,
+				TotalPages = 1
+			};
 
-            return (games, metaData);
-        }
+			return (games, metaData);
+		}
 
-        public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetTodayCategoryBannerGamesAsync(GameParameters gameParameters, CancellationToken ct = default)
-        {
-            var gamesWithMetaData = await repositoryManager.GameRepository.GetTodayCategoryBannerGamesAsync(gameParameters, false, ct);
+		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetTodayCategoryBannerGamesAsync(GameParameters gameParameters, CancellationToken ct = default)
+		{
+			var gamesWithMetaData = await repositoryManager.GameRepository.GetTodayCategoryBannerGamesAsync(gameParameters, false, ct);
 
-            var games = mapper.Map<IEnumerable<GameForListReturnDto>>(gamesWithMetaData).ToList();
+			var games = mapper.Map<IEnumerable<GameForListReturnDto>>(gamesWithMetaData).ToList();
 
-            for (int i = 0; i < games.Count; i++)
-            {
-                var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gamesWithMetaData[i].Id, false, ct);
-                games[i].PriceAfterDiscount = discount is not null
-                    ? games[i].Price - (games[i].Price * discount.Percentage / 100)
-                    : games[i].Price;
-            }
+			for (int i = 0; i < games.Count; i++)
+			{
+				var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gamesWithMetaData[i].Id, false, ct);
+				games[i].PriceAfterDiscount = discount is not null
+					? games[i].Price - (games[i].Price * discount.Percentage / 100)
+					: games[i].Price;
+			}
 
-            return (games, gamesWithMetaData.MetaData);
-        }
+			return (games, gamesWithMetaData.MetaData);
+		}
 
-    }
+	}
 }

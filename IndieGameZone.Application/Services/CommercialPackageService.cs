@@ -30,12 +30,12 @@ namespace IndieGameZone.Application.Services
 
 		public async Task DeleteCommercialPackage(Guid id, CancellationToken ct = default)
 		{
-			var commercialPackageEntity = await repositoryManager.CommercialPackageRepository.GetCommercialPackageById(id, false, ct);
+			var commercialPackageEntity = await repositoryManager.CommercialPackageRepository.GetCommercialPackageById(id, true, ct);
 			if (commercialPackageEntity is null)
 			{
 				throw new NotFoundException($"Commercial Package not found.");
 			}
-			repositoryManager.CommercialPackageRepository.DeleteCommercialPackage(commercialPackageEntity);
+			commercialPackageEntity.IsDeleted = true;
 			await repositoryManager.SaveAsync(ct);
 		}
 
