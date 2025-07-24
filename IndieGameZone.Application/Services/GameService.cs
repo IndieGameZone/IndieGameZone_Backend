@@ -429,13 +429,13 @@ namespace IndieGameZone.Application.Services
 			var gameLibrary = await repositoryManager.LibraryRepository.GetLibraryByUserIdAndGameId(userId, gameId, false, ct);
 			return gameLibrary != null;
 		}
+		
+        public async Task<(IEnumerable<GameForBannerReturnDto> games, MetaData metaData)> GetTodayHomepageBannerGamesAsync(CancellationToken ct = default)
+        {
+            var gamesWithMetaData = (await repositoryManager.GameRepository
+                .GetTodayHomepageBannerGamesAsync(false, ct)).ToList();
 
-		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetTodayHomepageBannerGamesAsync(CancellationToken ct = default)
-		{
-			var gamesWithMetaData = (await repositoryManager.GameRepository
-				.GetTodayHomepageBannerGamesAsync(false, ct)).ToList();
-
-			var games = mapper.Map<List<GameForListReturnDto>>(gamesWithMetaData);
+            var games = mapper.Map<List<GameForBannerReturnDto>>(gamesWithMetaData);
 
 			for (int i = 0; i < games.Count; i++)
 			{
