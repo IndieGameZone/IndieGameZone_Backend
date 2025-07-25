@@ -458,11 +458,11 @@ namespace IndieGameZone.Application.Services
 			return (games, metaData);
 		}
 
-		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetTodayCategoryBannerGamesAsync(GameParameters gameParameters, CancellationToken ct = default)
+		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetTodayCategoryBannerGamesAsync(CancellationToken ct = default)
 		{
-			var gamesWithMetaData = await repositoryManager.GameRepository.GetTodayCategoryBannerGamesAsync(gameParameters, false, ct);
+			var gamesWithMetaData = (await repositoryManager.GameRepository.GetTodayCategoryBannerGamesAsync(false, ct)).ToList();
 
-			var games = mapper.Map<IEnumerable<GameForListReturnDto>>(gamesWithMetaData).ToList();
+			var games = mapper.Map<List<GameForListReturnDto>>(gamesWithMetaData);
 
 			for (int i = 0; i < games.Count; i++)
 			{
@@ -472,7 +472,15 @@ namespace IndieGameZone.Application.Services
 					: games[i].Price;
 			}
 
-			return (games, gamesWithMetaData.MetaData);
+            var metaData = new MetaData
+            {
+                CurrentPage = 1,
+                PageSize = games.Count,
+                TotalCount = games.Count,
+                TotalPages = 1
+            };
+
+            return (games, metaData);
 		}
 
 	}

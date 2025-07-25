@@ -172,9 +172,9 @@ namespace IndieGameZone.API.Controllers
         }
 
         [HttpGet("games/today-category-banner")]
-        public async Task<IActionResult> GetTodayCategoryBannerGames([FromQuery] GameParameters gameParameters, CancellationToken ct)
+        public async Task<IActionResult> GetTodayCategoryBannerGames(CancellationToken ct)
         {
-            var result = await serviceManager.GameService.GetTodayCategoryBannerGamesAsync(gameParameters, ct);
+            var result = await serviceManager.GameService.GetTodayCategoryBannerGamesAsync(ct);
             Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(result.metaData));
             return Ok(result.games);
         }

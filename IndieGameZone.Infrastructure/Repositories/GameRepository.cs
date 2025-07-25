@@ -198,7 +198,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.ToListAsync(ct);
 		}
 
-		public async Task<PagedList<Games>> GetTodayCategoryBannerGamesAsync(GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
+		public async Task<IEnumerable<Games>> GetTodayCategoryBannerGamesAsync(bool trackChange, CancellationToken ct = default)
 		{
 			var today = DateOnly.FromDateTime(DateTime.Now);
 
@@ -210,19 +210,18 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Select(cr => cr.GameId)
 				.ToListAsync(ct);
 
-			var query = FindByCondition(g =>
+			return await FindByCondition(g =>
 					gameIds.Contains(g.Id) &&
 					g.Visibility == GameVisibility.Public && !g.IsDeleted,
 					trackChange)
-				.FilterByCensorStatus(gameParameters.CensorStatus)
-				.Search(gameParameters.SearchTerm)
+				.FilterByCensorStatus(CensorStatus.Approved)
 				.Include(g => g.Discounts).AsSplitQuery()
 				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
 				.Include(g => g.Category).AsSplitQuery()
-				.Sort();
+				.Sort()
+                .ToListAsync(ct);
 
-			return await PagedList<Games>.ToPagedList(query, gameParameters.PageNumber, gameParameters.PageSize, ct);
-		}
+        }
 
 	}
 }
