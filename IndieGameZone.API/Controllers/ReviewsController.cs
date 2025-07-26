@@ -27,6 +27,13 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.reviews);
 		}
 
+		[HttpGet("games/{gameId:guid}/reviews-statistic")]
+		public async Task<IActionResult> GetReviewsStatistic([FromRoute] Guid gameId, CancellationToken ct)
+		{
+			var statistic = await serviceManager.ReviewService.GetReviewStatistic(gameId, ct);
+			return Ok(statistic);
+		}
+
 		[HttpGet("games/{gameId:guid}/reviews-summary")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> GetReviewsSummary([FromRoute] Guid gameId, CancellationToken ct)

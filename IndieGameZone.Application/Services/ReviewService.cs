@@ -6,6 +6,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Reviews;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Reviews;
 using MapsterMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Application.Services
 {
@@ -82,6 +83,23 @@ namespace IndieGameZone.Application.Services
 			mapper.Map(reviewForUpdateDto, reviewEntity);
 			await repositoryManager.SaveAsync(ct);
 			await recombeeService.SendRatingEvent(userId, reviewEntity.GameId, (reviewForUpdateDto.Rating - 3) / 2.0);
+		}
+
+		public async Task<IList<RatingStatistic>> GetReviewStatistic(Guid gameId, CancellationToken ct = default)
+		{
+			var totalCount = await repositoryManager.ReviewRepository.GetReviewsByGameId(gameId, false).CountAsync();
+
+			var result = new List<RatingStatistic>();
+			for (int rating = 1; rating <= 5; rating++)
+			{
+				var count = await repositoryManager.ReviewRepository.GetReviewsByGameIdAndRating(gameId, rating, false).CountAsync();
+				result.Add(new RatingStatistic
+				{
+					Rating = rating,
+					Percentage = totalCount == 0 ? 0 : count * 100.0 / totalCount
+				});
+			}
+			return result;
 		}
 	}
 }

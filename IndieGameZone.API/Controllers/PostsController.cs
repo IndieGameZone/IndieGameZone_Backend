@@ -35,7 +35,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("posts/{postId:guid}")]
-		[Authorize]
 		public async Task<IActionResult> GetPostById(Guid postId, CancellationToken ct = default)
 		{
 			var post = await serviceManager.PostService.GetPostById(postId, ct);

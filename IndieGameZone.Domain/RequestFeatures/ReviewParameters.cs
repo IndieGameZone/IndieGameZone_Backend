@@ -2,5 +2,6 @@
 {
 	public class ReviewParameters : RequestParameters
 	{
+		public string? Rating { get; set; }
 	}
 }

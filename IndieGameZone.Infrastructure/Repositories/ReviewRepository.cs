@@ -23,6 +23,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<PagedList<Reviews>> GetReviewsByGameId(Guid gameId, ReviewParameters reviewParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var reviewEntities = FindByCondition(r => r.GameId.Equals(gameId), trackChange)
+				.FIlterByRating(reviewParameters.Rating)
 				.Include(r => r.User).ThenInclude(u => u.UserProfile)
 				.Sort();
 
@@ -34,5 +35,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 			var reviewEntities = FindByCondition(r => r.GameId.Equals(gameId), trackChange);
 			return await reviewEntities.ToListAsync(ct);
 		}
+
+		public IQueryable<Reviews> GetReviewsByGameId(Guid gameId, bool trackChange) => FindByCondition(r => r.GameId.Equals(gameId), trackChange);
+
+		public IQueryable<Reviews> GetReviewsByGameIdAndRating(Guid gameId, int rating, bool trackChange) => FindByCondition(r => r.GameId.Equals(gameId) && r.Rating.Equals(rating), trackChange);
 	}
 }
