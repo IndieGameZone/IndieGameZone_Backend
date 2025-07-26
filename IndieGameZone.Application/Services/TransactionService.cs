@@ -633,16 +633,6 @@ namespace IndieGameZone.Application.Services
 			}
 			else
 			{
-				try
-				{
-					await repositoryManager.SaveAsync(ct);
-				}
-				catch (DbUpdateException ex)
-				{
-					// Log the full error, or rethrow with more detail
-					var innerMessage = ex.InnerException?.Message ?? ex.Message;
-					throw new Exception($"Failed to save wallet transaction: {innerMessage}", ex);
-				}
 				return await GetPayOSPaymentLink(transaction, TransactionType.PurchaseCommercialPackage);
 			}
 		}
