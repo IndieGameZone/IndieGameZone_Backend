@@ -30,12 +30,12 @@ namespace IndieGameZone.Infrastructure.Repositories
 			var gameEntities = FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved && !g.IsDeleted, trackChange)
 				.Search(activeGameParameters.SearchTerm)
 				.FilterByPrice(activeGameParameters.Price)
+				.Sort(activeGameParameters.SortBy, activeGameParameters.SortDescending, commercialGameId)
 				.Include(x => x.Discounts).AsSplitQuery()
 				.Include(x => x.GameTags).ThenInclude(x => x.Tag).FilterByTags(activeGameParameters.Tags).AsSplitQuery()
 				.Include(x => x.GamePlatforms).FilterByPlatform(activeGameParameters.Platforms).AsSplitQuery()
 				.Include(x => x.GameLanguages).FilterByLanguages(activeGameParameters.Languages).AsSplitQuery()
-				.Include(x => x.Category).FilterByCategory(activeGameParameters.Category).AsSplitQuery()
-				.Sort(commercialGameId);
+				.Include(x => x.Category).FilterByCategory(activeGameParameters.Category).AsSplitQuery();
 
 			return await PagedList<Games>.ToPagedList(gameEntities, activeGameParameters.PageNumber, activeGameParameters.PageSize, ct);
 		}
@@ -219,9 +219,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
 				.Include(g => g.Category).AsSplitQuery()
 				.Sort()
-                .ToListAsync(ct);
+				.ToListAsync(ct);
 
-        }
+		}
 
 	}
 }
