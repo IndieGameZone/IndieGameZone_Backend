@@ -66,7 +66,7 @@ namespace IndieGameZone.Application.Services
 				gamePlatform.Id = Guid.NewGuid();
 				gamePlatform.GameId = gameId;
 				var blobName = gamePlatform.File.Split('/').Last();
-				gamePlatform.DisplayName = blobName.Split('.').First();
+				gamePlatform.DisplayName = await blobService.GetBlobOriginalName(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.IsActive = true;
 				gamePlatform.CreatedAt = DateTime.Now;
@@ -77,20 +77,37 @@ namespace IndieGameZone.Application.Services
 			dbTransaction.Commit();
 		}
 
-		public async Task UpdateGamePlatformActivationStatus(Guid developerId, Guid gamePlatformId, bool isActive, CancellationToken ct = default)
+		public async Task UpdateGamePlatformActivationStatus(Guid gamePlatformId, bool isActive, CancellationToken ct = default)
 		{
 			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, true, ct);
 			if (gamePlatform is null)
 			{
 				throw new NotFoundException($"Game platform not found.");
 			}
-			var game = await repositoryManager.GameRepository.GetGameById(gamePlatform.GameId, false, ct);
-			if (game.DeveloperId != developerId)
-			{
-				throw new ForbiddenException($"You are not authorized to update the game platform for this game.");
-			}
 			gamePlatform.IsActive = isActive;
 			await repositoryManager.SaveAsync(ct);
+		}
+
+		public async Task UpdateGamePlatformById(Guid gamePlatformId, GamePlatformForUpdateDto gamePlatformForUpdateDto, CancellationToken ct = default)
+		{
+			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, true, ct);
+			if (gamePlatform is null)
+			{
+				throw new NotFoundException($"Game platform not found.");
+			}
+			if (gamePlatform.File != gamePlatformForUpdateDto.File)
+			{
+				var oldBlobName = gamePlatform.File.Split('/').Last();
+				await blobService.DeleteBlob(oldBlobName, StorageContainer.STORAGE_CONTAINER);
+
+				var blobName = gamePlatformForUpdateDto.File.Split('/').Last();
+				gamePlatform.DisplayName = await blobService.GetBlobOriginalName(blobName, StorageContainer.STORAGE_CONTAINER);
+				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
+				gamePlatform.File = gamePlatformForUpdateDto.File;
+				gamePlatform.Version = gamePlatformForUpdateDto.Version;
+
+				await repositoryManager.SaveAsync(ct);
+			}
 		}
 	}
 }
