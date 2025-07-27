@@ -20,14 +20,12 @@ namespace IndieGameZone.Infrastructure.Repositories
 			FindByCondition(x => x.Id == id, trackChange)
 			.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
 			.Include(t => t.Game).AsSplitQuery()
-			.Include(t => t.CommercialPackage).AsSplitQuery()
 			.FirstOrDefaultAsync(ct);
 
 		public Task<Transactions?> GetTransactionById(long orderCode, bool trackChange, CancellationToken ct = default) =>
 			FindByCondition(x => x.OrderCode == orderCode, trackChange)
 			.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
 			.Include(t => t.Game).AsSplitQuery()
-			.Include(t => t.CommercialPackage).AsSplitQuery()
 			.FirstOrDefaultAsync(ct);
 
 		public Task<PagedList<Transactions>> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
@@ -36,7 +34,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.FilterByTransactionTypes(transactionParameters.TransactionTypes)
 				.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
 				.Include(t => t.Game).AsSplitQuery()
-				.Include(t => t.CommercialPackage).AsSplitQuery()
 				.Sort();
 
 			return PagedList<Transactions>.ToPagedList(transactionEntities, transactionParameters.PageNumber, transactionParameters.PageSize, ct);
@@ -48,7 +45,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.FilterByTransactionTypes(transactionParameters.TransactionTypes)
 				.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
 				.Include(t => t.Game).AsSplitQuery()
-				.Include(t => t.CommercialPackage).AsSplitQuery()
 				.Sort();
 
 			return PagedList<Transactions>.ToPagedList(transactionEntities, transactionParameters.PageNumber, transactionParameters.PageSize, ct);

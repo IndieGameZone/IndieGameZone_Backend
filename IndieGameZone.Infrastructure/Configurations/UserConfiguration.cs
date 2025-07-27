@@ -86,6 +86,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(wr => wr.User)
 				.HasForeignKey(wr => wr.UserId)
 				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasMany(u => u.Orders)
+				.WithOne(o => o.User)
+				.HasForeignKey(o => o.UserId)
+				.OnDelete(DeleteBehavior.Restrict);
 
 
 			var admin = new Users

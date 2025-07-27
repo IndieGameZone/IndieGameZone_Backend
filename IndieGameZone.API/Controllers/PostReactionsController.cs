@@ -24,7 +24,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("posts/{postId:guid}/number-of-reactions")]
-		[Authorize]
 		public async Task<IActionResult> GetNumberOfReactionsAsync([FromRoute] Guid postId, CancellationToken ct)
 		{
 			var numberOfReactions = await serviceManager.PostReactionService.GetNumberOfLikesByPostId(postId, ct);

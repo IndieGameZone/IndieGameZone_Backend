@@ -14,6 +14,6 @@ namespace IndieGameZone.Domain.Entities
 
 		//Navigation properties
 		public ICollection<CommercialRegistration> CommercialRegistrations { get; set; } = new List<CommercialRegistration>();
-		public ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
+		public ICollection<Orders> Orders { get; set; } = new List<Orders>();
 	}
 }

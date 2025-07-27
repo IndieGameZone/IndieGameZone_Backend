@@ -5,7 +5,7 @@ namespace IndieGameZone.Domain.Entities
 	public class Transactions
 	{
 		public Guid Id { get; set; }
-		public long OrderCode { get; set; }
+		public long? OrderCode { get; set; }
 		public double Amount { get; set; }
 		public string Description { get; set; } = string.Empty;
 		public PaymentMethod PaymentMethod { get; set; }
@@ -15,16 +15,11 @@ namespace IndieGameZone.Domain.Entities
 		public Guid UserId { get; set; }
 		public Guid PurchaseUserId { get; set; }
 		public Guid? GameId { get; set; }
-		public Guid? CommercialPackageId { get; set; }
-		public Guid? CouponId { get; set; }
-		public DateOnly? CommercialRegistrationStartDate { get; set; }
-		public DateOnly? CommercialRegistrationEndDate { get; set; }
 
 		// Navigation properties
-		public Coupons? Coupon { get; set; } = null!;
 		public virtual Users User { get; set; } = null!;
 		public virtual Users PurchaseUser { get; set; } = null!;
 		public virtual Games? Game { get; set; } = null!;
-		public virtual CommercialPackages? CommercialPackage { get; set; } = null!;
+		public virtual Orders? Order { get; set; } = null!;
 	}
 }

@@ -47,5 +47,6 @@ namespace IndieGameZone.Domain.Entities
 		public virtual ICollection<Transactions> Transactions { get; set; } = new List<Transactions>();
 		public virtual ICollection<GameCensorLogs> GameCensorLogs { get; set; } = new List<GameCensorLogs>();
 		public virtual ICollection<DownloadSlots> DownloadSlots { get; set; } = new List<DownloadSlots>();
+		public virtual ICollection<Orders> Orders { get; set; } = new List<Orders>();
 	}
 }

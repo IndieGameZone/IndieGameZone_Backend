@@ -19,7 +19,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("posts/{postId:guid}/post-comments")]
-		[Authorize]
 		public async Task<IActionResult> GetPostComments([FromRoute] Guid postId, [FromQuery] PostCommentParameters postCommentParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.PostCommentService.GetCommentsByPostId(postId, postCommentParameters, ct);

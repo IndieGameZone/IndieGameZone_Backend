@@ -53,7 +53,7 @@ namespace IndieGameZone.Application.Services
 			};
 
 			var paymentLinkRequest = new PaymentData(
-				orderCode: transaction.OrderCode,
+				orderCode: (long)transaction.OrderCode,
 				amount: (int)transaction.Amount,
 				description: transaction.Description,
 				items: [new(itemName, 1, (int)transaction.Amount)],
@@ -148,7 +148,7 @@ namespace IndieGameZone.Application.Services
 			transactionEntity.Id = Guid.NewGuid();
 			transactionEntity.UserId = userId;
 			transactionEntity.PurchaseUserId = userId;
-			transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
+			transactionEntity.OrderCode = null;
 			transactionEntity.Description = "Deposit to wallet";
 			transactionEntity.Status = TransactionStatus.Pending;
 			transactionEntity.Type = TransactionType.Deposit;
@@ -174,21 +174,31 @@ namespace IndieGameZone.Application.Services
 				}
 			}
 
+			var order = new Orders
+			{
+				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+				Amount = transactionForGameCreation.Amount,
+				UserId = userId,
+				GameId = gameId,
+				CouponId = transactionForGameCreation.CouponId,
+				CreatedAt = DateTime.Now
+			};
+
 			var transactionEntity = new Transactions()
 			{
 				Id = Guid.NewGuid(),
 				UserId = userId,
 				PurchaseUserId = userId,
 				GameId = gameId,
-				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+				OrderCode = order.OrderCode,
 				Amount = transactionForGameCreation.Amount,
 				Description = $"Purchase game",
 				CreatedAt = DateTime.Now,
-				CouponId = transactionForGameCreation.CouponId,
 				Type = TransactionType.PurchaseGame,
 				Status = transactionForGameCreation.PaymentMethod == PaymentMethod.PayOS ? TransactionStatus.Pending : TransactionStatus.Success,
 				PaymentMethod = transactionForGameCreation.PaymentMethod
 			};
+			repositoryManager.OrderRepository.CreateOrder(order);
 			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
 
 			if (transactionForGameCreation.PaymentMethod == PaymentMethod.Wallet)
@@ -217,7 +227,7 @@ namespace IndieGameZone.Application.Services
 						UserId = game.DeveloperId,
 						PurchaseUserId = userId,
 						GameId = gameId,
-						OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+						OrderCode = null,
 						Amount = transactionForGameCreation.Amount - gamePriceAfterDiscount,
 						Description = $"Donation money for game {game.Name} for developer",
 						CreatedAt = DateTime.Now,
@@ -236,7 +246,7 @@ namespace IndieGameZone.Application.Services
 					UserId = game.DeveloperId,
 					PurchaseUserId = userId,
 					GameId = gameId,
-					OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+					OrderCode = null,
 					Amount = gamePriceAfterDiscount * 0.8, // 80% to developer
 					Description = $"80% of purchase transaction for game {game.Name} for developer",
 					CreatedAt = DateTime.Now,
@@ -254,7 +264,7 @@ namespace IndieGameZone.Application.Services
 					UserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
 					PurchaseUserId = userId,
 					GameId = gameId,
-					OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+					OrderCode = null,
 					Amount = gamePriceAfterDiscount * 0.2, // 80% to developer
 					Description = $"20% of purchase transaction for game {game.Name} for system",
 					CreatedAt = DateTime.Now,
@@ -290,7 +300,7 @@ namespace IndieGameZone.Application.Services
 				Id = Guid.NewGuid(),
 				UserId = userId,
 				PurchaseUserId = userId,
-				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+				OrderCode = null,
 				GameId = gameId,
 				Amount = transactionForDonationCreationDto.Amount,
 				Description = $"Donation",
@@ -323,6 +333,7 @@ namespace IndieGameZone.Application.Services
 		public async Task IPNAsync(WebhookData webhookData, bool isSuccess, CancellationToken ct = default)
 		{
 			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(webhookData.orderCode, true, ct);
+			var order = await repositoryManager.OrderRepository.GetOrderByCode(webhookData.orderCode, false, ct);
 
 			if (isSuccess)
 			{
@@ -351,7 +362,7 @@ namespace IndieGameZone.Application.Services
 						Id = Guid.NewGuid(),
 						UserId = game.DeveloperId,
 						PurchaseUserId = transaction.UserId,
-						OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+						OrderCode = null,
 						GameId = game.Id,
 						Amount = transaction.Amount,
 						Description = $"Donation money for game {game.Name} for developer",
@@ -366,7 +377,7 @@ namespace IndieGameZone.Application.Services
 				else if (transaction.Type == TransactionType.PurchaseGame)
 				{
 					var game = await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId!, false, ct);
-					var gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, transaction.CouponId, ct);
+					var gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, order.CouponId, ct);
 					var developerId = transaction.Game.DeveloperId;
 					var devWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
 					var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
@@ -389,7 +400,7 @@ namespace IndieGameZone.Application.Services
 							UserId = game.DeveloperId,
 							PurchaseUserId = transaction.UserId,
 							GameId = game.Id,
-							OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+							OrderCode = null,
 							Amount = transaction.Amount - gamePriceAfterDiscount,
 							Description = $"Donation money for game {game.Name} for developer",
 							CreatedAt = DateTime.Now,
@@ -408,7 +419,7 @@ namespace IndieGameZone.Application.Services
 						UserId = game.DeveloperId,
 						PurchaseUserId = transaction.UserId,
 						GameId = game.Id,
-						OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+						OrderCode = null,
 						Amount = gamePriceAfterDiscount * 0.8, // 80% to developer
 						Description = $"80% of purchase for game {game.Name} for developer",
 						CreatedAt = DateTime.Now,
@@ -446,10 +457,10 @@ namespace IndieGameZone.Application.Services
 					var commercialRegistration = new CommercialRegistration()
 					{
 						Id = Guid.NewGuid(),
-						StartDate = (DateOnly)transaction.CommercialRegistrationStartDate!,
-						EndDate = transaction.CommercialRegistrationEndDate,
+						StartDate = (DateOnly)order.CommercialRegistrationStartDate!,
+						EndDate = order.CommercialRegistrationEndDate,
 						GameId = (Guid)transaction.GameId!,
-						CommercialPackageId = (Guid)transaction.CommercialPackageId!,
+						CommercialPackageId = (Guid)order.CommercialPackageId!,
 					};
 					repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
 
@@ -458,8 +469,7 @@ namespace IndieGameZone.Application.Services
 						Id = Guid.NewGuid(),
 						UserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
 						PurchaseUserId = transaction.UserId,
-						CommercialPackageId = transaction.CommercialPackageId,
-						OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+						OrderCode = null,
 						Amount = transaction.Amount,
 						Description = $"Purchase for commercial package with a specific period of time",
 						CreatedAt = DateTime.Now,
@@ -565,6 +575,17 @@ namespace IndieGameZone.Application.Services
 				if (wallet.Balance < package.Price)
 					throw new NotEnoughCreditException("You don't have enough wallet points to purchase this package.");
 			}
+			var order = new Orders
+			{
+				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+				Amount = package.Price,
+				UserId = userId,
+				GameId = gameId,
+				CommercialPackageId = commercialPackageId,
+				CommercialRegistrationStartDate = dto.StartDate,
+				CommercialRegistrationEndDate = dto.StartDate.AddDays(package.Duration),
+				CreatedAt = DateTime.Now
+			};
 
 			// Create transaction
 			var transaction = new Transactions
@@ -579,10 +600,7 @@ namespace IndieGameZone.Application.Services
 				UserId = userId,
 				PurchaseUserId = userId,
 				GameId = gameId,
-				CommercialPackageId = commercialPackageId,
 				PaymentMethod = dto.PaymentMethod,
-				CommercialRegistrationStartDate = dto.StartDate,
-				CommercialRegistrationEndDate = dto.StartDate.AddDays(package.Duration)
 			};
 
 			repositoryManager.TransactionRepository.CreateTransaction(transaction);
@@ -607,8 +625,7 @@ namespace IndieGameZone.Application.Services
 					Id = Guid.NewGuid(),
 					UserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
 					PurchaseUserId = userId,
-					CommercialPackageId = commercialPackageId,
-					OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+					OrderCode = null,
 					Amount = package.Price,
 					Description = $"Purchase for commercial package {package.Name} for game {game.Name}",
 					CreatedAt = DateTime.Now,

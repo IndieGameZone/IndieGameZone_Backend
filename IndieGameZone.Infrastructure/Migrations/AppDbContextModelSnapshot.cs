@@ -583,7 +583,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("02e6a0ab-2720-4368-8b80-9eb3f46eece0"),
-                            EndDate = new DateOnly(2025, 8, 3),
+                            EndDate = new DateOnly(2025, 8, 7),
                             GameId = new Guid("65745560-c7e9-48c3-bc36-8c88d66458c7"),
                             Percentage = 10.0
                         });
@@ -700,373 +700,373 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0fcb4738-f2e5-40f2-8755-71fd9adcd2ed"),
+                            Id = new Guid("516d232d-42f7-4390-af05-9bad82dc2e20"),
                             GameId = new Guid("5763f752-914c-4436-803f-4410118774a3"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/MidnightShiftImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("56b8387a-f5f8-410a-af86-7bd5f65c9fec"),
+                            Id = new Guid("f9cdbad5-fbaf-4eff-8ecb-c10a8bb53b5e"),
                             GameId = new Guid("5763f752-914c-4436-803f-4410118774a3"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/MidnightShiftImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("a22e2ba1-0b74-476b-8e4d-50f8199bc326"),
+                            Id = new Guid("1d8828b6-a78d-4380-9462-e9bec30f34e7"),
                             GameId = new Guid("5763f752-914c-4436-803f-4410118774a3"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/MidnightShiftImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("883e857a-de01-4aaf-98ad-a8b43dc168b4"),
+                            Id = new Guid("62450290-0546-4ec2-9987-96d3cb5793e6"),
                             GameId = new Guid("6e55d2c1-fe9f-477d-bf58-125d73d0c26d"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic1.png"
                         },
                         new
                         {
-                            Id = new Guid("ae7a6fcc-3bfc-4b4e-b8fd-f324627f04b5"),
+                            Id = new Guid("2dda2af6-e0cd-43f0-beea-0fd72b33a2d4"),
                             GameId = new Guid("6e55d2c1-fe9f-477d-bf58-125d73d0c26d"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic2.png"
                         },
                         new
                         {
-                            Id = new Guid("d142ba83-4ddd-406c-892f-2f8da494f8c9"),
+                            Id = new Guid("63bb9f37-adcd-4d88-bd72-47007b03ee70"),
                             GameId = new Guid("6e55d2c1-fe9f-477d-bf58-125d73d0c26d"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic3.png"
                         },
                         new
                         {
-                            Id = new Guid("ea0f9828-4b81-4db0-99bf-0ebd6a1f3b80"),
+                            Id = new Guid("8a0e24c3-1c23-4f05-b927-588e575a80bd"),
                             GameId = new Guid("6e55d2c1-fe9f-477d-bf58-125d73d0c26d"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic4.png"
                         },
                         new
                         {
-                            Id = new Guid("53bce04e-084b-490c-a977-e49383ff4ade"),
+                            Id = new Guid("6bf37632-c9f2-45a7-b0f5-f02a1f75818d"),
                             GameId = new Guid("b2fd90a7-5714-489e-b952-31b59a058db1"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/Moldwasher1.png"
                         },
                         new
                         {
-                            Id = new Guid("78fe0ad7-0377-4226-a701-495132891846"),
+                            Id = new Guid("f491e4ff-2564-43d5-81d6-fd74d16c2734"),
                             GameId = new Guid("b2fd90a7-5714-489e-b952-31b59a058db1"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/Moldwasher2.png"
                         },
                         new
                         {
-                            Id = new Guid("1001e24c-8c41-43d0-80c5-6b97567001c9"),
+                            Id = new Guid("5c2b70cd-0bee-44e3-9bdc-6211cd5d84e5"),
                             GameId = new Guid("b2fd90a7-5714-489e-b952-31b59a058db1"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/Moldwasher3.png"
                         },
                         new
                         {
-                            Id = new Guid("8c29c4a2-5f85-4476-931e-9e1d61a97cca"),
+                            Id = new Guid("14f28e5e-0c88-4222-9120-fbec388f31ee"),
                             GameId = new Guid("0f78b4ed-b351-4517-89fc-a05f07570e44"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/Latestop1.png"
                         },
                         new
                         {
-                            Id = new Guid("75a61e10-95f3-4c59-a610-a0933acc3022"),
+                            Id = new Guid("3e3724d5-c2cd-4f69-825c-02a52adb3a7a"),
                             GameId = new Guid("0f78b4ed-b351-4517-89fc-a05f07570e44"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/Latestop2.png"
                         },
                         new
                         {
-                            Id = new Guid("ec39bc63-47a8-476a-8217-25a32be6e935"),
+                            Id = new Guid("c2862cd9-7e3d-489f-876b-c99ffec969cb"),
                             GameId = new Guid("0f78b4ed-b351-4517-89fc-a05f07570e44"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/Latestop3.png"
                         },
                         new
                         {
-                            Id = new Guid("e95ac13c-bdc2-4c7b-9802-2ffa2e237d4e"),
+                            Id = new Guid("d6e86c0b-c184-4b16-98e6-27b185f72dab"),
                             GameId = new Guid("381c9309-d036-4c9a-a651-d8ebf631528e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/QuietPlaceImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("331ea030-a2f7-4f9c-91f6-e8e48b5af6d3"),
+                            Id = new Guid("e30e7a65-2369-405b-8f12-df20d2f430fa"),
                             GameId = new Guid("381c9309-d036-4c9a-a651-d8ebf631528e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/QuietPlaceImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("60ca2030-e479-42c8-a469-9496708d6a17"),
+                            Id = new Guid("bf6b9f30-fe8a-4bcc-851f-feb1f3732216"),
                             GameId = new Guid("381c9309-d036-4c9a-a651-d8ebf631528e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/QuietPlaceImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("3e80b1d1-887b-4047-b4a7-36b0db63603d"),
+                            Id = new Guid("df518d90-7870-4224-b1e9-02f991964cc5"),
                             GameId = new Guid("f6935d98-bd02-4716-a968-3bc870e6233b"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/PacsideImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("068c7df8-847e-436d-8031-3f61b72d117c"),
+                            Id = new Guid("1d4f4239-aa0c-44fc-9af6-fd008a902ed2"),
                             GameId = new Guid("f6935d98-bd02-4716-a968-3bc870e6233b"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/PacsideImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("6010627a-4761-4d49-a5ff-4ec88b6291c3"),
+                            Id = new Guid("c4c1ef28-4708-4729-aa33-be18fa2df103"),
                             GameId = new Guid("f6935d98-bd02-4716-a968-3bc870e6233b"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/PacsideImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("479d0857-da49-4705-9fd5-79eca0e18c49"),
+                            Id = new Guid("12116013-72c1-46d7-825f-1163e44f9cc2"),
                             GameId = new Guid("a28f1bb3-f30d-4895-81b0-58deec580a1d"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/SheepyImage1.jpg"
                         },
                         new
                         {
-                            Id = new Guid("98e931b4-f08f-4330-b7d1-f5ab3c1640a2"),
+                            Id = new Guid("9345bfca-9b7e-4f99-95c3-44674b58c037"),
                             GameId = new Guid("a28f1bb3-f30d-4895-81b0-58deec580a1d"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/SheepyImage2.jpg"
                         },
                         new
                         {
-                            Id = new Guid("cac71773-40c8-49c1-9613-48230b57b755"),
+                            Id = new Guid("5b562af5-ec76-489a-a4a3-15ac28933b39"),
                             GameId = new Guid("a28f1bb3-f30d-4895-81b0-58deec580a1d"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/SheepyImage3.jpg"
                         },
                         new
                         {
-                            Id = new Guid("68a7b949-da2a-4d26-af1b-b3db9c8dbdb0"),
+                            Id = new Guid("0d782718-e5ed-4035-bd3c-352bab5d06ca"),
                             GameId = new Guid("a670e609-db94-42b5-b196-f618e79ce15b"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DaughterImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("5d3baa07-0fee-41aa-8959-04a54edc090c"),
+                            Id = new Guid("8b421630-a199-4fb2-a5c9-e8858da2a807"),
                             GameId = new Guid("a670e609-db94-42b5-b196-f618e79ce15b"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DaughterImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("02e71acf-e202-463e-9334-8d50b4511f93"),
+                            Id = new Guid("4af46748-c350-4d7f-85bd-74b877197972"),
                             GameId = new Guid("a670e609-db94-42b5-b196-f618e79ce15b"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DaughterImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("923cedce-d84f-4794-976e-ca65e8d9ab96"),
+                            Id = new Guid("836148c3-f21d-456d-9322-347b45a6a475"),
                             GameId = new Guid("8dd6053e-f3b1-4019-8898-668208f4dd31"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/MissingImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("0c8729fa-86aa-4d7f-92e8-c4b629db497a"),
+                            Id = new Guid("2f7fb15e-7ebb-4236-80c8-dac54a45e918"),
                             GameId = new Guid("8dd6053e-f3b1-4019-8898-668208f4dd31"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/MissingImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("4b7b16c1-c954-4530-b3a5-3da262444dca"),
+                            Id = new Guid("c1f34f0a-9202-421d-ac70-033a1afc03cb"),
                             GameId = new Guid("8dd6053e-f3b1-4019-8898-668208f4dd31"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/MissingImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("8cccf8a0-bf67-4161-a5e1-9f89b4f3e38b"),
+                            Id = new Guid("21beec72-53db-4161-a855-543cbbb8ab6e"),
                             GameId = new Guid("78b9e146-d318-4fc5-aa13-1ba2e7c304c9"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BloodmallImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("68105a4f-cc17-4faa-97b3-e1ca7bf0db72"),
+                            Id = new Guid("30d586e3-8e6d-4546-a8cd-299fb3654494"),
                             GameId = new Guid("78b9e146-d318-4fc5-aa13-1ba2e7c304c9"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BloodmallImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("77ed88d0-31f7-4477-bf5b-8f9ac4b311bd"),
+                            Id = new Guid("a0ddf991-d595-447b-8c5c-b57daca5833b"),
                             GameId = new Guid("78b9e146-d318-4fc5-aa13-1ba2e7c304c9"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BloodmallImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("98c8a93e-b65e-4910-bc5f-8b02cb7b5c70"),
+                            Id = new Guid("f8c15145-b618-45f9-b678-b819d9962f95"),
                             GameId = new Guid("78b9e146-d318-4fc5-aa13-1ba2e7c304c9"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/BloodmallImage4.png"
                         },
                         new
                         {
-                            Id = new Guid("635a8604-b29d-4d25-acc8-6e9594e3ccf7"),
+                            Id = new Guid("cb833a1e-8d3c-44be-adb5-a99b844bb032"),
                             GameId = new Guid("34209460-1478-4545-9f15-723eeefc5697"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/ThunderheadImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("faaf6717-b582-456a-9c6e-16004a1da2f3"),
+                            Id = new Guid("0a86cc5d-09df-4632-8e45-baf2f640c9e3"),
                             GameId = new Guid("34209460-1478-4545-9f15-723eeefc5697"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/ThunderheadImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("f44ead1d-1a68-4de8-bd95-0763bf34040a"),
+                            Id = new Guid("92d0933e-bd03-46e3-b010-95e9fec750fc"),
                             GameId = new Guid("34209460-1478-4545-9f15-723eeefc5697"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/ThunderheadImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("9ccb70f2-9f9d-4ac3-88f2-d67758c3dd1b"),
+                            Id = new Guid("9e8d3a30-ee95-4591-b50a-34be844fb9fd"),
                             GameId = new Guid("ae4dbda4-695a-44b8-9c93-7785cf1d717e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/EvaluationImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("3c59dc16-262f-4a20-a65c-fe72a3e7d06b"),
+                            Id = new Guid("c84cee08-9bf2-4724-9b88-be18dd2d5686"),
                             GameId = new Guid("ae4dbda4-695a-44b8-9c93-7785cf1d717e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/EvaluationImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("87af593c-8ed5-45be-bbeb-39b76fca7a50"),
+                            Id = new Guid("a66ac83d-d1c4-47c6-a898-8ddbf81dc226"),
                             GameId = new Guid("ae4dbda4-695a-44b8-9c93-7785cf1d717e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/EvaluationImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("72667f84-9e71-495b-a6fb-efbea9298320"),
+                            Id = new Guid("271d2525-2643-4a9a-8b61-b5ca82cb0647"),
                             GameId = new Guid("ebe90f4b-241a-44d6-8645-4c1f28376f3e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DominoidImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("766f3d5f-6a59-4c30-a6df-6abac5ae9ab3"),
+                            Id = new Guid("a56b4ce4-738a-4399-9e0f-877218290db4"),
                             GameId = new Guid("ebe90f4b-241a-44d6-8645-4c1f28376f3e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DominoidImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("954d583e-780a-4abb-aba6-8258aedc0260"),
+                            Id = new Guid("88af137e-e887-467b-b50f-1563c12b97ef"),
                             GameId = new Guid("ebe90f4b-241a-44d6-8645-4c1f28376f3e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DominoidImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("12c29b21-3c17-43e2-a256-e5d29a85bb54"),
+                            Id = new Guid("e6f2b34d-75e6-42ec-b10e-bde05066c6f3"),
                             GameId = new Guid("85ce733a-7a1a-4e52-8513-2638b9c44e55"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DiggingHourImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("2db97d13-92e2-48da-b0bb-fbc14580faa7"),
+                            Id = new Guid("fff092ea-4abd-4494-9e99-895b6fd23cfe"),
                             GameId = new Guid("85ce733a-7a1a-4e52-8513-2638b9c44e55"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DiggingHourImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("6026a722-9e4c-4fe5-abb7-89a21dff2a14"),
+                            Id = new Guid("e2c4b5af-0094-4849-b541-d5230bede178"),
                             GameId = new Guid("85ce733a-7a1a-4e52-8513-2638b9c44e55"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DiggingHourImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("324d3d1a-5f99-4cf3-9b36-ccbb08c746bf"),
+                            Id = new Guid("5a1fcd13-6cea-4c4b-ac82-fb6f632dce79"),
                             GameId = new Guid("16565861-4a29-40e7-8efa-1594a82e67e8"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DispatchedImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("9decf43b-c678-4538-a963-72274fc6e26f"),
+                            Id = new Guid("b95b0e14-9a09-4171-860f-fc5ca2fefb10"),
                             GameId = new Guid("16565861-4a29-40e7-8efa-1594a82e67e8"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DispatchedImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("40c1a562-1bf4-4e3a-bff3-e999dcba039e"),
+                            Id = new Guid("07e4bf0a-173b-4aff-93e8-542b8e689574"),
                             GameId = new Guid("16565861-4a29-40e7-8efa-1594a82e67e8"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/DispatchedImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("ea8fc82c-d6fa-4cb0-9218-26ec50a0f03c"),
+                            Id = new Guid("33d19987-69aa-4bf7-a4f5-3ae00e244624"),
                             GameId = new Guid("a60c6a31-3d0c-4bb4-9f2a-99020ea026fc"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/SecurityBoothImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("ed95b096-f2a2-457e-81ca-e27f3aad9033"),
+                            Id = new Guid("bbf6cfbc-4db8-40bd-b344-a0a897c5099d"),
                             GameId = new Guid("a60c6a31-3d0c-4bb4-9f2a-99020ea026fc"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/SecurityBoothImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("d7f5cf9c-a61f-4b39-8f27-b80dc231fd9d"),
+                            Id = new Guid("7bec971b-9a41-42bd-a941-b1318ef262ba"),
                             GameId = new Guid("a60c6a31-3d0c-4bb4-9f2a-99020ea026fc"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/SecurityBoothImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("e44ab58c-f0f8-4f91-a4b7-73071fd128e4"),
+                            Id = new Guid("85f34486-8933-40d9-9024-c523c61ba9c7"),
                             GameId = new Guid("152e3482-be53-44db-93e6-785823f6224e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/AtlyssImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("a5f79608-b9b7-44a4-b6e2-14331651108b"),
+                            Id = new Guid("7fa98d4c-ae51-424e-82e4-a0e6fe2736f3"),
                             GameId = new Guid("152e3482-be53-44db-93e6-785823f6224e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/AtlyssImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("e265d17b-55d8-4ae4-8e63-ae082b8b7317"),
+                            Id = new Guid("19b8ab7a-17fd-4b6d-a256-665610105c02"),
                             GameId = new Guid("152e3482-be53-44db-93e6-785823f6224e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/AtlyssImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("e9cf4dc8-a893-484d-bbf3-f2be22c7d802"),
+                            Id = new Guid("f48bf7bb-28fc-4e1e-94a1-d13ddc6c678d"),
                             GameId = new Guid("d11cf96a-0d4f-4834-868c-59b32f047d2a"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TomatoImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("c59d80e3-4a9b-4268-a020-1d1376aa339f"),
+                            Id = new Guid("72785c8c-8dba-478f-aee9-b7dbd1a5441a"),
                             GameId = new Guid("d11cf96a-0d4f-4834-868c-59b32f047d2a"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TomatoImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("10db962a-335d-4fdc-9cf9-b302a421aac8"),
+                            Id = new Guid("c95a3814-ff3f-4443-851d-155bd56d1531"),
                             GameId = new Guid("d11cf96a-0d4f-4834-868c-59b32f047d2a"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TomatoImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("deb05ca6-4131-4aae-be86-a5dae1cce5fc"),
+                            Id = new Guid("6ba879dd-fd40-458a-bed2-6500bcb73aac"),
                             GameId = new Guid("ca5adbdb-160c-4a60-98b3-e4f464fbf904"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/LeftoversImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("6634a700-b078-4cd3-9244-756cb43926c5"),
+                            Id = new Guid("7bf730ec-0947-4a4a-8652-8da78eaba06c"),
                             GameId = new Guid("ca5adbdb-160c-4a60-98b3-e4f464fbf904"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/LeftoversImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("ad8e86b3-6012-4360-8b60-5f2c24775947"),
+                            Id = new Guid("ff567793-606a-4a27-988c-4cfb351ce281"),
                             GameId = new Guid("ca5adbdb-160c-4a60-98b3-e4f464fbf904"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/LeftoversImage3.png"
                         },
                         new
                         {
-                            Id = new Guid("1609cb52-ab78-41b2-b4c4-1d8c742f902c"),
+                            Id = new Guid("90f57ede-dc49-41f9-a002-8904376182a9"),
                             GameId = new Guid("791a4c74-d469-4432-bd76-c5ace021ce8e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheStationImage1.png"
                         },
                         new
                         {
-                            Id = new Guid("894ef89a-0631-441e-9d53-55db7d536ff9"),
+                            Id = new Guid("51edc2ab-1622-4bdc-b319-d867d7337599"),
                             GameId = new Guid("791a4c74-d469-4432-bd76-c5ace021ce8e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheStationImage2.png"
                         },
                         new
                         {
-                            Id = new Guid("129403f3-fa34-4c3a-8215-d9a9d787b2a7"),
+                            Id = new Guid("f4ad0d8e-b259-470a-99b2-9181aab90e31"),
                             GameId = new Guid("791a4c74-d469-4432-bd76-c5ace021ce8e"),
                             Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheStationImage3.png"
                         });
@@ -1240,7 +1240,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("b58aceb6-bee7-420d-94d6-6c07cbc9c02c"),
+                            Id = new Guid("f0615184-09a7-43e5-bbb0-65b203034221"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "TheDeadseat_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseat_Window.zip",
@@ -1252,7 +1252,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("df617c96-522b-45c9-beca-dc5acbc27c2c"),
+                            Id = new Guid("4d58eee0-d225-468a-89cd-d4205672de77"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "MidnightShift_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/MidnightShift_Window.zip",
@@ -1264,7 +1264,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("8b763d65-db38-48c7-a283-ec069e6fbd4e"),
+                            Id = new Guid("fb40362e-6a33-4096-a611-910962662752"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "BrokenRelic_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic_Window.zip",
@@ -1276,7 +1276,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f5411500-038d-43b7-8aca-39bcc2fe7c54"),
+                            Id = new Guid("c81fbfbe-d948-49a1-99aa-f9438e00614c"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "BrokenRelic_Mac.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic_Macos.zip",
@@ -1288,7 +1288,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f4346009-96f3-4f90-be2e-19a559f412d3"),
+                            Id = new Guid("70bef0a1-c6f3-4c32-92ce-633ea5c08d2d"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "BrokenRelic_Linux.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelic_Linux.zip",
@@ -1300,7 +1300,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("c2485fb1-aa18-4334-9281-03c3abe86e7a"),
+                            Id = new Guid("7cf6505f-5fee-4e31-a357-360a1123ccd0"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Moldwasher_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Moldwasher_Window.zip",
@@ -1312,7 +1312,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("aae63f09-ebda-4c09-9557-9dcbd31b6457"),
+                            Id = new Guid("da507fb0-58bd-40a4-8c72-cdf5fff131a4"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Latestop_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Latestop_Window.zip",
@@ -1324,7 +1324,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("25a9e485-4b96-4373-8a4d-3038449949a0"),
+                            Id = new Guid("fc190397-6c71-43af-9ad9-e33c9bed13c2"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "QuietPlace_Window.rar",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/QuietPlace_Window.rar",
@@ -1336,7 +1336,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("0ccdc457-66c4-40f7-b2bb-956b83aacc8f"),
+                            Id = new Guid("35bd4f24-c039-4002-9a2a-22e8cfa07c56"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Pacside_Window.rar",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Pacside_Window.rar",
@@ -1348,7 +1348,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("112ae4c1-9fc4-49d3-8cf1-b5ed5076ae9c"),
+                            Id = new Guid("387cd17a-b406-469d-9037-623c886fed2d"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Sheepy_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Sheepy_Window.zip",
@@ -1360,7 +1360,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d7f60a26-ad4e-4ac2-803f-9385c057159b"),
+                            Id = new Guid("6deb758b-00e5-47ad-a085-5743ad18ed2f"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Daughter_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Daughter_Window.zip",
@@ -1372,7 +1372,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f8996a57-43dd-4509-8522-4d70eac63761"),
+                            Id = new Guid("9be891f4-63d7-4c85-b4cb-a56e0c98db5f"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Missing_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Missing_Window.zip",
@@ -1384,7 +1384,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("d01aa024-5f66-46e6-8902-7c97d34a4c29"),
+                            Id = new Guid("491e1c5c-e2a2-45db-91a2-1db2bcab5ac6"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Missing_Mac.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Missing_Mac.zip",
@@ -1396,7 +1396,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("473ebad5-07c2-405f-a8c7-4b6500deddfb"),
+                            Id = new Guid("61c05d72-c393-4d32-9c26-609b487bc6fa"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Bloddymall_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Bloddymall_Window.zip",
@@ -1408,7 +1408,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("76b84db0-7e23-4e30-a943-474485747ba8"),
+                            Id = new Guid("fd0a2843-51c6-4705-9e16-9f97fe1421ad"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Bloddymall_Linux.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Bloddymall_Linux.zip",
@@ -1420,7 +1420,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("18b71751-c713-40cd-be51-b0de812862c1"),
+                            Id = new Guid("02edb248-bff2-4a67-bdbd-2c4671f1a777"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Thunderhead_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Thunderhead_Window.zip",
@@ -1432,7 +1432,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("051d7162-e0e2-4fa4-a18b-c8289cbed644"),
+                            Id = new Guid("d75e5961-287b-4e8b-86fe-6547974e7616"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Evaluation_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Evaluation_Window.zip",
@@ -1444,7 +1444,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("049f2418-979d-4efd-82e5-a2e667817c0b"),
+                            Id = new Guid("39827d89-4c8e-4afd-968e-6d727ec52167"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Dominoid_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Dominoid_Window.zip",
@@ -1456,7 +1456,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("6e34d76d-53dd-495e-871d-395b04297e43"),
+                            Id = new Guid("09f3dfe1-c1a5-4015-a749-432349be9077"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "DiggingHour_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/DiggingHour_Window.zip",
@@ -1468,7 +1468,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("e427cd00-6b0c-43f8-9b49-b9c25aff6e68"),
+                            Id = new Guid("a8333bd6-2fe7-46d6-93f2-cea1d4ca1555"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Dispatched_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Dispatched_Window.zip",
@@ -1480,7 +1480,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("32ecc290-c10d-43f2-a6ee-262317c51333"),
+                            Id = new Guid("9421e019-e53c-4977-a11a-bcd4cc777e7b"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "SecurityBooth_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/SecurityBooth_Window.zip",
@@ -1492,7 +1492,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("b4e7ff0b-ed9f-472f-b3a6-4b6b85dd046e"),
+                            Id = new Guid("cde80f4d-163d-4bed-90e5-9c4d2ad11592"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Atlyss_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Atlyss_Window.zip",
@@ -1504,7 +1504,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("f0308077-bf08-4c6f-bbb2-8f604668b38b"),
+                            Id = new Guid("6aae7d96-ce83-47d5-9ba2-b9b7c322094e"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Tomato_Window.exe",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Tomato_Window.exe",
@@ -1516,7 +1516,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("7594b10d-990b-4183-b767-a99d75ff6d3f"),
+                            Id = new Guid("5dd12209-2df6-4f52-be7c-4209532f362f"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Leftovers_Window.zip",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/Leftovers_Window.zip",
@@ -1528,7 +1528,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                         },
                         new
                         {
-                            Id = new Guid("4931f652-7748-4141-a4e5-42ecc2d5369f"),
+                            Id = new Guid("64c997f5-1988-42d5-ac48-e6f58350802d"),
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "TheStation_Window.rar",
                             File = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheStation_Window.rar",
@@ -1983,7 +1983,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheDeadseatCoverImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4479),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5705),
                             Description = "<h4>Steam release features Hard Mode, as well as double the story!</h4><p>You are in the backseat of your parent's car during a long drive. As your parents begin fighting, your hand-held game is your only source of entertainment. But the game begins to mirror real life... Collect items on your hand-held game to send them to the backseat and use them to defend against the monstrosity that's trying to make its way into the backseat with you.</p><h4>SURVIVE THE NIGHT DRIVE</h4><p>Your drive home from grandma's is interrupted by an unexpected detour. Play a hand-held game in the backseat as your parent's drive.</p><h4>RETRO GAMING</h4><p>Your hand-held game is beginning to mirror reality... Supplies you collect in the game will be sent to the backseat.</p><h4>TRAPPED IN THE DEADSEAT</h4><p>A deadly monstrosity wants to join you in the backseat. Juggle your supplies and defend all sides. In this car, there&rsquo;s only onwards to drive, and nowhere to run.</p><h4>THE STORY</h4><p>Your parents can't get along, and you can&rsquo;t ignore it, no matter how deep you immerse yourself in your game. If only you could get away from it all and escape to somewhere better. And seemingly, the voice in your game says you can.</p>",
                             DeveloperId = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             InstallInstruction = "",
@@ -2006,7 +2006,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/MidnightShiftCoverImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4494),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5716),
                             Description = "<p><strong>Announcement</strong>: Midnight Shift 1.2 has been released.</p><ul><li>Enhanced 4:3 VHS / found footage appearance.</li><li>The animation for the ending has been updated.</li><li>Increased field-of-view.</li><li>Updated main menu.</li></ul><p><strong>Synopsis</strong></p><p><em>Midnight Shift</em>&nbsp;puts players in the role as an ordinary security guard for a mannequin storage facility. At the end of a seemingly ordinary shift, strange things begin to happen in the facility. Leaving won't be easy as the keys required for the exit doors have been misplaced.</p><p><strong>Development</strong></p><p>This was my first Unity project I created during my time at Edmonton Digital Arts College. The project has eight weeks of development time with seldom game engine and coding experience.</p><p><strong>Developer's Note</strong></p><p>Thanks for 25,000+ Midnight Shift downloads! I appreciate all the support and your interest in my projects.</p>",
                             DeveloperId = new Guid("34670beb-a794-4419-adf8-0465eea22a78"),
                             InstallInstruction = "",
@@ -2029,7 +2029,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/BrokenRelicCoverImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4502),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5723),
                             Description = "<h2>THE STORY</h2><p>On your first day as an apprentice at the Nytheris Archive, you accidentally unleash an ancient force that was meant to stay sealed forever. Ooops!</p><p>Now, with the world teetering on the brink, it's up to you to piece together the remnants of a shattered relic and set things right.</p><p>Explore a world filled with strange characters, forgotten ruins, and puzzles. Follow the clues. Trust your instincts... and try not to make things worse.</p><p><em>Broken Relic</em>&nbsp;invites you to navigate a crumbling world, uncovering its secrets one strange step at a time. You may not be the hero it needs. But you're what it&rsquo;s got.</p><h2>What to expect:</h2><ul><li>Fully voiced dialogue with a world full of unusual people.</li><li>A handcrafted pixel art world filled with details and secrets.</li><li>Nonlinear exploration across connected regions.</li><li>No fail states, no pixel hunting, no filler.<br /><br /><br />If you enjoy the demo, please wishlist and follow the game on Steam, it really helps support the project!&nbsp;<br /><a href=\"https://store.steampowered.com/app/3384820/Broken_Relic/\" rel=\"nofollow noopener\">https://store.steampowered.com/app/3384820/Broken_Relic/<br /></a></li></ul><p>Also you can join the newsletter to hear about the big updates:&nbsp;<a href=\"https://broken-relic.kit.com/ea36291513\" rel=\"nofollow noopener\">https://www.brokenrelic.com/<br /></a>And dont forget to join our Discord!! <a href=\"https://discord.gg/zDBJUKwD\" rel=\"nofollow noopener\">https://discord.gg/zDBJUKwD</a></p>",
                             DeveloperId = new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
                             InstallInstruction = "",
@@ -2052,7 +2052,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/MoldwasherCoverImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4508),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5771),
                             Description = "",
                             DeveloperId = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             InstallInstruction = "",
@@ -2075,7 +2075,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/MoldwasherCoverImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4515),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5778),
                             Description = "<h2>THE STORY</h2><p>On your first day as an apprentice at the Nytheris Archive, you accidentally unleash an ancient force that was meant to stay sealed forever. Ooops!</p><p>Now, with the world teetering on the brink, it's up to you to piece together the remnants of a shattered relic and set things right.</p><p>Explore a world filled with strange characters, forgotten ruins, and puzzles. Follow the clues. Trust your instincts... and try not to make things worse.</p><p><em>Broken Relic</em>&nbsp;invites you to navigate a crumbling world, uncovering its secrets one strange step at a time. You may not be the hero it needs. But you're what it&rsquo;s got.</p><h2>What to expect:</h2><ul><li>Fully voiced dialogue with a world full of unusual people.</li><li>A handcrafted pixel art world filled with details and secrets.</li><li>Nonlinear exploration across connected regions.</li><li>No fail states, no pixel hunting, no filler.<br /><br /><br />If you enjoy the demo, please wishlist and follow the game on Steam, it really helps support the project!&nbsp;<br /><a href=\"https://store.steampowered.com/app/3384820/Broken_Relic/\" rel=\"nofollow noopener\">https://store.steampowered.com/app/3384820/Broken_Relic/<br /></a></li></ul><p>Also you can join the newsletter to hear about the big updates:&nbsp;<a href=\"https://broken-relic.kit.com/ea36291513\" rel=\"nofollow noopener\">https://www.brokenrelic.com/<br /></a>And dont forget to join our Discord!!&nbsp;<a href=\"https://discord.gg/zDBJUKwD\" rel=\"nofollow noopener\">https://discord.gg/zDBJUKwD</a></p>",
                             DeveloperId = new Guid("34670beb-a794-4419-adf8-0465eea22a78"),
                             InstallInstruction = "",
@@ -2098,7 +2098,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/QuietPlaceImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4523),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5784),
                             Description = "<h3>ABOUT:</h3><p>A short,&nbsp;psychological horror experience where you, player, quickly age to see how's your family doing now.</p><h3>MORE INFO:</h3><p>~10 minutes</p><p>In game font: \"MouseMemoirs\"</p><h3>CONTROLS:</h3><table><tbody><tr><td>Movement</td><td>W, A,&nbsp;S, D</td></tr><tr><td>Sprint</td><td>Shift</td></tr><tr><td>Crouch</td><td>Ctrl</td></tr><tr><td>Interaction</td><td>E</td></tr></tbody></table><h3>NOTE:</h3><p>Game has a bit of experimentation going on in it and I tried some new stuff, like moving away from retro graphics, experimenting with movement and colors etc. and I sincerely hope that you will like what you see!</p><p>If you run into any bugs or issues, feel free to reach out in the comments, my&nbsp;<a href=\"https://www.youtube.com/@VukDobric\" target=\"_blank\" rel=\"nofollow noopener\">YouTube</a>&nbsp;channel or by e-mail at&nbsp;vukkdobric@gmail.com</p>",
                             DeveloperId = new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
                             InstallInstruction = "",
@@ -2121,7 +2121,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/PacsideImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4529),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5790),
                             Description = "<h3>Welcome to PAC-SIDE</h3><p>PAC-SIDE is a fast-paced pacman-based horror game, where you can meet your old yellow friend! Wait.. It looks like something bad&nbsp;happened with him..</p><h3>Controls</h3><table><tbody><tr><td><strong>W, A,&nbsp;S, D</strong></td><td>Movement</td></tr><tr><td><strong>Mouse</strong></td><td>Look Around</td></tr><tr><td><strong>Left Shift</strong></td><td>Run</td></tr></tbody></table><h3>Epilepsy Warning!</h3><p>This game contains flashing lights and images, which is&nbsp;<strong>NOT RECOMMENDED</strong>&nbsp;for sensitive people.</p><h3>Developer</h3><p>Game by&nbsp;<strong>SeriousDaniel</strong></p><p>Made with Unreal Engine</p><p><strong>This game is a fan-game and does NOT related to the original Pac-Man or its developers. All rights to the original characters, sounds and graphics&nbsp;belong to Bandai Namco.</strong></p><p>Follow me on X&nbsp;<a href=\"https://x.com/serious_voice\" rel=\"nofollow noopener\">https://x.com/serious_voice</a></p>",
                             DeveloperId = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             InstallInstruction = "",
@@ -2144,7 +2144,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/SheepyImage.jpg",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4535),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5796),
                             Description = "<h3>Help Sheepy, an abandoned plushy brought to life, as he explores a forgotten and broken world. Sheepy: A Short Adventure is the first short game from MrSuicideSheep.</h3><h2>Independently Handcrafted</h2><p>A short, handcrafted, fully independent pixel art platformer, spanning several zones with unique skills to unlock. Discover an abandoned world full of secrets and lore influenced by themes driven by the music and community of MrSuicideSheep for more than 10 years.&nbsp;</p><h2>An Original Soundtrack</h2><p>Weaved into the world is an incredible original soundtrack created by Seeking Blue artists Tal Richards, Hahlweg and Yoe Mase availble to stream and purchase here.</p><h2>Mailing List</h2><p>Join the Mailing List and be the first to learn about future happenings with Sheepy!</p>",
                             DeveloperId = new Guid("34670beb-a794-4419-adf8-0465eea22a78"),
                             InstallInstruction = "",
@@ -2167,7 +2167,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("2d740ce2-a803-4b32-8df8-ab5139203742"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/DaughterImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4541),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5802),
                             Description = "<p><em>Donation is not necessary to play the game, but definitely much appreciated for me to keep making games.</em></p><p>---</p><h2><strong>DAUGHTER</strong></h2><p>Your daughter went to a sleepover birthday party at her friend's house, what could go wrong?</p><p>This is a short horror game about you trying to rescuing your daughter from a creepy house.</p><p>The story might feel incomplete as&nbsp;Daughter is a submission to the Lost Relic Games Game Jam 2022 and was made in a week. The theme is \"connection\" and I'm going for a more abstract route about the connection between the father and the daughter.</p><p>Your comments and feedbacks are very much appreciated as I might be updating this game after the Jam.</p><p>---</p><p><strong>BUGS</strong></p><ul><li>If you have a hard time reading the notes, close the flashlight before you interact with it.</li></ul><p>---</p><h2>BASIC CONTROLS</h2><p>Only support keyboard and mouse.</p><p>W,A,S,D - Walk</p><p>LEFT SHIFT - Sprint</p><p>F / E / LMB&nbsp;- Interact</p><p>G - Flashlight</p><p>Left CTRL - Crouch</p><p>---</p><p><strong>If you enjoy my game,&nbsp;you can follow my development on X:&nbsp;<a href=\"https://x.com/MikeTenDev\" rel=\"nofollow noopener\">https://x.com/MikeTenDev</a></strong></p><p>---</p><h2>CREDITS</h2><p><strong>TOOLS USED:&nbsp;</strong>Unreal Engine, Blender and Audacity</p><p><strong>ASSETS USED:</strong></p><p>Modular PSX Architecture Pack:&nbsp;<a href=\"https://comp3interactive.itch.io/modular-psx-architecture-kit\">https://comp3interactive.itch.io/modular-psx-architecture-kit</a></p><p>Retro PSX Style Tree Pack:&nbsp;<a href=\"https://elegantcrow.itch.io/psx-retro-style-tree-pack\">https://elegantcrow.itch.io/psx-retro-style-tree-pack</a></p><p>Retro House Pack: <a href=\"https://elegantcrow.itch.io/retro-house-pack\">https://elegantcrow.itch.io/retro-house-pack</a></p><p>Tiny Texture Pack 1:&nbsp;<a href=\"https://screamingbrainstudios.itch.io/tiny-texture-pack\">https://screamingbrainstudios.itch.io/tiny-texture-pack</a></p><p>Deceitful Castle in Dungeon Music Pack:&nbsp;<a href=\"https://assetstore.unity.com/packages/audio/music/dungeon-music-pack-20599\" rel=\"nofollow noopener\">https://assetstore.unity.com/packages/audio/music/dungeon-music-pack-20599</a></p><p>Fantasy Sound Bundle:&nbsp;<a href=\"https://assetstore.unity.com/packages/audio/sound-fx/fantasy-sounds-bundle-193760\" rel=\"nofollow noopener\">https://assetstore.unity.com/packages/audio/sound-fx/fantasy-sounds-bundle-19376</a></p><p>Happy Birthday Whistle:&nbsp;<a href=\"https://freesound.org/people/gaiterjay/sounds/617576/\" rel=\"nofollow noopener\">https://freesound.org/people/gaiterjay/sounds/617576/</a></p><p>Requiem in d minor:&nbsp;<a href=\"https://musopen.org/music/43683-requiem-in-d-minor-k-626/\" rel=\"nofollow noopener\">https://musopen.org/music/43683-requiem-in-d-minor-k-626/</a></p><p>Biblical Goth Girl:&nbsp;<a href=\"https://crimsongcat.itch.io/biblical-goth-angel-girl\">https://crimsongcat.itch.io/biblical-goth-angel-girl</a></p><p>Brush Strokes:&nbsp;<a href=\"https://www.freepik.com/vectors/japanese-brush\" rel=\"nofollow noopener\">https://www.freepik.com/vectors/japanese-brush</a></p>",
                             DeveloperId = new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
                             InstallInstruction = "",
@@ -2190,7 +2190,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("77c89b32-78e3-4fea-915f-4b8df819ffa2"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/MissingImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4584),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5809),
                             Description = "<p>a short&nbsp;<strong>vn style game</strong>&nbsp;made in rpgmaker in which you try to find out what happened to your missing friend.</p><p><strong>contains: mild blood, needles, a yandere, and a little bit of comedy</strong></p><p>this game's super short,&nbsp;<strong>5 endings</strong>, maybe around 10 to 15 minutes to complete?</p><p>sorry if there's errors and stuff, i made the entire thing in one night and im very sleep deprived&nbsp;</p><p>if there's any major errors or bugs lmk i'll try to get to fixing that asap okay dokay</p><p><strong>credits</strong></p><p>art and music: me</p><p>plugins: galv and that YEP message core thingy</p><p><strong>and btw.....!</strong></p><p>if you wanna follow along the development of the main game that this one is based off of, come&nbsp;<a href=\"https://discord.gg/MGzVp9JSsK\" target=\"_blank\" rel=\"nofollow noopener\">join my discord server!!</a></p>",
                             DeveloperId = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             InstallInstruction = "",
@@ -2213,7 +2213,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("7a03afa3-2635-43bd-a58c-daeb80d3cef7"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/BloodmallImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4592),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5815),
                             Description = "<p><em>Warning: Contains blood, violence, strong language and disturbing imagery.</em></p><h1><em>Dated November 4th, 1988.</em></h1><h2>MASSACRE AT DAYTON COUNTY MALL! HUNDREDS DEAD, OVER 350 INJURED.</h2><h2>EXPERTS ARE STILL INVESTIGATING WHAT EXACTLY HAPPENED, BUT IT APPEARS A... DINOSAUR?... MATERIALISED IN THE MALL AND WENT FERAL...</h2><p><em>This is a breaking story - more information soon.</em></p><p><strong>Special thanks:</strong></p><ul><li>3D Art assistance - Anders Brynildsen</li></ul><p><strong>Voicing:</strong></p><ul><li>Han Davies</li><li>Ned Sanders</li><li>Will Aryitey</li><li>Figerox Studios</li></ul><p>This game was heavily inspired by the legend,&nbsp;Puppet Combo.</p>",
                             DeveloperId = new Guid("34670beb-a794-4419-adf8-0465eea22a78"),
                             InstallInstruction = "",
@@ -2236,7 +2236,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/ThunderheadImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4599),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5821),
                             Description = "<p><strong><em>On Friday night, just past midnight, the people of Thunderhead screamed in terror.</em></strong></p><p><strong><em>Their end began four days earlier, when a strange hill appeared at the edge of the cemetery.</em></strong></p><p><strong><em>Maybe it began even further back - but our story begins the next morning, when the first light touched a town stained by horror.</em></strong></p><p><strong><em>What happened in Thunderhead was first told by the man who delivers milk every Friday to towns too quiet to matter.</em></strong></p><h2>FEATURES</h2><ul><li><strong><em>A&nbsp;Milk-Delivery Western Horror!</em></strong></li><li><em><strong>Driving!&nbsp;</strong></em>Take the wheel of your rusty old van.</li><li><strong><em>Delivering!</em></strong>&nbsp;Bring milk and orange juice to a tiny, forgotten Western town.<em><br /></em></li><li><strong><em>Fixing!</em></strong>&nbsp;The van's temperamental&mdash;sometimes it needs a whack with a wrench.</li><li><strong><em>Mystery!&nbsp;</em></strong>The town is empty. Where did everyone go? Why are there crosses everywhere? Who left behind those torn clothes? What happened here?</li><li><strong><em>Spectacle!</em></strong>&nbsp;Phenomenal music by&nbsp;<a href=\"https://voltzsupreme.itch.io/\">Voltz Supreme</a>, immersive sound design and an epic, cinematic finale.</li><li><strong><em>Retro graphics!</em></strong>&nbsp;Soak in the PSX-style aesthetic - on the prairie!</li></ul><h2>SOUNDTRACK</h2><p><a href=\"https://open.spotify.com/playlist/4ZiuqrgseeMUVCzz7oZI1D?si=42f92c241bdb4c7f&amp;nd=1&amp;dlsi=acab8f98a54b45e5\" rel=\"nofollow noopener\">You can listen to the soundtrack here.</a></p><h2>FOUND A BUG?&nbsp;</h2><p>Please let me know in the comments.&nbsp;</p><h2>FOLLOW ME</h2><table><tbody><tr><td><a href=\"https://bsky.app/profile/roawrvideostore.bsky.social\" rel=\"nofollow noopener\">Bluesky</a></td><td><a href=\"https://www.instagram.com/roawrvideostore/\" rel=\"nofollow noopener\">Instagram</a></td><td><a href=\"https://www.threads.net/@roawrvideostore\" rel=\"nofollow noopener\">Threads</a></td></tr></tbody></table>",
                             DeveloperId = new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
                             InstallInstruction = "",
@@ -2259,7 +2259,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("77c89b32-78e3-4fea-915f-4b8df819ffa2"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/EvaluationImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4605),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5882),
                             Description = "<h1>Evaluation</h1><p>A short PS1-inspired third person adventure game about growing up&nbsp;and finding your place in reality.<br />The game focuses on rewarding exploration, features NPCs and platforming elements, all supported by the narrative and a strong eerie atmosphere.</p><p>Evaluation is my first game&nbsp;project. It was a wild ride, way longer to finalize than I expected, but I learnt so much along the way, and hope to do more in the future!</p><h1>Controls</h1><p>WASD/Arrow keys - Move<br />MOUSE - Look around /&nbsp;click advances dialogue<br />SPACE - Jump<br />E - Talk/Interact<br />ESCAPE - Skip Cutscene<br />R - Respawn (if you get stuck)</p><h1>Credits</h1><p>I crafted as much as I could do from scratch, however the following external assets were of invaluable help on pulling off the game as I imagined it:<br /><a href=\"https://hutonggames.com/\" rel=\"nofollow noopener\">Playmaker - Huton Games</a><br /><a href=\"https://www.w3schools.com/\" rel=\"nofollow noopener\">PSX Effects - Triple Axis</a><br /><a href=\"https://assetstore.unity.com/packages/tools/physics/character-movement-fundamentals-144966\" rel=\"nofollow noopener\">Character Movement Fundamentals - Jan OTT</a><br /><a href=\"https://assetstore.unity.com/packages/3d/animations/basic-motions-free-154271\" rel=\"nofollow noopener\">Basic Motions - Kevin Iglesias</a></p><h1>More</h1><p>Find me on&nbsp;<a href=\"https://www.instagram.com/vivivivitotototo/\" rel=\"nofollow noopener\">Instagram</a>,&nbsp;<a href=\"https://twitter.com/vtrmrl\" rel=\"nofollow noopener\">Twitter</a>,&nbsp;<a href=\"https://soundcloud.com/zerocrossingpoint\" rel=\"nofollow noopener\">Soundcloud</a></p><p>Let me know if you find any bugs!</p><p><br /><br /></p>",
                             DeveloperId = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             InstallInstruction = "",
@@ -2282,7 +2282,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("bca8721b-c323-44a1-afcf-876e206ab035"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/DominoidImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4611),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5889),
                             Description = "<p><strong>DOMINOID&nbsp;</strong>is an arcade-styled&nbsp;puzzle game about stacking dominids!&nbsp;<strong>CLEAR&nbsp;</strong>pieces by forming&nbsp;<strong>RINGS&nbsp;</strong>with matching tiles. Create huge&nbsp;<strong>COMBOS&nbsp;</strong>by stacking dominids effectively. Collect&nbsp;<strong>BADGES&nbsp;</strong>for major accomplishments.&nbsp;Earn&nbsp;<strong>EXP&nbsp;</strong>by clearing dominids to go towards a&nbsp;<strong>LEVEL UP</strong>. Can you get all the way to&nbsp;<strong>LEVEL 10</strong>?</p><p>The game features gamepad support as well as remappable controls for both keyboard and gamepad. There's support for custom music packs, sound effect packs, background sets, and pieces. Multiple sets of backgrounds and pieces come included with the game. The game also comes with an&nbsp;instruction book and wallpaper bundle.</p><p><img src=\"https://img.itch.zone/aW1nLzIxNDg1MzM4LnBuZw==/original/TVLouX.png\" alt=\"\" /></p><p>Additional art by : Julian</p><p>Audio by : Dim&nbsp;Widdy</p>",
                             DeveloperId = new Guid("34670beb-a794-4419-adf8-0465eea22a78"),
                             InstallInstruction = "",
@@ -2305,7 +2305,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("2d740ce2-a803-4b32-8df8-ab5139203742"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/DiggingHourImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4618),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5895),
                             Description = "<h3>ABOUT:</h3><p>A short, atmospheric horror experience where you and a friend are tasked with digging up two bodies,&nbsp;<strong>but something isn&rsquo;t right.</strong></p><h3>MORE INFO:</h3><p>~10 minutes</p><p>In game font: \"November\"</p><h3>CONTROLS:</h3><table><tbody><tr><td>Movement</td><td>W, A,&nbsp;S, D</td></tr><tr><td>Sprint</td><td>Shift</td></tr><tr><td>Interaction</td><td>E</td></tr><tr><td>Attack</td><td>LMB</td></tr></tbody></table><h3>WARNING:</h3><p>The game features mild gore, loud sound effects and everything that comes with horror genre. Player discretion is advised.</p><h3>NOTE:</h3><p>Game has a bit of comedy in it and I hope that I did good job with implementing it!</p><p>Don't harass me over voice acting :D , Neither me, or my friend are native English speakers, but we gave it our best and had a lot of fun doing it!</p><p>Most of the&nbsp;<strong>models&nbsp;</strong>(4 that aren't are aptly credited),&nbsp;<strong>music&nbsp;</strong>and&nbsp;<strong>scripts</strong>&nbsp;in&nbsp;the game are made by me, textures are from&nbsp;<a href=\"https://ambientcg.com/\" target=\"_blank\" rel=\"nofollow noopener\">AmbeintCG</a>.</p><p>If you run into any bugs or issues, feel free to reach out in the comments, my&nbsp;<a href=\"https://www.youtube.com/@VukDobric\" target=\"_blank\" rel=\"nofollow noopener\">YouTube</a>&nbsp;channel or by e-mail at&nbsp;vukkdobric@gmail.com</p><h3>UPDATE:</h3><p>CaseOh, being an absolute legend that he is, played another one of my games on his stream, this is snippet of the live where he plays this game, thanks CaseOh!</p>",
                             DeveloperId = new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
                             InstallInstruction = "",
@@ -2328,7 +2328,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("2d740ce2-a803-4b32-8df8-ab5139203742"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/DispatchedImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4625),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5901),
                             Description = "<h1><em>Dispatched!&nbsp;</em></h1><h3>\"The Hungry Hungry Hippos of late-stage capitalism.\"</h3><p>From the same idiots who made 'Plane Food Simulator':&nbsp;<a href=\"https://sheepandram.itch.io/pfs2021\">https://sheepandram.itch.io/pfs2021</a></p><p><strong>Platform =</strong>&nbsp;PC and Android App&nbsp;Store<br /><strong><br /></strong><strong>Full Description:</strong></p><p>In&nbsp;<em>Dispatched!</em>&nbsp;the aim of the game is to mail as many parcels as you can within the allocated time! Be careful you don't confuse the priority boxes, and make sure you bring an empty bottle.</p><p><strong>PC Controls:<br /></strong>Begin Game: Enter<br />Dispatch Parcel (Employee Left): Q<br />Dispatch Parcel (Employee Right): P<br /><strong><br /></strong><strong>Android/Phone Controls:</strong><br />Start Game = Tap Screen<br />Dispatch Parcel&nbsp;(Employee Left) = Tap Screen (Left hand side)<br />Dispatch Parcel (Employee Right) = Tap Screen (Right hand side)<br /><strong><br /></strong></p><p><strong>Executive Imagineer Enhancement Architect</strong><br />Chris Ramsden&nbsp;<a href=\"https://chris-ramsden.neocities.org/\" rel=\"nofollow noopener\">Neocities</a><br /><strong><br /></strong><strong>Executive Code Architect and Fulfilment Developer&nbsp;</strong><br />Sheps&nbsp;<a href=\"https://linktr.ee/thesheps\" rel=\"nofollow noopener\">https://linktr.ee/thesheps</a></p><p><strong>Executive Experience Enhancement Officer&nbsp;</strong><br />Max Blake</p><p><strong>Soundtrack Specialist</strong><br />The Gasman <a href=\"https://thegasman.bandcamp.com/music\" rel=\"nofollow noopener\">https://thegasman.bandcamp.com/music</a></p><p><strong>Special Thanks&nbsp;</strong>:&nbsp;<a href=\"https://freetousesounds.bandcamp.com/\" rel=\"nofollow noopener\">https://freetousesounds.bandcamp.com/</a></p><p><strong>All essential workers and distribution staff. Thanks for halting the societal collapse of 2020/21!</strong></p>",
                             DeveloperId = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             InstallInstruction = "",
@@ -2351,7 +2351,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("2d740ce2-a803-4b32-8df8-ab5139203742"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/SecurityBoothImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4631),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5910),
                             Description = "<p><strong>Security Booth is a VHS PSX Horror Game.&nbsp;</strong></p><p>Based in 1996, you are working for a company known as Nova Nexus, you play as a security guard.<br />Your job role is to make sure that only the right authorized personnel are getting into the facility.&nbsp;</p><p>The game has a total of&nbsp;<strong>2 endings.<br /></strong></p><p><strong>Average Game Time - 10 Minutes&nbsp;</strong></p><p><strong>Game Controls&nbsp;</strong></p><table><tbody><tr><td>Walk</td><td>Look Around</td><td>Interact</td><td>FlashLight</td></tr><tr><td>W,A,S,D</td><td>Mouse</td><td>E</td><td>F</td></tr></tbody></table><p><strong>Menu/UI Controls</strong></p><table><tbody><tr><td>Select Option</td><td>Go To Option Right/Next Page</td><td>Go To Option Left/Previous Page</td><td>Go To Option Up Or Down</td></tr><tr><td>E</td><td>D</td><td>A</td><td>W - UP<br />S - Down</td></tr></tbody></table><p>*The Mouse will never show up in game*</p><p>--------------------------------------------------------------------</p><p>Want more?<br />Security Booth:&nbsp;Director's Cut is OUT NOW!<br />Check out the Steam store or grab it here on Itch.io.</p><p>Follow my twitter for future games that I am making.<br /><a href=\"https://twitter.com/KyleHorwood\" rel=\"nofollow noopener\">https://twitter.com/KyleHorwood</a></p>",
                             DeveloperId = new Guid("34670beb-a794-4419-adf8-0465eea22a78"),
                             InstallInstruction = "",
@@ -2374,7 +2374,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("89a4e6d2-2cfe-4474-9b96-6d3595ad4705"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/AtlyssImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4637),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5916),
                             Description = "<h2>``ATLYSS``</h2><h4>SOLO DEVELOPMENT ACTION ORPG PROJECT</h4><p><em><strong>A work in progress / under development game made by Kiseff</strong></em><em><br /></em></p><h4>Core Game Info</h4><ul><li>\"ATLYSS\" is a (Single-player + Multi-player)&nbsp;<strong>A</strong>ction&nbsp;<strong>O</strong>nline&nbsp;<strong>R</strong>ole&nbsp;<strong>P</strong>laying&nbsp;<strong>G</strong>ame</li><li>Enriched, instanced maps to discover</li><li>Equipment, Trade Items and Consumables to collect</li><li>Many Character Customization options with&nbsp;<strong>5 races</strong>&nbsp;to choose from</li><li>3 Primary Classes to become at lv-10 (<strong>Fighter</strong>,&nbsp;<strong>Bandit</strong>,&nbsp;<strong>Mystic</strong>)</li><li>Skill load-out system for making builds to suit your game-play style</li><li>Character stat progression / leveling systems / attributes</li><li>7 Weapon types to use in combat (Katars, Heavy Melee, Scepters, and more)</li><li>Repeatable Questing / Single Quests to complete</li><li><strong>Aesthetics inspired by 6th Generation video games</strong></li></ul><h4>Media / Promotion</h4><p><a href=\"https://www.patreon.com/Kiseff?fan_landing=true\" target=\"_blank\" rel=\"nofollow noopener\"><strong>If you'd like to support my game-dev work and other assorted projects, you can do so via my Patreon!</strong></a></p><p>For more instant information / updates / development progress, you can:</p><p><a href=\"https://twitter.com/kis_soft\" target=\"_blank\" rel=\"nofollow noopener\"><strong>Follow @kis_soft on Twitter</strong></a><strong><br /></strong></p><p><strong><a href=\"https://discord.gg/vScP5yUbtk\" target=\"_blank\" rel=\"nofollow noopener\">Join the KisSoft Underground Server to receive progression updates and notes, including announcements first hand! Community links are provided in the Discord's promotional links channel.</a></strong></p>",
                             DeveloperId = new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
                             InstallInstruction = "",
@@ -2397,7 +2397,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("5e1afbc9-31dd-417d-ae49-baa45d6d5797"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/TomatoImage.jpg",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4643),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5922),
                             Description = "<h4>\"Welcome to my game, buddy!\"</h4><p>Mr. TomatoS is glad to see you! He waited a long time for someone to visit him! Feel like at home and get ready for endless f̶u̶n̶ !</p><p>Mr. TomatoS needs YOUR help! looks like he had not eaten for ages! Of course not, he has no hands!</p><p>Feed Mr. Tomatos with big variety of food, combine it with blender, and use different items to help you with this task!</p><h4>\"But why should I do this?\"</h4><p>Glad you asked! By helping him you can earn a lot of points to spend them in the shop later! Everyone loves to earn points, right?</p><h4>\"Why am i always d̶y̶i̶n̶g̶ losing?\"</h4><p>Glad you asked, my dear friend! j̶u̶s̶t̶ d̶o̶n̶t̶ d̶o̶w̶n̶l̶o̶a̶d̶ i̶t̶ you need a strategy to finish the game! without a strategy, everything can go wrong.</p><p>Manage your resources correctly to s̶t̶a̶y̶ a̶l̶i̶v̶e̶ win!)</p><p>unless you want to make Mr. TomatoS angry.</p><p>This game is made in the style of old web flash games, what sets it apart from other new games!</p><p>Feel the atmosphere of old flash games!</p><p>You can complete the game only ONCE, that means that you won't have a second chance. And how you will complete YOUR game - depends only on YOU. Try your best. Good luck.</p><p>Main theme by:&nbsp;<strong>Cnupoc (</strong><span title=\"https://freesound.org/people/Cnupoc/\"><a href=\"https://freesound.org/people/Cnupoc/\" rel=\"nofollow noopener\">https://freesound.org/people/Cnupoc/</a></span><strong>)</strong></p><p>Game theme by:&nbsp;<strong>Sirkoto51 (</strong><span title=\"https://freesound.org/people/Sirkoto51/\"><a href=\"https://freesound.org/people/Sirkoto51/\" rel=\"nofollow noopener\">https://freesound.org/people/Sirkoto51/</a></span><strong>)</strong></p><p><strong>Sirkoto51 soundcloud :&nbsp;</strong>&nbsp;<span title=\"https://soundcloud.com/sirkoto51\"><a href=\"https://soundcloud.com/sirkoto51\" rel=\"nofollow noopener\">https://soundcloud.com/sirkoto51</a></span></p><p>Some sounds by:&nbsp;<strong>InspectorJ(</strong>Jonathan Shaw<strong>) (</strong><span title=\"https://freesound.org/people/InspectorJ/\"><a href=\"https://freesound.org/people/InspectorJ/\" rel=\"nofollow noopener\">https://freesound.org/people/InspectorJ/</a></span><strong>)</strong></p><p><strong>InspectorJ patreon:&nbsp;</strong><span title=\"https://www.patreon.com/JonathanShaw\"><a href=\"https://www.patreon.com/JonathanShaw\" rel=\"nofollow noopener\">https://www.patreon.com/JonathanShaw</a></span></p><h3>MrTomatoS</h3><p>- standard version of the game.</p><h3>MrTomatoS++</h3><h4>\" Oh oh, it looks like someone messed up the game code!&nbsp;\"</h4><p>- Now you can reset your game progress after completion to get more endings</p><p>- You can download this version even if you already played in standart version, and completed it</p>",
                             DeveloperId = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             InstallInstruction = "",
@@ -2420,7 +2420,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/LeftoversImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4688),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5928),
                             Description = "<p>Your mum is cooking dinner. Saddened by the amount of leftover and not wanting it to go to waste, she tasked you the job to give it all away to your neighbours.</p><p>You, who was just minding your own business watching cartoons. You who your mum have told many times to not talk to strangers. But yet, you have no right to deny the request.&nbsp;</p><p>Armed with limited skills of communication, meet all the quirky and creepy neighbours to finish the task before your mum finish you first...literally.</p><p>Created for SCREAM JAM 2021&nbsp;by:</p><ul><li>Realmpact - Programmer</li><li>Skekarin - Artist, Writer and Games Designer</li></ul><p><strong>Disclaimer</strong></p><p>The WebGL version of the game is meant for users who are not using a Windows machine. For the best experience, we would recommend downloading the Windows version instead.</p><p>FAQ</p><ul><li>Help! I cannot show the leftovers!<ul><li>Press Q during the prompt to show leftovers&nbsp;to continue the conversation as if you showed it.</li></ul></li></ul>",
                             DeveloperId = new Guid("34670beb-a794-4419-adf8-0465eea22a78"),
                             InstallInstruction = "",
@@ -2443,7 +2443,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                             CategoryId = new Guid("dfeeb47a-7e69-4927-a65b-b803a8befe9f"),
                             CensorStatus = "Approved",
                             CoverImage = "https://indiegamezone.blob.core.windows.net/indiegamezone/TheStationImage.png",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 43, DateTimeKind.Local).AddTicks(4694),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 194, DateTimeKind.Local).AddTicks(5934),
                             Description = "<p>After a long day, you take the subway home. The train is late, but everything seems normal&mdash;until the doors close. Among the passengers, one man starts acting strange... There's nowhere to run.</p><h3>Features:</h3><p>Average playtime: 5&ndash;10 minutes</p><p>Four original endings + secret ending</p><p>PSX retro style</p><p>Original story</p><p><strong>Streamer-YouTuber friendly: non-copyright music</strong></p><p>Completely translated to Portuguese, Spanish, Turkish, Polish, Russian, German, Korean, Italian and French!</p><h3>Controls:</h3><p>Movement: WASD</p><p>Run: Shift</p><p>Interact: E</p><p>Next dialogue/Move objects: Left mouse button</p><p>Stand up: Space</p><h3>About:</h3><p>DISCLAIMER: This game displays your pc's name so if you don't want your real name to be displayed you should change your pc's name or just don't play the game on stream.</p><p>If you liked this game, you should check out:</p><p><a href=\"https://riversoftware.itch.io/on-my-way-home\">On My Way Home by RiverSoftware</a></p><p><a href=\"https://riversoftware.itch.io/neighbournextdoor\">Neighbour Next Door by RiverSoftware</a></p><p><a href=\"https://riversoftware.itch.io/tv-night\">TV Night by RiverSoftware</a></p><h3>Known Issues:</h3><p>Gameplay limited to 100fps due to a bug with player controller</p><p>Some lights may not work if you select the low graphics option</p>",
                             DeveloperId = new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
                             InstallInstruction = "",
@@ -2585,6 +2585,53 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
+                });
+
+            modelBuilder.Entity("IndieGameZone.Domain.Entities.Orders", b =>
+                {
+                    b.Property<long>("OrderCode")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("OrderCode"));
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<Guid?>("CommercialPackageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateOnly?>("CommercialRegistrationEndDate")
+                        .HasColumnType("date");
+
+                    b.Property<DateOnly?>("CommercialRegistrationStartDate")
+                        .HasColumnType("date");
+
+                    b.Property<Guid?>("CouponId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid?>("GameId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("OrderCode");
+
+                    b.HasIndex("CommercialPackageId");
+
+                    b.HasIndex("CouponId")
+                        .IsUnique()
+                        .HasFilter("[CouponId] IS NOT NULL");
+
+                    b.HasIndex("GameId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Platforms", b =>
@@ -2975,27 +3022,27 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("c85bcc68-e950-4422-a784-7fa9448d1014"),
+                            Id = new Guid("44eb3875-4501-49f9-af5d-caab5f760214"),
                             Comment = "This is the best game I have ever seen",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 51, DateTimeKind.Local).AddTicks(7376),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 202, DateTimeKind.Local).AddTicks(6011),
                             GameId = new Guid("16565861-4a29-40e7-8efa-1594a82e67e8"),
                             Rating = 5.0,
                             UserId = new Guid("23879117-e09e-40f1-b78f-1493d81baf49")
                         },
                         new
                         {
-                            Id = new Guid("1c71facc-ae54-485d-8cfd-b6bed6fd382d"),
+                            Id = new Guid("22ba5ff3-f981-40b7-a866-5214f656d191"),
                             Comment = "This game gives me a cozy vibe",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 51, DateTimeKind.Local).AddTicks(7387),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 202, DateTimeKind.Local).AddTicks(6017),
                             GameId = new Guid("16565861-4a29-40e7-8efa-1594a82e67e8"),
                             Rating = 4.0,
                             UserId = new Guid("91b106fa-7b95-480f-a12a-0e0303454332")
                         },
                         new
                         {
-                            Id = new Guid("7c5f8100-680a-4567-9b18-95ee4f8b99e0"),
+                            Id = new Guid("30c3fead-1b24-497d-a1bb-41602d654fdb"),
                             Comment = "This game is good, but it has some bugs",
-                            CreatedAt = new DateTime(2025, 7, 24, 1, 12, 20, 51, DateTimeKind.Local).AddTicks(7390),
+                            CreatedAt = new DateTime(2025, 7, 28, 2, 15, 3, 202, DateTimeKind.Local).AddTicks(6020),
                             GameId = new Guid("16565861-4a29-40e7-8efa-1594a82e67e8"),
                             Rating = 3.0,
                             UserId = new Guid("537f05fd-120c-40b0-b2ec-639756f866ab")
@@ -3469,18 +3516,6 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("float");
 
-                    b.Property<Guid?>("CommercialPackageId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateOnly?>("CommercialRegistrationEndDate")
-                        .HasColumnType("date");
-
-                    b.Property<DateOnly?>("CommercialRegistrationStartDate")
-                        .HasColumnType("date");
-
-                    b.Property<Guid?>("CouponId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -3491,7 +3526,7 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Property<Guid?>("GameId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<long>("OrderCode")
+                    b.Property<long?>("OrderCode")
                         .HasColumnType("bigint");
 
                     b.Property<string>("PaymentMethod")
@@ -3517,16 +3552,11 @@ namespace IndieGameZone.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CommercialPackageId");
-
-                    b.HasIndex("CouponId")
-                        .IsUnique()
-                        .HasFilter("[CouponId] IS NOT NULL");
-
                     b.HasIndex("GameId");
 
                     b.HasIndex("OrderCode")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[OrderCode] IS NOT NULL");
 
                     b.HasIndex("PurchaseUserId");
 
@@ -3792,17 +3822,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("e5d8947f-6794-42b6-ba67-201f366128b8"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "643e74e5-90f5-4af2-bb2a-2f05711e4903",
+                            ConcurrencyStamp = "ae155b2e-ab62-4e50-9354-7629175f5e44",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 7, 24, 1, 12, 20, 63, DateTimeKind.Local).AddTicks(85),
+                            JoinedDate = new DateTime(2025, 7, 28, 2, 15, 3, 215, DateTimeKind.Local).AddTicks(1563),
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAENlBWhvu/+uPTzdnCcJSFUoX1BTy46wI8a/HdeEH2YxhKWfCYaAZdpHl45VAl9g0KA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEF3aailGFHMFOuIMJ2BIFy/4xmWYhRhvQeYY2/6P0S5Yhg09udw0ksquPvLjs0h92A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "acea287c-2cd5-4760-a27e-ffb1bb2bef6b",
+                            SecurityStamp = "8badf6dd-b6cb-44cf-947a-2710f35704c6",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         },
@@ -3810,17 +3840,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("3fe77296-fdb3-4d71-8b99-ef8380c32037"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4a95d2d2-ba67-4102-b5f3-c641be6a6102",
+                            ConcurrencyStamp = "8b84317f-1201-43eb-b7d8-5f0cdcd9621f",
                             Email = "moderator@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 7, 24, 1, 12, 20, 132, DateTimeKind.Local).AddTicks(7610),
+                            JoinedDate = new DateTime(2025, 7, 28, 2, 15, 3, 270, DateTimeKind.Local).AddTicks(7555),
                             LockoutEnabled = true,
                             NormalizedEmail = "MODERATOR@GMAIL.COM",
                             NormalizedUserName = "MODERATOR",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGzMK+vDKHBr2yPz/vrVJ/Z3ruyih54hJpcouph7+rQYnR9GgBOjhfNI8tDije2Siw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMhex9YW1X34F3gR50RgrKx9b9SN6BAMIbFSNvZySkEP6B9bEE55suMwcMEOP25Afw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f246eaf4-de5b-47ce-a9cb-efedaeaf8497",
+                            SecurityStamp = "d76b3f0d-1907-4562-863d-3922dd9c1b14",
                             TwoFactorEnabled = false,
                             UserName = "moderator"
                         },
@@ -3828,17 +3858,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("23879117-e09e-40f1-b78f-1493d81baf49"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e43726f2-8625-46dd-b775-f2a14d459836",
+                            ConcurrencyStamp = "0e8f4a2e-f6c7-4f71-bfac-72f67607bc9f",
                             Email = "player1@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 7, 24, 1, 12, 20, 198, DateTimeKind.Local).AddTicks(3581),
+                            JoinedDate = new DateTime(2025, 7, 28, 2, 15, 3, 334, DateTimeKind.Local).AddTicks(3684),
                             LockoutEnabled = true,
                             NormalizedEmail = "PLAYER1@GMAIL.COM",
                             NormalizedUserName = "PLAYER1",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBrgYaH2im6Gz2t9WeHyEvHHcAuw+243UcAbKz0/0tv9s0S+qixfMUl7hO84GnS0pw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPccnAU0FgIdE5fGlXBNtctrZm71TQx3rh91NXlyqORBw86axmUh1kgkmTQDYMw5MQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "aff9606a-6142-4387-ba6b-1d55a6f5c9d2",
+                            SecurityStamp = "03b9d052-4d22-4047-8645-ca8b3470d0bf",
                             TwoFactorEnabled = false,
                             UserName = "player1"
                         },
@@ -3846,17 +3876,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("91b106fa-7b95-480f-a12a-0e0303454332"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fc81d59a-5b7b-40e8-a374-1f8776d51883",
+                            ConcurrencyStamp = "6ba1b29a-1350-4f5b-90fd-89231ae1f102",
                             Email = "player2@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 7, 24, 1, 12, 20, 257, DateTimeKind.Local).AddTicks(8139),
+                            JoinedDate = new DateTime(2025, 7, 28, 2, 15, 3, 393, DateTimeKind.Local).AddTicks(5539),
                             LockoutEnabled = true,
                             NormalizedEmail = "PLAYER2@GMAIL.COM",
                             NormalizedUserName = "PLAYER2",
-                            PasswordHash = "AQAAAAIAAYagAAAAECY9kqYXPRyGITjI45wfysMGj281gNiMND/fdCUogET78QItyukNDKj2iu52kxgThg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPgxI14lru+xcG3PgmRPHLOUBYc8oQiHYlT1U3TRVv8htNDpGH4AQnXp3+nGLssLag==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "20f2dfc6-82bd-462a-a558-2715e15393e3",
+                            SecurityStamp = "ba22c248-cf7e-45a4-8381-bf4b0ec00cc0",
                             TwoFactorEnabled = false,
                             UserName = "player2"
                         },
@@ -3864,17 +3894,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("537f05fd-120c-40b0-b2ec-639756f866ab"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5e769c60-0ff5-4d4b-8171-63e03ed1c26f",
+                            ConcurrencyStamp = "6a4f3640-c83f-4c2f-802d-a1af56ca1c0c",
                             Email = "player3@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 7, 24, 1, 12, 20, 320, DateTimeKind.Local).AddTicks(2440),
+                            JoinedDate = new DateTime(2025, 7, 28, 2, 15, 3, 452, DateTimeKind.Local).AddTicks(2935),
                             LockoutEnabled = true,
                             NormalizedEmail = "PLAYER3@GMAIL.COM",
                             NormalizedUserName = "PLAYER3",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBJS/MGF64S9buBBPEdXUV7cUWWWHyKSeGpc8t207/tnsNAgISj7QZ5ND9EALRQb/g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPPd+QG0KWbnYvjU5EOh5o/NvfJsbF09kjXi27xyLG2CKOAU+1Yk7stw98i5p4L67w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b4068b0b-2f3a-4bd3-973d-ef001d026342",
+                            SecurityStamp = "38c929ea-76f5-4810-808b-0951d1d52ca1",
                             TwoFactorEnabled = false,
                             UserName = "player3"
                         },
@@ -3882,17 +3912,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("293191b7-f7b2-4f28-8857-5afa96866a2f"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4c0dbd7d-cab4-4e0c-899b-3f4131ba1960",
+                            ConcurrencyStamp = "c28aabb4-cb74-4265-a1cc-a49cc543e460",
                             Email = "developer1@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 7, 24, 1, 12, 20, 383, DateTimeKind.Local).AddTicks(9093),
+                            JoinedDate = new DateTime(2025, 7, 28, 2, 15, 3, 510, DateTimeKind.Local).AddTicks(6082),
                             LockoutEnabled = true,
                             NormalizedEmail = "DEVELOPER1@GMAIL.COM",
                             NormalizedUserName = "DEVELOPER1",
-                            PasswordHash = "AQAAAAIAAYagAAAAELfKdeshvX+c8Z9nzvqs8Aeo2ScwOg3XzQcNUIh8qQMZjBpwTnCy9dNUojJihAyzoA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEGi85uP1WB38AriLice6esEpB1ro4uz0EfMP/GmXHQFcWL0qg5BVQcd1lGdLipLtvQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "c7051859-b6ca-4b3f-93aa-37aa315a3bfc",
+                            SecurityStamp = "d33d3efe-4f23-4aa3-891b-acdc3ae61f9c",
                             TwoFactorEnabled = false,
                             UserName = "developer1"
                         },
@@ -3900,17 +3930,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("34670beb-a794-4419-adf8-0465eea22a78"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "5ab42218-ca6f-4eea-8955-9ec0d9148007",
+                            ConcurrencyStamp = "89cca560-38cf-4e3c-a3ab-5fb1ba6db513",
                             Email = "developer2@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 7, 24, 1, 12, 20, 441, DateTimeKind.Local).AddTicks(7022),
+                            JoinedDate = new DateTime(2025, 7, 28, 2, 15, 3, 572, DateTimeKind.Local).AddTicks(1527),
                             LockoutEnabled = true,
                             NormalizedEmail = "DEVELOPER2@GMAIL.COM",
                             NormalizedUserName = "DEVELOPER2",
-                            PasswordHash = "AQAAAAIAAYagAAAAEJLbvHbhVJreYN28tnhS9ow+j/2316WiBVvxkkZv3hwcFJPvAaNDNME8AKqYwSOnXw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEE1l0N1XpVNmR5bFEPOoMi2AkayDAeIJ1GBz9bdnesM15RsGLP6PUDTcr69l53LA9g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2af4eec0-aebf-428e-8125-047f2e2e8eda",
+                            SecurityStamp = "3ea9eb3d-d1f0-4042-a820-c15146c840e9",
                             TwoFactorEnabled = false,
                             UserName = "developer2"
                         },
@@ -3918,17 +3948,17 @@ namespace IndieGameZone.Infrastructure.Migrations
                         {
                             Id = new Guid("c25dc5ef-4e98-421e-90d3-7eb76ba269fe"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "58626134-f4d0-4cb2-8b79-17e8223d6300",
+                            ConcurrencyStamp = "f521e327-2b84-43c9-873d-a485eb2f9fb5",
                             Email = "developer3@gmail.com",
                             EmailConfirmed = true,
                             IsActive = true,
-                            JoinedDate = new DateTime(2025, 7, 24, 1, 12, 20, 501, DateTimeKind.Local).AddTicks(4933),
+                            JoinedDate = new DateTime(2025, 7, 28, 2, 15, 3, 632, DateTimeKind.Local).AddTicks(614),
                             LockoutEnabled = true,
                             NormalizedEmail = "DEVELOPER3@GMAIL.COM",
                             NormalizedUserName = "DEVELOPER3",
-                            PasswordHash = "AQAAAAIAAYagAAAAENGmPosFY2WCvGJVpN/QSLMH6wRRmM8O4wgJl9ty4NzkavcW/K8cxjuhnR3ZIIOMFg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDMqTZW72T9LiuScjBhIOCp5mwlR2TfMmcryAoeaqUYJlo1dN1AjoK1pKGGD7a64HA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "873e76c9-5c3b-4fc5-ab77-7cd5d929d4f4",
+                            SecurityStamp = "f930f839-d778-4b30-9dd6-79aeabd76e30",
                             TwoFactorEnabled = false,
                             UserName = "developer3"
                         });
@@ -4361,6 +4391,38 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("IndieGameZone.Domain.Entities.Orders", b =>
+                {
+                    b.HasOne("IndieGameZone.Domain.Entities.CommercialPackages", "CommercialPackage")
+                        .WithMany("Orders")
+                        .HasForeignKey("CommercialPackageId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("IndieGameZone.Domain.Entities.Coupons", "Coupon")
+                        .WithOne("Order")
+                        .HasForeignKey("IndieGameZone.Domain.Entities.Orders", "CouponId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
+                        .WithMany("Orders")
+                        .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("IndieGameZone.Domain.Entities.Users", "User")
+                        .WithMany("Orders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("CommercialPackage");
+
+                    b.Navigation("Coupon");
+
+                    b.Navigation("Game");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("IndieGameZone.Domain.Entities.PostComments", b =>
                 {
                     b.HasOne("IndieGameZone.Domain.Entities.Posts", "Post")
@@ -4513,19 +4575,14 @@ namespace IndieGameZone.Infrastructure.Migrations
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Transactions", b =>
                 {
-                    b.HasOne("IndieGameZone.Domain.Entities.CommercialPackages", "CommercialPackage")
-                        .WithMany("Transactions")
-                        .HasForeignKey("CommercialPackageId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("IndieGameZone.Domain.Entities.Coupons", "Coupon")
-                        .WithOne("Transaction")
-                        .HasForeignKey("IndieGameZone.Domain.Entities.Transactions", "CouponId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("IndieGameZone.Domain.Entities.Games", "Game")
                         .WithMany("Transactions")
                         .HasForeignKey("GameId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("IndieGameZone.Domain.Entities.Orders", "Order")
+                        .WithOne("Transaction")
+                        .HasForeignKey("IndieGameZone.Domain.Entities.Transactions", "OrderCode")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("IndieGameZone.Domain.Entities.Users", "PurchaseUser")
@@ -4540,11 +4597,9 @@ namespace IndieGameZone.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("CommercialPackage");
-
-                    b.Navigation("Coupon");
-
                     b.Navigation("Game");
+
+                    b.Navigation("Order");
 
                     b.Navigation("PurchaseUser");
 
@@ -4693,12 +4748,13 @@ namespace IndieGameZone.Infrastructure.Migrations
                 {
                     b.Navigation("CommercialRegistrations");
 
-                    b.Navigation("Transactions");
+                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Coupons", b =>
                 {
-                    b.Navigation("Transaction");
+                    b.Navigation("Order")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Games", b =>
@@ -4723,6 +4779,8 @@ namespace IndieGameZone.Infrastructure.Migrations
 
                     b.Navigation("Libraries");
 
+                    b.Navigation("Orders");
+
                     b.Navigation("Posts");
 
                     b.Navigation("Reports");
@@ -4737,6 +4795,11 @@ namespace IndieGameZone.Infrastructure.Migrations
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Languages", b =>
                 {
                     b.Navigation("GameLanguages");
+                });
+
+            modelBuilder.Entity("IndieGameZone.Domain.Entities.Orders", b =>
+                {
+                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("IndieGameZone.Domain.Entities.Platforms", b =>
@@ -4797,6 +4860,8 @@ namespace IndieGameZone.Infrastructure.Migrations
                     b.Navigation("Libraries");
 
                     b.Navigation("Notifications");
+
+                    b.Navigation("Orders");
 
                     b.Navigation("PostComments");
 

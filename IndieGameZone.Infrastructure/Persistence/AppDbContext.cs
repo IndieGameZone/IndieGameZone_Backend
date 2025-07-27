@@ -53,6 +53,7 @@ namespace IndieGameZone.Infrastructure.Persistence
 		public DbSet<GameCensorLogs> GameCensorLogs { get; set; } = null!;
 		public DbSet<PostImages> PostImages { get; set; } = null!;
 		public DbSet<DownloadSlots> DownloadSlots { get; set; } = null!;
+		public DbSet<Orders> Orders { get; set; } = null!;
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -99,6 +100,7 @@ namespace IndieGameZone.Infrastructure.Persistence
 			modelBuilder.ApplyConfiguration(new GameCensorLogConfiguration());
 			modelBuilder.ApplyConfiguration(new PostImageConfiguration());
 			modelBuilder.ApplyConfiguration(new DownloadSlotConfiguration());
+			modelBuilder.ApplyConfiguration(new OrderConfiguration());
 		}
 	}
 }

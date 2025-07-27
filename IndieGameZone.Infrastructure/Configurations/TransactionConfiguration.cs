@@ -17,8 +17,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(t => t.Status).HasConversion<string>().HasMaxLength(10);
 			builder.Property(t => t.Type).HasConversion<string>().HasMaxLength(50);
 			builder.Property(t => t.CreatedAt);
-			builder.Property(t => t.CommercialRegistrationStartDate);
-			builder.Property(t => t.CommercialRegistrationEndDate);
 
 			builder.HasOne(t => t.User)
 				.WithMany(u => u.Transactions)
@@ -28,17 +26,13 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithMany(g => g.Transactions)
 				.HasForeignKey(t => t.GameId)
 				.OnDelete(DeleteBehavior.Restrict);
-			builder.HasOne(t => t.CommercialPackage)
-				.WithMany(c => c.Transactions)
-				.HasForeignKey(t => t.CommercialPackageId)
-				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(t => t.PurchaseUser)
 				.WithMany(u => u.PurchaseTransactions)
 				.HasForeignKey(t => t.PurchaseUserId)
 				.OnDelete(DeleteBehavior.Restrict);
-			builder.HasOne(t => t.Coupon)
-				.WithOne(c => c.Transaction)
-				.HasForeignKey<Transactions>(t => t.CouponId)
+			builder.HasOne(t => t.Order)
+				.WithOne(o => o.Transaction)
+				.HasForeignKey<Transactions>(t => t.OrderCode)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
