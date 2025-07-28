@@ -8,7 +8,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 	{
 		public void Configure(EntityTypeBuilder<Orders> builder)
 		{
-			builder.HasKey(o => o.OrderCode);
+			builder.HasKey(o => o.Id);
 			builder.Property(o => o.Amount);
 			builder.Property(o => o.CommercialRegistrationEndDate);
 			builder.Property(o => o.CommercialRegistrationStartDate);
@@ -32,7 +32,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(o => o.Transaction)
 				.WithOne(t => t.Order)
-				.HasForeignKey<Transactions>(o => o.OrderCode)
+				.HasForeignKey<Transactions>(o => o.OrderId)
 				.OnDelete(DeleteBehavior.Restrict);
 
 		}

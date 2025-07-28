@@ -148,7 +148,7 @@ namespace IndieGameZone.Application.Services
 			transactionEntity.Id = Guid.NewGuid();
 			transactionEntity.UserId = userId;
 			transactionEntity.PurchaseUserId = userId;
-			transactionEntity.OrderCode = null;
+			transactionEntity.OrderCode = await GenerateUniqueOrderCodeAsync(ct);
 			transactionEntity.Description = "Deposit to wallet";
 			transactionEntity.Status = TransactionStatus.Pending;
 			transactionEntity.Type = TransactionType.Deposit;
@@ -176,7 +176,7 @@ namespace IndieGameZone.Application.Services
 
 			var order = new Orders
 			{
-				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+				Id = Guid.NewGuid(),
 				Amount = transactionForGameCreation.Amount,
 				UserId = userId,
 				GameId = gameId,
@@ -190,13 +190,14 @@ namespace IndieGameZone.Application.Services
 				UserId = userId,
 				PurchaseUserId = userId,
 				GameId = gameId,
-				OrderCode = order.OrderCode,
+				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
 				Amount = transactionForGameCreation.Amount,
 				Description = $"Purchase game",
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.PurchaseGame,
 				Status = transactionForGameCreation.PaymentMethod == PaymentMethod.PayOS ? TransactionStatus.Pending : TransactionStatus.Success,
-				PaymentMethod = transactionForGameCreation.PaymentMethod
+				PaymentMethod = transactionForGameCreation.PaymentMethod,
+				OrderId = order.Id
 			};
 			repositoryManager.OrderRepository.CreateOrder(order);
 			repositoryManager.TransactionRepository.CreateTransaction(transactionEntity);
@@ -333,7 +334,7 @@ namespace IndieGameZone.Application.Services
 		public async Task IPNAsync(WebhookData webhookData, bool isSuccess, CancellationToken ct = default)
 		{
 			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(webhookData.orderCode, true, ct);
-			var order = await repositoryManager.OrderRepository.GetOrderByCode(webhookData.orderCode, false, ct);
+			var order = await repositoryManager.OrderRepository.GetOrderById((Guid)transaction.OrderId, false, ct);
 
 			if (isSuccess)
 			{
@@ -577,7 +578,7 @@ namespace IndieGameZone.Application.Services
 			}
 			var order = new Orders
 			{
-				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+				Id = Guid.NewGuid(),
 				Amount = package.Price,
 				UserId = userId,
 				GameId = gameId,
@@ -601,8 +602,10 @@ namespace IndieGameZone.Application.Services
 				PurchaseUserId = userId,
 				GameId = gameId,
 				PaymentMethod = dto.PaymentMethod,
+				OrderId = order.Id
 			};
 
+			repositoryManager.OrderRepository.CreateOrder(order);
 			repositoryManager.TransactionRepository.CreateTransaction(transaction);
 			await repositoryManager.SaveAsync(ct);
 

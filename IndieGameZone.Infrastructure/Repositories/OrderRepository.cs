@@ -13,6 +13,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void CreateOrder(Orders orders) => Create(orders);
 
-		public async Task<Orders?> GetOrderByCode(long orderCode, bool trackChange, CancellationToken ct = default) => await FindByCondition(x => x.OrderCode == orderCode, trackChange).FirstOrDefaultAsync(ct);
+		public async Task<Orders?> GetOrderById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(x => x.Id == id, trackChange).FirstOrDefaultAsync(ct);
 	}
 }

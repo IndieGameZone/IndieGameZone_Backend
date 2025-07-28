@@ -5,6 +5,6 @@ namespace IndieGameZone.Domain.IRepositories
 	public interface IOrderRepository
 	{
 		void CreateOrder(Orders orders);
-		Task<Orders?> GetOrderByCode(long orderCode, bool trackChange, CancellationToken ct = default);
+		Task<Orders?> GetOrderById(Guid id, bool trackChange, CancellationToken ct = default);
 	}
 }

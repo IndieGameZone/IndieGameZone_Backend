@@ -15,6 +15,7 @@ namespace IndieGameZone.Domain.Entities
 		public Guid UserId { get; set; }
 		public Guid PurchaseUserId { get; set; }
 		public Guid? GameId { get; set; }
+		public Guid? OrderId { get; set; }
 
 		// Navigation properties
 		public virtual Users User { get; set; } = null!;

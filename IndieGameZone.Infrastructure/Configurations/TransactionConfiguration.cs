@@ -32,7 +32,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(t => t.Order)
 				.WithOne(o => o.Transaction)
-				.HasForeignKey<Transactions>(t => t.OrderCode)
+				.HasForeignKey<Transactions>(t => t.OrderId)
 				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
