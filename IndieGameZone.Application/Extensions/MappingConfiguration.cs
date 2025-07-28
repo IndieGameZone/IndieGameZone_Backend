@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.BanHistories;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Posts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
@@ -43,6 +44,10 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.BannedUser, src => src.BannedUser)
 				.Map(dest => dest.BannedByUser, src => src.BannedByUser);
 
-		}
-	}
+            config.NewConfig<CommercialRegistrations, CommercialRegistrationForReturnDto>()
+			    .Map(dest => dest.GameName, src => src.Game.Name)
+				.Map(dest => dest.CommercialPackageName, src => src.CommercialPackage.Name);
+
+        }
+    }
 }

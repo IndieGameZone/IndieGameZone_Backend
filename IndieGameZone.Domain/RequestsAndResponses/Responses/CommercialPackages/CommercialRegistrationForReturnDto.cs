@@ -15,7 +15,11 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages
         public DateTime CreatedAt { get; set; }
         public GameVisibility Visibility { get; set; }
         public Guid GameId { get; set; }
+        public string GameName { get; set; } = string.Empty;
+
         public Guid CommercialPackageId { get; set; }
+        public string CommercialPackageName { get; set; } = string.Empty;
+
         public Guid TransactionId { get; set; }
 
     }

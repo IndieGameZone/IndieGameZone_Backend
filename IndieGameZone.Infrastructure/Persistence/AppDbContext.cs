@@ -20,7 +20,7 @@ namespace IndieGameZone.Infrastructure.Persistence
 		public DbSet<BanHistories> BanHistories { get; set; } = null!;
 		public DbSet<Categories> Categories { get; set; } = null!;
 		public DbSet<CommercialPackages> CommercialPackages { get; set; } = null!;
-		public DbSet<CommercialRegistration> CommercialRegistration { get; set; } = null!;
+		public DbSet<CommercialRegistrations> CommercialRegistrations { get; set; } = null!;
 		public DbSet<Coupons> Coupons { get; set; } = null!;
 		public DbSet<Discounts> Discounts { get; set; } = null!;
 		public DbSet<GameImages> GameImages { get; set; } = null!;

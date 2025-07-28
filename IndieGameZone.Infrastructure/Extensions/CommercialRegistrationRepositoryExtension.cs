@@ -9,7 +9,7 @@ namespace IndieGameZone.Infrastructure.Extensions
 {
     public static class CommercialRegistrationRepositoryExtension
     {
-        public static IQueryable<CommercialRegistration> Sort(this IQueryable<CommercialRegistration> source)
+        public static IQueryable<CommercialRegistrations> Sort(this IQueryable<CommercialRegistrations> source)
         {
             return source.OrderBy(a => a.StartDate);
         }

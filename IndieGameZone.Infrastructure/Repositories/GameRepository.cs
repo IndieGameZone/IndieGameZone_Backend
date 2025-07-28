@@ -23,7 +23,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<PagedList<Games>> GetActiveGames(ActiveGameParameters activeGameParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var commercialGameId = await appDbContext.CommercialRegistration
+			var commercialGameId = await appDbContext.CommercialRegistrations
 				.Where(cr => cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner && cr.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= cr.EndDate)
 				.Select(cr => cr.GameId).ToListAsync();
 
@@ -50,7 +50,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<PagedList<Games>> GetActiveGamesByDeveloperId(Guid developerId, ActiveGameParameters activeGameParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var commercialGameId = await appDbContext.CommercialRegistration
+			var commercialGameId = await appDbContext.CommercialRegistrations
 				.Where(cr => cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner && cr.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= cr.EndDate)
 				.Select(cr => cr.GameId).ToListAsync();
 			var gameEntities = FindByCondition(g => g.DeveloperId == developerId && g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved && !g.IsDeleted, trackChange)
@@ -178,7 +178,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var today = DateOnly.FromDateTime(DateTime.Now);
 
-			var gameIds = await appDbContext.CommercialRegistration
+			var gameIds = await appDbContext.CommercialRegistrations
 				.Where(cr =>
 					cr.CommercialPackage.Type == CommercialPackageType.HomepageBanner &&
 					cr.StartDate <= today &&
@@ -203,7 +203,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var today = DateOnly.FromDateTime(DateTime.Now);
 
-			var gameIds = await appDbContext.CommercialRegistration
+			var gameIds = await appDbContext.CommercialRegistrations
 				.Where(cr =>
 					cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner &&
 					cr.StartDate <= today &&

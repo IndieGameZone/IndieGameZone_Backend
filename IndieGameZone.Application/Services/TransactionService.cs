@@ -455,7 +455,7 @@ namespace IndieGameZone.Application.Services
 				else if (transaction.Type == TransactionType.PurchaseCommercialPackage)
 				{
 					var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
-					var commercialRegistration = new CommercialRegistration()
+					var commercialRegistration = new CommercialRegistrations()
 					{
 						Id = Guid.NewGuid(),
 						StartDate = (DateOnly)order.CommercialRegistrationStartDate!,
@@ -613,7 +613,7 @@ namespace IndieGameZone.Application.Services
 			{
 				var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
 				wallet.Balance -= package.Price;
-				var commercialRegistration = new CommercialRegistration()
+				var commercialRegistration = new CommercialRegistrations()
 				{
 					Id = Guid.NewGuid(),
 					StartDate = dto.StartDate,

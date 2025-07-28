@@ -13,7 +13,7 @@ namespace IndieGameZone.Domain.Entities
 		public bool IsDeleted { get; set; }
 
 		//Navigation properties
-		public ICollection<CommercialRegistration> CommercialRegistrations { get; set; } = new List<CommercialRegistration>();
+		public ICollection<CommercialRegistrations> CommercialRegistrations { get; set; } = new List<CommercialRegistrations>();
 		public ICollection<Orders> Orders { get; set; } = new List<Orders>();
 	}
 }
