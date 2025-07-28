@@ -1,5 +1,6 @@
 ﻿using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -73,6 +74,13 @@ namespace IndieGameZone.API.Controllers
         {
             var total = await serviceManager.DashBoardService.GetTotalRevenueFromCommercialPackagePurchaseAsync(range, ct);
             return Ok(total);
+        }
+
+        [HttpGet("summary")]
+        public async Task<ActionResult<DashboardSummaryForReturnDto>> GetDashboardSummary([FromQuery] RevenueRange range = RevenueRange.AllTime, CancellationToken ct = default)
+        {
+            var summary = await serviceManager.DashBoardService.GetDashboardSummaryAsync(range, ct);
+            return Ok(summary);
         }
 
     }

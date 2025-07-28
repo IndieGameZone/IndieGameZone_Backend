@@ -2,6 +2,7 @@
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
@@ -117,5 +118,23 @@ namespace IndieGameZone.Application.Services
         {
             return await repositoryManager.TransactionRepository.GetTotalRevenueFromCommercialPackagePurchase(range, ct);
         }
+
+        public async Task<DashboardSummaryForReturnDto> GetDashboardSummaryAsync(RevenueRange range, CancellationToken ct = default)
+        {
+            var onlineUserCount = await GetOnlineUserCountAsync(ct);
+            var totalUserCount = await GetTotalUserCountAsync(ct);
+            var gameRevenue = await GetTotalRevenueFromGamePurchaseAsync(range, ct);
+            var commercialRevenue = await GetTotalRevenueFromCommercialPackagePurchaseAsync(range, ct);
+
+            return new DashboardSummaryForReturnDto
+            {
+                OnlineUserCount = onlineUserCount,
+                TotalUserCount = totalUserCount,
+                GamePurchaseRevenue = gameRevenue,
+                CommercialPackageRevenue = commercialRevenue
+            };
+
+        }
+
     }
 }
