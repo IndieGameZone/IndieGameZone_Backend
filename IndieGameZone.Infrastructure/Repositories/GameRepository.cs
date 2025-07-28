@@ -195,7 +195,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(g => g.Category).AsSplitQuery()
 				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
 				.Include(g => g.Discounts).AsSplitQuery()
-				.ToListAsync(ct);
+                .Include(g => g.GameImages).AsSplitQuery()
+                .ToListAsync(ct);
 		}
 
 		public async Task<IEnumerable<Games>> GetTodayCategoryBannerGamesAsync(bool trackChange, CancellationToken ct = default)
