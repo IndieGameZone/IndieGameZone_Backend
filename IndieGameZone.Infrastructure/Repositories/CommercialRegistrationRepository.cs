@@ -19,13 +19,17 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<CommercialRegistrations?> GetCommercialRegistrationById(Guid id, bool trackChange, CancellationToken ct = default) =>
 			await FindByCondition(a => a.Id.Equals(id), trackChange)
 				.Include(cr => cr.Game)
-				.SingleOrDefaultAsync(ct);
+				.Include(cr => cr.CommercialPackage)
+				.AsSplitQuery()
+                .SingleOrDefaultAsync(ct);
 
 		public async Task<PagedList<CommercialRegistrations>> GetCommercialRegistrations(CommercialRegistrationParameters commercialRegistrationParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var commercialRegistrationEntities = FindAll(trackChange)
 				.Include(cr => cr.Game)
-				.Sort();
+                .Include(cr => cr.CommercialPackage)
+				.AsSplitQuery()
+                .Sort();
 
 			return await PagedList<CommercialRegistrations>.ToPagedList(commercialRegistrationEntities, commercialRegistrationParameters.PageNumber, commercialRegistrationParameters.PageSize, ct);
 		}
@@ -33,8 +37,11 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<PagedList<CommercialRegistrations>> GetCommercialRegistrationsByUser(Guid userId, CommercialRegistrationParameters commercialRegistrationParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var commercialRegistrationEntities = FindAll(trackChange)
-				.Include(cr => cr.Game).Where(cr => cr.Game.DeveloperId == userId)
-				.Sort();
+				.Include(cr => cr.Game)
+                .Include(cr => cr.CommercialPackage)
+                .Where(cr => cr.Game.DeveloperId == userId)
+                .AsSplitQuery()
+                .Sort();
 
 			return await PagedList<CommercialRegistrations>.ToPagedList(
 				commercialRegistrationEntities,
@@ -47,7 +54,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var commercialRegistrationEntities = FindByCondition(cr => cr.GameId.Equals(gameId), trackChange)
 				.Include(cr => cr.Game)
-				.Sort();
+                .Include(cr => cr.CommercialPackage)
+				.AsSplitQuery()
+                .Sort();
 
 			return await PagedList<CommercialRegistrations>.ToPagedList(
 				commercialRegistrationEntities,
@@ -60,7 +69,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var commercialRegistrationEntities = FindByCondition(cr => cr.CommercialPackageId.Equals(commercialPackageId), trackChange)
 				.Include(cr => cr.Game)
-				.Sort();
+                .Include(cr => cr.CommercialPackage)
+                .AsSplitQuery()
+                .Sort();
 
 			return await PagedList<CommercialRegistrations>.ToPagedList(
 				commercialRegistrationEntities,
@@ -80,18 +91,23 @@ namespace IndieGameZone.Infrastructure.Repositories
 		trackChanges: false)
 		.Include(r => r.CommercialPackage)
 		.Include(r => r.Game)
-		.Sort();
+        .AsSplitQuery()
+        .Sort();
 
 			return await registrations.ToListAsync(ct);
 		}
 
 		public Task<CommercialRegistrations?> GetCategoryCommercialRegistrationByGameId(Guid gameId, bool trackChange, CancellationToken ct = default)
 		{
-			var registration = FindByCondition(
-				r => r.GameId == gameId && r.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= r.EndDate,
+			var now = DateTime.Now;
+            var registration = FindByCondition(
+				r => r.GameId == gameId && r.StartDate <= DateOnly.FromDateTime(now) && DateOnly.FromDateTime(now) <= r.EndDate,
 				trackChange)
-				.Include(r => r.CommercialPackage).Where(r => r.CommercialPackage.Type == CommercialPackageType.CategoryBanner)
-				.FirstOrDefaultAsync(ct);
+				.Include(r => r.CommercialPackage)
+	            .Include(r => r.Game)
+                .Where(r => r.CommercialPackage.Type == CommercialPackageType.CategoryBanner)
+	            .AsSplitQuery()
+                .FirstOrDefaultAsync(ct);
 			return registration;
 		}
 	}

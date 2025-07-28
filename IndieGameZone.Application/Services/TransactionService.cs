@@ -461,6 +461,7 @@ namespace IndieGameZone.Application.Services
 						StartDate = (DateOnly)order.CommercialRegistrationStartDate!,
 						EndDate = order.CommercialRegistrationEndDate,
                         CreatedAt = DateTime.Now,
+                        Status = CommercialRegistrationStatus.Pending,
                         GameId = (Guid)transaction.GameId!,
 						CommercialPackageId = (Guid)order.CommercialPackageId!,
 					};
@@ -619,7 +620,9 @@ namespace IndieGameZone.Application.Services
 					Id = Guid.NewGuid(),
 					StartDate = dto.StartDate,
 					EndDate = dto.StartDate.AddDays(package.Duration),
-					GameId = gameId,
+                    CreatedAt = DateTime.Now,
+                    Status = CommercialRegistrationStatus.Pending,
+                    GameId = gameId,
 					CommercialPackageId = commercialPackageId,
 				};
 				repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
