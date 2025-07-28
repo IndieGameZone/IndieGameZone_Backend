@@ -8,7 +8,7 @@ namespace IndieGameZone.Domain.Entities
 		public DateOnly StartDate { get; set; }
 		public DateOnly? EndDate { get; set; }
 		public DateTime? CreatedAt { get; set; } = DateTime.Now;
-		public CommercialRegistrationStatus? commercialRegistrationStatus { get; set; } = CommercialRegistrationStatus.Pending;
+		public CommercialRegistrationStatus? Status { get; set; } = CommercialRegistrationStatus.Pending;
         public Guid GameId { get; set; }
 		public Guid CommercialPackageId { get; set; }
 

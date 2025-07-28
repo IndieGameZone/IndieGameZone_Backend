@@ -460,7 +460,8 @@ namespace IndieGameZone.Application.Services
 						Id = Guid.NewGuid(),
 						StartDate = (DateOnly)order.CommercialRegistrationStartDate!,
 						EndDate = order.CommercialRegistrationEndDate,
-						GameId = (Guid)transaction.GameId!,
+                        CreatedAt = DateTime.Now,
+                        GameId = (Guid)transaction.GameId!,
 						CommercialPackageId = (Guid)order.CommercialPackageId!,
 					};
 					repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);

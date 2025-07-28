@@ -77,7 +77,6 @@ namespace IndieGameZone.Application.Services
 
 			for (int i = 0; i < commercialRegistrations.Count; i++)
 			{
-				commercialRegistrations[i].CreatedAt = DateTime.Now;
 				commercialRegistrations[i].Visibility = commercialRegistrationsWithMetaData[i].Game.Visibility;
 			}
 
@@ -95,7 +94,6 @@ namespace IndieGameZone.Application.Services
 
 			for (int i = 0; i < commercialRegistrations.Count; i++)
 			{
-				commercialRegistrations[i].CreatedAt = DateTime.Now;
 				commercialRegistrations[i].Visibility = commercialRegistrationsWithMetaData[i].Game.Visibility;
 			}
 
@@ -113,7 +111,6 @@ namespace IndieGameZone.Application.Services
 
 			for (int i = 0; i < commercialRegistrations.Count; i++)
 			{
-				commercialRegistrations[i].CreatedAt = DateTime.Now;
 				commercialRegistrations[i].Visibility = commercialRegistrationsWithMetaData[i].Game.Visibility;
 			}
 
@@ -149,7 +146,6 @@ namespace IndieGameZone.Application.Services
 
 			for (int i = 0; i < commercialRegistrations.Count; i++)
 			{
-				commercialRegistrations[i].CreatedAt = DateTime.Now;
 				commercialRegistrations[i].Visibility = commercialRegistrationsWithMetaData[i].Game.Visibility;
 			}
 
