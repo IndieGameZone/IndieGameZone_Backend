@@ -7,6 +7,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.CommercialPackages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages;
 using MapsterMapper;
+using Microsoft.Extensions.Logging;
 
 namespace IndieGameZone.Application.Services
 {
@@ -15,11 +16,11 @@ namespace IndieGameZone.Application.Services
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 
-		public CommercialPackageService(IRepositoryManager repositoryManager, IMapper mapper)
+        public CommercialPackageService(IRepositoryManager repositoryManager, IMapper mapper)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
-		}
+        }
 		public async Task CreateCommercialPackage(CommercialPackageForCreationDto commercialPackageForCreationDto, CancellationToken ct = default)
 		{
 			var commercialPackageEntity = mapper.Map<CommercialPackages>(commercialPackageForCreationDto);
@@ -211,5 +212,59 @@ namespace IndieGameZone.Application.Services
 				.ToList();
 		}
 
-	}
+        public async Task<int> RunStatusUpdateAsync(CancellationToken ct = default)
+        {
+            var localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
+                TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+
+            var today = DateOnly.FromDateTime(localTime);
+
+            var registrations = await repositoryManager.CommercialRegistrationRepository
+                .GetRegistrationsForStatusUpdate(today, ct);
+
+            int updatedCount = 0;
+
+            foreach (var reg in registrations)
+            {
+                switch (reg.Status)
+                {
+                    case CommercialRegistrationStatus.Pending:
+                        if (reg.EndDate.HasValue && reg.EndDate.Value <= today)
+                        {
+                            reg.Status = CommercialRegistrationStatus.Expired;
+                            updatedCount++;
+                        }
+                        else if (reg.StartDate == today)
+                        {
+                            if (reg.Game.Visibility == GameVisibility.Public)
+                            {
+                                reg.Status = CommercialRegistrationStatus.Active;
+                            }
+                            else
+                            {
+                                reg.Status = CommercialRegistrationStatus.Failed;
+                            }
+                            updatedCount++;
+                        }
+                        break;
+
+                    case CommercialRegistrationStatus.Active:
+                        if (reg.EndDate.HasValue && reg.EndDate.Value <= today)
+                        {
+                            reg.Status = CommercialRegistrationStatus.Expired;
+                            updatedCount++;
+                        }
+                        break;
+                }
+            }
+
+            if (updatedCount > 0)
+            {
+                await repositoryManager.SaveAsync(ct);
+            }
+
+            return updatedCount;
+        }
+
+    }
 }

@@ -110,5 +110,18 @@ namespace IndieGameZone.Infrastructure.Repositories
                 .FirstOrDefaultAsync(ct);
 			return registration;
 		}
-	}
+
+        public async Task<List<CommercialRegistrations>> GetRegistrationsForStatusUpdate(DateOnly today, CancellationToken ct = default)
+        {
+            return await FindByCondition(r =>
+                (r.Status == CommercialRegistrationStatus.Pending && r.StartDate == today) || // activate or fail
+                (r.Status == CommercialRegistrationStatus.Active && r.EndDate.HasValue && r.EndDate <= today) || // expire active
+                (r.Status == CommercialRegistrationStatus.Pending && r.EndDate.HasValue && r.EndDate <= today), // expire pending
+                trackChanges: true
+            )
+            .Include(r => r.Game)
+            .ToListAsync(ct);
+        }
+
+    }
 }

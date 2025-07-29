@@ -1,6 +1,7 @@
 ﻿using Azure.Storage.Blobs;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using IndieGameZone.Application.BackgroundJobServices;
 using IndieGameZone.Application.IServices;
 using IndieGameZone.Application.Services;
 using IndieGameZone.Domain.Entities;
@@ -166,7 +167,19 @@ namespace IndieGameZone.API.Extensions
 			services.AddQuartz(q =>
 			{
 				q.UseJobFactory<MicrosoftDependencyInjectionJobFactory>();
-			});
+
+                var jobKey = new JobKey("UpdateCommercialStatusJob");
+
+                q.AddJob<UpdateCommercialRegistrationStatusJob>(opts => opts.WithIdentity(jobKey));
+
+                q.AddTrigger(opts => opts
+                    .ForJob(jobKey)
+                    .WithIdentity("UpdateCommercialStatusJob-trigger")
+                    .WithSchedule(CronScheduleBuilder
+                        .DailyAtHourAndMinute(0, 1) // 00:01
+                        .InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")))); // Vietnam
+
+            });
 			services.AddQuartzHostedService(opt =>
 			{
 				opt.WaitForJobsToComplete = true;
