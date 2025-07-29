@@ -12,5 +12,7 @@ namespace IndieGameZone.Application.IServices
 		Task<(IEnumerable<ReportForReturnDto> reports, MetaData metaData)> GetReports(ReportParameters reportParameters, CancellationToken ct = default);
 		Task<ReportForReturnDto> GetReportById(Guid id, CancellationToken ct = default);
 		Task UpdateResolveStatus(Guid id, CancellationToken ct = default);
+		Task<(IEnumerable<ReportForReturnDto> reports, MetaData metaData)> GetReportsByReportingUserId(Guid reportingUserId, ReportParameters reportParameters, CancellationToken ct = default);
+		Task<(IEnumerable<ReportForReturnDto> reports, MetaData metaData)> GetReportsByReportedUserId(Guid reportedUserId, ReportParameters reportParameters, CancellationToken ct = default);
 	}
 }

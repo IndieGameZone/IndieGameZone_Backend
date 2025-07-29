@@ -1,0 +1,26 @@
+﻿using IndieGameZone.Application.IServices;
+using IndieGameZone.Domain.IRepositories;
+using IndieGameZone.Domain.RequestFeatures;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Orders;
+using MapsterMapper;
+
+namespace IndieGameZone.Application.Services
+{
+	internal sealed class OrderService : IOrderService
+	{
+		private readonly IRepositoryManager repositoryManager;
+		private readonly IMapper mapper;
+
+		public OrderService(IRepositoryManager repositoryManager, IMapper mapper)
+		{
+			this.repositoryManager = repositoryManager;
+			this.mapper = mapper;
+		}
+		public async Task<(IEnumerable<OrderForReturnDto> orders, MetaData metaData)> GetOrdersByUserId(Guid userId, OrderParameters orderParameters, CancellationToken ct = default)
+		{
+			var ordersWithMetaData = await repositoryManager.OrderRepository.GetOrdersByUserId(userId, orderParameters, false, ct);
+			var orders = mapper.Map<IEnumerable<OrderForReturnDto>>(ordersWithMetaData);
+			return (orders, ordersWithMetaData.MetaData);
+		}
+	}
+}

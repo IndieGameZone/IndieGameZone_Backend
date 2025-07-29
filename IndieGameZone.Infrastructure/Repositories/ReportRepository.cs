@@ -38,5 +38,36 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 			return await PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
 		}
+
+		public Task<PagedList<Reports>> GetReportsByReportedUserId(Guid reportedUserId, ReportParameters reportParameters, bool trackChange, CancellationToken ct = default)
+		{
+			var reports = FindAll(trackChange)
+				.Include(r => r.ReportingUser).AsSplitQuery()
+				.Include(r => r.ReportReason).AsSplitQuery()
+				.Include(r => r.Post).AsSplitQuery()
+				.Include(r => r.Game).AsSplitQuery()
+				.Include(r => r.PostComment).AsSplitQuery()
+				.Where(r =>
+					(r.Post != null && r.Post.UserId == reportedUserId) ||
+					(r.PostComment != null && r.PostComment.UserId == reportedUserId) ||
+					(r.Game != null && r.Game.DeveloperId == reportedUserId)
+				)
+				.Sort();
+
+			return PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
+		}
+
+		public Task<PagedList<Reports>> GetReportsByReportingUserId(Guid reportingUserId, ReportParameters reportParameters, bool trackChange, CancellationToken ct = default)
+		{
+			var reports = FindByCondition(r => r.ReportingUserId.Equals(reportingUserId), trackChange)
+				.Include(r => r.ReportingUser).AsSplitQuery()
+				.Include(r => r.ReportReason).AsSplitQuery()
+				.Include(r => r.Post).AsSplitQuery()
+				.Include(r => r.Game).AsSplitQuery()
+				.Include(r => r.PostComment).AsSplitQuery()
+				.Sort();
+
+			return PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
+		}
 	}
 }

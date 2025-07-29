@@ -39,6 +39,7 @@ namespace IndieGameZone.Application.Services
 		private readonly Lazy<IGameCensorLogService> gameCensorLogService;
 		private readonly Lazy<IDashBoardService> dashBoardService;
 		private readonly Lazy<IGameImageService> gameImageService;
+		private readonly Lazy<IOrderService> orderService;
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker, IAIService aIService, IRecombeeService recombeeService)
 		{
@@ -69,6 +70,7 @@ namespace IndieGameZone.Application.Services
 			gameCensorLogService = new Lazy<IGameCensorLogService>(() => new GameCensorLogService(repositoryManager, mapper));
 			dashBoardService = new Lazy<IDashBoardService>(() => new DashBoardService(repositoryManager, mapper, userManager));
 			gameImageService = new Lazy<IGameImageService>(() => new GameImageService(repositoryManager, blobService, schedulerFactory));
+			orderService = new Lazy<IOrderService>(() => new OrderService(repositoryManager, mapper));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -124,5 +126,7 @@ namespace IndieGameZone.Application.Services
 		public IDashBoardService DashBoardService => dashBoardService.Value;
 
 		public IGameImageService GameImageService => gameImageService.Value;
+
+		public IOrderService OrderService => orderService.Value;
 	}
 }

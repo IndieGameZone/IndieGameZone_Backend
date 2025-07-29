@@ -70,6 +70,20 @@ namespace IndieGameZone.Application.Services
 			return (reports, reportsWithMetaData.MetaData);
 		}
 
+		public async Task<(IEnumerable<ReportForReturnDto> reports, MetaData metaData)> GetReportsByReportedUserId(Guid reportedUserId, ReportParameters reportParameters, CancellationToken ct = default)
+		{
+			var reportsWithMetaData = await repositoryManager.ReportRepository.GetReportsByReportedUserId(reportedUserId, reportParameters, false, ct);
+			var reports = mapper.Map<IEnumerable<ReportForReturnDto>>(reportsWithMetaData);
+			return (reports, reportsWithMetaData.MetaData);
+		}
+
+		public async Task<(IEnumerable<ReportForReturnDto> reports, MetaData metaData)> GetReportsByReportingUserId(Guid reportingUserId, ReportParameters reportParameters, CancellationToken ct = default)
+		{
+			var reportsWithMetaData = await repositoryManager.ReportRepository.GetReportsByReportingUserId(reportingUserId, reportParameters, false, ct);
+			var reports = mapper.Map<IEnumerable<ReportForReturnDto>>(reportsWithMetaData);
+			return (reports, reportsWithMetaData.MetaData);
+		}
+
 		public async Task UpdateResolveStatus(Guid id, CancellationToken ct = default)
 		{
 			var reportEntity = await repositoryManager.ReportRepository.GetReportById(id, true, ct);

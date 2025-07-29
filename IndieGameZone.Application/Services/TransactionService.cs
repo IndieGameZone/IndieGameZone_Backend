@@ -317,16 +317,16 @@ namespace IndieGameZone.Application.Services
 			return await GetPayOSPaymentLink(transactionEntityForDonor, TransactionType.Donation);
 		}
 
-		public async Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
+		public async Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactions(TransactionParameters transactionParameters, CancellationToken ct = default)
 		{
-			var transactionsWithMetaData = await repositoryManager.TransactionRepository.GetTransactions(transactionParameters, trackChange, ct);
+			var transactionsWithMetaData = await repositoryManager.TransactionRepository.GetTransactions(transactionParameters, false, ct);
 			var transactions = mapper.Map<IEnumerable<TransactionForReturnDto>>(transactionsWithMetaData);
 			return (transactions, transactionsWithMetaData.MetaData);
 		}
 
-		public async Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactionsByUserId(Guid userId, TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default)
+		public async Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactionsByUserId(Guid userId, TransactionParameters transactionParameters, CancellationToken ct = default)
 		{
-			var transactionsWithMetaData = await repositoryManager.TransactionRepository.GetTransactionsByUserId(userId, transactionParameters, trackChange, ct);
+			var transactionsWithMetaData = await repositoryManager.TransactionRepository.GetTransactionsByUserId(userId, transactionParameters, false, ct);
 			var transactions = mapper.Map<IEnumerable<TransactionForReturnDto>>(transactionsWithMetaData);
 			return (transactions, transactionsWithMetaData.MetaData);
 		}
@@ -460,9 +460,9 @@ namespace IndieGameZone.Application.Services
 						Id = Guid.NewGuid(),
 						StartDate = (DateOnly)order.CommercialRegistrationStartDate!,
 						EndDate = order.CommercialRegistrationEndDate,
-                        CreatedAt = DateTime.Now,
-                        Status = CommercialRegistrationStatus.Pending,
-                        GameId = (Guid)transaction.GameId!,
+						CreatedAt = DateTime.Now,
+						Status = CommercialRegistrationStatus.Pending,
+						GameId = (Guid)transaction.GameId!,
 						CommercialPackageId = (Guid)order.CommercialPackageId!,
 					};
 					repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
@@ -620,9 +620,9 @@ namespace IndieGameZone.Application.Services
 					Id = Guid.NewGuid(),
 					StartDate = dto.StartDate,
 					EndDate = dto.StartDate.AddDays(package.Duration),
-                    CreatedAt = DateTime.Now,
-                    Status = CommercialRegistrationStatus.Pending,
-                    GameId = gameId,
+					CreatedAt = DateTime.Now,
+					Status = CommercialRegistrationStatus.Pending,
+					GameId = gameId,
 					CommercialPackageId = commercialPackageId,
 				};
 				repositoryManager.CommercialRegistrationRepository.CreateCommercialRegistration(commercialRegistration);
