@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +23,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages
         public string CommercialPackageName { get; set; } = string.Empty;
 
         public Guid TransactionId { get; set; }
+
+        public UserShortForReturnDto Developer { get; set; } = new UserShortForReturnDto();
 
     }
 }

@@ -19,7 +19,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<CommercialRegistrations?> GetCommercialRegistrationById(Guid id, bool trackChange, CancellationToken ct = default) =>
 			await FindByCondition(a => a.Id.Equals(id), trackChange)
 				.Include(cr => cr.Game)
-				.Include(cr => cr.CommercialPackage)
+					.ThenInclude(g => g.Developer)
+						.ThenInclude(d => d.UserProfile)
+                .Include(cr => cr.CommercialPackage)
 				.AsSplitQuery()
                 .SingleOrDefaultAsync(ct);
 
@@ -27,6 +29,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var commercialRegistrationEntities = FindAll(trackChange)
 				.Include(cr => cr.Game)
+					.ThenInclude(g => g.Developer)
+						.ThenInclude(d => d.UserProfile)
                 .Include(cr => cr.CommercialPackage)
 				.AsSplitQuery()
                 .Sort();
@@ -38,6 +42,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var commercialRegistrationEntities = FindAll(trackChange)
 				.Include(cr => cr.Game)
+					.ThenInclude(g => g.Developer)
+						.ThenInclude(d => d.UserProfile)
                 .Include(cr => cr.CommercialPackage)
                 .Where(cr => cr.Game.DeveloperId == userId)
                 .AsSplitQuery()
@@ -54,6 +60,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var commercialRegistrationEntities = FindByCondition(cr => cr.GameId.Equals(gameId), trackChange)
 				.Include(cr => cr.Game)
+					.ThenInclude(g => g.Developer)
+						.ThenInclude(d => d.UserProfile)
                 .Include(cr => cr.CommercialPackage)
 				.AsSplitQuery()
                 .Sort();
@@ -69,6 +77,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var commercialRegistrationEntities = FindByCondition(cr => cr.CommercialPackageId.Equals(commercialPackageId), trackChange)
 				.Include(cr => cr.Game)
+					.ThenInclude(g => g.Developer)
+						.ThenInclude(d => d.UserProfile)
                 .Include(cr => cr.CommercialPackage)
                 .AsSplitQuery()
                 .Sort();
@@ -91,6 +101,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		trackChanges: false)
 		.Include(r => r.CommercialPackage)
 		.Include(r => r.Game)
+			.ThenInclude(g => g.Developer)
+						.ThenInclude(d => d.UserProfile)
         .AsSplitQuery()
         .Sort();
 
@@ -105,6 +117,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 				trackChange)
 				.Include(r => r.CommercialPackage)
 	            .Include(r => r.Game)
+					.ThenInclude(g => g.Developer)
+						.ThenInclude(d => d.UserProfile)
                 .Where(r => r.CommercialPackage.Type == CommercialPackageType.CategoryBanner)
 	            .AsSplitQuery()
                 .FirstOrDefaultAsync(ct);
@@ -120,6 +134,8 @@ namespace IndieGameZone.Infrastructure.Repositories
                 trackChanges: true
             )
             .Include(r => r.Game)
+				.ThenInclude(g => g.Developer)
+						.ThenInclude(d => d.UserProfile)
             .ToListAsync(ct);
         }
 
