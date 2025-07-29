@@ -29,5 +29,6 @@
 		IGameCensorLogService GameCensorLogService { get; }
 		IDashBoardService DashBoardService { get; }
 		IGameImageService GameImageService { get; }
+		IOrderService OrderService { get; }
 	}
 }
