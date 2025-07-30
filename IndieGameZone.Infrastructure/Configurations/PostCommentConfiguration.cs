@@ -18,11 +18,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithMany(b => b.PostComments)
 				.HasForeignKey(b => b.UserId)
 				.OnDelete(DeleteBehavior.Restrict);
-
-			builder.HasOne(b => b.Post)
-				.WithMany(b => b.PostComments)
-				.HasForeignKey(b => b.PostId)
-				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

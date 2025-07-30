@@ -11,5 +11,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.GamePlatforms
 		[Required]
 		[MaxLength(150)]
 		public string Version { get; init; }
+		[Required]
+		public string DisplayName { get; init; }
 	}
 }

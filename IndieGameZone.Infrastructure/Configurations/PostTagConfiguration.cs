@@ -10,10 +10,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 		{
 			builder.HasKey(pt => new { pt.PostId, pt.TagId });
 
-			builder.HasOne(pt => pt.Post)
-				.WithMany(p => p.PostTags)
-				.HasForeignKey(pt => pt.PostId)
-				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(pt => pt.Tag)
 				.WithMany(t => t.PostTags)
 				.HasForeignKey(pt => pt.TagId)

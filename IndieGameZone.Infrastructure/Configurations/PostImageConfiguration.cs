@@ -10,11 +10,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 		{
 			builder.HasKey(pi => pi.Id);
 			builder.Property(pi => pi.Image);
-
-			builder.HasOne(pi => pi.Post)
-				.WithMany(p => p.PostImages)
-				.HasForeignKey(pi => pi.PostId)
-				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }
