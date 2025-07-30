@@ -46,7 +46,6 @@ namespace IndieGameZone.Application.Services
 				gamePlatform.Id = Guid.NewGuid();
 				gamePlatform.GameId = gameId;
 				var blobName = gamePlatform.File.Split('/').Last();
-				gamePlatform.DisplayName = await blobService.GetBlobOriginalName(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.IsActive = true;
 				gamePlatform.CreatedAt = DateTime.Now;
@@ -66,7 +65,6 @@ namespace IndieGameZone.Application.Services
 				gamePlatform.Id = Guid.NewGuid();
 				gamePlatform.GameId = gameId;
 				var blobName = gamePlatform.File.Split('/').Last();
-				gamePlatform.DisplayName = await blobService.GetBlobOriginalName(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.IsActive = true;
 				gamePlatform.CreatedAt = DateTime.Now;
@@ -101,7 +99,6 @@ namespace IndieGameZone.Application.Services
 				await blobService.DeleteBlob(oldBlobName, StorageContainer.STORAGE_CONTAINER);
 
 				var blobName = gamePlatformForUpdateDto.File.Split('/').Last();
-				gamePlatform.DisplayName = await blobService.GetBlobOriginalName(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.File = gamePlatformForUpdateDto.File;
 				gamePlatform.Version = gamePlatformForUpdateDto.Version;

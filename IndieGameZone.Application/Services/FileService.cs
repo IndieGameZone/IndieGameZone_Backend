@@ -54,7 +54,7 @@ namespace IndieGameZone.Application.Services
 			CheckingFile(file);
 			ScanFile(file);
 			return await blobService.UploadBlob(
-				$"{file.FileName}",
+				$"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}",
 				StorageContainer.STORAGE_CONTAINER,
 				file);
 		}
