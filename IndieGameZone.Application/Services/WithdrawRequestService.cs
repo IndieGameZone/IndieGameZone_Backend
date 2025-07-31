@@ -35,7 +35,7 @@ namespace IndieGameZone.Application.Services
 			var transaction = new Transactions
 			{
 				Id = Guid.NewGuid(),
-				OrderCode = random.Next(100000, 999999),
+				OrderCode = null,
 				Amount = withdrawRequestForCreationDto.Amount,
 				Description = withdrawRequestForCreationDto.Description ?? string.Empty,
 				Status = TransactionStatus.Pending,
@@ -52,6 +52,7 @@ namespace IndieGameZone.Application.Services
 				IsTransfered = false,
 				CreatedAt = DateTime.Now,
 				ImageProof = string.Empty,
+				UserId = userId
 			};
 			wallet.Balance -= withdrawRequestForCreationDto.Amount;
 
@@ -78,6 +79,10 @@ namespace IndieGameZone.Application.Services
 		public async Task UpdateWithdrawRequest(Guid id, IFormFile imageProof, CancellationToken ct = default)
 		{
 			var withdrawRequest = await repositoryManager.WithdrawRequestRepository.GetWithdrawRequestById(id, true, ct);
+			if (withdrawRequest is null)
+			{
+				throw new NotFoundException("Withdraw request not found");
+			}
 			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(id, true, ct);
 			var notification = new Notifications
 			{
@@ -87,10 +92,6 @@ namespace IndieGameZone.Application.Services
 				CreatedAt = DateTime.Now,
 				IsRead = false
 			};
-			if (withdrawRequest is null)
-			{
-				throw new NotFoundException("Withdraw request not found");
-			}
 			string fileName = $"{id}_{DateTime.Now:yyyyMMddHHmmssfff}{Path.GetExtension(imageProof.FileName)}";
 			withdrawRequest.ImageProof = await blobService.UploadBlob(fileName, StorageContainer.STORAGE_CONTAINER, imageProof);
 			withdrawRequest.IsTransfered = true;
