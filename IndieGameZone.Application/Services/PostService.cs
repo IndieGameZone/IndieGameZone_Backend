@@ -237,5 +237,15 @@ namespace IndieGameZone.Application.Services
 
 			await scheduler.ScheduleJob(job, trigger, ct);
 		}
+
+		public async Task UpdatePostStatus(Guid postId, PostActivationDto postActivationDto, CancellationToken ct = default)
+		{
+			var post = await repositoryManager.PostRepository.GetPostById(postId, true, ct);
+			if (post is null)
+				throw new NotFoundException($"Post not found.");
+			post.Status = postActivationDto.Status;
+			post.CensoredAt = DateTime.Now;
+			await repositoryManager.SaveAsync(ct);
+		}
 	}
 }
