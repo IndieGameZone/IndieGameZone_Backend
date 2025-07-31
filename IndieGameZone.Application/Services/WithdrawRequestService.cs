@@ -7,7 +7,6 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.WithdrawRequests;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.WithdrawRequests;
 using MapsterMapper;
-using Microsoft.AspNetCore.Http;
 
 namespace IndieGameZone.Application.Services
 {
@@ -26,37 +25,21 @@ namespace IndieGameZone.Application.Services
 		public async Task CreateWithdrawRequest(Guid userId, WithdrawRequestForCreationDto withdrawRequestForCreationDto, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
-			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct);
+			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, false, ct);
 			if (withdrawRequestForCreationDto.Amount > wallet.Balance)
 			{
 				throw new BadRequestException("Insufficient balance in wallet");
 			}
-			Random random = new Random();
-			var transaction = new Transactions
-			{
-				Id = Guid.NewGuid(),
-				OrderCode = null,
-				Amount = withdrawRequestForCreationDto.Amount,
-				Description = withdrawRequestForCreationDto.Description ?? string.Empty,
-				Status = TransactionStatus.Pending,
-				Type = TransactionType.Withdraw,
-				CreatedAt = DateTime.Now,
-				UserId = userId,
-				PurchaseUserId = userId,
-				PaymentMethod = PaymentMethod.Wallet
-			};
 
 			var withdrawRequest = new WithdrawRequests
 			{
 				Id = Guid.NewGuid(),
-				IsTransfered = false,
+				Status = WithdrawTransferStatus.Pending,
+				Amount = withdrawRequestForCreationDto.Amount,
 				CreatedAt = DateTime.Now,
-				ImageProof = string.Empty,
 				UserId = userId
 			};
-			wallet.Balance -= withdrawRequestForCreationDto.Amount;
 
-			repositoryManager.TransactionRepository.CreateTransaction(transaction);
 			repositoryManager.WithdrawRequestRepository.CreateWithdrawRequest(withdrawRequest);
 			await repositoryManager.SaveAsync(ct);
 			dbTransaction.Commit();
@@ -76,28 +59,59 @@ namespace IndieGameZone.Application.Services
 			return (withdrawRequests, withdrawRequestWithMetaData.MetaData);
 		}
 
-		public async Task UpdateWithdrawRequest(Guid id, IFormFile imageProof, CancellationToken ct = default)
+		public async Task UpdateWithdrawRequest(Guid id, WithdrawRequestForUpdateDto withdrawRequestForUpdateDto, CancellationToken ct = default)
 		{
+			var dbTransaction = await repositoryManager.BeginTransaction(ct);
 			var withdrawRequest = await repositoryManager.WithdrawRequestRepository.GetWithdrawRequestById(id, true, ct);
 			if (withdrawRequest is null)
 			{
 				throw new NotFoundException("Withdraw request not found");
 			}
-			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(id, true, ct);
-			var notification = new Notifications
+			mapper.Map(withdrawRequestForUpdateDto, withdrawRequest);
+			withdrawRequest.HandledAt = DateTime.Now;
+			if (withdrawRequestForUpdateDto.Status == WithdrawTransferStatus.Approved)
 			{
-				Id = Guid.NewGuid(),
-				UserId = transaction.UserId,
-				Message = "Your withdraw request has been resolved. Please check your bank account",
-				CreatedAt = DateTime.Now,
-				IsRead = false
-			};
-			string fileName = $"{id}_{DateTime.Now:yyyyMMddHHmmssfff}{Path.GetExtension(imageProof.FileName)}";
-			withdrawRequest.ImageProof = await blobService.UploadBlob(fileName, StorageContainer.STORAGE_CONTAINER, imageProof);
-			withdrawRequest.IsTransfered = true;
-			transaction.Status = TransactionStatus.Success;
-			repositoryManager.NotificationRepository.CreateNotification(notification);
+				var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(withdrawRequest.UserId, true, ct);
+				var transaction = new Transactions
+				{
+					Id = Guid.NewGuid(),
+					OrderCode = null,
+					Amount = withdrawRequest.Amount,
+					Description = string.Empty,
+					Status = TransactionStatus.Success,
+					Type = TransactionType.Withdraw,
+					CreatedAt = DateTime.Now,
+					UserId = withdrawRequest.UserId,
+					PurchaseUserId = withdrawRequest.UserId,
+					PaymentMethod = PaymentMethod.Wallet
+				};
+				var notification = new Notifications
+				{
+					Id = Guid.NewGuid(),
+					UserId = withdrawRequest.UserId,
+					Message = "Your withdraw request has been approved. Please check your bank account",
+					CreatedAt = DateTime.Now,
+					IsRead = false
+				};
+				wallet.Balance -= withdrawRequest.Amount;
+				repositoryManager.TransactionRepository.CreateTransaction(transaction);
+				repositoryManager.NotificationRepository.CreateNotification(notification);
+			}
+			else if (withdrawRequestForUpdateDto.Status == WithdrawTransferStatus.Rejected)
+			{
+				var notification = new Notifications
+				{
+					Id = Guid.NewGuid(),
+					UserId = withdrawRequest.UserId,
+					Message = "Your withdraw request has been rejected",
+					CreatedAt = DateTime.Now,
+					IsRead = false
+				};
+				repositoryManager.NotificationRepository.CreateNotification(notification);
+			}
+
 			await repositoryManager.SaveAsync(ct);
+			dbTransaction.Commit();
 		}
 	}
 }

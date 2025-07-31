@@ -10,7 +10,11 @@ namespace IndieGameZone.Infrastructure.Configurations
 		{
 			builder.HasKey(w => w.Id);
 			builder.Property(w => w.ImageProof);
-			builder.Property(w => w.IsTransfered);
+			builder.Property(w => w.Amount);
+			builder.Property(w => w.Status).HasConversion<string>().HasMaxLength(10);
+			builder.Property(w => w.HandledAt);
+			builder.Property(w => w.CreatedAt);
+			builder.Property(w => w.RejectReason);
 
 			builder.HasOne(w => w.User)
 				.WithMany(u => u.WithdrawRequests)
