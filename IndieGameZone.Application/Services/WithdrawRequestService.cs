@@ -25,6 +25,11 @@ namespace IndieGameZone.Application.Services
 		public async Task CreateWithdrawRequest(Guid userId, WithdrawRequestForCreationDto withdrawRequestForCreationDto, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
+			var userProfile = await repositoryManager.UserProfileRepository.GetUserProfileById(userId, false, ct);
+			if (string.IsNullOrEmpty(userProfile.BankAccount) || string.IsNullOrEmpty(userProfile.BankName))
+			{
+				throw new BadRequestException("Please complete your profile with bank account information before making a withdraw request");
+			}
 			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, false, ct);
 			if (withdrawRequestForCreationDto.Amount > wallet.Balance)
 			{

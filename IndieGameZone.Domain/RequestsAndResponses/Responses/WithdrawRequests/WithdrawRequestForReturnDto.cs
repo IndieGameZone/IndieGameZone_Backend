@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.WithdrawRequests
 {
@@ -11,5 +12,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.WithdrawRequests
 		public string? RejectReason { get; init; } = null;
 		public DateTime HandledAt { get; init; }
 		public DateTime CreatedAt { get; init; }
+		public virtual UserShortForReturnDto User { get; init; }
 	}
 }

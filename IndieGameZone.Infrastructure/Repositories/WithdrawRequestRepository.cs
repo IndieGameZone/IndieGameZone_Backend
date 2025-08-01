@@ -21,6 +21,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<PagedList<WithdrawRequests>> GetWithdrawRequests(WithdrawRequestParameter withdrawRequestParameter, bool trackChange, CancellationToken ct = default)
 		{
 			var withdrawRequests = FindAll(trackChange)
+				.Include(w => w.User).ThenInclude(u => u.UserProfile)
 				.Sort();
 
 			return await PagedList<WithdrawRequests>.ToPagedList(withdrawRequests, withdrawRequestParameter.PageNumber, withdrawRequestParameter.PageSize, ct);
