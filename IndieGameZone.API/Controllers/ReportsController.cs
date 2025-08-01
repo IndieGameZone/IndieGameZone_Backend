@@ -4,6 +4,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Reports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
 namespace IndieGameZone.API.Controllers
@@ -78,11 +79,11 @@ namespace IndieGameZone.API.Controllers
 			return NoContent();
 		}
 
-		[HttpPut("reports/{id:guid}/resolve-status")]
+		[HttpPatch("reports/{id:guid}/resolve-status")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)}")]
-		public async Task<IActionResult> UpdateResolveStatus([FromRoute] Guid id, CancellationToken ct)
+		public async Task<IActionResult> UpdateResolveStatus([FromRoute] Guid id,[Required] ReportStatus updatedStatus, [FromBody] ReportForUpdateStatusDto? dto, CancellationToken ct)
 		{
-			await serviceManager.ReportService.UpdateResolveStatus(id, ct);
+			await serviceManager.ReportService.UpdateResolveStatus(id, updatedStatus, dto, ct);
 			return NoContent();
 		}
 	}

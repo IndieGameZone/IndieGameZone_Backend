@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application.IServices;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
@@ -84,20 +85,22 @@ namespace IndieGameZone.Application.Services
 			return (reports, reportsWithMetaData.MetaData);
 		}
 
-		public async Task UpdateResolveStatus(Guid id, CancellationToken ct = default)
+		public async Task UpdateResolveStatus(Guid id, ReportStatus updatedStatus, ReportForUpdateStatusDto? dto, CancellationToken ct = default)
 		{
 			var reportEntity = await repositoryManager.ReportRepository.GetReportById(id, true, ct);
 			if (reportEntity == null)
 			{
 				throw new NotFoundException($"Report not found.");
 			}
-			reportEntity.IsResolved = true;
+			reportEntity.Status = updatedStatus;
+			if (reportEntity.ReviewMessage != null)
+                reportEntity.ReviewMessage = dto.ReviewMessage;
 
-			repositoryManager.NotificationRepository.CreateNotification(new Notifications
+            repositoryManager.NotificationRepository.CreateNotification(new Notifications
 			{
 				Id = Guid.NewGuid(),
 				UserId = reportEntity.ReportingUserId,
-				Message = $"Your report has been resolved - {reportEntity.Message}",
+				Message = $"Your report about {reportEntity.Message} has been {reportEntity.Status} - {reportEntity.ReviewMessage}",
 				CreatedAt = DateTime.Now,
 				IsRead = false
 			});
