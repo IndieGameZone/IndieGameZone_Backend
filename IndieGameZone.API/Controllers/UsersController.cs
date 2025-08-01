@@ -85,5 +85,22 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.UserService.PingAsync(jwt, ct);
 			return NoContent();
 		}
-	}
+
+        [HttpPatch("{userId:guid}/bank-info")]
+        [Authorize]
+        public async Task<IActionResult> UpdateBankInfo(
+			[FromRoute] Guid userId,
+			[FromBody] UserForUpdateBankInfoDto dto,
+			CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            await serviceManager.UserService.UpdateBankInfoAsync(userId, dto, ct);
+            return NoContent();
+        }
+
+    }
 }

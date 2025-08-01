@@ -32,5 +32,7 @@ namespace IndieGameZone.Application.IServices
         Task UpdateBirthday(Guid userId, DateOnly birthday, CancellationToken ct);
         Task UpdateUsername(Guid userId, string newUsername, CancellationToken ct = default);
         Task PingAsync(string jwt, CancellationToken ct = default);
+        Task UpdateBankInfoAsync(Guid userId, UserForUpdateBankInfoDto dto, CancellationToken ct);
+
     }
 }

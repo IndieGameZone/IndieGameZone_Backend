@@ -17,6 +17,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(u => u.YoutubeChannelLink);
 			builder.Property(u => u.BankName);
 			builder.Property(u => u.BankAccount);
+            builder.Property(u => u.AccountName);
+            builder.Property(u => u.BankCode);
+            builder.Property(u => u.BankBin);
+            builder.Property(u => u.BankShortName);
             builder.Property(u => u.LastPingAt);
 
             builder.HasOne(u => u.User)

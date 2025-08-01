@@ -30,7 +30,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Users
         public string? FacebookLink { get; init; }
         public string? BankName { get; init; }
         public string? BankAccount { get; init; }
-        
+        public string? AccountName { get; init; }
+
         public double Balance { get; init; }
 
         public RoleForReturnDto? Role { get; set; }

@@ -772,5 +772,22 @@ namespace IndieGameZone.Application.Services
             userProfile.LastPingAt = DateTime.Now;
             await repositoryManager.SaveAsync(ct);
         }
+
+        public async Task UpdateBankInfoAsync(Guid userId, UserForUpdateBankInfoDto dto, CancellationToken ct)
+        {
+            var userProfile = await repositoryManager.UserProfileRepository.GetUserProfileById(userId, true, ct);
+            if (userProfile == null)
+                throw new NotFoundException($"UserProfile for UserId {userId} not found");
+
+            userProfile.BankName = dto.BankName;
+            userProfile.BankAccount = dto.BankAccount;
+            userProfile.AccountName = dto.AccountName;
+            userProfile.BankCode = dto.BankCode;
+            userProfile.BankBin = dto.BankBin;
+            userProfile.BankShortName = dto.BankShortName;
+
+            await repositoryManager.SaveAsync(ct);
+        }
+
     }
 }

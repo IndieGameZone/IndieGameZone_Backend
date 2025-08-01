@@ -11,6 +11,10 @@
 		public string? FacebookLink { get; set; } = string.Empty;
 		public string? BankName { get; set; } = string.Empty;
 		public string? BankAccount { get; set; } = string.Empty;
+		public string? AccountName { get; set; } = string.Empty;
+		public string? BankCode { get; set; } = string.Empty;
+		public string? BankBin { get; set; } = string.Empty;
+		public string? BankShortName { get; set; } = string.Empty;
         public DateTime? LastPingAt { get; set; }
 
         // Navigation properties
