@@ -21,8 +21,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages
 
         public Guid CommercialPackageId { get; set; }
         public string CommercialPackageName { get; set; } = string.Empty;
-
-        public Guid TransactionId { get; set; }
+        public double Price { get; set; }
+        public int Duration { get; set; }
 
         public UserShortForReturnDto Developer { get; set; } = new UserShortForReturnDto();
 

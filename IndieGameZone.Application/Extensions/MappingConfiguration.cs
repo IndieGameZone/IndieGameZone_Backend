@@ -49,7 +49,9 @@ namespace IndieGameZone.Application.Extensions
             config.NewConfig<CommercialRegistrations, CommercialRegistrationForReturnDto>()
 			    .Map(dest => dest.GameName, src => src.Game.Name)
 				.Map(dest => dest.CommercialPackageName, src => src.CommercialPackage.Name)
-				.Map(dest => dest.Developer, src => src.Game.Developer);
+                .Map(dest => dest.Price, src => src.CommercialPackage.Price)
+                .Map(dest => dest.Duration, src => src.CommercialPackage.Duration)
+                .Map(dest => dest.Developer, src => src.Game.Developer);
 
             config.NewConfig<Reports, ReportForReturnDto>()
 				.Map(dest => dest.Id, src => src.Id)
