@@ -17,57 +17,72 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<Reports?> GetReportById(Guid id, bool trackChange, CancellationToken ct = default)
 		{
-			return await FindByCondition(r => r.Id.Equals(id), trackChange)
-				.Include(r => r.ReportingUser).AsSplitQuery()
-				.Include(r => r.ReportReason).AsSplitQuery()
-				.Include(r => r.Post).AsSplitQuery()
-				.Include(r => r.Game).AsSplitQuery()
-				.Include(r => r.PostComment).AsSplitQuery()
-				.FirstOrDefaultAsync(ct);
-		}
+            return await FindByCondition(r => r.Id.Equals(id), trackChange)
+                .Include(r => r.ReportingUser).ThenInclude(ru => ru.UserProfile).AsSplitQuery()
+                .Include(r => r.ReportReason).AsSplitQuery()
+                .Include(r => r.Post).ThenInclude(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                .Include(r => r.PostComment).ThenInclude(pc => pc.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
+                .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                .FirstOrDefaultAsync(ct);
+        }
 
 		public async Task<PagedList<Reports>> GetReports(ReportParameters reportParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var reports = FindAll(trackChange)
-				.Include(r => r.ReportingUser).AsSplitQuery()
+            var reports = FindAll(trackChange)
+				.Include(r => r.ReportingUser).ThenInclude(ru => ru.UserProfile).AsSplitQuery()
 				.Include(r => r.ReportReason).AsSplitQuery()
-				.Include(r => r.Post).AsSplitQuery()
-				.Include(r => r.Game).AsSplitQuery()
+				.Include(r => r.Post).ThenInclude(p => p.PostComments).AsSplitQuery()
 				.Include(r => r.PostComment).AsSplitQuery()
+
+				// Game + its nested relationships
+				.Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
+				.Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+				.Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+				.Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+
 				.Sort();
 
-			return await PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
+            return await PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
 		}
 
 		public Task<PagedList<Reports>> GetReportsByReportedUserId(Guid reportedUserId, ReportParameters reportParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var reports = FindAll(trackChange)
-				.Include(r => r.ReportingUser).AsSplitQuery()
-				.Include(r => r.ReportReason).AsSplitQuery()
-				.Include(r => r.Post).AsSplitQuery()
-				.Include(r => r.Game).AsSplitQuery()
-				.Include(r => r.PostComment).AsSplitQuery()
-				.Where(r =>
-					(r.Post != null && r.Post.UserId == reportedUserId) ||
-					(r.PostComment != null && r.PostComment.UserId == reportedUserId) ||
-					(r.Game != null && r.Game.DeveloperId == reportedUserId)
-				)
-				.Sort();
+            var reports = FindAll(trackChange)
+                    .Include(r => r.ReportingUser).ThenInclude(ru => ru.UserProfile).AsSplitQuery()
+                    .Include(r => r.ReportReason).AsSplitQuery()
+                    .Include(r => r.Post).ThenInclude(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                    .Include(r => r.PostComment).ThenInclude(pc => pc.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                    .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
+                    .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                    .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                    .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                    .Where(r =>
+                        (r.Post != null && r.Post.UserId == reportedUserId) ||
+                        (r.PostComment != null && r.PostComment.UserId == reportedUserId) ||
+                        (r.Game != null && r.Game.DeveloperId == reportedUserId)
+                    )
+                    .Sort();
 
-			return PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
+            return PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
 		}
 
 		public Task<PagedList<Reports>> GetReportsByReportingUserId(Guid reportingUserId, ReportParameters reportParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var reports = FindByCondition(r => r.ReportingUserId.Equals(reportingUserId), trackChange)
-				.Include(r => r.ReportingUser).AsSplitQuery()
-				.Include(r => r.ReportReason).AsSplitQuery()
-				.Include(r => r.Post).AsSplitQuery()
-				.Include(r => r.Game).AsSplitQuery()
-				.Include(r => r.PostComment).AsSplitQuery()
-				.Sort();
+            var reports = FindByCondition(r => r.ReportingUserId.Equals(reportingUserId), trackChange)
+                    .Include(r => r.ReportingUser).ThenInclude(ru => ru.UserProfile).AsSplitQuery()
+                    .Include(r => r.ReportReason).AsSplitQuery()
+                    .Include(r => r.Post).ThenInclude(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                    .Include(r => r.PostComment).ThenInclude(pc => pc.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                    .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
+                    .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                    .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                    .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                    .Sort();
 
-			return PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
+            return PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
 		}
 	}
 }

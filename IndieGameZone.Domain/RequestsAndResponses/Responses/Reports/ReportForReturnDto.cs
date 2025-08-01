@@ -14,8 +14,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Reports
 		public bool IsResolved { get; set; }
 		public ReportReasonForReturnDto ReportReason { get; init; }
 		public UserShortForReturnDto ReportingUser { get; init; }
-		public PostForReturnDto? PostId { get; init; }
-		public GameForListReturnDto? GameId { get; init; }
-		public PostCommentForReturnDto? CommentId { get; init; }
+		public PostForReturnDto? Post { get; init; }
+		public GameForListReturnDto? Game { get; init; }
+		public PostCommentForReturnDto? PostComment { get; init; }
 	}
 }

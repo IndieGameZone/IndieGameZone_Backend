@@ -3,7 +3,9 @@ using IndieGameZone.Domain.RequestsAndResponses.Requests.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.BanHistories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.PostComments;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Posts;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Reports;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 using Mapster;
 
@@ -48,6 +50,17 @@ namespace IndieGameZone.Application.Extensions
 			    .Map(dest => dest.GameName, src => src.Game.Name)
 				.Map(dest => dest.CommercialPackageName, src => src.CommercialPackage.Name)
 				.Map(dest => dest.Developer, src => src.Game.Developer);
+
+            config.NewConfig<Reports, ReportForReturnDto>()
+				.Map(dest => dest.Id, src => src.Id)
+				.Map(dest => dest.Message, src => src.Message)
+				.Map(dest => dest.CreatedAt, src => src.CreatedAt)
+				.Map(dest => dest.IsResolved, src => src.IsResolved)
+				.Map(dest => dest.ReportReason, src => src.ReportReason)
+				.Map(dest => dest.ReportingUser, src => src.ReportingUser)
+				.Map(dest => dest.Post, src => src.Post)
+				.Map(dest => dest.Game, src => src.Game)
+				.Map(dest => dest.PostComment, src => src.PostComment);
 
         }
     }
