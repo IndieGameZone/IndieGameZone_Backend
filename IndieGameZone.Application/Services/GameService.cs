@@ -87,46 +87,46 @@ namespace IndieGameZone.Application.Services
 				throw new ForbiddenException("You do not have permission to delete this game.");
 			}
 
-			// Handle Game Platforms
-			var existingGamePlatforms = await repositoryManager.GamePlatformRepository.GetGamePlatformsByGameId(gameId, false, ct);
-			if (existingGamePlatforms is not null && existingGamePlatforms.Any())
-			{
-				foreach (var platform in existingGamePlatforms)
-				{
-					await blobService.DeleteBlob(platform.File.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-				}
-				repositoryManager.GamePlatformRepository.DeleteGamePlatform(existingGamePlatforms);
-			}
+			//// Handle Game Platforms
+			//var existingGamePlatforms = await repositoryManager.GamePlatformRepository.GetGamePlatformsByGameId(gameId, false, ct);
+			//if (existingGamePlatforms is not null && existingGamePlatforms.Any())
+			//{
+			//	foreach (var platform in existingGamePlatforms)
+			//	{
+			//		await blobService.DeleteBlob(platform.File.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+			//	}
+			//	repositoryManager.GamePlatformRepository.DeleteGamePlatform(existingGamePlatforms);
+			//}
 
-			//Handle Game Image Entities
-			var existingGameImages = await repositoryManager.GameImageRepository.GetGameImagesByGameId(gameId, false, ct);
-			if (existingGameImages is not null && existingGameImages.Any())
-			{
-				foreach (var image in existingGameImages)
-				{
-					if (image.Image != null)
-					{
-						await blobService.DeleteBlob(image.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
-					}
-				}
-				repositoryManager.GameImageRepository.DeleteGameImage(existingGameImages);
-			}
+			////Handle Game Image Entities
+			//var existingGameImages = await repositoryManager.GameImageRepository.GetGameImagesByGameId(gameId, false, ct);
+			//if (existingGameImages is not null && existingGameImages.Any())
+			//{
+			//	foreach (var image in existingGameImages)
+			//	{
+			//		if (image.Image != null)
+			//		{
+			//			await blobService.DeleteBlob(image.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+			//		}
+			//	}
+			//	repositoryManager.GameImageRepository.DeleteGameImage(existingGameImages);
+			//}
 
-			//Handle Game Language Entities
-			var existingGameLanguages = await repositoryManager.GameLanguageRepository.GetGameLanguagesByGameId(gameId, false, ct);
-			if (existingGameLanguages is not null && existingGameLanguages.Any())
-			{
-				repositoryManager.GameLanguageRepository.DeleteGameLanguage(existingGameLanguages);
-			}
+			////Handle Game Language Entities
+			//var existingGameLanguages = await repositoryManager.GameLanguageRepository.GetGameLanguagesByGameId(gameId, false, ct);
+			//if (existingGameLanguages is not null && existingGameLanguages.Any())
+			//{
+			//	repositoryManager.GameLanguageRepository.DeleteGameLanguage(existingGameLanguages);
+			//}
 
-			//Handle Game Tag Entities
-			var existingGameTags = await repositoryManager.GameTagRepository.GetGameTagsByGameId(gameId, false, ct);
-			if (existingGameTags is not null && existingGameTags.Any())
-			{
-				repositoryManager.GameTagRepository.DeleteGameTag(existingGameTags);
-			}
+			////Handle Game Tag Entities
+			//var existingGameTags = await repositoryManager.GameTagRepository.GetGameTagsByGameId(gameId, false, ct);
+			//if (existingGameTags is not null && existingGameTags.Any())
+			//{
+			//	repositoryManager.GameTagRepository.DeleteGameTag(existingGameTags);
+			//}
 
-			await blobService.DeleteBlob(gameEntity.CoverImage.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
+			//await blobService.DeleteBlob(gameEntity.CoverImage.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
 
 			gameEntity.IsDeleted = true;
 			await repositoryManager.SaveAsync(ct);
@@ -154,7 +154,46 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<Guid> CreateGame(Guid developerId, GameForCreationDto game, CancellationToken ct = default)
 		{
-			if (game.GameImages is null || !game.GameImages.Any())
+			var developer = await userManager.FindByIdAsync(developerId.ToString());
+			if (developer is null)
+			{
+				throw new NotFoundException($"Developer not found.");
+			}
+			var ageRestriction = await repositoryManager.AgeRestrictionRepository.GetAgeRestrictionById(game.AgeRestrictionId, false, ct);
+			if (ageRestriction is null)
+			{
+				throw new NotFoundException($"Age restriction not found.");
+			}
+			var category = await repositoryManager.CategoryRepository.GetCategoryById(game.CategoryId, false, ct);
+			if (category is null)
+			{
+				throw new NotFoundException($"Category not found.");
+			}
+			if (!game.LanguageIds.Any())
+			{
+				throw new BadRequestException("At least one language must be selected.");
+			}
+			if (!game.TagIds.Any())
+			{
+				throw new BadRequestException("At least one tag must be selected.");
+			}
+			foreach (var languageId in game.LanguageIds)
+			{
+				var language = await repositoryManager.LanguageRepository.GetLanguageById(languageId, false, ct);
+				if (language is null)
+				{
+					throw new NotFoundException($"Language not found.");
+				}
+			}
+			foreach (var tagId in game.TagIds)
+			{
+				var tag = await repositoryManager.TagRepository.GetTagById(tagId, false, ct);
+				if (tag is null)
+				{
+					throw new NotFoundException($"Tag not found.");
+				}
+			}
+			if (!game.GameImages.Any())
 			{
 				throw new BadRequestException("No images provided.");
 			}
@@ -219,8 +258,46 @@ namespace IndieGameZone.Application.Services
 		public async Task UpdateGame(Guid developerId, Guid gameId, GameForUpdateDto game, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
-
 			await DeleteOldContentBeforeUpdate(gameId, ct);
+			var developer = await userManager.FindByIdAsync(developerId.ToString());
+			if (developer is null)
+			{
+				throw new NotFoundException($"Developer not found.");
+			}
+			var ageRestriction = await repositoryManager.AgeRestrictionRepository.GetAgeRestrictionById(game.AgeRestrictionId, false, ct);
+			if (ageRestriction is null)
+			{
+				throw new NotFoundException($"Age restriction not found.");
+			}
+			var category = await repositoryManager.CategoryRepository.GetCategoryById(game.CategoryId, false, ct);
+			if (category is null)
+			{
+				throw new NotFoundException($"Category not found.");
+			}
+			if (!game.LanguageIds.Any())
+			{
+				throw new BadRequestException("At least one language must be selected.");
+			}
+			if (!game.TagIds.Any())
+			{
+				throw new BadRequestException("At least one tag must be selected.");
+			}
+			foreach (var languageId in game.LanguageIds)
+			{
+				var language = await repositoryManager.LanguageRepository.GetLanguageById(languageId, false, ct);
+				if (language is null)
+				{
+					throw new NotFoundException($"Language not found.");
+				}
+			}
+			foreach (var tagId in game.TagIds)
+			{
+				var tag = await repositoryManager.TagRepository.GetTagById(tagId, false, ct);
+				if (tag is null)
+				{
+					throw new NotFoundException($"Tag not found.");
+				}
+			}
 			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, true, ct);
 			await CheckGamePriceChangeWithin28Days(gameEntity, game);
 			if (gameEntity is null)
@@ -429,13 +506,13 @@ namespace IndieGameZone.Application.Services
 			var gameLibrary = await repositoryManager.LibraryRepository.GetLibraryByUserIdAndGameId(userId, gameId, false, ct);
 			return gameLibrary != null;
 		}
-		
-        public async Task<(IEnumerable<GameForBannerReturnDto> games, MetaData metaData)> GetTodayHomepageBannerGamesAsync(CancellationToken ct = default)
-        {
-            var gamesWithMetaData = (await repositoryManager.GameRepository
-                .GetTodayHomepageBannerGamesAsync(false, ct)).ToList();
 
-            var games = mapper.Map<List<GameForBannerReturnDto>>(gamesWithMetaData);
+		public async Task<(IEnumerable<GameForBannerReturnDto> games, MetaData metaData)> GetTodayHomepageBannerGamesAsync(CancellationToken ct = default)
+		{
+			var gamesWithMetaData = (await repositoryManager.GameRepository
+				.GetTodayHomepageBannerGamesAsync(false, ct)).ToList();
+
+			var games = mapper.Map<List<GameForBannerReturnDto>>(gamesWithMetaData);
 
 			for (int i = 0; i < games.Count; i++)
 			{
@@ -472,15 +549,15 @@ namespace IndieGameZone.Application.Services
 					: games[i].Price;
 			}
 
-            var metaData = new MetaData
-            {
-                CurrentPage = 1,
-                PageSize = games.Count,
-                TotalCount = games.Count,
-                TotalPages = 1
-            };
+			var metaData = new MetaData
+			{
+				CurrentPage = 1,
+				PageSize = games.Count,
+				TotalCount = games.Count,
+				TotalPages = 1
+			};
 
-            return (games, metaData);
+			return (games, metaData);
 		}
 
 	}

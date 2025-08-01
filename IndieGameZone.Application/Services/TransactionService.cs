@@ -144,6 +144,9 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<string> CreateTransactionForDeposit(Guid userId, TransactionForDepositCreationDto transaction, CancellationToken ct = default)
 		{
+			var user = userManager.FindByIdAsync(userId.ToString());
+			if (user == null)
+				throw new NotFoundException("User not found");
 			var transactionEntity = mapper.Map<Transactions>(transaction);
 			transactionEntity.Id = Guid.NewGuid();
 			transactionEntity.UserId = userId;
@@ -162,9 +165,19 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<string> CreateTransactionForGamePurchase(Guid userId, Guid gameId, TransactionForGameCreation transactionForGameCreation, CancellationToken ct = default)
 		{
+			var user = await userManager.FindByIdAsync(userId.ToString());
+			if (user == null)
+				throw new NotFoundException("User not found");
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null)
+				throw new NotFoundException("Game not found");
 			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct);
 			double gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, transactionForGameCreation.CouponId);
+
+			if (transactionForGameCreation.Amount < gamePriceAfterDiscount)
+			{
+				throw new BadRequestException("Transaction amount is less than the game price");
+			}
 
 			if (transactionForGameCreation.PaymentMethod == PaymentMethod.Wallet)
 			{
@@ -291,10 +304,14 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<string> CreateTransactionForDonation(Guid userId, Guid gameId, TransactionForDonationCreationDto transactionForDonationCreationDto, CancellationToken ct = default)
 		{
+
+			var user = await userManager.FindByIdAsync(userId.ToString());
+			if (user == null)
+				throw new NotFoundException("User not found");
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
 			if (game == null)
 			{
-				throw new NotFoundException("Game does not exist");
+				throw new NotFoundException("Game not found");
 			}
 			var transactionEntityForDonor = new Transactions()
 			{

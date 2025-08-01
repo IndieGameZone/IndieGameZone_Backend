@@ -8,6 +8,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Posts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Posts;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -19,13 +20,15 @@ namespace IndieGameZone.Application.Services
 		private readonly IMapper mapper;
 		private readonly IBlobService blobService;
 		private readonly ISchedulerFactory schedulerFactory;
+		private readonly UserManager<Users> userManager;
 
-		public PostService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, ISchedulerFactory schedulerFactory)
+		public PostService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, ISchedulerFactory schedulerFactory, UserManager<Users> userManager)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.blobService = blobService;
 			this.schedulerFactory = schedulerFactory;
+			this.userManager = userManager;
 		}
 
 		private async Task CheckPostAchievement(Guid userId, CancellationToken ct = default)
@@ -84,6 +87,21 @@ namespace IndieGameZone.Application.Services
 		public async Task CreatePost(Guid userId, Guid gameId, PostForCreationDto postForCreationDto, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction();
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game is null)
+				throw new NotFoundException($"Game not found.");
+			var user = userManager.FindByIdAsync(userId.ToString());
+			if (user is null)
+				throw new NotFoundException($"User not found.");
+			if (postForCreationDto.Tags != null)
+			{
+				foreach (var tagId in postForCreationDto.Tags)
+				{
+					var tag = await repositoryManager.TagRepository.GetTagById(tagId, false, ct);
+					if (tag is null)
+						throw new NotFoundException($"Tag not found.");
+				}
+			}
 			var postEntity = mapper.Map<Posts>(postForCreationDto);
 			postEntity.Id = Guid.NewGuid();
 			postEntity.UserId = userId;
@@ -139,6 +157,9 @@ namespace IndieGameZone.Application.Services
 		public async Task DeletePost(Guid userId, Guid postId, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction();
+			var user = await userManager.FindByIdAsync(userId.ToString());
+			if (user is null)
+				throw new NotFoundException($"User not found.");
 			var post = await repositoryManager.PostRepository.GetPostById(postId, false, ct);
 			if (post is null)
 				throw new NotFoundException($"Post not found.");
@@ -166,6 +187,9 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<(IEnumerable<PostForReturnDto> posts, MetaData metaData)> GetPostsByGameId(Guid gameId, PostParameters postParameters, CancellationToken ct = default)
 		{
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game is null)
+				throw new NotFoundException($"Game not found.");
 			var postWithMetaData = await repositoryManager.PostRepository.GetPostsByGameId(gameId, postParameters, false, ct);
 			var posts = mapper.Map<IEnumerable<PostForReturnDto>>(postWithMetaData);
 			return (posts, postWithMetaData.MetaData);
@@ -173,6 +197,9 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<(IEnumerable<PostForReturnDto> posts, MetaData metaData)> GetPostsByUserId(Guid userId, PostParameters postParameters, CancellationToken ct = default)
 		{
+			var user = await userManager.FindByIdAsync(userId.ToString());
+			if (user is null)
+				throw new NotFoundException($"User not found.");
 			var postWithMetaData = await repositoryManager.PostRepository.GetPostsByUserId(userId, postParameters, false, ct);
 			var posts = mapper.Map<IEnumerable<PostForReturnDto>>(postWithMetaData);
 			return (posts, postWithMetaData.MetaData);
@@ -181,17 +208,30 @@ namespace IndieGameZone.Application.Services
 		public async Task UpdatePost(Guid userId, Guid postId, PostForUpdateDto postForUpdateDto, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction();
+			var user = await userManager.FindByIdAsync(userId.ToString());
+			if (user is null)
+				throw new NotFoundException($"User not found.");
+			var post = await repositoryManager.PostRepository.GetPostById(postId, true, ct);
+			if (post is null)
+				throw new NotFoundException($"Post not found.");
+			if (post.UserId != userId)
+				throw new ForbiddenException("You are not authorized to update this post.");
+			if (postForUpdateDto.Tags != null)
+			{
+				foreach (var tagId in postForUpdateDto.Tags)
+				{
+					var tag = await repositoryManager.TagRepository.GetTagById(tagId, false, ct);
+					if (tag is null)
+						throw new NotFoundException($"Tag not found.");
+				}
+			}
+
 			await DeleteOldPostImage(postId, postForUpdateDto.Images, ct);
 
 			var existingPostTag = await repositoryManager.PostTagRepository.GetPostTagsByPostId(postId, false, ct);
 			repositoryManager.PostTagRepository.DeletePostTag(existingPostTag);
 			await repositoryManager.SaveAsync(ct);
 
-			var post = await repositoryManager.PostRepository.GetPostById(postId, true, ct);
-			if (post is null)
-				throw new NotFoundException($"Post not found.");
-			if (post.UserId != userId)
-				throw new ForbiddenException("You are not authorized to update this post.");
 			mapper.Map(postForUpdateDto, post);
 			post.UpdatedAt = DateTime.Now;
 			post.Status = PostStatus.PendingAIReview;
