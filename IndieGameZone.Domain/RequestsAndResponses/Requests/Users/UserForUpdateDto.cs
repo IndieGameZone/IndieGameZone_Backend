@@ -16,8 +16,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Users
         public DateOnly? Birthday { get; init; }
         public string? YoutubeChannelLink { get; init; }
         public string? FacebookLink { get; init; }
-        public string? BankName { get; init; }
-        public string? BankAccount { get; init; }
 
     }
 }

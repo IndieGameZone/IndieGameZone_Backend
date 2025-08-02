@@ -26,7 +26,7 @@ namespace IndieGameZone.Application.Services
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
 			var userProfile = await repositoryManager.UserProfileRepository.GetUserProfileById(userId, false, ct);
-			if (string.IsNullOrEmpty(userProfile.BankAccount) || string.IsNullOrEmpty(userProfile.BankName))
+			if (string.IsNullOrEmpty(userProfile.BankAccountNumber) || string.IsNullOrEmpty(userProfile.BankAccountName))
 			{
 				throw new BadRequestException("Please complete your profile with bank account information before making a withdraw request");
 			}

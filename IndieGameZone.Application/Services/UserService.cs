@@ -81,23 +81,15 @@ namespace IndieGameZone.Application.Services
 
 			var roleName = (await userManager.GetRolesAsync(user)).FirstOrDefault();
 
-			return dto with
-			{
-				Role = !string.IsNullOrWhiteSpace(roleName)
-					? new RoleForReturnDto { Name = roleName }
-					: null,
-
-				Fullname = user.UserProfile?.Fullname,
-				Avatar = user.UserProfile?.Avatar,
-				Bio = user.UserProfile?.Bio,
-				Birthday = user.UserProfile?.Birthday,
-                YoutubeChannelLink = user.UserProfile?.YoutubeChannelLink,
-                FacebookLink = user.UserProfile?.FacebookLink,
-				BankName = user.UserProfile?.BankName,
-				BankAccount = user.UserProfile?.BankAccount,
-                Balance = user.Wallet?.Balance ?? 0
+            dto = dto with
+            {
+                Role = !string.IsNullOrWhiteSpace(roleName)
+                    ? new RoleForReturnDto { Name = roleName }
+                    : null
             };
-		}
+
+            return dto;
+        }
 
 		public async Task CreateUser(UserForCreationDto userForCreationDto, bool adminFlag, CancellationToken ct = default)
 		{
@@ -453,19 +445,9 @@ namespace IndieGameZone.Application.Services
 
 				dtoList.Add(dto with
 				{
-					Role = !string.IsNullOrWhiteSpace(roleName)
-						? new RoleForReturnDto { Name = roleName }
-						: null,
-
-					Fullname = user.UserProfile?.Fullname,
-					Avatar = user.UserProfile?.Avatar,
-					Bio = user.UserProfile?.Bio,
-                    YoutubeChannelLink = user.UserProfile?.YoutubeChannelLink,
-                    Birthday = user.UserProfile?.Birthday,
-					FacebookLink = user.UserProfile?.FacebookLink,
-					BankName = user.UserProfile?.BankName,
-					BankAccount = user.UserProfile?.BankAccount,
-                    Balance = user.Wallet?.Balance ?? 0
+                    Role = !string.IsNullOrWhiteSpace(roleName)
+                        ? new RoleForReturnDto { Name = roleName }
+                        : null
                 });
 			}
 
@@ -780,8 +762,8 @@ namespace IndieGameZone.Application.Services
                 throw new NotFoundException($"UserProfile for UserId {userId} not found");
 
             userProfile.BankName = dto.BankName;
-            userProfile.BankAccount = dto.BankAccount;
-            userProfile.AccountName = dto.AccountName;
+            userProfile.BankAccountNumber = dto.BankAccountNumber;
+            userProfile.BankAccountName = dto.BankAccountName;
             userProfile.BankCode = dto.BankCode;
             userProfile.BankBin = dto.BankBin;
             userProfile.BankShortName = dto.BankShortName;

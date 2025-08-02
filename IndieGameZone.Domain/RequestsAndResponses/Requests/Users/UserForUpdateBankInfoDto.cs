@@ -12,9 +12,9 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Users
         [Required]
         public string BankName { get; set; }
         [Required]
-        public string BankAccount { get; set; }
+        public string BankAccountNumber { get; set; }
         [Required]
-        public string AccountName { get; set; }
+        public string BankAccountName { get; set; }
         [Required]
         public string BankCode { get; set; }
         [Required]

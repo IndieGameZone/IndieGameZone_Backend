@@ -37,13 +37,25 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.Category, src => src.Category.Name)
 				.Map(dest => dest.Tags, src => src.GameTags.Select(gt => gt.Tag.Name).ToList());
 
+            config.NewConfig<Users, UserForReturnDto>()
+				.Map(dest => dest.Fullname, src => src.UserProfile.Fullname)
+				.Map(dest => dest.Avatar, src => src.UserProfile.Avatar)
+				.Map(dest => dest.Bio, src => src.UserProfile.Bio)
+				.Map(dest => dest.Birthday, src => src.UserProfile.Birthday)
+				.Map(dest => dest.YoutubeChannelLink, src => src.UserProfile.YoutubeChannelLink)
+				.Map(dest => dest.FacebookLink, src => src.UserProfile.FacebookLink)
+				.Map(dest => dest.BankAccountNumber, src => src.UserProfile.BankAccountNumber)
+				.Map(dest => dest.BankAccountName, src => src.UserProfile.BankAccountName)
+				.Map(dest => dest.Balance, src => src.Wallet.Balance)
+                .Map(dest => dest.BankInfo, src => src.UserProfile.Adapt<BankInfoForReturnDto>());
+
 			config.NewConfig<Users, UserShortForReturnDto>()
 				.Map(dest => dest.Fullname, src => src.UserProfile.Fullname)
 				.Map(dest => dest.Avatar, src => src.UserProfile.Avatar)
-				.Map(dest => dest.BankName, src => src.UserProfile.BankName)
-				.Map(dest => dest.BankAccount, src => src.UserProfile.BankAccount);
+				.Map(dest => dest.BankAccountNumber, src => src.UserProfile.BankAccountNumber)
+				.Map(dest => dest.BankAccountName, src => src.UserProfile.BankAccountName);
 
-			config.NewConfig<BanHistories, BanHistoryForReturnDto>()
+            config.NewConfig<BanHistories, BanHistoryForReturnDto>()
 				.Map(dest => dest.BannedUser, src => src.BannedUser)
 				.Map(dest => dest.BannedByUser, src => src.BannedByUser);
 
