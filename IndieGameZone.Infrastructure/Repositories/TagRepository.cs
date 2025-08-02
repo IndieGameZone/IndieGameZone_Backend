@@ -18,7 +18,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public void DeleteTag(Tags tag) => Delete(tag);
 
 		public async Task<Tags?> GetTagById(Guid id, bool trackChange, CancellationToken ct = default) => await
-			FindByCondition(x => x.Id == id && x.IsDeleted, trackChange).FirstOrDefaultAsync(ct);
+			FindByCondition(x => x.Id == id && !x.IsDeleted, trackChange).FirstOrDefaultAsync(ct);
 
 		public async Task<IEnumerable<Tags>> GetTags(TagParameters tagParameters, bool trackChange, CancellationToken ct = default)
 		{

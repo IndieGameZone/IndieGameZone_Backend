@@ -38,6 +38,16 @@ namespace IndieGameZone.Infrastructure.Configurations
 				{
 					RoleId = Guid.Parse("51999f00-0f63-4236-8c81-94c43fcf7586"),
 					UserId = Guid.Parse("23879117-e09e-40f1-b78f-1493d81baf49")
+				},
+				new IdentityUserRole<Guid>
+				{
+					RoleId = Guid.Parse("51999f00-0f63-4236-8c81-94c43fcf7586"),
+					UserId = Guid.Parse("91b106fa-7b95-480f-a12a-0e0303454332")
+				},
+				new IdentityUserRole<Guid>
+				{
+					RoleId = Guid.Parse("51999f00-0f63-4236-8c81-94c43fcf7586"),
+					UserId = Guid.Parse("537f05fd-120c-40b0-b2ec-639756f866ab")
 				}
 			);
 		}

@@ -10,6 +10,8 @@ namespace IndieGameZone.Application.IServices
 		Task UpdateReview(Guid userId, Guid id, ReviewForUpdateDto reviewForUpdateDto, CancellationToken ct = default);
 		Task<string> GetSummaryReviewByGameId(Guid gameId, CancellationToken ct = default);
 		Task<(IEnumerable<ReviewForReturnDto> reviews, MetaData metaData)> GetReviewsByGameId(Guid gameId, ReviewParameters reviewParameters, CancellationToken ct = default);
+		Task<(IEnumerable<ReviewForReturnDto> reviews, MetaData metaData)> GetReviewsByUserId(Guid userId, ReviewParameters reviewParameters, CancellationToken ct = default);
+		Task<(IEnumerable<ReviewForReturnDto> reviews, MetaData metaData)> GetReviewsByUserIdAndGameId(Guid gameId, Guid userId, ReviewParameters reviewParameters, CancellationToken ct = default);
 		Task<IList<RatingStatistic>> GetReviewStatistic(Guid gameId, CancellationToken ct = default);
 	}
 

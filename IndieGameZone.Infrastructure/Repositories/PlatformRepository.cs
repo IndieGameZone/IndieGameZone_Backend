@@ -16,7 +16,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void DeletePlatform(Platforms platform) => Delete(platform);
 
-		public async Task<Platforms?> GetPlatformById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(x => x.Id == id && x.IsDeleted, trackChange)
+		public async Task<Platforms?> GetPlatformById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(x => x.Id == id && !x.IsDeleted, trackChange)
 			.FirstOrDefaultAsync(ct);
 
 		public async Task<IEnumerable<Platforms>> GetPlatforms(bool trackChange, CancellationToken ct = default)

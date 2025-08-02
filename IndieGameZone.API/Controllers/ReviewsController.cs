@@ -57,5 +57,23 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.ReviewService.UpdateReview(userId, reviewId, reviewForUpdateDto, ct);
 			return NoContent();
 		}
+
+		[HttpGet("users/{userId:guid}/reviews")]
+		[Authorize]
+		public async Task<IActionResult> GetReviewsByUserId([FromRoute] Guid userId, [FromQuery] ReviewParameters reviewParameters, CancellationToken ct)
+		{
+			var pagedResult = await serviceManager.ReviewService.GetReviewsByUserId(userId, reviewParameters, ct);
+			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+			return Ok(pagedResult.reviews);
+		}
+
+		[HttpGet("users/{userId:guid}/games/{gameId:guid}/reviews")]
+		[Authorize]
+		public async Task<IActionResult> GetReviewsByUserIdAndGameId([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromQuery] ReviewParameters reviewParameters, CancellationToken ct)
+		{
+			var pagedResult = await serviceManager.ReviewService.GetReviewsByUserIdAndGameId(gameId, userId, reviewParameters, ct);
+			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+			return Ok(pagedResult.reviews);
+		}
 	}
 }

@@ -123,5 +123,35 @@ namespace IndieGameZone.Application.Services
 			}
 			return result;
 		}
+
+		public async Task<(IEnumerable<ReviewForReturnDto> reviews, MetaData metaData)> GetReviewsByUserId(Guid userId, ReviewParameters reviewParameters, CancellationToken ct = default)
+		{
+			var user = userManager.FindByIdAsync(userId.ToString());
+			if (user == null)
+			{
+				throw new NotFoundException("User not found.");
+			}
+			var reviewsWithMetaData = await repositoryManager.ReviewRepository.GetReviewsByUserId(userId, reviewParameters, false, ct);
+			var reviews = mapper.Map<IEnumerable<ReviewForReturnDto>>(reviewsWithMetaData);
+			return (reviews, reviewsWithMetaData.MetaData);
+
+		}
+
+		public async Task<(IEnumerable<ReviewForReturnDto> reviews, MetaData metaData)> GetReviewsByUserIdAndGameId(Guid gameId, Guid userId, ReviewParameters reviewParameters, CancellationToken ct = default)
+		{
+			var user = userManager.FindByIdAsync(userId.ToString());
+			if (user == null)
+			{
+				throw new NotFoundException("User not found.");
+			}
+			var game = repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null)
+			{
+				throw new NotFoundException("Game not found.");
+			}
+			var reviewsWithMetaData = await repositoryManager.ReviewRepository.GetReviewsByUserIdAndGameId(userId, gameId, reviewParameters, false, ct);
+			var reviews = mapper.Map<IEnumerable<ReviewForReturnDto>>(reviewsWithMetaData);
+			return (reviews, reviewsWithMetaData.MetaData);
+		}
 	}
 }
