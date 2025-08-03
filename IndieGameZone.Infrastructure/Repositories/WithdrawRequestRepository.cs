@@ -27,11 +27,12 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return await PagedList<WithdrawRequests>.ToPagedList(withdrawRequests, withdrawRequestParameter.PageNumber, withdrawRequestParameter.PageSize, ct);
 		}
 
-		public Task<PagedList<WithdrawRequests>> GetWithdrawRequestsByUserId(Guid userId, WithdrawRequestParameter withdrawRequestParameter, bool trackChange, CancellationToken ct = default)
+		public async Task<PagedList<WithdrawRequests>> GetWithdrawRequestsByUserId(Guid userId, WithdrawRequestParameter withdrawRequestParameter, bool trackChange, CancellationToken ct = default)
 		{
-			var withdrawRequests = FindAll(trackChange)
+			var withdrawRequests = FindByCondition(w => w.UserId == userId, trackChange)
+				.Include(w => w.User).ThenInclude(u => u.UserProfile)
 				.Sort();
-			return PagedList<WithdrawRequests>.ToPagedList(withdrawRequests, withdrawRequestParameter.PageNumber, withdrawRequestParameter.PageSize, ct);
+			return await PagedList<WithdrawRequests>.ToPagedList(withdrawRequests, withdrawRequestParameter.PageNumber, withdrawRequestParameter.PageSize, ct);
 		}
 	}
 }
