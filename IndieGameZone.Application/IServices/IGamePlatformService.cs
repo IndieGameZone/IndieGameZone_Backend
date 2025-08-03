@@ -8,5 +8,6 @@ namespace IndieGameZone.Application.IServices
 		Task UpdateGamePlatform(Guid gameId, ICollection<GamePlatformForUpdateDto> gamePlatformForUpdateDto, CancellationToken ct = default);
 		Task UpdateGamePlatformActivationStatus(Guid gamePlatformId, bool isActive, CancellationToken ct = default);
 		Task UpdateGamePlatformById(Guid gamePlatformId, GamePlatformForUpdateDto gamePlatformForUpdateDto, CancellationToken ct = default);
+		Task DeleteGamePlatform(Guid gamePlatformId, CancellationToken ct = default);
 	}
 }

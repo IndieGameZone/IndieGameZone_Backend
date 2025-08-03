@@ -106,5 +106,18 @@ namespace IndieGameZone.Application.Services
 				await repositoryManager.SaveAsync(ct);
 			}
 		}
+
+		public async Task DeleteGamePlatform(Guid gamePlatformId, CancellationToken ct = default)
+		{
+			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, true, ct);
+			if (gamePlatform is null)
+			{
+				throw new NotFoundException($"Game platform not found.");
+			}
+			var blobName = gamePlatform.File.Split('/').Last();
+			await blobService.DeleteBlob(blobName, StorageContainer.STORAGE_CONTAINER);
+			repositoryManager.GamePlatformRepository.DeleteGamePlatform(gamePlatform);
+			await repositoryManager.SaveAsync(ct);
+		}
 	}
 }

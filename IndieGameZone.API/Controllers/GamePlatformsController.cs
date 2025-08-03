@@ -48,5 +48,13 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.GamePlatformService.UpdateGamePlatformById(gamePlatformId, gamePlatformForUpdateDto, ct);
 			return NoContent();
 		}
+
+		[HttpDelete("game-platforms/{gamePlatformId:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)}")]
+		public async Task<IActionResult> DeleteGamePlatform([FromRoute] Guid gamePlatformId, CancellationToken ct)
+		{
+			await serviceManager.GamePlatformService.DeleteGamePlatform(gamePlatformId, ct);
+			return NoContent();
+		}
 	}
 }
