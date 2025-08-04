@@ -18,12 +18,14 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<Transactions?> GetTransactionById(Guid id, bool trackChange, CancellationToken ct = default) => await
 			FindByCondition(x => x.Id == id, trackChange)
+			.Include(t => t.User).ThenInclude(t => t.UserProfile).AsSplitQuery()
 			.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
 			.Include(t => t.Game).AsSplitQuery()
 			.FirstOrDefaultAsync(ct);
 
 		public Task<Transactions?> GetTransactionById(long orderCode, bool trackChange, CancellationToken ct = default) =>
 			FindByCondition(x => x.OrderCode == orderCode, trackChange)
+			.Include(t => t.User).ThenInclude(t => t.UserProfile).AsSplitQuery()
 			.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
 			.Include(t => t.Game).AsSplitQuery()
 			.FirstOrDefaultAsync(ct);
@@ -32,6 +34,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var transactionEntities = FindAll(trackChange)
 				.FilterByTransactionTypes(transactionParameters.TransactionTypes)
+				.Include(t => t.User).ThenInclude(t => t.UserProfile).AsSplitQuery()
 				.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
 				.Include(t => t.Game).AsSplitQuery()
 				.Sort();
@@ -43,6 +46,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var transactionEntities = FindByCondition(x => x.UserId == userId, trackChange)
 				.FilterByTransactionTypes(transactionParameters.TransactionTypes)
+				.Include(t => t.User).ThenInclude(t => t.UserProfile).AsSplitQuery()
 				.Include(t => t.PurchaseUser).ThenInclude(t => t.UserProfile).AsSplitQuery()
 				.Include(t => t.Game).AsSplitQuery()
 				.Sort();

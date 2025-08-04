@@ -35,7 +35,7 @@ namespace IndieGameZone.API.Controllers
 
 		[HttpPut("game-platforms/{gamePlatformId:guid}/activation")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
-		public async Task<IActionResult> UpdateGamePlatformActivationStatus([FromRoute] Guid developerId, [FromRoute] Guid gamePlatformId, [FromForm] bool isActive, CancellationToken ct)
+		public async Task<IActionResult> UpdateGamePlatformActivationStatus([FromRoute] Guid gamePlatformId, [FromForm] bool isActive, CancellationToken ct)
 		{
 			await serviceManager.GamePlatformService.UpdateGamePlatformActivationStatus(gamePlatformId, isActive, ct);
 			return NoContent();
@@ -43,7 +43,7 @@ namespace IndieGameZone.API.Controllers
 
 		[HttpPut("game-platforms/{gamePlatformId:guid}")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
-		public async Task<IActionResult> UpdateGamePlatform([FromRoute] Guid developerId, [FromRoute] Guid gamePlatformId, [FromBody] GamePlatformForUpdateDto gamePlatformForUpdateDto, CancellationToken ct)
+		public async Task<IActionResult> UpdateGamePlatform([FromRoute] Guid gamePlatformId, [FromBody] GamePlatformForUpdateDto gamePlatformForUpdateDto, CancellationToken ct)
 		{
 			await serviceManager.GamePlatformService.UpdateGamePlatformById(gamePlatformId, gamePlatformForUpdateDto, ct);
 			return NoContent();

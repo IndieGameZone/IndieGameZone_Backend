@@ -18,7 +18,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet]
-		[Authorize]
 		public async Task<IActionResult> GetPlatforms(CancellationToken ct)
 		{
 			var platforms = await serviceManager.PlatformService.GetPlatforms(ct);
@@ -26,7 +25,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("{id:guid}")]
-		[Authorize]
 		public async Task<IActionResult> GetPlatform([FromRoute] Guid id, CancellationToken ct)
 		{
 			var platform = await serviceManager.PlatformService.GetPlatformById(id, ct);

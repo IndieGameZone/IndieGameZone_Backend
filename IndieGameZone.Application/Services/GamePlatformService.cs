@@ -101,10 +101,12 @@ namespace IndieGameZone.Application.Services
 				var blobName = gamePlatformForUpdateDto.File.Split('/').Last();
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.File = gamePlatformForUpdateDto.File;
-				gamePlatform.Version = gamePlatformForUpdateDto.Version;
 
-				await repositoryManager.SaveAsync(ct);
 			}
+			gamePlatform.Version = gamePlatformForUpdateDto.Version;
+			gamePlatform.DisplayName = gamePlatformForUpdateDto.DisplayName;
+
+			await repositoryManager.SaveAsync(ct);
 		}
 
 		public async Task DeleteGamePlatform(Guid gamePlatformId, CancellationToken ct = default)
