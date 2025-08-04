@@ -1,10 +1,13 @@
 ﻿using Bogus;
+using IndieGameZone.Application.Hub;
+using IndieGameZone.Application.IHub;
 using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using MapsterMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Quartz;
 
@@ -41,7 +44,7 @@ namespace IndieGameZone.Application.Services
 		private readonly Lazy<IGameImageService> gameImageService;
 		private readonly Lazy<IOrderService> orderService;
 
-		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker, IAIService aIService, IRecombeeService recombeeService)
+		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker, IAIService aIService, IRecombeeService recombeeService, IHubContext<NotificationHub, INotificationHub> notificationHub)
 		{
 			languageService = new Lazy<ILanguageService>(() => new LanguageService(repositoryManager, mapper));
 			tagService = new Lazy<ITagService>(() => new TagService(repositoryManager, mapper));
@@ -53,17 +56,17 @@ namespace IndieGameZone.Application.Services
 			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration, blobService, faker));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
 			wishlistService = new Lazy<IWishlistService>(() => new WishlistService(repositoryManager, mapper, recombeeService));
-			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration, recombeeService, userManager));
+			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration, recombeeService, userManager, notificationHub));
 			reviewService = new Lazy<IReviewService>(() => new ReviewService(repositoryManager, mapper, aIService, recombeeService, userManager));
 			libraryService = new Lazy<ILibraryService>(() => new LibraryService(repositoryManager, mapper));
 			withdrawRequestService = new Lazy<IWithdrawRequestService>(() => new WithdrawRequestService(repositoryManager, mapper, blobService));
-			postService = new Lazy<IPostService>(() => new PostService(repositoryManager, mapper, blobService, schedulerFactory, userManager));
-			postCommentService = new Lazy<IPostCommentService>(() => new PostCommentService(repositoryManager, mapper, schedulerFactory));
+			postService = new Lazy<IPostService>(() => new PostService(repositoryManager, mapper, blobService, schedulerFactory, userManager, notificationHub));
+			postCommentService = new Lazy<IPostCommentService>(() => new PostCommentService(repositoryManager, mapper, schedulerFactory, notificationHub));
 			commercialPackageService = new Lazy<ICommercialPackageService>(() => new CommercialPackageService(repositoryManager, mapper));
 			gamePlatformService = new Lazy<IGamePlatformService>(() => new GamePlatformService(repositoryManager, mapper, blobService));
-			postReactionService = new Lazy<IPostReactionService>(() => new PostReactionService(repositoryManager));
+			postReactionService = new Lazy<IPostReactionService>(() => new PostReactionService(repositoryManager, notificationHub));
 			reportReasonService = new Lazy<IReportReasonService>(() => new ReportReasonService(repositoryManager, mapper));
-			userFollowService = new Lazy<IUserFollowService>(() => new UserFollowService(repositoryManager));
+			userFollowService = new Lazy<IUserFollowService>(() => new UserFollowService(repositoryManager, notificationHub));
 			reportService = new Lazy<IReportService>(() => new ReportService(repositoryManager, mapper));
 			notificationService = new Lazy<INotificationService>(() => new NotificationService(repositoryManager, mapper));
 			banHistoryService = new Lazy<IBanHistoryService>(() => new BanHistoryService(repositoryManager, mapper, userManager));

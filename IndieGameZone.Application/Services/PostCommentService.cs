@@ -1,4 +1,6 @@
 ﻿using IndieGameZone.Application.BackgroundJobServices;
+using IndieGameZone.Application.Hub;
+using IndieGameZone.Application.IHub;
 using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
@@ -8,6 +10,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.PostComments;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.PostComments;
 using MapsterMapper;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -18,12 +21,14 @@ namespace IndieGameZone.Application.Services
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 		private readonly ISchedulerFactory schedulerFactory;
+		private readonly IHubContext<NotificationHub, INotificationHub> notificationHub;
 
-		public PostCommentService(IRepositoryManager repositoryManager, IMapper mapper, ISchedulerFactory schedulerFactory)
+		public PostCommentService(IRepositoryManager repositoryManager, IMapper mapper, ISchedulerFactory schedulerFactory, IHubContext<NotificationHub, INotificationHub> notificationHub)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.schedulerFactory = schedulerFactory;
+			this.notificationHub = notificationHub;
 		}
 
 		private async Task CheckCommentAchievements(Guid userId, CancellationToken ct = default)
@@ -40,14 +45,15 @@ namespace IndieGameZone.Application.Services
 				UserId = userId,
 				AchievementId = achievement.Id
 			});
-			repositoryManager.NotificationRepository.CreateNotification(new Notifications
+			var notification = new Notifications
 			{
 				Id = Guid.NewGuid(),
 				UserId = userId,
 				Message = $"Congratulations! You have earned the {achievement.Name} achievement and receive a {achievement.DiscountAward}% discount.",
 				IsRead = false,
 				CreatedAt = DateTime.Now
-			});
+			};
+			repositoryManager.NotificationRepository.CreateNotification(notification);
 			repositoryManager.CouponRepository.CreateCoupon(new Coupons
 			{
 				Id = Guid.NewGuid(),
@@ -58,6 +64,7 @@ namespace IndieGameZone.Application.Services
 				UserId = userId
 			});
 			await repositoryManager.SaveAsync(ct);
+			await notificationHub.Clients.User(userId.ToString()).SendNotification(notification);
 		}
 
 		public async Task CreateComment(Guid userId, Guid postId, PostCommentForCreationDto postCommentForCreationDto, CancellationToken ct = default)

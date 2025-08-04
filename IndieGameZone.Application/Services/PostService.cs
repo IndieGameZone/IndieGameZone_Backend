@@ -1,4 +1,6 @@
 ﻿using IndieGameZone.Application.BackgroundJobServices;
+using IndieGameZone.Application.Hub;
+using IndieGameZone.Application.IHub;
 using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
@@ -9,6 +11,7 @@ using IndieGameZone.Domain.RequestsAndResponses.Requests.Posts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Posts;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 
@@ -21,14 +24,16 @@ namespace IndieGameZone.Application.Services
 		private readonly IBlobService blobService;
 		private readonly ISchedulerFactory schedulerFactory;
 		private readonly UserManager<Users> userManager;
+		private readonly IHubContext<NotificationHub, INotificationHub> notificationHub;
 
-		public PostService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, ISchedulerFactory schedulerFactory, UserManager<Users> userManager)
+		public PostService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, ISchedulerFactory schedulerFactory, UserManager<Users> userManager, IHubContext<NotificationHub, INotificationHub> notificationHub)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.blobService = blobService;
 			this.schedulerFactory = schedulerFactory;
 			this.userManager = userManager;
+			this.notificationHub = notificationHub;
 		}
 
 		private async Task CheckPostAchievement(Guid userId, CancellationToken ct = default)
@@ -46,14 +51,15 @@ namespace IndieGameZone.Application.Services
 				UserId = userId,
 				AchievementId = achievement.Id,
 			});
-			repositoryManager.NotificationRepository.CreateNotification(new Notifications
+			var notification = new Notifications
 			{
 				Id = Guid.NewGuid(),
 				UserId = userId,
 				Message = $"Congratulations! You have earned the {achievement.Name} achievement and receive a {achievement.DiscountAward}% discount.",
 				CreatedAt = DateTime.Now,
 				IsRead = false
-			});
+			};
+			repositoryManager.NotificationRepository.CreateNotification(notification);
 			repositoryManager.CouponRepository.CreateCoupon(new Coupons
 			{
 				Id = Guid.NewGuid(),
@@ -65,6 +71,7 @@ namespace IndieGameZone.Application.Services
 			});
 
 			await repositoryManager.SaveAsync(ct);
+			await notificationHub.Clients.User(userId.ToString()).SendNotification(notification);
 		}
 
 		private async Task DeleteOldPostImage(Guid postId, IEnumerable<string> newPostImages, CancellationToken ct)

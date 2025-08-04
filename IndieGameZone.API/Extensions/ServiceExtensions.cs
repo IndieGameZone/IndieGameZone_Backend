@@ -34,6 +34,11 @@ namespace IndieGameZone.API.Extensions
 			services.AddSingleton<IBlobService, BlobService>();
 		}
 
+		public static void ConfigureSignalR(this IServiceCollection services, IConfiguration configuration)
+		{
+			services.AddSignalR().AddAzureSignalR(configuration.GetSection("SignalR").Value);
+		}
+
 		public static void ConfigureIdentity(this IServiceCollection services)
 		{
 			services.AddIdentity<Users, Roles>(o =>
@@ -168,18 +173,18 @@ namespace IndieGameZone.API.Extensions
 			{
 				q.UseJobFactory<MicrosoftDependencyInjectionJobFactory>();
 
-                var jobKey = new JobKey("UpdateCommercialStatusJob");
+				var jobKey = new JobKey("UpdateCommercialStatusJob");
 
-                q.AddJob<UpdateCommercialRegistrationStatusJob>(opts => opts.WithIdentity(jobKey));
+				q.AddJob<UpdateCommercialRegistrationStatusJob>(opts => opts.WithIdentity(jobKey));
 
-                q.AddTrigger(opts => opts
-                    .ForJob(jobKey)
-                    .WithIdentity("UpdateCommercialStatusJob-trigger")
-                    .WithSchedule(CronScheduleBuilder
-                        .DailyAtHourAndMinute(0, 1) // 00:01
-                        .InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")))); // Vietnam
+				q.AddTrigger(opts => opts
+					.ForJob(jobKey)
+					.WithIdentity("UpdateCommercialStatusJob-trigger")
+					.WithSchedule(CronScheduleBuilder
+						.DailyAtHourAndMinute(0, 1) // 00:01
+						.InTimeZone(TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")))); // Vietnam
 
-            });
+			});
 			services.AddQuartzHostedService(opt =>
 			{
 				opt.WaitForJobsToComplete = true;

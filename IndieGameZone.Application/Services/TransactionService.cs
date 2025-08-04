@@ -1,4 +1,6 @@
-﻿using IndieGameZone.Application.IServices;
+﻿using IndieGameZone.Application.Hub;
+using IndieGameZone.Application.IHub;
+using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
@@ -8,6 +10,7 @@ using IndieGameZone.Domain.RequestsAndResponses.Requests.Transactions;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Transactions;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Net.payOS;
@@ -22,14 +25,16 @@ namespace IndieGameZone.Application.Services
 		private readonly IConfiguration configuration;
 		private readonly IRecombeeService recombeeService;
 		private readonly UserManager<Users> userManager;
+		private readonly IHubContext<NotificationHub, INotificationHub> notificationHub;
 
-		public TransactionService(IRepositoryManager repositoryManager, IMapper mapper, IConfiguration configuration, IRecombeeService recombeeService, UserManager<Users> userManager)
+		public TransactionService(IRepositoryManager repositoryManager, IMapper mapper, IConfiguration configuration, IRecombeeService recombeeService, UserManager<Users> userManager, IHubContext<NotificationHub, INotificationHub> notificationHub)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.configuration = configuration;
 			this.recombeeService = recombeeService;
 			this.userManager = userManager;
+			this.notificationHub = notificationHub;
 		}
 
 		private async Task<string> GetPayOSPaymentLink(Transactions transaction, TransactionType transactionType)
@@ -122,14 +127,15 @@ namespace IndieGameZone.Application.Services
 				UserId = userId,
 				AchievementId = achievement.Id
 			});
-			repositoryManager.NotificationRepository.CreateNotification(new Notifications
+			var notification = new Notifications
 			{
 				Id = Guid.NewGuid(),
 				UserId = userId,
 				Message = $"Congratulations! You have earned the {achievement.Name} achievement and receive a {achievement.DiscountAward}% discount.",
 				IsRead = false,
 				CreatedAt = DateTime.Now
-			});
+			};
+			repositoryManager.NotificationRepository.CreateNotification(notification);
 			repositoryManager.CouponRepository.CreateCoupon(new Coupons
 			{
 				Id = Guid.NewGuid(),
@@ -140,6 +146,7 @@ namespace IndieGameZone.Application.Services
 				UserId = userId
 			});
 			await repositoryManager.SaveAsync(ct);
+			await notificationHub.Clients.User(userId.ToString()).SendNotification(notification);
 		}
 
 		public async Task<string> CreateTransactionForDeposit(Guid userId, TransactionForDepositCreationDto transaction, CancellationToken ct = default)

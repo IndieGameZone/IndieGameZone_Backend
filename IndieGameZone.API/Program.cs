@@ -2,6 +2,7 @@ using Azure.Identity;
 using Bogus;
 using IndieGameZone.API.Extensions;
 using IndieGameZone.Application.Extensions;
+using IndieGameZone.Application.Hub;
 using IndieGameZone.Application.IServices;
 using IndieGameZone.Application.Services;
 using IndieGameZone.Domain.Entities;
@@ -38,6 +39,7 @@ builder.Services.ConfigureJWT(builder.Configuration);
 builder.Services.AddAuthorization();
 builder.Services.ConfigureFirebase(builder.Configuration);
 builder.Services.ConfigureBlobService(builder.Configuration);
+builder.Services.ConfigureSignalR(builder.Configuration);
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IRecombeeService, RecombeeService>();
 builder.Services.AddScoped<IFileService, FileService>();
@@ -95,5 +97,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<NotificationHub>("/notification");
 
 app.Run();

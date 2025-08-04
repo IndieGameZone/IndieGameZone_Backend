@@ -1,7 +1,10 @@
-﻿using IndieGameZone.Application.IServices;
+﻿using IndieGameZone.Application.Hub;
+using IndieGameZone.Application.IHub;
+using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Application.Services
@@ -9,10 +12,12 @@ namespace IndieGameZone.Application.Services
 	internal sealed class UserFollowService : IUserFollowService
 	{
 		private readonly IRepositoryManager repositoryManager;
+		private readonly IHubContext<NotificationHub, INotificationHub> notificationHub;
 
-		public UserFollowService(IRepositoryManager repositoryManager)
+		public UserFollowService(IRepositoryManager repositoryManager, IHubContext<NotificationHub, INotificationHub> notificationHub)
 		{
 			this.repositoryManager = repositoryManager;
+			this.notificationHub = notificationHub;
 		}
 
 		private async Task CheckFollowAchievements(Guid userId, CancellationToken ct = default)
@@ -29,14 +34,15 @@ namespace IndieGameZone.Application.Services
 				UserId = userId,
 				AchievementId = achievement.Id
 			});
-			repositoryManager.NotificationRepository.CreateNotification(new Notifications
+			var notification = new Notifications
 			{
 				Id = Guid.NewGuid(),
 				UserId = userId,
 				Message = $"Congratulations! You have earned the {achievement.Name} achievement and receive a {achievement.DiscountAward}% discount.",
 				IsRead = false,
 				CreatedAt = DateTime.Now
-			});
+			};
+			repositoryManager.NotificationRepository.CreateNotification(notification);
 			repositoryManager.CouponRepository.CreateCoupon(new Coupons
 			{
 				Id = Guid.NewGuid(),
@@ -47,6 +53,7 @@ namespace IndieGameZone.Application.Services
 				UserId = userId
 			});
 			await repositoryManager.SaveAsync(ct);
+			await notificationHub.Clients.User(userId.ToString()).SendNotification(notification);
 		}
 
 		public async Task FollowOrUnfollowUser(Guid followeeId, Guid followerId, CancellationToken ct = default)

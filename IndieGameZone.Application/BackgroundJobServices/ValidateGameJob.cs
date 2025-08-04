@@ -1,7 +1,10 @@
-﻿using IndieGameZone.Application.IServices;
+﻿using IndieGameZone.Application.Hub;
+using IndieGameZone.Application.IHub;
+using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
+using Microsoft.AspNetCore.SignalR;
 using Quartz;
 
 namespace IndieGameZone.Application.BackgroundJobServices
@@ -11,12 +14,14 @@ namespace IndieGameZone.Application.BackgroundJobServices
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IAIService aIService;
 		private readonly IRecombeeService recombeeService;
+		private readonly IHubContext<NotificationHub, INotificationHub> notificationHub;
 
-		public ValidateGameJob(IRepositoryManager repositoryManager, IAIService aIService, IRecombeeService recombeeService)
+		public ValidateGameJob(IRepositoryManager repositoryManager, IAIService aIService, IRecombeeService recombeeService, IHubContext<NotificationHub, INotificationHub> notificationHub)
 		{
 			this.repositoryManager = repositoryManager;
 			this.aIService = aIService;
 			this.recombeeService = recombeeService;
+			this.notificationHub = notificationHub;
 		}
 
 		public async Task Execute(IJobExecutionContext context)
@@ -74,14 +79,16 @@ namespace IndieGameZone.Application.BackgroundJobServices
 			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
 			if (game.CensorStatus == CensorStatus.Approved)
 			{
-				repositoryManager.NotificationRepository.CreateNotification(new Domain.Entities.Notifications
+				var notification = new Notifications
 				{
 					Id = Guid.NewGuid(),
 					UserId = game.DeveloperId,
 					Message = $"Your game '{game.Name}' has been approved.",
 					CreatedAt = DateTime.Now,
 					IsRead = false
-				});
+				};
+				repositoryManager.NotificationRepository.CreateNotification(notification);
+				await notificationHub.Clients.User(game.DeveloperId.ToString()).SendNotification(notification);
 			}
 			await repositoryManager.SaveAsync();
 
