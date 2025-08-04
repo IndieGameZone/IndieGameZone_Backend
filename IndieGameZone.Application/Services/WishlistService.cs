@@ -5,6 +5,7 @@ using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Wishlists;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
 
 namespace IndieGameZone.Application.Services
 {
@@ -13,15 +14,27 @@ namespace IndieGameZone.Application.Services
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 		private readonly IRecombeeService recombeeService;
+		private readonly UserManager<Users> userManager;
 
-		public WishlistService(IRepositoryManager repositoryManager, IMapper mapper, IRecombeeService recombeeService)
+		public WishlistService(IRepositoryManager repositoryManager, IMapper mapper, IRecombeeService recombeeService, UserManager<Users> userManager)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.recombeeService = recombeeService;
+			this.userManager = userManager;
 		}
 		public async Task AddToWishlist(Guid userId, Guid gameId, CancellationToken ct = default)
 		{
+			var user = await userManager.FindByIdAsync(userId.ToString());
+			if (user is null)
+			{
+				throw new NotFoundException("User not found.");
+			}
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game is null)
+			{
+				throw new NotFoundException("Game not found.");
+			}
 			var wishlistEntity = new Wishlists
 			{
 				GameId = gameId,
