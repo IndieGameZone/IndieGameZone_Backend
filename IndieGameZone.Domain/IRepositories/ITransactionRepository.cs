@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.RequestFeatures;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard;
 
 namespace IndieGameZone.Domain.IRepositories
 {
@@ -17,5 +18,7 @@ namespace IndieGameZone.Domain.IRepositories
         Task<double> GetTotalRevenueForDeveloper(Guid developerId, RevenueRange range, CancellationToken ct = default);
         Task<double> GetTotalRevenueForDeveloper(Guid developerId, DateTime startDate, DateTime endDate, CancellationToken ct = default);
         Task<DateTime?> GetFirstTransactionDateForDeveloper(Guid developerId, CancellationToken ct = default);
+        Task<IEnumerable<RevenueByDayForReturnDto>> GetRevenueByMonthAsync(Guid developerId, int year, int month, CancellationToken ct = default);
+
     }
 }

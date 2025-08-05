@@ -2,6 +2,7 @@
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard;
 using IndieGameZone.Infrastructure.Extensions;
 using IndieGameZone.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -170,5 +171,38 @@ namespace IndieGameZone.Infrastructure.Repositories
                 .FirstOrDefaultAsync(ct);
         }
 
+        public async Task<IEnumerable<RevenueByDayForReturnDto>> GetRevenueByMonthAsync(Guid developerId, int year, int month, CancellationToken ct = default)
+        {
+            var transactions = await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.PurchaseGame &&
+                    t.Status == TransactionStatus.Success &&
+                    t.UserId == developerId &&
+                    t.CreatedAt.Year == year &&
+                    t.CreatedAt.Month == month)
+                .ToListAsync(ct);
+
+            var groupedByDay = transactions
+                .GroupBy(t => t.CreatedAt.Day)
+                .Select(g => new RevenueByDayForReturnDto
+                {
+                    Day = g.Key,
+                    Revenue = g.Sum(t => t.Amount)
+                })
+                .ToList();
+
+            // Fill in missing days with 0 revenue
+            var daysInMonth = DateTime.DaysInMonth(year, month);
+            var fullReport = Enumerable.Range(1, daysInMonth)
+                .Select(day => groupedByDay.FirstOrDefault(d => d.Day == day) ?? new RevenueByDayForReturnDto
+                {
+                    Day = day,
+                    Revenue = 0
+                })
+                .OrderBy(r => r.Day)
+                .ToList();
+
+            return fullReport;
+        }
     }
 }

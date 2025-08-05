@@ -185,5 +185,10 @@ namespace IndieGameZone.Application.Services
             };
         }
 
+        public async Task<IEnumerable<RevenueByDayForReturnDto>> GetRevenueByMonthAsync(Guid developerId, int year, int month, CancellationToken ct = default)
+        {
+            return await repositoryManager.TransactionRepository.GetRevenueByMonthAsync(developerId, year, month, ct);
+        }
+
     }
 }

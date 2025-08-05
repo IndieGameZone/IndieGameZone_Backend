@@ -90,5 +90,12 @@ namespace IndieGameZone.API.Controllers
             return Ok(dashboardData);
         }
 
+        [HttpGet("{developerId:guid}/revenue-by-month")]
+        public async Task<ActionResult<IEnumerable<RevenueByDayForReturnDto>>> GetRevenueByMonth([FromRoute] Guid developerId, [FromQuery] int year, [FromQuery] int month, CancellationToken ct = default)
+        {
+            var result = await serviceManager.DashBoardService.GetRevenueByMonthAsync(developerId, year, month, ct);
+            return Ok(result);
+        }
+
     }
 }
