@@ -97,7 +97,7 @@ namespace IndieGameZone.Application.Services
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
 			if (game is null)
 				throw new NotFoundException($"Game not found.");
-			var user = userManager.FindByIdAsync(userId.ToString());
+			var user = userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
 			if (user is null)
 				throw new NotFoundException($"User not found.");
 			if (postForCreationDto.Tags != null)
@@ -164,7 +164,7 @@ namespace IndieGameZone.Application.Services
 		public async Task DeletePost(Guid userId, Guid postId, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction();
-			var user = await userManager.FindByIdAsync(userId.ToString());
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
 			if (user is null)
 				throw new NotFoundException($"User not found.");
 			var post = await repositoryManager.PostRepository.GetPostById(postId, false, ct);
@@ -178,6 +178,7 @@ namespace IndieGameZone.Application.Services
 				await blobService.DeleteBlob(image.Image.Split('/').Last(), StorageContainer.STORAGE_CONTAINER);
 			}
 			repositoryManager.PostImageRepository.DeletePostImages(postImages);
+
 
 			repositoryManager.PostRepository.DeletePost(post);
 			await repositoryManager.SaveAsync(ct);
@@ -215,7 +216,7 @@ namespace IndieGameZone.Application.Services
 		public async Task UpdatePost(Guid userId, Guid postId, PostForUpdateDto postForUpdateDto, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction();
-			var user = await userManager.FindByIdAsync(userId.ToString());
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
 			if (user is null)
 				throw new NotFoundException($"User not found.");
 			var post = await repositoryManager.PostRepository.GetPostById(postId, true, ct);
