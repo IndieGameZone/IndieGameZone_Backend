@@ -33,7 +33,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("followees/{followeeId:guid}/number-of-followers")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
 		public async Task<IActionResult> GetNumberOfFollowers([FromRoute] Guid followeeId, CancellationToken ct)
 		{
 			var numberOfFollowers = await serviceManager.UserFollowService.GetNumberOfFollower(followeeId, ct);
@@ -41,7 +40,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("followers/{followerId:guid}/number-of-followees")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> GetNumberOfFollowees([FromRoute] Guid followerId, CancellationToken ct)
 		{
 			var numberOfFollowers = await serviceManager.UserFollowService.GetNumberOfFollowee(followerId, ct);

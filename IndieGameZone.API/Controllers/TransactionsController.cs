@@ -23,13 +23,13 @@ namespace IndieGameZone.API.Controllers
 			this.configuration = configuration;
 		}
 
-		[HttpPost("users/{userId:guid}/transactions/deposit")]
-		[Authorize]
-		public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromBody] TransactionForDepositCreationDto transaction, CancellationToken ct)
-		{
-			var paymentLink = await serviceManager.TransactionService.CreateTransactionForDeposit(userId, transaction, ct);
-			return StatusCode(201, paymentLink);
-		}
+		//[HttpPost("users/{userId:guid}/transactions/deposit")]
+		//[Authorize]
+		//public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromBody] TransactionForDepositCreationDto transaction, CancellationToken ct)
+		//{
+		//	var paymentLink = await serviceManager.TransactionService.CreateTransactionForDeposit(userId, transaction, ct);
+		//	return StatusCode(201, paymentLink);
+		//}
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/game-purchasing")]
 		[Authorize]
