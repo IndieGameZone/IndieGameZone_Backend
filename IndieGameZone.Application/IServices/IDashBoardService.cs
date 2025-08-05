@@ -20,6 +20,7 @@ namespace IndieGameZone.Application.IServices
         Task<double> GetTotalRevenueFromGamePurchaseAsync(RevenueRange range, CancellationToken ct = default);
         Task<double> GetTotalRevenueFromCommercialPackagePurchaseAsync(RevenueRange range, CancellationToken ct = default);
         Task<DashboardSummaryForReturnDto> GetDashboardSummaryAsync(RevenueRange range, CancellationToken ct = default);
+        Task<DeveloperDashboardSummaryForReturnDto> GetDeveloperDashboardAsync(Guid developerId, CancellationToken ct = default);
 
     }
 }

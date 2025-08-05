@@ -105,5 +105,70 @@ namespace IndieGameZone.Infrastructure.Repositories
 					t.CreatedAt <= now)
 				.SumAsync(t => t.Amount, ct);
 		}
-	}
+
+        public async Task<double> GetTotalRevenueForDeveloper(Guid developerId, RevenueRange range, CancellationToken ct = default)
+        {
+            var now = DateTime.Now;
+            DateTime rangeStart;
+
+            switch (range)
+            {
+                case RevenueRange.Day:
+                    rangeStart = now.Date;
+                    break;
+
+                case RevenueRange.Week:
+                    int diff = (7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7;
+                    rangeStart = now.Date.AddDays(-diff); // Start of current week (Monday)
+                    break;
+
+                case RevenueRange.Month:
+                    rangeStart = new DateTime(now.Year, now.Month, 1);
+                    break;
+
+                case RevenueRange.Year:
+                    rangeStart = new DateTime(now.Year, 1, 1);
+                    break;
+
+                case RevenueRange.AllTime:
+                default:
+                    rangeStart = DateTime.MinValue;
+                    break;
+            }
+
+            return await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.PurchaseGame &&
+                    t.Status == TransactionStatus.Success &&
+                    t.UserId == developerId &&
+                    t.CreatedAt >= rangeStart &&
+                    t.CreatedAt <= now)
+                .SumAsync(t => t.Amount, ct);
+        }
+
+        public async Task<double> GetTotalRevenueForDeveloper(Guid developerId, DateTime startDate, DateTime endDate, CancellationToken ct = default)
+        {
+             return await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.PurchaseGame &&
+                    t.Status == TransactionStatus.Success &&
+                    t.UserId == developerId &&
+                    t.CreatedAt >= startDate &&
+                    t.CreatedAt <= endDate)
+                .SumAsync(t => t.Amount, ct);
+        }
+
+        public async Task<DateTime?> GetFirstTransactionDateForDeveloper(Guid developerId, CancellationToken ct = default)
+        {
+            return await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.PurchaseGame &&
+                    t.Status == TransactionStatus.Success &&
+                    t.UserId == developerId)
+                .OrderBy(t => t.CreatedAt)
+                .Select(t => (DateTime?)t.CreatedAt)
+                .FirstOrDefaultAsync(ct);
+        }
+
+    }
 }

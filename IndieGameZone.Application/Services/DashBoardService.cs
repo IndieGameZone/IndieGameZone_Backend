@@ -136,5 +136,54 @@ namespace IndieGameZone.Application.Services
 
         }
 
+        public async Task<DeveloperDashboardSummaryForReturnDto> GetDeveloperDashboardAsync(Guid developerId, CancellationToken ct = default)
+        {
+            // 1. Total revenue (all time)
+            var totalRevenue = await repositoryManager.TransactionRepository
+                .GetTotalRevenueForDeveloper(developerId, RevenueRange.AllTime, ct);
+
+            // 2. Find first month the developer received revenue
+            var firstTransactionDate = await repositoryManager.TransactionRepository
+                .GetFirstTransactionDateForDeveloper(developerId, ct); // This should be based on UserId = developerId
+
+            var revenueByMonth = new Dictionary<string, double>();
+            if (firstTransactionDate != null)
+            {
+                var firstMonth = new DateTime(firstTransactionDate.Value.Year, firstTransactionDate.Value.Month, 1);
+                var currentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+                while (firstMonth <= currentMonth)
+                {
+                    var start = firstMonth;
+                    var end = firstMonth.AddMonths(1).AddTicks(-1); // End of the month
+
+                    // Directly pass start and end to the method
+                    var monthlyRevenue = await repositoryManager.TransactionRepository
+                        .GetTotalRevenueForDeveloper(developerId, start, end, ct);
+
+                    revenueByMonth[start.ToString("yyyy-MM")] = monthlyRevenue;
+
+                    firstMonth = firstMonth.AddMonths(1);
+                }
+            }
+
+            // 3. Top 5 best-selling games
+            var topGames = await repositoryManager.LibraryRepository
+                .GetTopSellingGamesByDeveloper(developerId, 5, ct);
+
+            var topGamesDto = topGames.Select(x => new GameWithSalesDto
+            {
+                Game = mapper.Map<GameForListReturnDto>(x.game),
+                PurchaseCount = x.purchaseCount
+            });
+
+            return new DeveloperDashboardSummaryForReturnDto
+            {
+                TotalRevenueAllTime = totalRevenue,
+                RevenueByMonth = revenueByMonth,
+                Top5BestSellingGames = topGamesDto
+            };
+        }
+
     }
 }

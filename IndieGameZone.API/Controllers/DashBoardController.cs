@@ -83,5 +83,12 @@ namespace IndieGameZone.API.Controllers
             return Ok(summary);
         }
 
+        [HttpGet("{developerId:guid}/developer-dashboard")]
+        public async Task<ActionResult<DeveloperDashboardSummaryForReturnDto>> GetDeveloperDashboard([FromRoute] Guid developerId, CancellationToken ct = default)
+        {
+            var dashboardData = await serviceManager.DashBoardService.GetDeveloperDashboardAsync(developerId, ct);
+            return Ok(dashboardData);
+        }
+
     }
 }
