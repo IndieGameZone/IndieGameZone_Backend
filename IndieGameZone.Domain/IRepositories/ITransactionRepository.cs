@@ -19,6 +19,8 @@ namespace IndieGameZone.Domain.IRepositories
         Task<double> GetTotalRevenueForDeveloper(Guid developerId, DateTime startDate, DateTime endDate, CancellationToken ct = default);
         Task<DateTime?> GetFirstTransactionDateForDeveloper(Guid developerId, CancellationToken ct = default);
         Task<IEnumerable<RevenueByDayForReturnDto>> GetRevenueByMonthAsync(Guid developerId, int year, int month, CancellationToken ct = default);
+        Task<double> GetTotalRevenueForGame(Guid gameId, DateTime start, DateTime end, CancellationToken ct = default);
+        Task<DateTime?> GetFirstTransactionDateForGame(Guid gameId, CancellationToken ct = default);
 
     }
 }

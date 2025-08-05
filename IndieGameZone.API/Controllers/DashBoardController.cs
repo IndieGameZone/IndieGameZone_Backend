@@ -83,18 +83,25 @@ namespace IndieGameZone.API.Controllers
             return Ok(summary);
         }
 
-        [HttpGet("{developerId:guid}/developer-dashboard")]
+        [HttpGet("developers/{developerId:guid}/summary")]
         public async Task<ActionResult<DeveloperDashboardSummaryForReturnDto>> GetDeveloperDashboard([FromRoute] Guid developerId, CancellationToken ct = default)
         {
             var dashboardData = await serviceManager.DashBoardService.GetDeveloperDashboardAsync(developerId, ct);
             return Ok(dashboardData);
         }
 
-        [HttpGet("{developerId:guid}/revenue-by-month")]
+        [HttpGet("developers/{developerId:guid}/monthly-stats")]
         public async Task<ActionResult<IEnumerable<RevenueByDayForReturnDto>>> GetRevenueByMonth([FromRoute] Guid developerId, [FromQuery] int year, [FromQuery] int month, CancellationToken ct = default)
         {
             var result = await serviceManager.DashBoardService.GetRevenueByMonthAsync(developerId, year, month, ct);
             return Ok(result);
+        }
+
+        [HttpGet("games/{gameId:guid}/summary")]
+        public async Task<ActionResult<GameDashboardSummaryForReturnDto>> GetGameDashboard([FromRoute] Guid gameId, CancellationToken ct = default)
+        {
+            var dashboard = await serviceManager.DashBoardService.GetGameDashboardAsync(gameId, ct);
+            return Ok(dashboard);
         }
 
     }

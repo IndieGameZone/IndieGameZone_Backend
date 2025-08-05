@@ -204,5 +204,28 @@ namespace IndieGameZone.Infrastructure.Repositories
 
             return fullReport;
         }
+
+        public async Task<double> GetTotalRevenueForGame(Guid gameId, DateTime start, DateTime end, CancellationToken ct = default)
+        {
+            return await FindAll(false)
+                .Where(t => t.Type == TransactionType.PurchaseGame &&
+                            t.Status == TransactionStatus.Success &&
+                            t.GameId == gameId &&
+                            t.CreatedAt >= start &&
+                            t.CreatedAt <= end)
+                .SumAsync(t => t.Amount, ct);
+        }
+
+        public async Task<DateTime?> GetFirstTransactionDateForGame(Guid gameId, CancellationToken ct = default)
+        {
+            return await FindAll(false)
+                .Where(t => t.Type == TransactionType.PurchaseGame &&
+                            t.Status == TransactionStatus.Success &&
+                            t.GameId == gameId)
+                .OrderBy(t => t.CreatedAt)
+                .Select(t => (DateTime?)t.CreatedAt)
+                .FirstOrDefaultAsync(ct);
+        }
+
     }
 }

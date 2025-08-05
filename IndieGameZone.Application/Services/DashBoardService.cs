@@ -190,5 +190,41 @@ namespace IndieGameZone.Application.Services
             return await repositoryManager.TransactionRepository.GetRevenueByMonthAsync(developerId, year, month, ct);
         }
 
+        public async Task<GameDashboardSummaryForReturnDto> GetGameDashboardAsync(Guid gameId, CancellationToken ct = default)
+        {
+            var totalRevenue = await repositoryManager.TransactionRepository
+                .GetTotalRevenueForGame(gameId, DateTime.MinValue, DateTime.Now, ct);
+
+            var firstTransactionDate = await repositoryManager.TransactionRepository
+                .GetFirstTransactionDateForGame(gameId, ct);
+
+            var revenueByMonth = new Dictionary<string, double>();
+
+            if (firstTransactionDate != null)
+            {
+                var firstMonth = new DateTime(firstTransactionDate.Value.Year, firstTransactionDate.Value.Month, 1);
+                var currentMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+                while (firstMonth <= currentMonth)
+                {
+                    var start = firstMonth;
+                    var end = firstMonth.AddMonths(1).AddTicks(-1);
+
+                    var monthlyRevenue = await repositoryManager.TransactionRepository
+                        .GetTotalRevenueForGame(gameId, start, end, ct);
+
+                    revenueByMonth[start.ToString("yyyy-MM")] = monthlyRevenue;
+
+                    firstMonth = firstMonth.AddMonths(1);
+                }
+            }
+
+            return new GameDashboardSummaryForReturnDto
+            {
+                TotalRevenueAllTime = totalRevenue,
+                RevenueByMonth = revenueByMonth
+            };
+        }
+
     }
 }
