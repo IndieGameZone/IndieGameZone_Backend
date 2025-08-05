@@ -226,5 +226,32 @@ namespace IndieGameZone.Application.Services
             };
         }
 
+        public async Task<IEnumerable<GameMonthlyStatsByDayForReturnDto>> GetGameMonthlyStatsAsync(Guid gameId, int year, int month, CancellationToken ct = default)
+        {
+            // Get all successful transactions for the game in the specified month
+            var transactions = await repositoryManager.TransactionRepository
+                .GetSuccessfulTransactionsByGameIdAsync(gameId, year, month, ct);
+
+            // Get the download counts per day for the game in the specified month
+            var downloads = await repositoryManager.DownloadSlotRepository
+                .GetDownloadCountsByGameIdAsync(gameId, year, month, ct);
+
+            // Convert downloads to a dictionary for faster lookup
+            var downloadDict = downloads.ToDictionary(d => d.day, d => d.numberOfDownloads);
+
+            // Generate statistics for each day of the month
+            var result = Enumerable.Range(1, DateTime.DaysInMonth(year, month))
+                .Select(day => new GameMonthlyStatsByDayForReturnDto
+                {
+                    Day = day,
+                    Revenue = transactions
+                        .Where(t => t.CreatedAt.Day == day)
+                        .Sum(t => t.Amount),
+                    DownloadCount = downloadDict.TryGetValue(day, out var count) ? (int)count : 0
+                });
+
+            return result;
+        }
+
     }
 }

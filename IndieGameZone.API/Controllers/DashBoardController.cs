@@ -104,5 +104,12 @@ namespace IndieGameZone.API.Controllers
             return Ok(dashboard);
         }
 
+        [HttpGet("games/{gameId:guid}/monthly-stats")]
+        public async Task<ActionResult<IEnumerable<GameMonthlyStatsByDayForReturnDto>>> GetGameMonthlyStats([FromRoute] Guid gameId, [FromQuery] int year, [FromQuery] int month, CancellationToken ct = default)
+        {
+            var result = await serviceManager.DashBoardService.GetGameMonthlyStatsAsync(gameId, year, month, ct);
+            return Ok(result);
+        }
+
     }
 }

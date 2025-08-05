@@ -224,5 +224,5 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		}
 
-	}
+    }
 }

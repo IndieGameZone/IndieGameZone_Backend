@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.RequestFeatures;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard;
 
 namespace IndieGameZone.Domain.IRepositories
 {

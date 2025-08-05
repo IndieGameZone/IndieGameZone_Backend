@@ -23,6 +23,7 @@ namespace IndieGameZone.Application.IServices
         Task<DeveloperDashboardSummaryForReturnDto> GetDeveloperDashboardAsync(Guid developerId, CancellationToken ct = default);
         Task<IEnumerable<RevenueByDayForReturnDto>> GetRevenueByMonthAsync(Guid developerId, int year, int month, CancellationToken ct = default);
         Task<GameDashboardSummaryForReturnDto> GetGameDashboardAsync(Guid gameId, CancellationToken ct = default);
+        Task<IEnumerable<GameMonthlyStatsByDayForReturnDto>> GetGameMonthlyStatsAsync(Guid gameId, int year, int month, CancellationToken ct = default);
 
     }
 }

@@ -227,5 +227,17 @@ namespace IndieGameZone.Infrastructure.Repositories
                 .FirstOrDefaultAsync(ct);
         }
 
+        public async Task<IEnumerable<Transactions>> GetSuccessfulTransactionsByGameIdAsync(Guid gameId, int year, int month, CancellationToken ct = default)
+        {
+            return await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.PurchaseGame &&
+                    t.Status == TransactionStatus.Success &&
+                    t.GameId == gameId &&
+                    t.CreatedAt.Year == year &&
+                    t.CreatedAt.Month == month)
+                .ToListAsync(ct);
+        }
+
     }
 }
