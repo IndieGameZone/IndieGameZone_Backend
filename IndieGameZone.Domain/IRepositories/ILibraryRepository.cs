@@ -10,6 +10,7 @@ namespace IndieGameZone.Domain.IRepositories
 		IQueryable<Libraries> GetLibraryByUserId(Guid userId, bool trackChange);
 		Task<Libraries?> GetLibraryByUserIdAndGameId(Guid userId, Guid gameId, bool trackChange, CancellationToken ct = default);
         Task<IEnumerable<(Games game, int purchaseCount)>> GetTopSellingGames(int top = 10, CancellationToken ct = default);
+        Task<IEnumerable<(Games game, int purchaseCount)>> GetTopSellingGamesByDeveloper(Guid developerId, int top = 10, CancellationToken ct = default);
 
     }
 }

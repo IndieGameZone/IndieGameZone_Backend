@@ -14,5 +14,8 @@ namespace IndieGameZone.Domain.IRepositories
         Task<bool> IsOrderCodeExistsAsync(long orderCode, CancellationToken ct = default);
         Task<double> GetTotalRevenueFromGamePurchase(RevenueRange range, CancellationToken ct = default);
 		Task<double> GetTotalRevenueFromCommercialPackagePurchase(RevenueRange range, CancellationToken ct = default);
+        Task<double> GetTotalRevenueForDeveloper(Guid developerId, RevenueRange range, CancellationToken ct = default);
+        Task<double> GetTotalRevenueForDeveloper(Guid developerId, DateTime startDate, DateTime endDate, CancellationToken ct = default);
+        Task<DateTime?> GetFirstTransactionDateForDeveloper(Guid developerId, CancellationToken ct = default);
     }
 }
