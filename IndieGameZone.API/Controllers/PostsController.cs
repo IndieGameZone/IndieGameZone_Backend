@@ -74,5 +74,13 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.PostService.UpdatePostStatus(postId, postActivationDto, ct);
 			return NoContent();
 		}
+
+		[HttpGet("users/{userId:guid}/active-posts")]
+		public async Task<IActionResult> GetActivePostsByUserId(Guid userId, [FromQuery] PostParameters postParameters, CancellationToken ct)
+		{
+			var pagedResult = await serviceManager.PostService.GetActivePostsByUserId(userId, postParameters, ct);
+			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+			return Ok(pagedResult.posts);
+		}
 	}
 }

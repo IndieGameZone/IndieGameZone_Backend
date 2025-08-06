@@ -59,7 +59,6 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{userId:guid}/reviews")]
-		[Authorize]
 		public async Task<IActionResult> GetReviewsByUserId([FromRoute] Guid userId, [FromQuery] ReviewParameters reviewParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.ReviewService.GetReviewsByUserId(userId, reviewParameters, ct);

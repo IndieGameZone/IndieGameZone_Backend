@@ -12,6 +12,7 @@ namespace IndieGameZone.Application.IServices
 		Task UpdatePostStatus(Guid postId, PostActivationDto postActivationDto, CancellationToken ct = default);
 		Task<(IEnumerable<PostForReturnDto> posts, MetaData metaData)> GetPostsByGameId(Guid gameId, PostParameters postParameters, CancellationToken ct = default);
 		Task<(IEnumerable<PostForReturnDto> posts, MetaData metaData)> GetPostsByUserId(Guid userId, PostParameters postParameters, CancellationToken ct = default);
+		Task<(IEnumerable<PostForReturnDto> posts, MetaData metaData)> GetActivePostsByUserId(Guid userId, PostParameters postParameters, CancellationToken ct = default);
 		Task<PostForReturnDto> GetPostById(Guid postId, CancellationToken ct = default);
 	}
 }

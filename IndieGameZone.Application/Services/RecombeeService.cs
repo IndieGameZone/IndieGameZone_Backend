@@ -3,6 +3,8 @@ using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Recombee.ApiClient;
 using Recombee.ApiClient.ApiRequests;
@@ -16,8 +18,9 @@ namespace IndieGameZone.Application.Services
 		private readonly RecombeeClient client;
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
+		private readonly UserManager<Users> userManager;
 
-		public RecombeeService(IConfiguration configuration, IRepositoryManager repositoryManager, IMapper mapper)
+		public RecombeeService(IConfiguration configuration, IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager)
 		{
 			client = new RecombeeClient(
 				configuration.GetSection("RecombeeDevDatabaseId").Value,
@@ -25,6 +28,7 @@ namespace IndieGameZone.Application.Services
 				region: Region.ApSe);
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
+			this.userManager = userManager;
 		}
 
 		public async Task AddProperty()
@@ -86,6 +90,15 @@ namespace IndieGameZone.Application.Services
 				},
 				cascadeCreate: true);
 			await client.SendAsync(item);
+		}
+
+		public async Task PushUsersToRecombee()
+		{
+			var users = await userManager.Users.AsNoTracking().ToListAsync();
+			foreach (var user in users)
+			{
+				await client.SendAsync(new AddUser(user.Id.ToString()));
+			}
 		}
 
 		public async Task RemoveGameFromRecombee(Guid gameId)

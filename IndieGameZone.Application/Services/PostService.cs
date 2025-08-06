@@ -195,9 +195,6 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<(IEnumerable<PostForReturnDto> posts, MetaData metaData)> GetPostsByGameId(Guid gameId, PostParameters postParameters, CancellationToken ct = default)
 		{
-			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
-			if (game is null)
-				throw new NotFoundException($"Game not found.");
 			var postWithMetaData = await repositoryManager.PostRepository.GetPostsByGameId(gameId, postParameters, false, ct);
 			var posts = mapper.Map<IEnumerable<PostForReturnDto>>(postWithMetaData);
 			return (posts, postWithMetaData.MetaData);
@@ -205,9 +202,6 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<(IEnumerable<PostForReturnDto> posts, MetaData metaData)> GetPostsByUserId(Guid userId, PostParameters postParameters, CancellationToken ct = default)
 		{
-			var user = await userManager.FindByIdAsync(userId.ToString());
-			if (user is null)
-				throw new NotFoundException($"User not found.");
 			var postWithMetaData = await repositoryManager.PostRepository.GetPostsByUserId(userId, postParameters, false, ct);
 			var posts = mapper.Map<IEnumerable<PostForReturnDto>>(postWithMetaData);
 			return (posts, postWithMetaData.MetaData);
@@ -294,6 +288,13 @@ namespace IndieGameZone.Application.Services
 			post.Status = postActivationDto.Status;
 			post.CensoredAt = DateTime.Now;
 			await repositoryManager.SaveAsync(ct);
+		}
+
+		public async Task<(IEnumerable<PostForReturnDto> posts, MetaData metaData)> GetActivePostsByUserId(Guid userId, PostParameters postParameters, CancellationToken ct = default)
+		{
+			var postWithMetaData = await repositoryManager.PostRepository.GetActivePostsByUserId(userId, postParameters, false, ct);
+			var posts = mapper.Map<IEnumerable<PostForReturnDto>>(postWithMetaData);
+			return (posts, postWithMetaData.MetaData);
 		}
 	}
 }

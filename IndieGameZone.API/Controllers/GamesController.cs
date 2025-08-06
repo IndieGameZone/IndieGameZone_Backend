@@ -37,6 +37,7 @@ namespace IndieGameZone.API.Controllers
 		//public async Task<IActionResult> UploadGameToAlgolia(CancellationToken ct)
 		//{
 		//	await recombeeService.PushGamesToRecombee();
+		//	await recombeeService.PushUsersToRecombee();
 		//	return NoContent();
 		//}
 
@@ -164,20 +165,20 @@ namespace IndieGameZone.API.Controllers
 			return Ok(isOwned);
 		}
 
-        [HttpGet("games/today-homepage-banner")]
-        public async Task<IActionResult> GetTodayHomepageBannerGames(CancellationToken ct)
-        {
-            var result = await serviceManager.GameService.GetTodayHomepageBannerGamesAsync(ct);
-            return Ok(result.games);
-        }
+		[HttpGet("games/today-homepage-banner")]
+		public async Task<IActionResult> GetTodayHomepageBannerGames(CancellationToken ct)
+		{
+			var result = await serviceManager.GameService.GetTodayHomepageBannerGamesAsync(ct);
+			return Ok(result.games);
+		}
 
-        [HttpGet("games/today-category-banner")]
-        public async Task<IActionResult> GetTodayCategoryBannerGames(CancellationToken ct)
-        {
-            var result = await serviceManager.GameService.GetTodayCategoryBannerGamesAsync(ct);
-            Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(result.metaData));
-            return Ok(result.games);
-        }
+		[HttpGet("games/today-category-banner")]
+		public async Task<IActionResult> GetTodayCategoryBannerGames(CancellationToken ct)
+		{
+			var result = await serviceManager.GameService.GetTodayCategoryBannerGamesAsync(ct);
+			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(result.metaData));
+			return Ok(result.games);
+		}
 
-    }
+	}
 }
