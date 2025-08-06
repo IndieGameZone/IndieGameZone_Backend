@@ -54,38 +54,64 @@ namespace IndieGameZone.Application.Services
 			await repositoryManager.SaveAsync(ct);
 		}
 
-		public async Task<ReportForReturnDto> GetReportById(Guid id, CancellationToken ct = default)
-		{
-			var reportEntity = await repositoryManager.ReportRepository.GetReportById(id, false, ct);
-			if (reportEntity == null)
-			{
-				throw new NotFoundException($"Report not found.");
-			}
-			return mapper.Map<ReportForReturnDto>(reportEntity);
-		}
+        public async Task<object> GetReportById(Guid id, CancellationToken ct = default)
+        {
+            var report = await repositoryManager.ReportRepository.GetReportById(id, false, ct);
+            if (report == null)
+                throw new NotFoundException("Report not found.");
 
-		public async Task<(IEnumerable<ReportForReturnDto> reports, MetaData metaData)> GetReports(ReportParameters reportParameters, CancellationToken ct = default)
-		{
-			var reportsWithMetaData = await repositoryManager.ReportRepository.GetReports(reportParameters, false, ct);
-			var reports = mapper.Map<IEnumerable<ReportForReturnDto>>(reportsWithMetaData);
-			return (reports, reportsWithMetaData.MetaData);
-		}
+            return report.ReportReason.Type switch
+            {
+                ReportReasonTypeEnum.Game => mapper.Map<GameReportForReturnDto>(report),
+                ReportReasonTypeEnum.Post => mapper.Map<PostReportForReturnDto>(report),
+                ReportReasonTypeEnum.Comment => mapper.Map<CommentReportForReturnDto>(report),
+                _ => mapper.Map<ReportForReturnDto>(report)
+            };
+        }
 
-		public async Task<(IEnumerable<ReportForReturnDto> reports, MetaData metaData)> GetReportsByReportedUserId(Guid reportedUserId, ReportParameters reportParameters, CancellationToken ct = default)
-		{
-			var reportsWithMetaData = await repositoryManager.ReportRepository.GetReportsByReportedUserId(reportedUserId, reportParameters, false, ct);
-			var reports = mapper.Map<IEnumerable<ReportForReturnDto>>(reportsWithMetaData);
-			return (reports, reportsWithMetaData.MetaData);
-		}
+        public async Task<(IEnumerable<object> reports, MetaData metaData)> GetReports(ReportParameters reportParameters, CancellationToken ct = default)
+        {
+            var reportsWithMeta = await repositoryManager.ReportRepository.GetReports(reportParameters, false, ct);
+            var mapped = reportsWithMeta.Select(report => report.ReportReason.Type switch
+            {
+                ReportReasonTypeEnum.Game => (object)mapper.Map<GameReportForReturnDto>(report),
+                ReportReasonTypeEnum.Post => mapper.Map<PostReportForReturnDto>(report),
+                ReportReasonTypeEnum.Comment => mapper.Map<CommentReportForReturnDto>(report),
+                _ => mapper.Map<ReportForReturnDto>(report)
+            });
 
-		public async Task<(IEnumerable<ReportForReturnDto> reports, MetaData metaData)> GetReportsByReportingUserId(Guid reportingUserId, ReportParameters reportParameters, CancellationToken ct = default)
-		{
-			var reportsWithMetaData = await repositoryManager.ReportRepository.GetReportsByReportingUserId(reportingUserId, reportParameters, false, ct);
-			var reports = mapper.Map<IEnumerable<ReportForReturnDto>>(reportsWithMetaData);
-			return (reports, reportsWithMetaData.MetaData);
-		}
+            return (mapped, reportsWithMeta.MetaData);
+        }
 
-		public async Task UpdateResolveStatus(Guid id, ReportStatus updatedStatus, ReportForUpdateStatusDto? dto, CancellationToken ct = default)
+        public async Task<(IEnumerable<object> reports, MetaData metaData)> GetReportsByReportedUserId(Guid reportedUserId, ReportParameters reportParameters, CancellationToken ct = default)
+        {
+            var reportsWithMeta = await repositoryManager.ReportRepository.GetReportsByReportedUserId(reportedUserId, reportParameters, false, ct);
+            var mapped = reportsWithMeta.Select(report => report.ReportReason.Type switch
+            {
+                ReportReasonTypeEnum.Game => (object)mapper.Map<GameReportForReturnDto>(report),
+                ReportReasonTypeEnum.Post => mapper.Map<PostReportForReturnDto>(report),
+                ReportReasonTypeEnum.Comment => mapper.Map<CommentReportForReturnDto>(report),
+                _ => mapper.Map<ReportForReturnDto>(report)
+            });
+
+            return (mapped, reportsWithMeta.MetaData);
+        }
+
+        public async Task<(IEnumerable<object> reports, MetaData metaData)> GetReportsByReportingUserId(Guid reportingUserId, ReportParameters reportParameters, CancellationToken ct = default)
+        {
+            var reportsWithMeta = await repositoryManager.ReportRepository.GetReportsByReportingUserId(reportingUserId, reportParameters, false, ct);
+            var mapped = reportsWithMeta.Select(report => report.ReportReason.Type switch
+            {
+                ReportReasonTypeEnum.Game => (object)mapper.Map<GameReportForReturnDto>(report),
+                ReportReasonTypeEnum.Post => mapper.Map<PostReportForReturnDto>(report),
+                ReportReasonTypeEnum.Comment => mapper.Map<CommentReportForReturnDto>(report),
+                _ => mapper.Map<ReportForReturnDto>(report)
+            });
+
+            return (mapped, reportsWithMeta.MetaData);
+        }
+
+        public async Task UpdateResolveStatus(Guid id, ReportStatus updatedStatus, ReportForUpdateStatusDto? dto, CancellationToken ct = default)
 		{
 			var reportEntity = await repositoryManager.ReportRepository.GetReportById(id, true, ct);
 			if (reportEntity == null)

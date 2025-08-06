@@ -66,7 +66,12 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.Duration, src => src.CommercialPackage.Duration)
 				.Map(dest => dest.Developer, src => src.Game.Developer);
 
-			config.NewConfig<Reports, ReportForReturnDto>()
+			config.NewConfig<Users, UserReportForReturnDto>()
+				.Map(dest => dest.Fullname, src => src.UserProfile.Fullname)
+				.Map(dest => dest.Avatar, src => src.UserProfile.Avatar);
+
+
+            config.NewConfig<Reports, ReportForReturnDto>()
 				.Map(dest => dest.Id, src => src.Id)
 				.Map(dest => dest.Message, src => src.Message)
 				.Map(dest => dest.CreatedAt, src => src.CreatedAt)
@@ -78,6 +83,45 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.Game, src => src.Game)
 				.Map(dest => dest.PostComment, src => src.PostComment);
 
-		}
-	}
+			config.NewConfig<Reports, GameReportForReturnDto>()
+				.Map(dest => dest.Id, src => src.Id)
+				.Map(dest => dest.Message, src => src.Message)
+				.Map(dest => dest.CreatedAt, src => src.CreatedAt)
+				.Map(dest => dest.Status, src => src.Status)
+				.Map(dest => dest.ReviewMessage, src => src.ReviewMessage)
+				.Map(dest => dest.ReportReason, src => src.ReportReason)
+				.Map(dest => dest.ReportingUser, src => src.ReportingUser)
+                .Map(dest => dest.GameOwner, src => src.Game.Developer)
+                .Map(dest => dest.Game, src => src.Game);
+
+			config.NewConfig<Reports, PostReportForReturnDto>()
+				.Map(dest => dest.Id, src => src.Id)
+				.Map(dest => dest.Message, src => src.Message)
+				.Map(dest => dest.CreatedAt, src => src.CreatedAt)
+				.Map(dest => dest.Status, src => src.Status)
+				.Map(dest => dest.ReviewMessage, src => src.ReviewMessage)
+				.Map(dest => dest.ReportReason, src => src.ReportReason)
+				.Map(dest => dest.ReportingUser, src => src.ReportingUser)
+                .Map(dest => dest.PostOwner, src => src.Post.User)
+                .Map(dest => dest.Post, src => src.Post)
+                .Map(dest => dest.GameId, src => src.GameId)
+                .Map(dest => dest.GameName, src => src.Game.Name);
+
+			config.NewConfig<Reports, CommentReportForReturnDto>()
+				.Map(dest => dest.Id, src => src.Id)
+				.Map(dest => dest.Message, src => src.Message)
+				.Map(dest => dest.CreatedAt, src => src.CreatedAt)
+				.Map(dest => dest.Status, src => src.Status)
+				.Map(dest => dest.ReviewMessage, src => src.ReviewMessage)
+				.Map(dest => dest.ReportReason, src => src.ReportReason)
+				.Map(dest => dest.ReportingUser, src => src.ReportingUser)
+				.Map(dest => dest.CommentOwner, src => src.PostComment.User)
+				.Map(dest => dest.PostComment, src => src.PostComment)
+				.Map(dest => dest.GameId, src => src.GameId)
+				.Map(dest => dest.GameName, src => src.Game.Name)
+				.Map(dest => dest.PostId, src => src.PostId)
+				.Map(dest => dest.PostTitle, src => src.Post.Title);
+
+        }
+    }
 }
