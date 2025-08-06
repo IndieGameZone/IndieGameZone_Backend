@@ -7,7 +7,8 @@ namespace IndieGameZone.Domain.Entities
 		public Guid Id { get; set; }
 		public string Message { get; set; } = string.Empty;
 		public DateTime CreatedAt { get; set; }
-		public ReportStatus Status { get; set; } = ReportStatus.Pending;
+        public DateTime? UpdatedAt { get; set; }
+        public ReportStatus Status { get; set; } = ReportStatus.Pending;
         public string? ReviewMessage { get; set; }
         public Guid ReportingUserId { get; set; }
 		public Guid? PostId { get; set; }

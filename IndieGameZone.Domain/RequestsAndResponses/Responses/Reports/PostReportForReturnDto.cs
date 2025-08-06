@@ -17,6 +17,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Reports
         public Guid Id { get; init; }
         public string Message { get; init; }
         public DateTime CreatedAt { get; init; }
+        public DateTime? UpdatedAt { get; init; }
         public ReportStatus Status { get; init; }
         public string? ReviewMessage { get; init; }
         public ReportReasonForReturnDto ReportReason { get; init; }

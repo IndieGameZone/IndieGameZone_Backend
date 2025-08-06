@@ -65,11 +65,7 @@ namespace IndieGameZone.Infrastructure.Repositories
                     .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
                     .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
                     .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                    .Where(r =>
-                        (r.Post != null && r.Post.UserId == reportedUserId) ||
-                        (r.PostComment != null && r.PostComment.UserId == reportedUserId) ||
-                        (r.Game != null && r.Game.DeveloperId == reportedUserId)
-                    )
+                    .Where(r => r.Game != null && r.Game.DeveloperId == reportedUserId)
                     .Sort();
 
             return PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);

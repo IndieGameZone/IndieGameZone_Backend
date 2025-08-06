@@ -119,8 +119,8 @@ namespace IndieGameZone.Application.Services
 				throw new NotFoundException($"Report not found.");
 			}
 			reportEntity.Status = updatedStatus;
-			if (reportEntity.ReviewMessage != null)
-                reportEntity.ReviewMessage = dto.ReviewMessage;
+            reportEntity.ReviewMessage = dto.ReviewMessage;
+			reportEntity.UpdatedAt = DateTime.Now;
 
             repositoryManager.NotificationRepository.CreateNotification(new Notifications
 			{
