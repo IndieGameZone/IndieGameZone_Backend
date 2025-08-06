@@ -10,5 +10,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Reports
 		public Guid ReportReasonId { get; init; }
 		[Required]
 		public Guid GameId { get; init; }
+	
 	}
 }
