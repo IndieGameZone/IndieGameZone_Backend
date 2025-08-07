@@ -185,6 +185,7 @@ namespace IndieGameZone.Application.Services
 			if (game == null)
 				throw new NotFoundException("Game not found");
 			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct);
+			var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gameId, false, ct);
 			double gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, transactionForGameCreation.CouponId);
 
 			if (transactionForGameCreation.Amount < gamePriceAfterDiscount)

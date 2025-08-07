@@ -17,6 +17,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<Orders?> GetOrderById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(x => x.Id == id, trackChange)
 			.Include(x => x.Game)
+			.Include(x => x.Coupon)
 			.Include(x => x.CommercialPackage)
 			.Include(x => x.Transaction)
 			.FirstOrDefaultAsync(ct);
@@ -25,6 +26,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var orders = FindByCondition(x => x.UserId == userId, trackChange)
 				.Include(x => x.Game)
+				.Include(x => x.Coupon)
 				.Include(x => x.CommercialPackage)
 				.Include(x => x.Transaction)
 				.Sort();

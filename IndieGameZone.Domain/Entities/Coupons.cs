@@ -10,7 +10,7 @@
 		public Guid UserId { get; set; }
 
 		//Navigation property
-		public Orders Order { get; set; } = null!;
+		public Orders? Order { get; set; } = null!;
 		public Users User { get; set; } = null!;
 	}
 }

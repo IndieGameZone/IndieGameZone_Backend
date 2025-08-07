@@ -9,7 +9,7 @@ namespace IndieGameZone.Domain.Entities
 		public double Amount { get; set; }
 		public WithdrawTransferStatus Status { get; set; }
 		public string? RejectReason { get; set; } = null;
-		public DateTime HandledAt { get; set; }
+		public DateTime? HandledAt { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public Guid UserId { get; set; }
 
