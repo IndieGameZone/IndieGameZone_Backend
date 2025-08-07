@@ -30,5 +30,6 @@
 		IDashBoardService DashBoardService { get; }
 		IGameImageService GameImageService { get; }
 		IOrderService OrderService { get; }
+		IGamePriceLogService GamePriceLogService { get; }
 	}
 }

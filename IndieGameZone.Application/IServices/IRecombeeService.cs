@@ -12,5 +12,6 @@
 		Task SendRatingEvent(Guid userId, Guid gameId, double rating);
 		Task GetRecommendedGamesForUser(Guid userId);
 		Task PushUsersToRecombee();
+		Task PushUserToRecombee(Guid userId);
 	}
 }

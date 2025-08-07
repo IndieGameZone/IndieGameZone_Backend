@@ -236,6 +236,15 @@ namespace IndieGameZone.Application.Services
 			};
 			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
 
+			var gamePriceLogs = new GamePriceLogs
+			{
+				Id = Guid.NewGuid(),
+				GameId = gameEntity.Id,
+				Price = gameEntity.Price,
+				CreatedAt = DateTime.Now
+			};
+			repositoryManager.GamePriceLogRepository.CreatePriceLog(gamePriceLogs);
+
 			await repositoryManager.SaveAsync(ct);
 
 			IJobDetail job = JobBuilder.Create<ValidateGameJob>()
@@ -333,11 +342,23 @@ namespace IndieGameZone.Application.Services
 			};
 			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
 
+			if (gameEntity.Price != game.Price)
+			{
+				var gamePriceLogs = new GamePriceLogs
+				{
+					Id = Guid.NewGuid(),
+					GameId = gameEntity.Id,
+					Price = gameEntity.Price,
+					CreatedAt = DateTime.Now
+				};
+				repositoryManager.GamePriceLogRepository.CreatePriceLog(gamePriceLogs);
+			}
+
 			await repositoryManager.SaveAsync(ct);
 
-            await UpdateCommercialRegistrationStatusBasedOnGameAsync(gameEntity.Id, ct);
+			await UpdateCommercialRegistrationStatusBasedOnGameAsync(gameEntity.Id, ct);
 
-            dbTransaction.Commit();
+			dbTransaction.Commit();
 
 			IJobDetail job = JobBuilder.Create<ValidateGameJob>()
 				.WithIdentity("GameJob", "GameGroup")
@@ -422,10 +443,10 @@ namespace IndieGameZone.Application.Services
 				await recombeeService.RemoveGameFromRecombee(gameId);
 			}
 
-            await UpdateCommercialRegistrationStatusBasedOnGameAsync(gameId, ct);
-        }
+			await UpdateCommercialRegistrationStatusBasedOnGameAsync(gameId, ct);
+		}
 
-        public async Task<string> IncreaseNumberOfDownload(Guid userId, Guid gamePlatformId, CancellationToken ct = default)
+		public async Task<string> IncreaseNumberOfDownload(Guid userId, Guid gamePlatformId, CancellationToken ct = default)
 		{
 			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, false, ct);
 			var game = await repositoryManager.GameRepository.GetGameById(gamePlatform.GameId, true, ct);
@@ -564,58 +585,58 @@ namespace IndieGameZone.Application.Services
 			return (games, metaData);
 		}
 
-        private async Task UpdateCommercialRegistrationStatusBasedOnGameAsync(Guid gameId, CancellationToken ct = default)
-        {
-            var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(
-                DateTime.UtcNow,
-                TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")));
+		private async Task UpdateCommercialRegistrationStatusBasedOnGameAsync(Guid gameId, CancellationToken ct = default)
+		{
+			var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTimeFromUtc(
+				DateTime.UtcNow,
+				TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time")));
 
-            int updated = 0;
+			int updated = 0;
 
-            // Get Active registrations
-            var activeRegistrations = await repositoryManager.CommercialRegistrationRepository
-                .GetActiveRegistrationsByGameIdAsync(gameId, trackChanges: true, ct);
+			// Get Active registrations
+			var activeRegistrations = await repositoryManager.CommercialRegistrationRepository
+				.GetActiveRegistrationsByGameIdAsync(gameId, trackChanges: true, ct);
 
-            foreach (var reg in activeRegistrations)
-            {
-                // Still within commercial period
-                if (reg.StartDate <= today && (!reg.EndDate.HasValue || today <= reg.EndDate.Value))
-                {
-                    bool isStillEligible = reg.Game.Visibility == GameVisibility.Public &&
-                                           reg.Game.CensorStatus == CensorStatus.Approved;
+			foreach (var reg in activeRegistrations)
+			{
+				// Still within commercial period
+				if (reg.StartDate <= today && (!reg.EndDate.HasValue || today <= reg.EndDate.Value))
+				{
+					bool isStillEligible = reg.Game.Visibility == GameVisibility.Public &&
+										   reg.Game.CensorStatus == CensorStatus.Approved;
 
-                    if (!isStillEligible)
-                    {
-                        reg.Status = CommercialRegistrationStatus.Failed;
-                        updated++;
-                    }
-                }
-            }
+					if (!isStillEligible)
+					{
+						reg.Status = CommercialRegistrationStatus.Failed;
+						updated++;
+					}
+				}
+			}
 
-            // Get Failed registrations
-            var failedRegistrations = await repositoryManager.CommercialRegistrationRepository
-                .GetFailedRegistrationsByGameIdAsync(gameId, trackChanges: true, ct);
+			// Get Failed registrations
+			var failedRegistrations = await repositoryManager.CommercialRegistrationRepository
+				.GetFailedRegistrationsByGameIdAsync(gameId, trackChanges: true, ct);
 
-            foreach (var reg in failedRegistrations)
-            {
-                if (reg.StartDate <= today && (!reg.EndDate.HasValue || today <= reg.EndDate.Value))
-                {
-                    bool isNowEligible = reg.Game.Visibility == GameVisibility.Public &&
-                                         reg.Game.CensorStatus == CensorStatus.Approved;
+			foreach (var reg in failedRegistrations)
+			{
+				if (reg.StartDate <= today && (!reg.EndDate.HasValue || today <= reg.EndDate.Value))
+				{
+					bool isNowEligible = reg.Game.Visibility == GameVisibility.Public &&
+										 reg.Game.CensorStatus == CensorStatus.Approved;
 
-                    if (isNowEligible)
-                    {
-                        reg.Status = CommercialRegistrationStatus.Active;
-                        updated++;
-                    }
-                }
-            }
+					if (isNowEligible)
+					{
+						reg.Status = CommercialRegistrationStatus.Active;
+						updated++;
+					}
+				}
+			}
 
-            if (updated > 0)
-            {
-                await repositoryManager.SaveAsync(ct);
-            }
-        }
+			if (updated > 0)
+			{
+				await repositoryManager.SaveAsync(ct);
+			}
+		}
 
-    }
+	}
 }

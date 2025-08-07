@@ -43,6 +43,7 @@ namespace IndieGameZone.Application.Services
 		private readonly Lazy<IDashBoardService> dashBoardService;
 		private readonly Lazy<IGameImageService> gameImageService;
 		private readonly Lazy<IOrderService> orderService;
+		private readonly Lazy<IGamePriceLogService> gamePriceLogService;
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker, IAIService aIService, IRecombeeService recombeeService, IHubContext<NotificationHub, INotificationHub> notificationHub)
 		{
@@ -53,7 +54,7 @@ namespace IndieGameZone.Application.Services
 			ageRestrictionService = new Lazy<IAgeRestrictionService>(() => new AgeRestrictionService(repositoryManager, mapper));
 			gameService = new Lazy<IGameService>(() => new GameService(repositoryManager, mapper, blobService, schedulerFactory, recombeeService, userManager));
 			achievementService = new Lazy<IAchievementService>(() => new AchievementService(repositoryManager, mapper));
-			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration, blobService, faker));
+			userService = new Lazy<IUserService>(() => new UserService(repositoryManager, mapper, userManager, roleManager, emailSender, httpContextAccessor, configuration, blobService, faker, recombeeService));
 			discountService = new Lazy<IDiscountService>(() => new DiscountService(repositoryManager, mapper));
 			wishlistService = new Lazy<IWishlistService>(() => new WishlistService(repositoryManager, mapper, recombeeService, userManager));
 			transactionService = new Lazy<ITransactionService>(() => new TransactionService(repositoryManager, mapper, configuration, recombeeService, userManager, notificationHub));
@@ -74,6 +75,7 @@ namespace IndieGameZone.Application.Services
 			dashBoardService = new Lazy<IDashBoardService>(() => new DashBoardService(repositoryManager, mapper, userManager));
 			gameImageService = new Lazy<IGameImageService>(() => new GameImageService(repositoryManager, blobService, schedulerFactory));
 			orderService = new Lazy<IOrderService>(() => new OrderService(repositoryManager, mapper));
+			gamePriceLogService = new Lazy<IGamePriceLogService>(() => new GamePriceLogService(repositoryManager, mapper));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -131,5 +133,7 @@ namespace IndieGameZone.Application.Services
 		public IGameImageService GameImageService => gameImageService.Value;
 
 		public IOrderService OrderService => orderService.Value;
+
+		public IGamePriceLogService GamePriceLogService => gamePriceLogService.Value;
 	}
 }

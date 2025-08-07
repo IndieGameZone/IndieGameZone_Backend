@@ -46,6 +46,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<PostImageRepository> postImageRepository;
 		private readonly Lazy<IDownloadSlotRepository> downloadSlotRepository;
 		private readonly Lazy<IOrderRepository> orderRepository;
+		private readonly Lazy<IGamePriceLogRepository> gamePriceLogRepository;
 
 		public RepositoryManager(AppDbContext appDbContext)
 		{
@@ -88,6 +89,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			postImageRepository = new Lazy<PostImageRepository>(() => new PostImageRepository(appDbContext));
 			downloadSlotRepository = new Lazy<IDownloadSlotRepository>(() => new DownloadSlotRepository(appDbContext));
 			orderRepository = new Lazy<IOrderRepository>(() => new OrderRepository(appDbContext));
+			gamePriceLogRepository = new Lazy<IGamePriceLogRepository>(() => new GamePriceLogRepository(appDbContext));
 		}
 
 		public ILanguageRepository LanguageRepository => languageRepository.Value;
@@ -165,6 +167,8 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public IDownloadSlotRepository DownloadSlotRepository => downloadSlotRepository.Value;
 
 		public IOrderRepository OrderRepository => orderRepository.Value;
+
+		public IGamePriceLogRepository GamePriceLogRepository => gamePriceLogRepository.Value;
 
 		public async Task<IDbTransaction> BeginTransaction(CancellationToken ct = default)
 		{

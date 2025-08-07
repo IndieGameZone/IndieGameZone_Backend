@@ -101,6 +101,11 @@ namespace IndieGameZone.Application.Services
 			}
 		}
 
+		public async Task PushUserToRecombee(Guid userId)
+		{
+			await client.SendAsync(new AddUser(userId.ToString()));
+		}
+
 		public async Task RemoveGameFromRecombee(Guid gameId)
 		{
 			await client.SendAsync(new DeleteItem(gameId.ToString()));
