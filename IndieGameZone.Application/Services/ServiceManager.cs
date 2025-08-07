@@ -44,6 +44,7 @@ namespace IndieGameZone.Application.Services
 		private readonly Lazy<IGameImageService> gameImageService;
 		private readonly Lazy<IOrderService> orderService;
 		private readonly Lazy<IGamePriceLogService> gamePriceLogService;
+		private readonly Lazy<ICouponService> couponService;
 
 		public ServiceManager(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager, RoleManager<Roles> roleManager, IConfiguration configuration, IBlobService blobService, IEmailSender emailSender, IHttpContextAccessor httpContextAccessor, ISchedulerFactory schedulerFactory, Faker faker, IAIService aIService, IRecombeeService recombeeService, IHubContext<NotificationHub, INotificationHub> notificationHub)
 		{
@@ -76,6 +77,7 @@ namespace IndieGameZone.Application.Services
 			gameImageService = new Lazy<IGameImageService>(() => new GameImageService(repositoryManager, blobService, schedulerFactory));
 			orderService = new Lazy<IOrderService>(() => new OrderService(repositoryManager, mapper));
 			gamePriceLogService = new Lazy<IGamePriceLogService>(() => new GamePriceLogService(repositoryManager, mapper));
+			couponService = new Lazy<ICouponService>(() => new CouponService(repositoryManager, mapper));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;
@@ -135,5 +137,7 @@ namespace IndieGameZone.Application.Services
 		public IOrderService OrderService => orderService.Value;
 
 		public IGamePriceLogService GamePriceLogService => gamePriceLogService.Value;
+
+		public ICouponService CouponService => couponService.Value;
 	}
 }

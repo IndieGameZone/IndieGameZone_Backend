@@ -31,5 +31,6 @@
 		IGameImageService GameImageService { get; }
 		IOrderService OrderService { get; }
 		IGamePriceLogService GamePriceLogService { get; }
+		ICouponService CouponService { get; }
 	}
 }

@@ -18,7 +18,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			.FirstOrDefaultAsync(ct);
 
 		public async Task<IEnumerable<Coupons>> GetCouponsByUserId(Guid userId, bool trackChange, CancellationToken ct = default) => await
-			FindByCondition(c => c.UserId == userId, trackChange)
+			FindByCondition(c => c.UserId == userId && DateOnly.FromDateTime(DateTime.Now) <= c.EndDate && !c.IsUsed, trackChange)
 			.ToListAsync(ct);
 	}
 }
