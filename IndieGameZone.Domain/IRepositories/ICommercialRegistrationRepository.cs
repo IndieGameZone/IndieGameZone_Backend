@@ -16,6 +16,8 @@ namespace IndieGameZone.Domain.IRepositories
 		Task<List<CommercialRegistrations>> GetRelevantRegistrationsForDateCheckAsync(CommercialPackageType packageType, Guid? categoryId, CancellationToken ct = default);
 		Task<CommercialRegistrations?> GetCategoryCommercialRegistrationByGameId(Guid gameId, bool trackChange, CancellationToken ct = default);
         Task<List<CommercialRegistrations>> GetRegistrationsForStatusUpdate(DateOnly today, CancellationToken ct = default);
-	
-	}
+        Task<List<CommercialRegistrations>> GetActiveRegistrationsByGameIdAsync(Guid gameId, bool trackChanges = false, CancellationToken ct = default);
+        Task<List<CommercialRegistrations>> GetFailedRegistrationsByGameIdAsync(Guid gameId, bool trackChanges = false, CancellationToken ct = default);
+
+    }
 }
