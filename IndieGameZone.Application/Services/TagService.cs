@@ -21,6 +21,12 @@ namespace IndieGameZone.Application.Services
 		}
 		public async Task CreateTag(TagForCreationDto tagDto, CancellationToken ct = default)
 		{
+			//Check if tag already exists
+			var existingTag = await repositoryManager.TagRepository.GetTagByName(tagDto.Name.ToLower(), false, ct);
+			if (existingTag != null)
+			{
+				throw new BadRequestException($"Tag with name '{tagDto.Name}' already exists.");
+			}
 			var tagEntity = mapper.Map<Tags>(tagDto);
 			tagEntity.Id = Guid.NewGuid();
 			repositoryManager.TagRepository.CreateTag(tagEntity);

@@ -33,7 +33,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost]
-		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> CreateTag([FromBody] TagForCreationDto tagDto, CancellationToken ct)
 		{
 			await serviceManager.TagService.CreateTag(tagDto, ct);
