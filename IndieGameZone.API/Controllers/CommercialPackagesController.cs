@@ -98,5 +98,22 @@ namespace IndieGameZone.API.Controllers
             return Ok(unavailableDates);
         }
 
+        [HttpDelete("registrations/{registrationId:guid}")]
+        [Authorize]
+        public async Task<IActionResult> CancelCommercialRegistration([FromRoute] Guid registrationId, CancellationToken ct)
+        {
+            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+            var developer = await serviceManager.UserService.GetUserByToken(token, ct);
+            if (developer == null)
+            {
+                return Unauthorized("Invalid or expired token.");
+            }
+            
+			await serviceManager.CommercialPackageService
+                .CancelCommercialRegistrationAsync(registrationId, developer.Id, ct);
+
+            return NoContent();
+        }
+
     }
 }

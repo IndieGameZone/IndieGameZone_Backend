@@ -19,6 +19,6 @@ namespace IndieGameZone.Application.IServices
         Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetFilteredCommercialRegistrations(Guid? userId, Guid? gameId, Guid? commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default);
         Task<List<DateOnly>> GetUnavailableDatesAsync(Guid packageId, Guid gameId, Guid userId, CancellationToken ct);
         Task<int> RunStatusUpdateAsync(CancellationToken ct = default);
-
+        Task CancelCommercialRegistrationAsync(Guid registrationId, Guid developerId, CancellationToken ct);
     }
 }
