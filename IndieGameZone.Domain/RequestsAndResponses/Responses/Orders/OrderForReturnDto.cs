@@ -1,16 +1,18 @@
 ﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Transactions;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Orders
 {
 	public class OrderForReturnDto
 	{
-		public Guid Id { get; set; }
-		public double Amount { get; set; }
-		public DateOnly? CommercialRegistrationStartDate { get; set; }
-		public DateOnly? CommercialRegistrationEndDate { get; set; }
-		public DateTime CreatedAt { get; set; }
-		public GameForOrderReturnDto? Game { get; set; }
-		public CommercialPackageForOrderReturnDto? CommercialPackage { get; set; } = null!;
+		public Guid Id { get; init; }
+		public double Amount { get; init; }
+		public DateOnly? CommercialRegistrationStartDate { get; init; }
+		public DateOnly? CommercialRegistrationEndDate { get; init; }
+		public DateTime CreatedAt { get; init; }
+		public GameForOrderReturnDto? Game { get; init; }
+		public CommercialPackageForOrderReturnDto? CommercialPackage { get; init; } = null!;
+		public TransactionForReturnDto Transaction { get; init; } = null!;
 	}
 }

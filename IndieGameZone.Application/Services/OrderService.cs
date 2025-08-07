@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application.IServices;
+using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Orders;
@@ -16,6 +17,15 @@ namespace IndieGameZone.Application.Services
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 		}
+
+		public async Task<OrderForReturnDto?> GetOrderById(Guid orderId, CancellationToken ct = default)
+		{
+			var orders = await repositoryManager.OrderRepository.GetOrderById(orderId, false, ct);
+			if (orders is null)
+				throw new NotFoundException("Order not found");
+			return mapper.Map<OrderForReturnDto>(orders);
+		}
+
 		public async Task<(IEnumerable<OrderForReturnDto> orders, MetaData metaData)> GetOrdersByUserId(Guid userId, OrderParameters orderParameters, CancellationToken ct = default)
 		{
 			var ordersWithMetaData = await repositoryManager.OrderRepository.GetOrdersByUserId(userId, orderParameters, false, ct);

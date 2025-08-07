@@ -25,5 +25,13 @@ namespace IndieGameZone.API.Controllers
 			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
 			return Ok(pagedResult.orders);
 		}
+
+		[HttpGet("orders/{orderId:guid}")]
+		[Authorize]
+		public async Task<IActionResult> GetOrderById([FromRoute] Guid orderId, CancellationToken ct = default)
+		{
+			var order = await serviceManager.OrderService.GetOrderById(orderId, ct);
+			return Ok(order);
+		}
 	}
 }

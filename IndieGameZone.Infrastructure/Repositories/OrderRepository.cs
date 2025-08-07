@@ -15,13 +15,18 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void CreateOrder(Orders orders) => Create(orders);
 
-		public async Task<Orders?> GetOrderById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(x => x.Id == id, trackChange).FirstOrDefaultAsync(ct);
+		public async Task<Orders?> GetOrderById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(x => x.Id == id, trackChange)
+			.Include(x => x.Game)
+			.Include(x => x.CommercialPackage)
+			.Include(x => x.Transaction)
+			.FirstOrDefaultAsync(ct);
 
 		public async Task<PagedList<Orders>> GetOrdersByUserId(Guid userId, OrderParameters orderParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var orders = FindByCondition(x => x.UserId == userId, trackChange)
 				.Include(x => x.Game)
 				.Include(x => x.CommercialPackage)
+				.Include(x => x.Transaction)
 				.Sort();
 
 			return await PagedList<Orders>.ToPagedList(orders, orderParameters.PageNumber, orderParameters.PageSize, ct);
