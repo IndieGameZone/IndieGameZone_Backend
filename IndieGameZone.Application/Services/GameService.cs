@@ -154,7 +154,7 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<Guid> CreateGame(Guid developerId, GameForCreationDto game, CancellationToken ct = default)
 		{
-			var developer = await userManager.FindByIdAsync(developerId.ToString());
+			var developer = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(d => d.Id == developerId);
 			if (developer is null)
 			{
 				throw new NotFoundException($"Developer not found.");
@@ -259,7 +259,7 @@ namespace IndieGameZone.Application.Services
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
 			await DeleteOldContentBeforeUpdate(gameId, ct);
-			var developer = await userManager.FindByIdAsync(developerId.ToString());
+			var developer = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(d => d.Id == developerId);
 			if (developer is null)
 			{
 				throw new NotFoundException($"Developer not found.");

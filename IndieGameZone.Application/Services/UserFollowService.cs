@@ -4,6 +4,7 @@ using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Notifications;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
@@ -53,7 +54,12 @@ namespace IndieGameZone.Application.Services
 				UserId = userId
 			});
 			await repositoryManager.SaveAsync(ct);
-			await notificationHub.Clients.User(userId.ToString()).SendNotification(notification);
+			await notificationHub.Clients.User(userId.ToString()).SendNotification(new NotificationForReturnDto
+			{
+				Id = notification.Id,
+				Message = notification.Message,
+				IsRead = notification.IsRead
+			});
 		}
 
 		public async Task FollowOrUnfollowUser(Guid followeeId, Guid followerId, CancellationToken ct = default)

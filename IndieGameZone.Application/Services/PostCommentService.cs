@@ -8,6 +8,7 @@ using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.PostComments;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Notifications;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.PostComments;
 using MapsterMapper;
 using Microsoft.AspNetCore.SignalR;
@@ -64,7 +65,12 @@ namespace IndieGameZone.Application.Services
 				UserId = userId
 			});
 			await repositoryManager.SaveAsync(ct);
-			await notificationHub.Clients.User(userId.ToString()).SendNotification(notification);
+			await notificationHub.Clients.User(userId.ToString()).SendNotification(new NotificationForReturnDto
+			{
+				Id = notification.Id,
+				Message = notification.Message,
+				IsRead = notification.IsRead
+			});
 		}
 
 		public async Task CreateComment(Guid userId, Guid postId, PostCommentForCreationDto postCommentForCreationDto, CancellationToken ct = default)

@@ -4,6 +4,7 @@ using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Notifications;
 using Microsoft.AspNetCore.SignalR;
 using Quartz;
 
@@ -88,7 +89,12 @@ namespace IndieGameZone.Application.BackgroundJobServices
 					IsRead = false
 				};
 				repositoryManager.NotificationRepository.CreateNotification(notification);
-				await notificationHub.Clients.User(game.DeveloperId.ToString()).SendNotification(notification);
+				await notificationHub.Clients.User(game.DeveloperId.ToString()).SendNotification(new NotificationForReturnDto
+				{
+					Id = notification.Id,
+					Message = notification.Message,
+					IsRead = notification.IsRead
+				});
 			}
 			await repositoryManager.SaveAsync();
 

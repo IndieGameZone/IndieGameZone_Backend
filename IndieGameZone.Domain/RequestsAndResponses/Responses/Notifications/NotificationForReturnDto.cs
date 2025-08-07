@@ -4,5 +4,6 @@
 	{
 		public Guid Id { get; init; }
 		public string Message { get; init; }
+		public bool IsRead { get; init; }
 	}
 }
