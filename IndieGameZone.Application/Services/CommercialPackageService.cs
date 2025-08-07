@@ -7,7 +7,6 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.CommercialPackages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages;
 using MapsterMapper;
-using Microsoft.Extensions.Logging;
 
 namespace IndieGameZone.Application.Services
 {
@@ -275,6 +274,101 @@ namespace IndieGameZone.Application.Services
             }
 
             return updatedCount;
+        }
+
+        public async Task CancelCommercialRegistrationAsync(Guid registrationId, Guid developerId, CancellationToken ct)
+        {
+            var registration = await repositoryManager
+                .CommercialRegistrationRepository
+                .GetCommercialRegistrationById(registrationId, trackChange: true, ct);
+
+            if (registration == null)
+                throw new NotFoundException($"Commercial registration not found.");
+
+            if (registration.Game.DeveloperId != developerId)
+                throw new ForbiddenException($"You can only cancel your own registration.");
+
+            var package = registration.CommercialPackage;
+            if (package == null)
+                throw new NotFoundException($"Commercial package not found.");
+
+            var game = await repositoryManager
+                .GameRepository
+                .GetGameById(registration.GameId, trackChange: false, ct);
+
+            if (game == null)
+                throw new NotFoundException($"Game associated with registration not found.");
+
+            var wallet = await repositoryManager
+                .WalletRepository
+                .GetWalletByUserId(developerId, trackChange: true, ct);
+
+            if (wallet == null)
+                throw new NotFoundException($"Wallet not found.");
+
+            var now = DateTime.Now;
+            var startDate = registration.StartDate.ToDateTime(TimeOnly.MinValue);
+
+            // Compose DateTime thresholds for refund policy
+            var dayBeforeStart = startDate.AddDays(-1);
+
+            var fullRefundCutoff = dayBeforeStart;
+            var fiftyPercentCutoff = dayBeforeStart.AddHours(12);    // 12:00 noon
+            var thirtyPercentCutoff = dayBeforeStart.AddHours(18);   // 18:00 (6 PM)
+            var noRefundCutoff = startDate;                          // 00:00 of StartDate
+
+            double refundPercent;
+
+            if (now < fullRefundCutoff)
+            {
+                refundPercent = 0.7;
+            }
+            else if (now >= fullRefundCutoff && now < fiftyPercentCutoff)
+            {
+                refundPercent = 0.5;
+            }
+            else if (now >= fiftyPercentCutoff && now < thirtyPercentCutoff)
+            {
+                refundPercent = 0.3;
+            }
+            else if (now >= thirtyPercentCutoff && now < noRefundCutoff)
+            {
+                refundPercent = 0;
+            }
+            else
+            {
+                throw new BadRequestException("You can no longer cancel this registration.");
+            }
+
+            decimal refundAmount = (decimal)(package.Price * refundPercent);
+            
+            // Always log the transaction
+            repositoryManager.TransactionRepository.CreateTransaction(new Transactions
+            {
+                Id = Guid.NewGuid(),
+                UserId = developerId,
+				PurchaseUserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
+                OrderCode = null,
+                Amount = (double)refundAmount, 
+                Description = $"Refund for cancelling commercial registration {registration.CommercialPackage.Name}",
+                CreatedAt = DateTime.Now,
+				Type = TransactionType.Refund,
+                Status = TransactionStatus.Success,
+                PaymentMethod = PaymentMethod.Wallet,
+                GameId = game.Id
+
+            });
+
+            // Refund wallet if eligible
+            if (refundAmount > 0)
+            {
+                wallet.Balance += (double)refundAmount;
+            }
+
+            // Always update registration status
+            registration.Status = CommercialRegistrationStatus.Cancelled;
+
+            await repositoryManager.SaveAsync(ct);
         }
 
     }
