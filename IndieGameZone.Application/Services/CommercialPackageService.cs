@@ -255,6 +255,17 @@ namespace IndieGameZone.Application.Services
                             updatedCount++;
                         }
                         break;
+
+                    case CommercialRegistrationStatus.Failed:
+                        if (reg.StartDate <= today && (!reg.EndDate.HasValue || today <= reg.EndDate.Value))
+                        {
+                            if (reg.Game.Visibility == GameVisibility.Public && reg.Game.CensorStatus == CensorStatus.Approved)
+                            {
+                                reg.Status = CommercialRegistrationStatus.Active;
+                                updatedCount++;
+                            }
+                        }
+                        break;
                 }
             }
 

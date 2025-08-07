@@ -139,5 +139,31 @@ namespace IndieGameZone.Infrastructure.Repositories
             .ToListAsync(ct);
         }
 
+        public async Task<List<CommercialRegistrations>> GetActiveRegistrationsByGameIdAsync(Guid gameId, bool trackChanges = false, CancellationToken ct = default)
+        {
+            return await FindByCondition(
+                    r => r.GameId == gameId && r.Status == CommercialRegistrationStatus.Active,
+                    trackChanges)
+                .Include(r => r.CommercialPackage)
+                .Include(r => r.Game)
+                    .ThenInclude(g => g.Developer)
+                        .ThenInclude(d => d.UserProfile)
+                .AsSplitQuery()
+                .ToListAsync(ct);
+        }
+
+        public async Task<List<CommercialRegistrations>> GetFailedRegistrationsByGameIdAsync(Guid gameId, bool trackChanges = false, CancellationToken ct = default)
+        {
+            return await FindByCondition(
+                    r => r.GameId == gameId && r.Status == CommercialRegistrationStatus.Failed,
+                    trackChanges)
+                .Include(r => r.CommercialPackage)
+                .Include(r => r.Game)
+                    .ThenInclude(g => g.Developer)
+                        .ThenInclude(d => d.UserProfile)
+                .AsSplitQuery()
+                .ToListAsync(ct);
+        }
+
     }
 }
