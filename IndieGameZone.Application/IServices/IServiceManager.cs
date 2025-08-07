@@ -32,5 +32,6 @@
 		IOrderService OrderService { get; }
 		IGamePriceLogService GamePriceLogService { get; }
 		ICouponService CouponService { get; }
+		IDownloadSlotService DownloadSlotService { get; }
 	}
 }
