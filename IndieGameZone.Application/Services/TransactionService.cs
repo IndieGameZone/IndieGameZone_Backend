@@ -73,12 +73,9 @@ namespace IndieGameZone.Application.Services
 
 		private async Task<double> GetGamePriceAfterApplyingCoupon(Games game, Guid? couponId, CancellationToken ct = default)
 		{
-			double gamePriceAfterDiscount = 0;
-			if (couponId == null)
-			{
-				gamePriceAfterDiscount = game.Price;
-			}
-			else
+			var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(game.Id, false, ct);
+			double gamePriceAfterDiscount = discount is not null ? game.Price - game.Price * discount.Percentage / 100 : game.Price; ;
+			if (couponId != null)
 			{
 				var coupon = await repositoryManager.CouponRepository.GetCouponById((Guid)couponId, true, ct);
 				if (coupon == null)
@@ -93,7 +90,7 @@ namespace IndieGameZone.Application.Services
 				{
 					throw new BadRequestException("This coupon has already been used");
 				}
-				gamePriceAfterDiscount = game.Price - game.Price * coupon.Percentage / 100;
+				gamePriceAfterDiscount -= gamePriceAfterDiscount * coupon.Percentage / 100;
 				coupon.IsUsed = true;
 			}
 			return gamePriceAfterDiscount;
@@ -188,14 +185,9 @@ namespace IndieGameZone.Application.Services
 			var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gameId, false, ct);
 			double gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, transactionForGameCreation.CouponId);
 
-			if (transactionForGameCreation.Amount < gamePriceAfterDiscount)
-			{
-				throw new BadRequestException("Transaction amount is less than the game price");
-			}
-
 			if (transactionForGameCreation.PaymentMethod == PaymentMethod.Wallet)
 			{
-				if (wallet.Balance < transactionForGameCreation.Amount)
+				if (wallet.Balance < gamePriceAfterDiscount)
 				{
 					throw new NotEnoughCreditException("You don't have enough points");
 				}
@@ -204,7 +196,7 @@ namespace IndieGameZone.Application.Services
 			var order = new Orders
 			{
 				Id = Guid.NewGuid(),
-				Amount = transactionForGameCreation.Amount,
+				Amount = gamePriceAfterDiscount,
 				UserId = userId,
 				GameId = gameId,
 				CouponId = transactionForGameCreation.CouponId,
@@ -218,7 +210,7 @@ namespace IndieGameZone.Application.Services
 				PurchaseUserId = userId,
 				GameId = gameId,
 				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
-				Amount = transactionForGameCreation.Amount,
+				Amount = gamePriceAfterDiscount,
 				Description = $"Purchase game",
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.PurchaseGame,
@@ -235,7 +227,7 @@ namespace IndieGameZone.Application.Services
 				var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
 
 				// Update balances for player wallet
-				wallet.Balance -= transactionForGameCreation.Amount;
+				wallet.Balance -= gamePriceAfterDiscount;
 
 				// Add game to library
 				var libraryEntity = new Libraries
@@ -245,27 +237,6 @@ namespace IndieGameZone.Application.Services
 					PurchasedAt = DateTime.Now
 				};
 				repositoryManager.LibraryRepository.AddGameToLibrary(libraryEntity);
-
-				//Check if amount include donation
-				if (transactionForGameCreation.Amount > gamePriceAfterDiscount)
-				{
-					var transactionDonationForDeveloper = new Transactions()
-					{
-						Id = Guid.NewGuid(),
-						UserId = game.DeveloperId,
-						PurchaseUserId = userId,
-						GameId = gameId,
-						OrderCode = null,
-						Amount = transactionForGameCreation.Amount - gamePriceAfterDiscount,
-						Description = $"Donation money for game {game.Name} for developer",
-						CreatedAt = DateTime.Now,
-						Type = TransactionType.DonationRevenue,
-						Status = TransactionStatus.Success,
-						PaymentMethod = PaymentMethod.Wallet
-					};
-					devWallet.Balance += transactionDonationForDeveloper.Amount;
-					repositoryManager.TransactionRepository.CreateTransaction(transactionDonationForDeveloper);
-				}
 
 				// Create transactions for developer and update balance
 				var transactionForDeveloper = new Transactions()
@@ -422,27 +393,6 @@ namespace IndieGameZone.Application.Services
 						PurchasedAt = DateTime.Now
 					};
 					repositoryManager.LibraryRepository.AddGameToLibrary(libraryEntity);
-
-					//Check if amount include donation
-					if (transaction.Amount > gamePriceAfterDiscount)
-					{
-						var transactionDonationForDeveloper = new Transactions()
-						{
-							Id = Guid.NewGuid(),
-							UserId = game.DeveloperId,
-							PurchaseUserId = transaction.UserId,
-							GameId = game.Id,
-							OrderCode = null,
-							Amount = transaction.Amount - gamePriceAfterDiscount,
-							Description = $"Donation money for game {game.Name} for developer",
-							CreatedAt = DateTime.Now,
-							Type = TransactionType.DonationRevenue,
-							Status = TransactionStatus.Success,
-							PaymentMethod = PaymentMethod.PayOS
-						};
-						devWallet.Balance += transactionDonationForDeveloper.Amount;
-						repositoryManager.TransactionRepository.CreateTransaction(transactionDonationForDeveloper);
-					}
 
 					// Create transactions for developer and update balance
 					var transactionForDeveloper = new Transactions()

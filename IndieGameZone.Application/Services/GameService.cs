@@ -463,6 +463,16 @@ namespace IndieGameZone.Application.Services
 				repositoryManager.DownloadSlotRepository.CreateDownloadSlot(downlaodSlot);
 				game.NumberOfDownloads++;
 			}
+			var library = await repositoryManager.LibraryRepository.GetLibraryByUserIdAndGameId(userId, game.Id, false, ct);
+			if (library is null)
+			{
+				repositoryManager.LibraryRepository.AddGameToLibrary(new Libraries
+				{
+					UserId = userId,
+					GameId = game.Id,
+					PurchasedAt = DateTime.Now
+				});
+			}
 			await repositoryManager.SaveAsync(ct);
 
 			return gamePlatform.File;
