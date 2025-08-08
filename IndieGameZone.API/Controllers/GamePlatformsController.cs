@@ -27,7 +27,7 @@ namespace IndieGameZone.API.Controllers
 
 		[HttpPut("games/{gameId:guid}/game-platforms")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
-		public async Task<IActionResult> UpdateGamePlatform([FromRoute] Guid gameId, [FromRoute] Guid developerId, [FromBody] ICollection<GamePlatformForUpdateDto> gamePlatformForUpdateDtos, CancellationToken ct)
+		public async Task<IActionResult> UpdateGamePlatform([FromRoute] Guid gameId, [FromBody] ICollection<GamePlatformForUpdateDto> gamePlatformForUpdateDtos, CancellationToken ct)
 		{
 			await serviceManager.GamePlatformService.UpdateGamePlatform(gameId, gamePlatformForUpdateDtos, ct);
 			return NoContent();

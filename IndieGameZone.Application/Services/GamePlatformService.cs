@@ -40,6 +40,11 @@ namespace IndieGameZone.Application.Services
 
 		public async Task CreateGamePlatform(Guid gameId, ICollection<GamePlatformForCreationDto> gamePlatformForCreationDto, CancellationToken ct = default)
 		{
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game is null)
+			{
+				throw new NotFoundException($"Game not found.");
+			}
 			var gamePlatforms = mapper.Map<ICollection<GamePlatforms>>(gamePlatformForCreationDto);
 			foreach (var gamePlatform in gamePlatforms)
 			{
@@ -57,6 +62,11 @@ namespace IndieGameZone.Application.Services
 		public async Task UpdateGamePlatform(Guid gameId, ICollection<GamePlatformForUpdateDto> gamePlatformForUpdateDto, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game is null)
+			{
+				throw new NotFoundException($"Game not found.");
+			}
 			await DeleteOldGamePlatform(gameId, gamePlatformForUpdateDto.Select(gp => gp.File), ct);
 
 			var gamePlatforms = mapper.Map<ICollection<GamePlatforms>>(gamePlatformForUpdateDto);
