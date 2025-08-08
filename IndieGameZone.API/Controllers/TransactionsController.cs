@@ -25,7 +25,7 @@ namespace IndieGameZone.API.Controllers
 
 		//[HttpPost("users/{userId:guid}/transactions/deposit")]
 		//[Authorize]
-		//public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromBody] TransactionForDepositCreationDto transaction, CancellationToken ct)
+		//public async Task<IActionResult> CreateTransactionForDeposit([FromRoute] Guid userId, [FromForm] TransactionForDepositCreationDto transaction, CancellationToken ct)
 		//{
 		//	var paymentLink = await serviceManager.TransactionService.CreateTransactionForDeposit(userId, transaction, ct);
 		//	return StatusCode(201, paymentLink);
@@ -41,7 +41,7 @@ namespace IndieGameZone.API.Controllers
 
 		[HttpPost("users/{userId:guid}/games/{gameId:guid}/transactions/donation")]
 		[Authorize]
-		public async Task<IActionResult> CreateTransactionForDonation([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromBody] TransactionForDonationCreationDto transactionForDonationCreationDto, CancellationToken ct)
+		public async Task<IActionResult> CreateTransactionForDonation([FromRoute] Guid userId, [FromRoute] Guid gameId, [FromForm] TransactionForDonationCreationDto transactionForDonationCreationDto, CancellationToken ct)
 		{
 			var result = await serviceManager.TransactionService.CreateTransactionForDonation(userId, gameId, transactionForDonationCreationDto, ct);
 			return StatusCode(201, result);

@@ -154,7 +154,7 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<string> CreateTransactionForDeposit(Guid userId, TransactionForDepositCreationDto transaction, CancellationToken ct = default)
 		{
-			var user = userManager.FindByIdAsync(userId.ToString());
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
 			if (user == null)
 				throw new NotFoundException("User not found");
 			var transactionEntity = mapper.Map<Transactions>(transaction);
@@ -175,7 +175,8 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<string> CreateTransactionForGamePurchase(Guid userId, Guid gameId, TransactionForGameCreation transactionForGameCreation, CancellationToken ct = default)
 		{
-			var user = await userManager.FindByIdAsync(userId.ToString());
+			var dbTransaction = await repositoryManager.BeginTransaction(ct);
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
 			if (user == null)
 				throw new NotFoundException("User not found");
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
@@ -278,18 +279,20 @@ namespace IndieGameZone.Application.Services
 				await recombeeService.SendPurchaseEvent(userId, gameId);
 
 				await CheckGameAchievements(userId);
+				dbTransaction.Commit();
 				return string.Empty;
 			}
 			else
 			{
 				await repositoryManager.SaveAsync(ct);
+				dbTransaction.Commit();
 				return await GetPayOSPaymentLink(transactionEntity, TransactionType.PurchaseGame);
 			}
 		}
 
 		public async Task<string> CreateTransactionForDonation(Guid userId, Guid gameId, TransactionForDonationCreationDto transactionForDonationCreationDto, CancellationToken ct = default)
 		{
-
+			var dbTransaction = await repositoryManager.BeginTransaction(ct);
 			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
 			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct);
 			if (user == null)
@@ -318,7 +321,7 @@ namespace IndieGameZone.Application.Services
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.Donation,
 				Status = transactionForDonationCreationDto.PaymentMethod == PaymentMethod.PayOS ? TransactionStatus.Pending : TransactionStatus.Success,
-				PaymentMethod = PaymentMethod.PayOS,
+				PaymentMethod = transactionForDonationCreationDto.PaymentMethod,
 			};
 			repositoryManager.TransactionRepository.CreateTransaction(transactionEntityForDonor);
 
@@ -349,11 +352,13 @@ namespace IndieGameZone.Application.Services
 				repositoryManager.TransactionRepository.CreateTransaction(transactionForDeveloper);
 
 				await repositoryManager.SaveAsync(ct);
+				dbTransaction.Commit();
 				return string.Empty;
 			}
 			else
 			{
 				await repositoryManager.SaveAsync(ct);
+				dbTransaction.Commit();
 				return await GetPayOSPaymentLink(transactionEntityForDonor, TransactionType.Donation);
 			}
 
@@ -411,7 +416,7 @@ namespace IndieGameZone.Application.Services
 						Description = $"Donation money for game {game.Name} for developer",
 						CreatedAt = DateTime.Now,
 						Type = TransactionType.DonationRevenue,
-						Status = TransactionStatus.Pending,
+						Status = TransactionStatus.Success,
 						PaymentMethod = PaymentMethod.PayOS,
 					};
 					developerWallet.Balance += transactionEntityForDeveloper.Amount;
