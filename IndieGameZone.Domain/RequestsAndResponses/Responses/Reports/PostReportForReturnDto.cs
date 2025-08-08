@@ -22,9 +22,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Reports
         public string? ReviewMessage { get; init; }
         public ReportReasonForReturnDto ReportReason { get; init; }
         public UserReportForReturnDto ReportingUser { get; init; }
-        public UserReportForReturnDto? PostOwner { get; init; }
         public PostForReturnDto? Post { get; init; }
-		public Guid? GameId { get; init; }
-        public string? GameName { get; init; }
     }
 }

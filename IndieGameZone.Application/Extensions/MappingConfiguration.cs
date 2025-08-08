@@ -99,15 +99,12 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.Id, src => src.Id)
 				.Map(dest => dest.Message, src => src.Message)
 				.Map(dest => dest.CreatedAt, src => src.CreatedAt)
-                .Map(dest => dest.UpdatedAt, src => src.UpdatedAt)
+				.Map(dest => dest.UpdatedAt, src => src.UpdatedAt)
 				.Map(dest => dest.Status, src => src.Status)
-                .Map(dest => dest.ReviewMessage, src => src.ReviewMessage)
+				.Map(dest => dest.ReviewMessage, src => src.ReviewMessage)
 				.Map(dest => dest.ReportReason, src => src.ReportReason)
 				.Map(dest => dest.ReportingUser, src => src.ReportingUser)
-                .Map(dest => dest.PostOwner, src => src.Post.User)
-                .Map(dest => dest.Post, src => src.Post)
-                .Map(dest => dest.GameId, src => src.GameId)
-                .Map(dest => dest.GameName, src => src.Game.Name);
+				.Map(dest => dest.Post, src => src.Post);
 
 			config.NewConfig<Reports, CommentReportForReturnDto>()
 				.Map(dest => dest.Id, src => src.Id)
@@ -118,13 +115,8 @@ namespace IndieGameZone.Application.Extensions
                 .Map(dest => dest.ReviewMessage, src => src.ReviewMessage)
 				.Map(dest => dest.ReportReason, src => src.ReportReason)
 				.Map(dest => dest.ReportingUser, src => src.ReportingUser)
-				.Map(dest => dest.CommentOwner, src => src.PostComment.User)
 				.Map(dest => dest.PostComment, src => src.PostComment)
-				.Map(dest => dest.GameId, src => src.GameId)
-				.Map(dest => dest.GameName, src => src.Game.Name)
-				.Map(dest => dest.PostId, src => src.PostId)
-				.Map(dest => dest.PostTitle, src => src.Post.Title);
-
+				.Map(dest => dest.Post, src => src.Post);
         }
     }
 }
