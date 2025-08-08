@@ -290,7 +290,8 @@ namespace IndieGameZone.Application.Services
 		public async Task<string> CreateTransactionForDonation(Guid userId, Guid gameId, TransactionForDonationCreationDto transactionForDonationCreationDto, CancellationToken ct = default)
 		{
 
-			var user = await userManager.FindByIdAsync(userId.ToString());
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
+			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct);
 			if (user == null)
 				throw new NotFoundException("User not found");
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
@@ -298,25 +299,64 @@ namespace IndieGameZone.Application.Services
 			{
 				throw new NotFoundException("Game not found");
 			}
+			if (transactionForDonationCreationDto.PaymentMethod == PaymentMethod.Wallet)
+			{
+				if (wallet.Balance < transactionForDonationCreationDto.Amount)
+				{
+					throw new NotEnoughCreditException("You don't have enough points");
+				}
+			}
 			var transactionEntityForDonor = new Transactions()
 			{
 				Id = Guid.NewGuid(),
 				UserId = userId,
 				PurchaseUserId = userId,
-				OrderCode = null,
+				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
 				GameId = gameId,
 				Amount = transactionForDonationCreationDto.Amount,
 				Description = $"Donation",
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.Donation,
-				Status = TransactionStatus.Pending,
+				Status = transactionForDonationCreationDto.PaymentMethod == PaymentMethod.PayOS ? TransactionStatus.Pending : TransactionStatus.Success,
 				PaymentMethod = PaymentMethod.PayOS,
 			};
-
 			repositoryManager.TransactionRepository.CreateTransaction(transactionEntityForDonor);
 
-			await repositoryManager.SaveAsync(ct);
-			return await GetPayOSPaymentLink(transactionEntityForDonor, TransactionType.Donation);
+			if (transactionForDonationCreationDto.PaymentMethod == PaymentMethod.Wallet)
+			{
+				var devWallet = await repositoryManager.WalletRepository.GetWalletByUserId(game.DeveloperId, true, ct);
+
+				// Update balances for player wallet
+				wallet.Balance -= transactionEntityForDonor.Amount;
+
+
+				// Create transactions for developer and update balance
+				var transactionForDeveloper = new Transactions()
+				{
+					Id = Guid.NewGuid(),
+					UserId = game.DeveloperId,
+					PurchaseUserId = userId,
+					GameId = gameId,
+					OrderCode = null,
+					Amount = transactionForDonationCreationDto.Amount,
+					Description = $"80% of purchase transaction for game {game.Name} for developer",
+					CreatedAt = DateTime.Now,
+					Type = TransactionType.PurchaseGameRevenue,
+					Status = TransactionStatus.Success,
+					PaymentMethod = PaymentMethod.Wallet
+				};
+				devWallet.Balance += transactionForDeveloper.Amount;
+				repositoryManager.TransactionRepository.CreateTransaction(transactionForDeveloper);
+
+				await repositoryManager.SaveAsync(ct);
+				return string.Empty;
+			}
+			else
+			{
+				await repositoryManager.SaveAsync(ct);
+				return await GetPayOSPaymentLink(transactionEntityForDonor, TransactionType.Donation);
+			}
+
 		}
 
 		public async Task<(IEnumerable<TransactionForReturnDto> transactions, MetaData metaData)> GetTransactions(TransactionParameters transactionParameters, CancellationToken ct = default)
