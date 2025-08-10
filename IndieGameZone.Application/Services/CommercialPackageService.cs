@@ -341,7 +341,26 @@ namespace IndieGameZone.Application.Services
             }
 
             decimal refundAmount = (decimal)(package.Price * refundPercent);
-            
+
+            // If refund > 0, get admin wallet and transfer funds
+            if (refundAmount > 0)
+            {
+                var adminId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"); // hardcoded admin ID
+                var adminWallet = await repositoryManager
+                    .WalletRepository
+                    .GetWalletByUserId(adminId, trackChange: true, ct);
+
+                if (adminWallet == null)
+                    throw new NotFoundException("Admin wallet not found.");
+
+                if (adminWallet.Balance < (double)refundAmount)
+                    throw new BadRequestException("Admin does not have enough funds to process the refund.");
+
+                // Transfer from admin to developer
+                adminWallet.Balance -= (double)refundAmount;
+                wallet.Balance += (double)refundAmount;
+            }
+
             // Always log the transaction
             repositoryManager.TransactionRepository.CreateTransaction(new Transactions
             {
@@ -358,12 +377,6 @@ namespace IndieGameZone.Application.Services
                 GameId = game.Id
 
             });
-
-            // Refund wallet if eligible
-            if (refundAmount > 0)
-            {
-                wallet.Balance += (double)refundAmount;
-            }
 
             // Always update registration status
             registration.Status = CommercialRegistrationStatus.Cancelled;
