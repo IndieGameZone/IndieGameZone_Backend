@@ -8,6 +8,7 @@ namespace IndieGameZone.Domain.IRepositories
 		void CreateDownloadSlot(DownloadSlots downloadSlots);
 		IQueryable<DownloadSlots> GetDownloadSlotsByGameId(Guid gameId, DownloadSlotParameters downloadSlotParameters, bool trackChange);
 		Task<IEnumerable<(int day, double numberOfDownloads)>> GetDownloadCountsByGameIdAsync(Guid gameId, int year, int month, CancellationToken ct = default);
+        Task<int> GetTotalDownloadsByGameIdAsync(Guid gameId, CancellationToken ct = default);
 
-	}
+    }
 }

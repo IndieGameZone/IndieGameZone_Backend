@@ -44,5 +44,12 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return FindByCondition(ds => ds.GameId == gameId, trackChange)
 				.FilterByMonthAndYear(downloadSlotParameters.Year, downloadSlotParameters.Month);
 		}
-	}
+
+        public async Task<int> GetTotalDownloadsByGameIdAsync(Guid gameId, CancellationToken ct = default)
+        {
+            return await FindByCondition(d => d.GameId == gameId, trackChanges: false)
+                .CountAsync(ct);
+        }
+
+    }
 }

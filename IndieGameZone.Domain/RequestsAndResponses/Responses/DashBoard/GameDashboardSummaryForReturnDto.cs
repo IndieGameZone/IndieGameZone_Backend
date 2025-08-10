@@ -10,5 +10,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard
     {
         public double TotalRevenueAllTime { get; set; }
         public Dictionary<string, double> RevenueByMonth { get; set; } = new();
+        public int TotalDownloadsAllTime { get; set; }
     }
 }

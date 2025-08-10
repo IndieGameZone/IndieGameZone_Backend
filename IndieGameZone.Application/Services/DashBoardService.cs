@@ -218,11 +218,15 @@ namespace IndieGameZone.Application.Services
                     firstMonth = firstMonth.AddMonths(1);
                 }
             }
+            
+            var totalDownloads = await repositoryManager.DownloadSlotRepository
+                .GetTotalDownloadsByGameIdAsync(gameId, ct);
 
             return new GameDashboardSummaryForReturnDto
             {
                 TotalRevenueAllTime = totalRevenue,
-                RevenueByMonth = revenueByMonth
+                RevenueByMonth = revenueByMonth,
+                TotalDownloadsAllTime = totalDownloads
             };
         }
 
