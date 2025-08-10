@@ -13,15 +13,20 @@ namespace IndieGameZone.Domain.IRepositories
 		Task<PagedList<Transactions>> GetTransactionsByUserId(Guid userId, TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default);
 		Task<PagedList<Transactions>> GetTransactions(TransactionParameters transactionParameters, bool trackChange, CancellationToken ct = default);
         Task<bool> IsOrderCodeExistsAsync(long orderCode, CancellationToken ct = default);
-        Task<double> GetTotalRevenueFromGamePurchase(RevenueRange range, CancellationToken ct = default);
-		Task<double> GetTotalRevenueFromCommercialPackagePurchase(RevenueRange range, CancellationToken ct = default);
+        Task<double> GetTotalRevenueFromGamePurchaseByDeveloper(RevenueRange range, CancellationToken ct = default);
+        Task<double> GetTotalRevenueFromGamePurchaseByAdmin(RevenueRange range, CancellationToken ct = default);
+        Task<double> GetTotalRevenueFromDonation(RevenueRange range, CancellationToken ct = default);
+        Task<double> GetTotalRevenueFromCommercialPackagePurchase(RevenueRange range, CancellationToken ct = default);
         Task<double> GetTotalRevenueForDeveloper(Guid developerId, RevenueRange range, CancellationToken ct = default);
         Task<double> GetTotalRevenueForDeveloper(Guid developerId, DateTime startDate, DateTime endDate, CancellationToken ct = default);
         Task<DateTime?> GetFirstTransactionDateForDeveloper(Guid developerId, CancellationToken ct = default);
         Task<IEnumerable<RevenueByDayForReturnDto>> GetRevenueByMonthAsync(Guid developerId, int year, int month, CancellationToken ct = default);
         Task<double> GetTotalRevenueForGame(Guid gameId, DateTime start, DateTime end, CancellationToken ct = default);
         Task<DateTime?> GetFirstTransactionDateForGame(Guid gameId, CancellationToken ct = default);
-        Task<IEnumerable<Transactions>> GetSuccessfulTransactionsByGameIdAsync(Guid gameId, int year, int month, CancellationToken ct = default);
-
+        Task<double> GetTotalDonationForDeveloper(Guid developerId, RevenueRange range, CancellationToken ct = default);
+        Task<double> GetTotalDonationForDeveloper(Guid developerId, DateTime start, DateTime end, CancellationToken ct = default);
+        Task<double> GetTotalDonationForGame(Guid gameId, RevenueRange range, CancellationToken ct = default);
+        Task<double> GetTotalDonationForGame(Guid gameId, DateTime start, DateTime end, CancellationToken ct = default);
+        Task<IEnumerable<GameMonthlyStatsByDayForReturnDto>> GetGameRevenueAndDonationsByMonthAsync(Guid gameId, int year, int month, CancellationToken ct = default);
     }
 }

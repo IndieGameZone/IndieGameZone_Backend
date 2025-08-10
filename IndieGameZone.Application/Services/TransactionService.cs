@@ -551,9 +551,9 @@ namespace IndieGameZone.Application.Services
 			var package = await repositoryManager.CommercialPackageRepository.GetCommercialPackageById(commercialPackageId, false, ct)
 				?? throw new NotFoundException("Commercial package not found");
 
-			if (dto.StartDate < DateOnly.FromDateTime(DateTime.Today))
+			if (dto.StartDate <= DateOnly.FromDateTime(DateTime.Today))
 			{
-				throw new BadRequestException("Start date must be today or a future date.");
+				throw new BadRequestException("Start date must be a future date.");
 			}
 
 			// Check date availability (for both Wallet & PayOS)

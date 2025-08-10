@@ -365,13 +365,28 @@ namespace IndieGameZone.Application.Services
             repositoryManager.TransactionRepository.CreateTransaction(new Transactions
             {
                 Id = Guid.NewGuid(),
+                UserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
+                PurchaseUserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
+                OrderCode = null,
+                Amount = (double)refundAmount,
+                Description = $"Refund {refundPercent*100}% user {developerId} for cancelling commercial registration {registration.CommercialPackage.Name}",
+                CreatedAt = DateTime.Now,
+                Type = TransactionType.Refund,
+                Status = TransactionStatus.Success,
+                PaymentMethod = PaymentMethod.Wallet,
+                GameId = game.Id
+
+            });
+            repositoryManager.TransactionRepository.CreateTransaction(new Transactions
+            {
+                Id = Guid.NewGuid(),
                 UserId = developerId,
 				PurchaseUserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
                 OrderCode = null,
                 Amount = (double)refundAmount, 
-                Description = $"Refund for cancelling commercial registration {registration.CommercialPackage.Name}",
+                Description = $"Refund {refundPercent * 100}% for cancelling commercial registration {registration.CommercialPackage.Name}",
                 CreatedAt = DateTime.Now,
-				Type = TransactionType.Refund,
+				Type = TransactionType.RefundRevenue,
                 Status = TransactionStatus.Success,
                 PaymentMethod = PaymentMethod.Wallet,
                 GameId = game.Id

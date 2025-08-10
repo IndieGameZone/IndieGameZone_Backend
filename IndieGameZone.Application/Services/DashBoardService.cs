@@ -109,9 +109,14 @@ namespace IndieGameZone.Application.Services
             return await userManager.Users.CountAsync(ct);
         }
 
-        public async Task<double> GetTotalRevenueFromGamePurchaseAsync(RevenueRange range, CancellationToken ct = default)
+        public async Task<double> GetTotalRevenueFromGamePurchaseByDeveloperAsync(RevenueRange range, CancellationToken ct = default)
         {
-            return await repositoryManager.TransactionRepository.GetTotalRevenueFromGamePurchase(range, ct);
+            return await repositoryManager.TransactionRepository.GetTotalRevenueFromGamePurchaseByDeveloper(range, ct) + await repositoryManager.TransactionRepository.GetTotalRevenueFromDonation(range, ct);
+        }
+
+        public async Task<double> GetTotalRevenueFromGamePurchaseByAdminAsync(RevenueRange range, CancellationToken ct = default)
+        {
+            return await repositoryManager.TransactionRepository.GetTotalRevenueFromGamePurchaseByAdmin(range, ct);
         }
 
         public async Task<double> GetTotalRevenueFromCommercialPackagePurchaseAsync(RevenueRange range, CancellationToken ct = default)
@@ -123,14 +128,16 @@ namespace IndieGameZone.Application.Services
         {
             var onlineUserCount = await GetOnlineUserCountAsync(ct);
             var totalUserCount = await GetTotalUserCountAsync(ct);
-            var gameRevenue = await GetTotalRevenueFromGamePurchaseAsync(range, ct);
+            var gameRevenueByDeveloper = await GetTotalRevenueFromGamePurchaseByDeveloperAsync(range, ct);
+            var gameRevenueByAdmin = await GetTotalRevenueFromGamePurchaseByAdminAsync(range, ct);
             var commercialRevenue = await GetTotalRevenueFromCommercialPackagePurchaseAsync(range, ct);
 
             return new DashboardSummaryForReturnDto
             {
                 OnlineUserCount = onlineUserCount,
                 TotalUserCount = totalUserCount,
-                GamePurchaseRevenue = gameRevenue,
+                GamePurchaseRevenueByDeveloper = gameRevenueByDeveloper,
+                GamePurchaseRevenueByAdmin = gameRevenueByAdmin,
                 CommercialPackageRevenue = commercialRevenue
             };
 
@@ -142,9 +149,13 @@ namespace IndieGameZone.Application.Services
             var totalRevenue = await repositoryManager.TransactionRepository
                 .GetTotalRevenueForDeveloper(developerId, RevenueRange.AllTime, ct);
 
-            // 2. Find first month the developer received revenue
+            // 2. Total donation (all time)
+            var totalDonations = await repositoryManager.TransactionRepository
+                .GetTotalDonationForDeveloper(developerId, RevenueRange.AllTime, ct);
+
+            // 3. Find first month the developer received revenue
             var firstTransactionDate = await repositoryManager.TransactionRepository
-                .GetFirstTransactionDateForDeveloper(developerId, ct); // This should be based on UserId = developerId
+                .GetFirstTransactionDateForDeveloper(developerId, ct);
 
             var revenueByMonth = new Dictionary<string, double>();
             if (firstTransactionDate != null)
@@ -155,19 +166,21 @@ namespace IndieGameZone.Application.Services
                 while (firstMonth <= currentMonth)
                 {
                     var start = firstMonth;
-                    var end = firstMonth.AddMonths(1).AddTicks(-1); // End of the month
+                    var end = firstMonth.AddMonths(1).AddTicks(-1);
 
-                    // Directly pass start and end to the method
                     var monthlyRevenue = await repositoryManager.TransactionRepository
                         .GetTotalRevenueForDeveloper(developerId, start, end, ct);
 
-                    revenueByMonth[start.ToString("yyyy-MM")] = monthlyRevenue;
+                    var monthlyDonations = await repositoryManager.TransactionRepository
+                        .GetTotalDonationForDeveloper(developerId, start, end, ct);
+
+                    revenueByMonth[start.ToString("yyyy-MM")] = monthlyRevenue + monthlyDonations;
 
                     firstMonth = firstMonth.AddMonths(1);
                 }
             }
 
-            // 3. Top 5 best-selling games
+            // 4. Top 5 best-selling games
             var topGames = await repositoryManager.LibraryRepository
                 .GetTopSellingGamesByDeveloper(developerId, 5, ct);
 
@@ -179,7 +192,8 @@ namespace IndieGameZone.Application.Services
 
             return new DeveloperDashboardSummaryForReturnDto
             {
-                TotalRevenueAllTime = totalRevenue,
+                TotalRevenueAllTime = totalRevenue + totalDonations,
+                TotalDonationAllTime = totalDonations,
                 RevenueByMonth = revenueByMonth,
                 Top5BestSellingGames = topGamesDto
             };
@@ -194,6 +208,9 @@ namespace IndieGameZone.Application.Services
         {
             var totalRevenue = await repositoryManager.TransactionRepository
                 .GetTotalRevenueForGame(gameId, DateTime.MinValue, DateTime.Now, ct);
+            
+            var totalDonations = await repositoryManager.TransactionRepository
+                .GetTotalDonationForGame(gameId, RevenueRange.AllTime, ct);
 
             var firstTransactionDate = await repositoryManager.TransactionRepository
                 .GetFirstTransactionDateForGame(gameId, ct);
@@ -213,7 +230,10 @@ namespace IndieGameZone.Application.Services
                     var monthlyRevenue = await repositoryManager.TransactionRepository
                         .GetTotalRevenueForGame(gameId, start, end, ct);
 
-                    revenueByMonth[start.ToString("yyyy-MM")] = monthlyRevenue;
+                    var monthlyDonation = await repositoryManager.TransactionRepository
+                        .GetTotalDonationForGame(gameId, start, end, ct);
+
+                    revenueByMonth[start.ToString("yyyy-MM")] = monthlyRevenue + monthlyDonation;
 
                     firstMonth = firstMonth.AddMonths(1);
                 }
@@ -224,7 +244,8 @@ namespace IndieGameZone.Application.Services
 
             return new GameDashboardSummaryForReturnDto
             {
-                TotalRevenueAllTime = totalRevenue,
+                TotalRevenueAllTime = totalRevenue + totalDonations,
+                TotalDonationAllTime = totalDonations,
                 RevenueByMonth = revenueByMonth,
                 TotalDownloadsAllTime = totalDownloads
             };
@@ -232,29 +253,27 @@ namespace IndieGameZone.Application.Services
 
         public async Task<IEnumerable<GameMonthlyStatsByDayForReturnDto>> GetGameMonthlyStatsAsync(Guid gameId, int year, int month, CancellationToken ct = default)
         {
-            // Get all successful transactions for the game in the specified month
-            var transactions = await repositoryManager.TransactionRepository
-                .GetSuccessfulTransactionsByGameIdAsync(gameId, year, month, ct);
+            // 1. Get revenue + donation breakdown from repo
+            var revenueData = (await repositoryManager.TransactionRepository
+                .GetGameRevenueAndDonationsByMonthAsync(gameId, year, month, ct))
+                .ToList();
 
-            // Get the download counts per day for the game in the specified month
+            // 2. Get downloads for the same month
             var downloads = await repositoryManager.DownloadSlotRepository
                 .GetDownloadCountsByGameIdAsync(gameId, year, month, ct);
 
-            // Convert downloads to a dictionary for faster lookup
             var downloadDict = downloads.ToDictionary(d => d.day, d => d.numberOfDownloads);
 
-            // Generate statistics for each day of the month
-            var result = Enumerable.Range(1, DateTime.DaysInMonth(year, month))
-                .Select(day => new GameMonthlyStatsByDayForReturnDto
+            // 3. Merge download counts into the revenue data
+            foreach (var dayStat in revenueData)
+            {
+                if (downloadDict.TryGetValue(dayStat.Day, out var count))
                 {
-                    Day = day,
-                    Revenue = transactions
-                        .Where(t => t.CreatedAt.Day == day)
-                        .Sum(t => t.Amount),
-                    DownloadCount = downloadDict.TryGetValue(day, out var count) ? (int)count : 0
-                });
+                    dayStat.DownloadCount = (int)count;
+                }
+            }
 
-            return result;
+            return revenueData;
         }
 
     }

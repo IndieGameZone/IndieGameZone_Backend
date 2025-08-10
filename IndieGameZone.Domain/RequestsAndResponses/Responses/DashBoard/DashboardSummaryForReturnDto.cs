@@ -10,7 +10,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard
     {
         public int OnlineUserCount { get; set; }
         public int TotalUserCount { get; set; }
-        public double GamePurchaseRevenue { get; set; }
+        public double GamePurchaseRevenueByDeveloper { get; set; }
+        public double GamePurchaseRevenueByAdmin { get; set; }
         public double CommercialPackageRevenue { get; set; }
     }
 }

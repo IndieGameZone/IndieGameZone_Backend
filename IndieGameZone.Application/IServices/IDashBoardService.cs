@@ -17,7 +17,8 @@ namespace IndieGameZone.Application.IServices
         Task<IEnumerable<GameForListReturnDto>> GetRecentlyPublishedGamesAsync(int top = 10, CancellationToken ct = default);
         Task<int> GetOnlineUserCountAsync(CancellationToken ct = default);
         Task<int> GetTotalUserCountAsync(CancellationToken ct = default);
-        Task<double> GetTotalRevenueFromGamePurchaseAsync(RevenueRange range, CancellationToken ct = default);
+        Task<double> GetTotalRevenueFromGamePurchaseByDeveloperAsync(RevenueRange range, CancellationToken ct = default);
+        Task<double> GetTotalRevenueFromGamePurchaseByAdminAsync(RevenueRange range, CancellationToken ct = default);
         Task<double> GetTotalRevenueFromCommercialPackagePurchaseAsync(RevenueRange range, CancellationToken ct = default);
         Task<DashboardSummaryForReturnDto> GetDashboardSummaryAsync(RevenueRange range, CancellationToken ct = default);
         Task<DeveloperDashboardSummaryForReturnDto> GetDeveloperDashboardAsync(Guid developerId, CancellationToken ct = default);

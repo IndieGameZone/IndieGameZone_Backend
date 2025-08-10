@@ -60,52 +60,104 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return await AppDbContext.Transactions.AnyAsync(t => t.OrderCode == orderCode, ct);
 		}
 
-		public async Task<double> GetTotalRevenueFromGamePurchase(RevenueRange range, CancellationToken ct = default)
-		{
-			return await CalculateTotalRevenue(TransactionType.PurchaseGame, range, ct);
-		}
+        public async Task<double> GetTotalRevenueFromGamePurchaseByDeveloper(RevenueRange range, CancellationToken ct = default)
+        {
+            var now = DateTime.Now;
+            DateTime rangeStart = range switch
+            {
+                RevenueRange.Day => now.Date,
+                RevenueRange.Week => now.Date.AddDays(-(7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7),
+                RevenueRange.Month => new DateTime(now.Year, now.Month, 1),
+                RevenueRange.Year => new DateTime(now.Year, 1, 1),
+                _ => DateTime.MinValue
+            };
 
-		public async Task<double> GetTotalRevenueFromCommercialPackagePurchase(RevenueRange range, CancellationToken ct = default)
-		{
-			return await CalculateTotalRevenue(TransactionType.PurchaseCommercialPackage, range, ct);
-		}
-		private async Task<double> CalculateTotalRevenue(TransactionType type, RevenueRange range, CancellationToken ct)
-		{
-			var now = DateTime.Now;
-			DateTime rangeStart;
+            return await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.PurchaseGameRevenue &&
+                    t.Status == TransactionStatus.Success &&
+                    t.UserId != Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8") &&
+                    t.CreatedAt >= rangeStart &&
+                    t.CreatedAt <= now)
+                .SumAsync(t => t.Amount, ct);
+        }
 
-			switch (range)
-			{
-				case RevenueRange.Day:
-					rangeStart = now.Date;
-					break;
+        public async Task<double> GetTotalRevenueFromGamePurchaseByAdmin(RevenueRange range, CancellationToken ct = default)
+        {
+            var now = DateTime.Now;
+            DateTime rangeStart = range switch
+            {
+                RevenueRange.Day => now.Date,
+                RevenueRange.Week => now.Date.AddDays(-(7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7),
+                RevenueRange.Month => new DateTime(now.Year, now.Month, 1),
+                RevenueRange.Year => new DateTime(now.Year, 1, 1),
+                _ => DateTime.MinValue
+            };
 
-				case RevenueRange.Week:
-					int diff = (7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7;
-					rangeStart = now.Date.AddDays(-diff); // start of current week (Monday)
-					break;
+            return await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.PurchaseGameRevenue &&
+                    t.Status == TransactionStatus.Success &&
+                    t.UserId == Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8") &&
+                    t.CreatedAt >= rangeStart &&
+                    t.CreatedAt <= now)
+                .SumAsync(t => t.Amount, ct);
+        }
 
-				case RevenueRange.Month:
-					rangeStart = new DateTime(now.Year, now.Month, 1);
-					break;
+        public async Task<double> GetTotalRevenueFromDonation(RevenueRange range, CancellationToken ct = default)
+        {
+            var now = DateTime.Now;
+            DateTime rangeStart = range switch
+            {
+                RevenueRange.Day => now.Date,
+                RevenueRange.Week => now.Date.AddDays(-(7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7),
+                RevenueRange.Month => new DateTime(now.Year, now.Month, 1),
+                RevenueRange.Year => new DateTime(now.Year, 1, 1),
+                _ => DateTime.MinValue
+            };
 
-				case RevenueRange.Year:
-					rangeStart = new DateTime(now.Year, 1, 1);
-					break;
+            return await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.DonationRevenue &&
+                    t.Status == TransactionStatus.Success &&
+                    t.CreatedAt >= rangeStart &&
+                    t.CreatedAt <= now)
+                .SumAsync(t => t.Amount, ct);
+        }
 
-				default:
-					rangeStart = DateTime.MinValue;
-					break;
-			}
+        public async Task<double> GetTotalRevenueFromCommercialPackagePurchase(RevenueRange range, CancellationToken ct = default)
+        {
+            var now = DateTime.Now;
+            DateTime rangeStart = range switch
+            {
+                RevenueRange.Day => now.Date,
+                RevenueRange.Week => now.Date.AddDays(-(7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7),
+                RevenueRange.Month => new DateTime(now.Year, now.Month, 1),
+                RevenueRange.Year => new DateTime(now.Year, 1, 1),
+                _ => DateTime.MinValue
+            };
 
-			return await FindAll(false)
-				.Where(t =>
-					t.Type == type &&
-					t.Status == TransactionStatus.Success &&
-					t.CreatedAt >= rangeStart &&
-					t.CreatedAt <= now)
-				.SumAsync(t => t.Amount, ct);
-		}
+            // Total revenue from commercial package purchases
+            var totalPackageRevenue = await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.PurchaseCommercialPackageRevenue &&
+                    t.Status == TransactionStatus.Success &&
+                    t.CreatedAt >= rangeStart &&
+                    t.CreatedAt <= now)
+                .SumAsync(t => t.Amount, ct);
+
+            // Total refunds
+            var totalRefundRevenue = await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.RefundRevenue &&
+                    t.Status == TransactionStatus.Success &&
+                    t.CreatedAt >= rangeStart &&
+                    t.CreatedAt <= now)
+                .SumAsync(t => t.Amount, ct);
+
+            // Net revenue
+            return totalPackageRevenue - totalRefundRevenue;
+        }
 
         public async Task<double> GetTotalRevenueForDeveloper(Guid developerId, RevenueRange range, CancellationToken ct = default)
         {
@@ -139,7 +191,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
             return await FindAll(false)
                 .Where(t =>
-                    t.Type == TransactionType.PurchaseGame &&
+                    t.Type == TransactionType.PurchaseGameRevenue &&
                     t.Status == TransactionStatus.Success &&
                     t.UserId == developerId &&
                     t.CreatedAt >= rangeStart &&
@@ -151,7 +203,7 @@ namespace IndieGameZone.Infrastructure.Repositories
         {
              return await FindAll(false)
                 .Where(t =>
-                    t.Type == TransactionType.PurchaseGame &&
+                    t.Type == TransactionType.PurchaseGameRevenue &&
                     t.Status == TransactionStatus.Success &&
                     t.UserId == developerId &&
                     t.CreatedAt >= startDate &&
@@ -163,7 +215,7 @@ namespace IndieGameZone.Infrastructure.Repositories
         {
             return await FindAll(false)
                 .Where(t =>
-                    t.Type == TransactionType.PurchaseGame &&
+                    t.Type == TransactionType.PurchaseGameRevenue &&
                     t.Status == TransactionStatus.Success &&
                     t.UserId == developerId)
                 .OrderBy(t => t.CreatedAt)
@@ -173,32 +225,41 @@ namespace IndieGameZone.Infrastructure.Repositories
 
         public async Task<IEnumerable<RevenueByDayForReturnDto>> GetRevenueByMonthAsync(Guid developerId, int year, int month, CancellationToken ct = default)
         {
+            // Get only the two relevant revenue types
             var transactions = await FindAll(false)
                 .Where(t =>
-                    t.Type == TransactionType.PurchaseGame &&
+                    (t.Type == TransactionType.PurchaseGameRevenue || t.Type == TransactionType.DonationRevenue) &&
                     t.Status == TransactionStatus.Success &&
                     t.UserId == developerId &&
                     t.CreatedAt.Year == year &&
                     t.CreatedAt.Month == month)
                 .ToListAsync(ct);
 
+            // Group by day, summing both revenue and donations
             var groupedByDay = transactions
                 .GroupBy(t => t.CreatedAt.Day)
                 .Select(g => new RevenueByDayForReturnDto
                 {
                     Day = g.Key,
-                    Revenue = g.Sum(t => t.Amount)
+                    Revenue = g
+                        .Where(t => t.Type == TransactionType.PurchaseGameRevenue || t.Type == TransactionType.DonationRevenue)
+                        .Sum(t => t.Amount),
+                    Donation = g
+                        .Where(t => t.Type == TransactionType.DonationRevenue)
+                        .Sum(t => t.Amount)
                 })
                 .ToList();
 
-            // Fill in missing days with 0 revenue
+            // Ensure all days in the month exist in the output
             var daysInMonth = DateTime.DaysInMonth(year, month);
             var fullReport = Enumerable.Range(1, daysInMonth)
-                .Select(day => groupedByDay.FirstOrDefault(d => d.Day == day) ?? new RevenueByDayForReturnDto
-                {
-                    Day = day,
-                    Revenue = 0
-                })
+                .Select(day => groupedByDay.FirstOrDefault(d => d.Day == day)
+                    ?? new RevenueByDayForReturnDto
+                    {
+                        Day = day,
+                        Revenue = 0,
+                        Donation = 0
+                    })
                 .OrderBy(r => r.Day)
                 .ToList();
 
@@ -208,7 +269,7 @@ namespace IndieGameZone.Infrastructure.Repositories
         public async Task<double> GetTotalRevenueForGame(Guid gameId, DateTime start, DateTime end, CancellationToken ct = default)
         {
             return await FindAll(false)
-                .Where(t => t.Type == TransactionType.PurchaseGame &&
+                .Where(t => t.Type == TransactionType.PurchaseGameRevenue &&
                             t.Status == TransactionStatus.Success &&
                             t.GameId == gameId &&
                             t.CreatedAt >= start &&
@@ -219,7 +280,7 @@ namespace IndieGameZone.Infrastructure.Repositories
         public async Task<DateTime?> GetFirstTransactionDateForGame(Guid gameId, CancellationToken ct = default)
         {
             return await FindAll(false)
-                .Where(t => t.Type == TransactionType.PurchaseGame &&
+                .Where(t => t.Type == TransactionType.PurchaseGameRevenue &&
                             t.Status == TransactionStatus.Success &&
                             t.GameId == gameId)
                 .OrderBy(t => t.CreatedAt)
@@ -227,16 +288,153 @@ namespace IndieGameZone.Infrastructure.Repositories
                 .FirstOrDefaultAsync(ct);
         }
 
-        public async Task<IEnumerable<Transactions>> GetSuccessfulTransactionsByGameIdAsync(Guid gameId, int year, int month, CancellationToken ct = default)
+        public async Task<double> GetTotalDonationForDeveloper(Guid developerId, RevenueRange range, CancellationToken ct = default)
+        {
+            var now = DateTime.Now;
+            DateTime rangeStart;
+
+            switch (range)
+            {
+                case RevenueRange.Day:
+                    rangeStart = now.Date;
+                    break;
+
+                case RevenueRange.Week:
+                    int diff = (7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7;
+                    rangeStart = now.Date.AddDays(-diff);
+                    break;
+
+                case RevenueRange.Month:
+                    rangeStart = new DateTime(now.Year, now.Month, 1);
+                    break;
+
+                case RevenueRange.Year:
+                    rangeStart = new DateTime(now.Year, 1, 1);
+                    break;
+
+                case RevenueRange.AllTime:
+                default:
+                    rangeStart = DateTime.MinValue;
+                    break;
+            }
+
+            return await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.DonationRevenue &&
+                    t.Status == TransactionStatus.Success &&
+                    t.UserId == developerId &&
+                    t.CreatedAt >= rangeStart &&
+                    t.CreatedAt <= now)
+                .SumAsync(t => t.Amount, ct);
+        }
+
+        public async Task<double> GetTotalDonationForDeveloper(Guid developerId, DateTime start, DateTime end, CancellationToken ct = default)
         {
             return await FindAll(false)
                 .Where(t =>
-                    t.Type == TransactionType.PurchaseGame &&
+                    t.Type == TransactionType.DonationRevenue &&
+                    t.Status == TransactionStatus.Success &&
+                    t.UserId == developerId &&
+                    t.CreatedAt >= start &&
+                    t.CreatedAt <= end)
+                .SumAsync(t => t.Amount, ct);
+        }
+
+        public async Task<double> GetTotalDonationForGame(Guid gameId, RevenueRange range, CancellationToken ct = default)
+        {
+            var now = DateTime.Now;
+            DateTime rangeStart;
+
+            switch (range)
+            {
+                case RevenueRange.Day:
+                    rangeStart = now.Date;
+                    break;
+
+                case RevenueRange.Week:
+                    int diff = (7 + (now.DayOfWeek - DayOfWeek.Monday)) % 7;
+                    rangeStart = now.Date.AddDays(-diff);
+                    break;
+
+                case RevenueRange.Month:
+                    rangeStart = new DateTime(now.Year, now.Month, 1);
+                    break;
+
+                case RevenueRange.Year:
+                    rangeStart = new DateTime(now.Year, 1, 1);
+                    break;
+
+                case RevenueRange.AllTime:
+                default:
+                    rangeStart = DateTime.MinValue;
+                    break;
+            }
+
+            return await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.DonationRevenue &&
+                    t.Status == TransactionStatus.Success &&
+                    t.GameId == gameId &&
+                    t.CreatedAt >= rangeStart &&
+                    t.CreatedAt <= now)
+                .SumAsync(t => t.Amount, ct);
+        }
+
+        public async Task<double> GetTotalDonationForGame(Guid gameId, DateTime start, DateTime end, CancellationToken ct = default)
+        {
+            return await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.DonationRevenue &&
+                    t.Status == TransactionStatus.Success &&
+                    t.GameId == gameId &&
+                    t.CreatedAt >= start &&
+                    t.CreatedAt <= end)
+                .SumAsync(t => t.Amount, ct);
+        }
+
+        public async Task<IEnumerable<GameMonthlyStatsByDayForReturnDto>> GetGameRevenueAndDonationsByMonthAsync(Guid gameId, int year, int month, CancellationToken ct = default)
+        {
+            // Get only the two relevant revenue types for this game
+            var transactions = await FindAll(false)
+                .Where(t =>
+                    (t.Type == TransactionType.PurchaseGameRevenue || t.Type == TransactionType.DonationRevenue) &&
                     t.Status == TransactionStatus.Success &&
                     t.GameId == gameId &&
                     t.CreatedAt.Year == year &&
                     t.CreatedAt.Month == month)
                 .ToListAsync(ct);
+
+            // Group by day
+            var groupedByDay = transactions
+                .GroupBy(t => t.CreatedAt.Day)
+                .Select(g => new GameMonthlyStatsByDayForReturnDto
+                {
+                    Day = g.Key,
+                    Revenue = g
+                        .Where(t => t.Type == TransactionType.PurchaseGameRevenue || t.Type == TransactionType.DonationRevenue)
+                        .Sum(t => t.Amount),
+                    Donation = g
+                        .Where(t => t.Type == TransactionType.DonationRevenue)
+                        .Sum(t => t.Amount),
+                    DownloadCount = 0 // will be set in service layer
+                })
+                .ToList();
+
+            // Ensure all days are present
+            var daysInMonth = DateTime.DaysInMonth(year, month);
+            var fullReport = Enumerable.Range(1, daysInMonth)
+                .Select(day => groupedByDay.FirstOrDefault(d => d.Day == day)
+                    ?? new GameMonthlyStatsByDayForReturnDto
+                    {
+                        Day = day,
+                        Revenue = 0,
+                        Donation = 0,
+                        DownloadCount = 0
+                    })
+                .OrderBy(r => r.Day)
+                .ToList();
+
+            return fullReport;
         }
 
     }

@@ -5,6 +5,7 @@ using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Intrinsics.X86;
 
 namespace IndieGameZone.API.Controllers
@@ -62,10 +63,17 @@ namespace IndieGameZone.API.Controllers
             return Ok(count);
         }
 
-        [HttpGet("revenue/games")]
-        public async Task<ActionResult<double>> GetGamePurchaseRevenue([FromQuery] RevenueRange range = RevenueRange.AllTime, CancellationToken ct = default)
+        [HttpGet("revenue/games/developers")]
+        public async Task<ActionResult<double>> GetGamePurchaseRevenueByDeveloper([FromQuery] RevenueRange range = RevenueRange.AllTime, CancellationToken ct = default)
         {
-            var total = await serviceManager.DashBoardService.GetTotalRevenueFromGamePurchaseAsync(range, ct);
+            var total = await serviceManager.DashBoardService.GetTotalRevenueFromGamePurchaseByDeveloperAsync(range, ct);
+            return Ok(total);
+        }
+        
+        [HttpGet("revenue/games/admin")]
+        public async Task<ActionResult<double>> GetGamePurchaseRevenueByAdmin([FromQuery] RevenueRange range = RevenueRange.AllTime, CancellationToken ct = default)
+        {
+            var total = await serviceManager.DashBoardService.GetTotalRevenueFromGamePurchaseByAdminAsync(range, ct);
             return Ok(total);
         }
 
@@ -91,7 +99,7 @@ namespace IndieGameZone.API.Controllers
         }
 
         [HttpGet("developers/{developerId:guid}/monthly-stats")]
-        public async Task<ActionResult<IEnumerable<RevenueByDayForReturnDto>>> GetRevenueByMonth([FromRoute] Guid developerId, [FromQuery] int year, [FromQuery] int month, CancellationToken ct = default)
+        public async Task<ActionResult<IEnumerable<RevenueByDayForReturnDto>>> GetRevenueByMonth([FromRoute] Guid developerId, [FromQuery][Required] int year, [FromQuery][Required] int month, CancellationToken ct = default)
         {
             var result = await serviceManager.DashBoardService.GetRevenueByMonthAsync(developerId, year, month, ct);
             return Ok(result);
