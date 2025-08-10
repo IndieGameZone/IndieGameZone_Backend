@@ -342,9 +342,9 @@ namespace IndieGameZone.Application.Services
 					GameId = gameId,
 					OrderCode = null,
 					Amount = transactionForDonationCreationDto.Amount,
-					Description = $"80% of purchase transaction for game {game.Name} for developer",
+					Description = $"Donation money for game {game.Name} for developer",
 					CreatedAt = DateTime.Now,
-					Type = TransactionType.PurchaseGameRevenue,
+					Type = TransactionType.DonationRevenue,
 					Status = TransactionStatus.Success,
 					PaymentMethod = PaymentMethod.Wallet
 				};
@@ -390,13 +390,20 @@ namespace IndieGameZone.Application.Services
 					var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(transaction.UserId, true, ct);
 					wallet.Balance += transaction.Amount;
 
-					repositoryManager.NotificationRepository.CreateNotification(new Notifications
+					var notification = new Notifications
 					{
 						Id = Guid.NewGuid(),
 						UserId = transaction.UserId,
 						Message = $"You have successfully added {transaction.Amount} points to your wallet",
 						CreatedAt = DateTime.Now,
 						IsRead = false
+					};
+					repositoryManager.NotificationRepository.CreateNotification(notification);
+					await notificationHub.Clients.User(transaction.UserId.ToString()).SendNotification(new NotificationForReturnDto
+					{
+						Id = notification.Id,
+						Message = notification.Message,
+						IsRead = notification.IsRead,
 					});
 				}
 				else if (transaction.Type == TransactionType.Donation)

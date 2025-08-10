@@ -30,6 +30,16 @@ namespace IndieGameZone.Infrastructure.Extensions
 			return source.OrderByDescending(x => x.CreatedAt);
 		}
 
+		public static IQueryable<Games> FilterByHasDiscount(this IQueryable<Games> source, bool hasDiscount, IQueryable<Discounts> activeDiscounts)
+		{
+			if (!hasDiscount)
+			{
+				return source;
+			}
+			return source.Where(x => activeDiscounts.Any(d => d.GameId == x.Id));
+
+		}
+
 		public static IQueryable<Games> FilterByCategory(this IQueryable<Games> source, Guid? category)
 		{
 			if (category == null)
