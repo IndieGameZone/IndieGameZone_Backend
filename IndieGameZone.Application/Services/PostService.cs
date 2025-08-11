@@ -171,8 +171,6 @@ namespace IndieGameZone.Application.Services
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction();
 			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
-			if (user is null)
-				throw new NotFoundException($"User not found.");
 			var post = await repositoryManager.PostRepository.GetPostById(postId, false, ct);
 			if (post is null)
 				throw new NotFoundException($"Post not found.");
@@ -217,8 +215,6 @@ namespace IndieGameZone.Application.Services
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction();
 			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
-			if (user is null)
-				throw new NotFoundException($"User not found.");
 			var post = await repositoryManager.PostRepository.GetPostById(postId, true, ct);
 			if (post is null)
 				throw new NotFoundException($"Post not found.");

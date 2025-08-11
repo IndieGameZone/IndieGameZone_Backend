@@ -1,5 +1,4 @@
-﻿using IndieGameZone.Application.BackgroundJobServices;
-using IndieGameZone.Application.Hub;
+﻿using IndieGameZone.Application.Hub;
 using IndieGameZone.Application.IHub;
 using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
@@ -80,26 +79,26 @@ namespace IndieGameZone.Application.Services
 			postComment.UserId = userId;
 			postComment.PostId = postId;
 			postComment.CreatedAt = DateTime.Now;
-			postComment.IsActive = false;
+			postComment.IsActive = true;
 
 			repositoryManager.PostCommentRepository.CreateComment(postComment);
 			await repositoryManager.SaveAsync(ct);
 
 			await CheckCommentAchievements(userId, ct);
 
-			IJobDetail job = JobBuilder.Create<ValidateCommentJob>()
-				.WithIdentity("CommentJob", "CommentGroup")
-				.UsingJobData("commentId", postComment.Id.ToString())
-				.Build();
+			//IJobDetail job = JobBuilder.Create<ValidateCommentJob>()
+			//	.WithIdentity("CommentJob", "CommentGroup")
+			//	.UsingJobData("commentId", postComment.Id.ToString())
+			//	.Build();
 
-			ITrigger trigger = TriggerBuilder.Create()
-				.WithIdentity("CommentTrigger", "CommentGroup")
-				.StartNow()
-				.Build();
+			//ITrigger trigger = TriggerBuilder.Create()
+			//	.WithIdentity("CommentTrigger", "CommentGroup")
+			//	.StartNow()
+			//	.Build();
 
-			var scheduler = await schedulerFactory.GetScheduler(ct);
+			//var scheduler = await schedulerFactory.GetScheduler(ct);
 
-			await scheduler.ScheduleJob(job, trigger, ct);
+			//await scheduler.ScheduleJob(job, trigger, ct);
 		}
 
 		public async Task DeleteComment(Guid userId, Guid commentId, CancellationToken ct = default)
@@ -137,23 +136,23 @@ namespace IndieGameZone.Application.Services
 			}
 
 			mapper.Map(postCommentForUpdateDto, postComment);
-			postComment.IsActive = false;
+			postComment.IsActive = true;
 			postComment.UpdatedAt = DateTime.Now;
 			await repositoryManager.SaveAsync(ct);
 
-			IJobDetail job = JobBuilder.Create<ValidateCommentJob>()
-				.WithIdentity("CommentJob", "CommentGroup")
-				.UsingJobData("commentId", postComment.Id.ToString())
-				.Build();
+			//IJobDetail job = JobBuilder.Create<ValidateCommentJob>()
+			//	.WithIdentity("CommentJob", "CommentGroup")
+			//	.UsingJobData("commentId", postComment.Id.ToString())
+			//	.Build();
 
-			ITrigger trigger = TriggerBuilder.Create()
-				.WithIdentity("CommentTrigger", "CommentGroup")
-				.StartNow()
-				.Build();
+			//ITrigger trigger = TriggerBuilder.Create()
+			//	.WithIdentity("CommentTrigger", "CommentGroup")
+			//	.StartNow()
+			//	.Build();
 
-			var scheduler = await schedulerFactory.GetScheduler(ct);
+			//var scheduler = await schedulerFactory.GetScheduler(ct);
 
-			await scheduler.ScheduleJob(job, trigger, ct);
+			//await scheduler.ScheduleJob(job, trigger, ct);
 		}
 	}
 }

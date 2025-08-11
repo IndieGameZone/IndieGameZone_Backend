@@ -12,16 +12,13 @@ namespace IndieGameZone.Infrastructure.Extensions
 
 		public static IQueryable<Games> Sort(this IQueryable<Games> source, GameSortConstant? sortBy, bool sortDescending, IList<Guid> commercialGameId)
 		{
-			if (sortBy == null)
-			{
-				return source.OrderByDescending(x => commercialGameId.Contains(x.Id)).ThenByDescending(x => x.CreatedAt);
-			}
+			var currentSource = source.OrderByDescending(x => commercialGameId.Contains(x.Id));
 			return sortBy switch
 			{
-				GameSortConstant.CreatedAt => sortDescending ? source.OrderByDescending(x => x.CreatedAt) : source.OrderBy(x => x.CreatedAt),
-				GameSortConstant.NumberOfDownloads => sortDescending ? source.OrderByDescending(x => x.NumberOfDownloads) : source.OrderBy(x => x.NumberOfDownloads),
-				GameSortConstant.Price => sortDescending ? source.OrderByDescending(x => x.Price) : source.OrderBy(x => x.Price),
-				_ => source.OrderByDescending(x => x.CreatedAt),
+				GameSortConstant.CreatedAt => sortDescending ? currentSource.ThenByDescending(x => x.CreatedAt) : currentSource.ThenBy(x => x.CreatedAt),
+				GameSortConstant.NumberOfDownloads => sortDescending ? currentSource.ThenByDescending(x => x.NumberOfDownloads) : currentSource.ThenBy(x => x.NumberOfDownloads),
+				GameSortConstant.Price => sortDescending ? currentSource.ThenByDescending(x => x.Price) : currentSource.ThenBy(x => x.Price),
+				_ => currentSource.ThenByDescending(x => x.CreatedAt),
 			};
 		}
 

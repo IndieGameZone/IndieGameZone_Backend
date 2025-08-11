@@ -268,11 +268,6 @@ namespace IndieGameZone.Application.Services
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
 			await DeleteOldContentBeforeUpdate(gameId, ct);
-			var developer = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(d => d.Id == developerId);
-			if (developer is null)
-			{
-				throw new NotFoundException($"Developer not found.");
-			}
 			var ageRestriction = await repositoryManager.AgeRestrictionRepository.GetAgeRestrictionById(game.AgeRestrictionId, false, ct);
 			if (ageRestriction is null)
 			{
@@ -390,6 +385,11 @@ namespace IndieGameZone.Application.Services
 
 		public async Task UpdateActiveStatus(Guid moderatorId, Guid gameId, GameActivationDto gameActivationDto, CancellationToken ct = default)
 		{
+			var moderator = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(d => d.Id == moderatorId);
+			if (moderator is null)
+			{
+				throw new NotFoundException($"Moderator not found.");
+			}
 			var gameEntity = await repositoryManager.GameRepository.GetGameById(gameId, true, ct);
 			if (gameEntity is null)
 			{

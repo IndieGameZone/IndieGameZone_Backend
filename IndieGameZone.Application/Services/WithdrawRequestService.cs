@@ -7,6 +7,8 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.WithdrawRequests;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.WithdrawRequests;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Application.Services
 {
@@ -15,16 +17,23 @@ namespace IndieGameZone.Application.Services
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 		private readonly IBlobService blobService;
+		private readonly UserManager<Users> userManager;
 
-		public WithdrawRequestService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService)
+		public WithdrawRequestService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, UserManager<Users> userManager)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.blobService = blobService;
+			this.userManager = userManager;
 		}
 		public async Task CreateWithdrawRequest(Guid userId, WithdrawRequestForCreationDto withdrawRequestForCreationDto, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
+			if (user is null)
+			{
+				throw new NotFoundException("User not found");
+			}
 			var userProfile = await repositoryManager.UserProfileRepository.GetUserProfileById(userId, false, ct);
 			if (string.IsNullOrEmpty(userProfile.BankAccountNumber) || string.IsNullOrEmpty(userProfile.BankAccountName))
 			{
@@ -82,7 +91,7 @@ namespace IndieGameZone.Application.Services
 					Id = Guid.NewGuid(),
 					OrderCode = null,
 					Amount = withdrawRequest.Amount,
-					Description = string.Empty,
+					Description = "Withdraw money",
 					Status = TransactionStatus.Success,
 					Type = TransactionType.Withdraw,
 					CreatedAt = DateTime.Now,

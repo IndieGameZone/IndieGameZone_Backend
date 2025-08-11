@@ -1,5 +1,4 @@
 ﻿using IndieGameZone.Application.IServices;
-using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +18,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpGet("users/{userId:guid}/notifications")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize]
 		public async Task<IActionResult> GetNotificationsByUserId([FromRoute] Guid userId, [FromQuery] NotificationParameters notificationParameters, CancellationToken ct)
 		{
 			var pagedResult = await serviceManager.NotificationService.GetNotificationsByUserId(userId, notificationParameters, ct);
@@ -28,7 +27,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("notifications/{notificationId:guid}")]
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize]
 		public async Task<IActionResult> UpdateNotificationStatus([FromRoute] Guid notificationId, CancellationToken ct)
 		{
 			await serviceManager.NotificationService.UpdateNotificationStatus(notificationId, ct);
