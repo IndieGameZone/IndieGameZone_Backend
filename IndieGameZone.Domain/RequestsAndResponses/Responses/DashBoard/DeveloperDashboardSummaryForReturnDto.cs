@@ -12,7 +12,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard
         public double TotalRevenueAllTime { get; set; }
         public double TotalDonationAllTime { get; set; }
         public Dictionary<string, double> RevenueByMonth { get; set; } = new(); // key = "yyyy-MM"
-        public IEnumerable<GameWithSalesDto> Top5BestSellingGames { get; set; } = new List<GameWithSalesDto>();
+        public IEnumerable<GameWithDownloadsDto> Top5BestDownloadedGames { get; set; } = new List<GameWithDownloadsDto>();
 
     }
 }

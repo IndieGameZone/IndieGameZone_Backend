@@ -271,6 +271,7 @@ namespace IndieGameZone.Infrastructure.Repositories
             return await FindAll(false)
                 .Where(t => t.Type == TransactionType.PurchaseGameRevenue &&
                             t.Status == TransactionStatus.Success &&
+                            t.UserId != Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8") &&
                             t.GameId == gameId &&
                             t.CreatedAt >= start &&
                             t.CreatedAt <= end)
@@ -399,6 +400,7 @@ namespace IndieGameZone.Infrastructure.Repositories
                 .Where(t =>
                     (t.Type == TransactionType.PurchaseGameRevenue || t.Type == TransactionType.DonationRevenue) &&
                     t.Status == TransactionStatus.Success &&
+                    t.UserId != Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8") &&
                     t.GameId == gameId &&
                     t.CreatedAt.Year == year &&
                     t.CreatedAt.Month == month)

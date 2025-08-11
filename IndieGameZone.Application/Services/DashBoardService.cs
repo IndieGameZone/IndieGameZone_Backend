@@ -1,7 +1,9 @@
-﻿using IndieGameZone.Application.IServices;
+﻿using Bogus.DataSets;
+using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
+using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using MapsterMapper;
@@ -180,22 +182,35 @@ namespace IndieGameZone.Application.Services
                 }
             }
 
-            // 4. Top 5 best-selling games
-            var topGames = await repositoryManager.LibraryRepository
-                .GetTopSellingGamesByDeveloper(developerId, 5, ct);
+            // 4. Top 5 best-downloaded games
+            var allDeveloperGames = await repositoryManager.GameRepository
+                .GetGamesByDeveloperId(developerId, new GameParameters { PageNumber = 1, PageSize = int.MaxValue }, false, ct);
 
-            var topGamesDto = topGames.Select(x => new GameWithSalesDto
+            var downloadCounts = new List<(Games game, int count)>();
+
+            foreach (var game in allDeveloperGames)
             {
-                Game = mapper.Map<GameForListReturnDto>(x.game),
-                PurchaseCount = x.purchaseCount
-            });
+                var totalDownloads = await repositoryManager.DownloadSlotRepository
+                    .GetTotalDownloadsByGameIdAsync(game.Id, ct);
+
+                downloadCounts.Add((game, totalDownloads));
+            }
+
+            var topDownloadedGamesDto = downloadCounts
+                .OrderByDescending(x => x.count)
+                .Take(5)
+                .Select(x => new GameWithDownloadsDto
+                {
+                    Game = mapper.Map<GameForListReturnDto>(x.game),
+                    NumberOfDownloads = x.count
+                });
 
             return new DeveloperDashboardSummaryForReturnDto
             {
                 TotalRevenueAllTime = totalRevenue + totalDonations,
                 TotalDonationAllTime = totalDonations,
                 RevenueByMonth = revenueByMonth,
-                Top5BestSellingGames = topGamesDto
+                Top5BestDownloadedGames = topDownloadedGamesDto
             };
         }
 
