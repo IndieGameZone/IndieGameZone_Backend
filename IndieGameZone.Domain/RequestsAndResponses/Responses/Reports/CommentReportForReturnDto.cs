@@ -23,7 +23,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Reports
         public ReportReasonForReturnDto ReportReason { get; init; }
         public UserReportForReturnDto ReportingUser { get; init; }
         public PostCommentForReturnDto? PostComment { get; init; }
-        public PostForReturnDto? Post { get; init; }
-
+        public PostWithoutGameForReturnDto? Post { get; init; }
+        public GameForListReturnDto? Game { get; init; }
     }
 }

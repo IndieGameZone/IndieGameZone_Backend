@@ -18,7 +18,11 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.NumberOfComments, src => src.PostComments.Count)
 				.Map(dest => dest.NumberOfLikes, src => src.PostReactions.Count);
 
-			config.NewConfig<GameForCreationDto, Games>()
+            config.NewConfig<Posts, PostWithoutGameForReturnDto>()
+                .Map(dest => dest.NumberOfComments, src => src.PostComments.Count)
+                .Map(dest => dest.NumberOfLikes, src => src.PostReactions.Count);
+
+            config.NewConfig<GameForCreationDto, Games>()
 				.Ignore(dest => dest.GameImages);
 			config.NewConfig<GameForUpdateDto, Games>()
 				.Ignore(dest => dest.GameImages);
@@ -104,7 +108,8 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.ReviewMessage, src => src.ReviewMessage)
 				.Map(dest => dest.ReportReason, src => src.ReportReason)
 				.Map(dest => dest.ReportingUser, src => src.ReportingUser)
-				.Map(dest => dest.Post, src => src.Post);
+				.Map(dest => dest.Post, src => src.Post)
+                .Map(dest => dest.Game, src => src.Game);
 
 			config.NewConfig<Reports, CommentReportForReturnDto>()
 				.Map(dest => dest.Id, src => src.Id)
@@ -116,7 +121,9 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.ReportReason, src => src.ReportReason)
 				.Map(dest => dest.ReportingUser, src => src.ReportingUser)
 				.Map(dest => dest.PostComment, src => src.PostComment)
-				.Map(dest => dest.Post, src => src.Post);
+				.Map(dest => dest.Post, src => src.Post)
+                .Map(dest => dest.Game, src => src.Game);
+
         }
     }
 }
