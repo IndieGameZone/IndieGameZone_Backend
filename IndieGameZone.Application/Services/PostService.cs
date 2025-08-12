@@ -102,12 +102,12 @@ namespace IndieGameZone.Application.Services
 		public async Task CreatePost(Guid userId, Guid gameId, PostForCreationDto postForCreationDto, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction();
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
+			if (user is null)
+				throw new NotFoundException($"User not found.");
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
 			if (game is null)
 				throw new NotFoundException($"Game not found.");
-			var user = userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
-			if (user is null)
-				throw new NotFoundException($"User not found.");
 			if (postForCreationDto.Tags != null)
 			{
 				foreach (var tagId in postForCreationDto.Tags)
@@ -148,9 +148,9 @@ namespace IndieGameZone.Application.Services
 
 			repositoryManager.PostRepository.CreatePost(postEntity);
 
-			await repositoryManager.SaveAsync(ct);
-
 			await CheckPostAchievement(userId, ct);
+
+			await repositoryManager.SaveAsync(ct);
 
 			dbTransaction.Commit();
 
