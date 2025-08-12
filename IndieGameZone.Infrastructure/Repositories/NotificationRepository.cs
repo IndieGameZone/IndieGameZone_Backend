@@ -26,5 +26,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return await PagedList<Notifications>.ToPagedList(notifications, notificationParameters.PageNumber, notificationParameters.PageSize, ct);
 
 		}
+
+		public async Task<IEnumerable<Notifications>> GetUnReadNotificationsByUserId(Guid userId, bool trackChange, CancellationToken ct = default) => await FindByCondition(n => n.UserId == userId && !n.IsRead, trackChange).ToListAsync();
 	}
 }

@@ -33,5 +33,13 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.NotificationService.UpdateNotificationStatus(notificationId, ct);
 			return NoContent();
 		}
+
+		[HttpPut("users/{userId:guid}/notifications")]
+		[Authorize]
+		public async Task<IActionResult> UpdateAllNotificationStatus([FromRoute] Guid userId, CancellationToken ct)
+		{
+			await serviceManager.NotificationService.UpdateAllNotificationStatus(userId, ct);
+			return NoContent();
+		}
 	}
 }

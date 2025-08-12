@@ -1,13 +1,17 @@
-﻿using IndieGameZone.Application.IServices;
+﻿using IndieGameZone.Application.Hub;
+using IndieGameZone.Application.IHub;
+using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.WithdrawRequests;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Notifications;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.WithdrawRequests;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Application.Services
@@ -18,13 +22,15 @@ namespace IndieGameZone.Application.Services
 		private readonly IMapper mapper;
 		private readonly IBlobService blobService;
 		private readonly UserManager<Users> userManager;
+		private readonly IHubContext<NotificationHub, INotificationHub> notificationHub;
 
-		public WithdrawRequestService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, UserManager<Users> userManager)
+		public WithdrawRequestService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, UserManager<Users> userManager, IHubContext<NotificationHub, INotificationHub> notificationHub)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.blobService = blobService;
 			this.userManager = userManager;
+			this.notificationHub = notificationHub;
 		}
 		public async Task CreateWithdrawRequest(Guid userId, WithdrawRequestForCreationDto withdrawRequestForCreationDto, CancellationToken ct = default)
 		{
@@ -110,6 +116,14 @@ namespace IndieGameZone.Application.Services
 				wallet.Balance -= withdrawRequest.Amount;
 				repositoryManager.TransactionRepository.CreateTransaction(transaction);
 				repositoryManager.NotificationRepository.CreateNotification(notification);
+				await notificationHub.Clients.User(withdrawRequest.UserId.ToString()).SendNotification(new NotificationForReturnDto
+				{
+					Id = notification.Id,
+					Message = notification.Message,
+					CreatedAt = notification.CreatedAt,
+					IsRead = notification.IsRead,
+					ReadAt = notification.ReadAt
+				});
 			}
 			else if (withdrawRequestForUpdateDto.Status == WithdrawTransferStatus.Rejected)
 			{
@@ -122,6 +136,14 @@ namespace IndieGameZone.Application.Services
 					IsRead = false
 				};
 				repositoryManager.NotificationRepository.CreateNotification(notification);
+				await notificationHub.Clients.User(withdrawRequest.UserId.ToString()).SendNotification(new NotificationForReturnDto
+				{
+					Id = notification.Id,
+					Message = notification.Message,
+					CreatedAt = notification.CreatedAt,
+					IsRead = notification.IsRead,
+					ReadAt = notification.ReadAt
+				});
 			}
 
 			await repositoryManager.SaveAsync(ct);

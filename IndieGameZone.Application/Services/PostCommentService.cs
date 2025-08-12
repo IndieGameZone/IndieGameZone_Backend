@@ -49,7 +49,7 @@ namespace IndieGameZone.Application.Services
 			{
 				Id = Guid.NewGuid(),
 				UserId = userId,
-				Message = $"Congratulations! You have earned the {achievement.Name} achievement and receive a {achievement.DiscountAward}% discount.",
+				Message = $"Congratulations! You have earned the {achievement.Name} achievement.",
 				IsRead = false,
 				CreatedAt = DateTime.Now
 			};
@@ -68,7 +68,9 @@ namespace IndieGameZone.Application.Services
 			{
 				Id = notification.Id,
 				Message = notification.Message,
-				IsRead = notification.IsRead
+				IsRead = notification.IsRead,
+				CreatedAt = notification.CreatedAt,
+				ReadAt = notification.ReadAt
 			});
 		}
 

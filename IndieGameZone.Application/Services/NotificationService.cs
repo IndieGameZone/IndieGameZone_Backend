@@ -24,6 +24,17 @@ namespace IndieGameZone.Application.Services
 			return (notifications, notificationsWithMetaData.MetaData);
 		}
 
+		public async Task UpdateAllNotificationStatus(Guid userId, CancellationToken ct = default)
+		{
+			var notifications = await repositoryManager.NotificationRepository.GetUnReadNotificationsByUserId(userId, true, ct);
+			foreach (var notification in notifications)
+			{
+				notification.IsRead = true;
+				notification.ReadAt = DateTime.Now;
+			}
+			await repositoryManager.SaveAsync(ct);
+		}
+
 		public async Task UpdateNotificationStatus(Guid id, CancellationToken ct = default)
 		{
 			var notification = await repositoryManager.NotificationRepository.GetNotificationById(id, true, ct);

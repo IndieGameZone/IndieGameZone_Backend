@@ -7,5 +7,6 @@ namespace IndieGameZone.Application.IServices
 	{
 		Task UpdateNotificationStatus(Guid id, CancellationToken ct = default);
 		Task<(IEnumerable<NotificationForReturnDto> notifications, MetaData metaData)> GetNotificationsByUserId(Guid userId, NotificationParameters notificationParameters, CancellationToken ct = default);
+		Task UpdateAllNotificationStatus(Guid userId, CancellationToken ct = default);
 	}
 }
