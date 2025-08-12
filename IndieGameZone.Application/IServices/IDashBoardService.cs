@@ -25,6 +25,7 @@ namespace IndieGameZone.Application.IServices
         Task<IEnumerable<RevenueByDayForReturnDto>> GetRevenueByMonthAsync(Guid developerId, int year, int month, CancellationToken ct = default);
         Task<GameDashboardSummaryForReturnDto> GetGameDashboardAsync(Guid gameId, CancellationToken ct = default);
         Task<IEnumerable<GameMonthlyStatsByDayForReturnDto>> GetGameMonthlyStatsAsync(Guid gameId, int year, int month, CancellationToken ct = default);
+        Task<double> GetTotalCurrentBalanceOfAllDevelopersAsync(CancellationToken ct = default);
 
     }
 }

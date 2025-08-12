@@ -8,6 +8,7 @@ namespace IndieGameZone.Domain.IRepositories
 		//Task<Wallets?> GetWalletById(Guid id, bool trackChange, CancellationToken ct = default);
 		void CreateWallet(Wallets wallet);
 		Task<Wallets?> GetWalletByUserId(Guid userId, bool trackChange, CancellationToken ct = default);
-		//void DeleteWallet(Wallets wallet);
-	}
+		Task<double> GetTotalBalanceByUserIdsAsync(IEnumerable<Guid> userIds, CancellationToken ct = default);
+
+    }
 }

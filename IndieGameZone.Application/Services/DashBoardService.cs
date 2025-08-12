@@ -291,5 +291,14 @@ namespace IndieGameZone.Application.Services
             return revenueData;
         }
 
+        public async Task<double> GetTotalCurrentBalanceOfAllDevelopersAsync(CancellationToken ct = default)
+        {
+            var devIds = (await userManager.GetUsersInRoleAsync(RoleEnum.Developer.ToString()))
+                .Select(u => u.Id)
+                .ToList();
+            
+            return await repositoryManager.WalletRepository.GetTotalBalanceByUserIdsAsync(devIds);
+        }
+
     }
 }

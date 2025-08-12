@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Application.IServices;
+﻿
+using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
@@ -61,6 +62,13 @@ namespace IndieGameZone.API.Controllers
         {
             var count = await serviceManager.DashBoardService.GetTotalUserCountAsync(ct);
             return Ok(count);
+        }
+
+        [HttpGet("revenue/developers/total-current")]
+        public async Task<ActionResult<double>> GetTotalCurrentBalanceOfAllDevelopers(CancellationToken ct = default)
+        {
+            var total = await serviceManager.DashBoardService.GetTotalCurrentBalanceOfAllDevelopersAsync(ct);
+            return Ok(total);
         }
 
         [HttpGet("revenue/games/developers")]
