@@ -297,7 +297,29 @@ namespace IndieGameZone.Application.Services
                 .Select(u => u.Id)
                 .ToList();
             
-            return await repositoryManager.WalletRepository.GetTotalBalanceByUserIdsAsync(devIds);
+            return await repositoryManager.WalletRepository.GetTotalBalanceByUserIdsAsync(devIds, ct);
+        }
+
+        public async Task<double> GetAdminBankBalanceAsync(CancellationToken ct = default)
+        {
+            // Get all Admin IDs
+            var adminIds = (await userManager.GetUsersInRoleAsync(RoleEnum.Admin.ToString()))
+                .Select(u => u.Id)
+                .ToList();
+
+            // Get all Developer IDs
+            var devIds = (await userManager.GetUsersInRoleAsync(RoleEnum.Developer.ToString()))
+                .Select(u => u.Id)
+                .ToList();
+
+            // Sum balances for Admins
+            var adminBalance = await repositoryManager.WalletRepository.GetTotalBalanceByUserIdsAsync(adminIds, ct);
+
+            // Sum balances for Devs
+            var devBalance = await repositoryManager.WalletRepository.GetTotalBalanceByUserIdsAsync(devIds, ct);
+
+            // Return the total as double
+            return (adminBalance + devBalance);
         }
 
     }
