@@ -41,7 +41,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 		private readonly Lazy<ICommercialRegistrationRepository> commercialRegistrationRepository;
 		private readonly Lazy<IGameCensorLogRepository> gameCensorLogRepository;
 		private readonly Lazy<IGameRecommendationRepository> gameRecommendationRepository;
-		private readonly Lazy<ICouponRepository> couponRepository;
 		private readonly Lazy<IUserAchievementRepository> userAchievementRepository;
 		private readonly Lazy<PostImageRepository> postImageRepository;
 		private readonly Lazy<IDownloadSlotRepository> downloadSlotRepository;
@@ -84,7 +83,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 			commercialRegistrationRepository = new Lazy<ICommercialRegistrationRepository>(() => new CommercialRegistrationRepository(appDbContext));
 			gameCensorLogRepository = new Lazy<IGameCensorLogRepository>(() => new GameCensorLogRepository(appDbContext));
 			gameRecommendationRepository = new Lazy<IGameRecommendationRepository>(() => new GameRecommendationRepository(appDbContext));
-			couponRepository = new Lazy<ICouponRepository>(() => new CouponRepository(appDbContext));
 			userAchievementRepository = new Lazy<IUserAchievementRepository>(() => new UserAchievementRepository(appDbContext));
 			postImageRepository = new Lazy<PostImageRepository>(() => new PostImageRepository(appDbContext));
 			downloadSlotRepository = new Lazy<IDownloadSlotRepository>(() => new DownloadSlotRepository(appDbContext));
@@ -158,7 +156,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public IGameRecommendationRepository GameRecommendationRepository => gameRecommendationRepository.Value;
 
-		public ICouponRepository CouponRepository => couponRepository.Value;
 
 		public IUserAchievementRepository UserAchievementRepository => userAchievementRepository.Value;
 

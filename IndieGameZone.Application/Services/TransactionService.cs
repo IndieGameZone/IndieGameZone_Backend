@@ -71,28 +71,10 @@ namespace IndieGameZone.Application.Services
 			return response.checkoutUrl;
 		}
 
-		private async Task<double> GetGamePriceAfterApplyingCoupon(Games game, Guid? couponId, CancellationToken ct = default)
+		private async Task<double> GetGamePriceAfterApplyingCoupon(Games game, CancellationToken ct = default)
 		{
 			var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(game.Id, false, ct);
 			double gamePriceAfterDiscount = discount is not null ? game.Price - game.Price * discount.Percentage / 100 : game.Price; ;
-			if (couponId != null)
-			{
-				var coupon = await repositoryManager.CouponRepository.GetCouponById((Guid)couponId, true, ct);
-				if (coupon == null)
-				{
-					throw new NotFoundException("Coupon does not exist");
-				}
-				else if (coupon.EndDate < DateOnly.FromDateTime(DateTime.Now))
-				{
-					throw new BadRequestException("This coupon has expired");
-				}
-				else if (coupon.IsUsed)
-				{
-					throw new BadRequestException("This coupon has already been used");
-				}
-				gamePriceAfterDiscount -= gamePriceAfterDiscount * coupon.Percentage / 100;
-				coupon.IsUsed = true;
-			}
 			return gamePriceAfterDiscount;
 		}
 
@@ -134,15 +116,7 @@ namespace IndieGameZone.Application.Services
 				CreatedAt = DateTime.Now
 			};
 			repositoryManager.NotificationRepository.CreateNotification(notification);
-			repositoryManager.CouponRepository.CreateCoupon(new Coupons
-			{
-				Id = Guid.NewGuid(),
-				Code = Guid.NewGuid().ToString(),
-				//Percentage = achievement.DiscountAward,
-				IsUsed = false,
-				EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)),
-				UserId = userId
-			});
+
 			await repositoryManager.SaveAsync(ct);
 			await notificationHub.Clients.User(userId.ToString()).SendNotification(new NotificationForReturnDto
 			{
@@ -186,7 +160,7 @@ namespace IndieGameZone.Application.Services
 				throw new NotFoundException("Game not found");
 			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct);
 			var discount = await repositoryManager.DiscountRepository.GetActiveDiscountByGameId(gameId, false, ct);
-			double gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, transactionForGameCreation.CouponId);
+			double gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game);
 
 			if (transactionForGameCreation.PaymentMethod == PaymentMethod.Wallet)
 			{
@@ -202,7 +176,6 @@ namespace IndieGameZone.Application.Services
 				Amount = gamePriceAfterDiscount,
 				UserId = userId,
 				GameId = gameId,
-				CouponId = transactionForGameCreation.CouponId,
 				CreatedAt = DateTime.Now
 			};
 
@@ -434,7 +407,7 @@ namespace IndieGameZone.Application.Services
 				else if (transaction.Type == TransactionType.PurchaseGame)
 				{
 					var game = await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId!, false, ct);
-					var gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, order.CouponId, ct);
+					var gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, ct);
 					var developerId = transaction.Game.DeveloperId;
 					var devWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
 					var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);

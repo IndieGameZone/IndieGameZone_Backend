@@ -1,5 +1,4 @@
 ﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages;
-using IndieGameZone.Domain.RequestsAndResponses.Responses.Coupons;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Transactions;
 
@@ -15,6 +14,5 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Orders
 		public GameForOrderReturnDto? Game { get; init; }
 		public CommercialPackageForOrderReturnDto? CommercialPackage { get; init; } = null!;
 		public TransactionForReturnDto Transaction { get; init; } = null!;
-		public CouponForReturnDto? Coupon { get; init; }
 	}
 }

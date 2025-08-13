@@ -26,10 +26,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithMany(cp => cp.Orders)
 				.HasForeignKey(o => o.CommercialPackageId)
 				.OnDelete(DeleteBehavior.Restrict);
-			builder.HasOne(o => o.Coupon)
-				.WithOne(c => c.Order)
-				.HasForeignKey<Orders>(o => o.CouponId)
-				.OnDelete(DeleteBehavior.Restrict);
 			builder.HasOne(o => o.Transaction)
 				.WithOne(t => t.Order)
 				.HasForeignKey<Transactions>(o => o.OrderId)

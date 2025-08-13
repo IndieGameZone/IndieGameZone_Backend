@@ -54,15 +54,6 @@ namespace IndieGameZone.Application.Services
 				CreatedAt = DateTime.Now
 			};
 			repositoryManager.NotificationRepository.CreateNotification(notification);
-			repositoryManager.CouponRepository.CreateCoupon(new Coupons
-			{
-				Id = Guid.NewGuid(),
-				Code = Guid.NewGuid().ToString(),
-				//Percentage = achievement.DiscountAward,
-				IsUsed = false,
-				EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)),
-				UserId = userId
-			});
 			await repositoryManager.SaveAsync(ct);
 			await notificationHub.Clients.User(userId.ToString()).SendNotification(new NotificationForReturnDto
 			{
