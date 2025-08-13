@@ -18,11 +18,11 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.NumberOfComments, src => src.PostComments.Count)
 				.Map(dest => dest.NumberOfLikes, src => src.PostReactions.Count);
 
-            config.NewConfig<Posts, PostWithoutGameForReturnDto>()
-                .Map(dest => dest.NumberOfComments, src => src.PostComments.Count)
-                .Map(dest => dest.NumberOfLikes, src => src.PostReactions.Count);
+			config.NewConfig<Posts, PostWithoutGameForReturnDto>()
+				.Map(dest => dest.NumberOfComments, src => src.PostComments.Count)
+				.Map(dest => dest.NumberOfLikes, src => src.PostReactions.Count);
 
-            config.NewConfig<GameForCreationDto, Games>()
+			config.NewConfig<GameForCreationDto, Games>()
 				.Ignore(dest => dest.GameImages);
 			config.NewConfig<GameForUpdateDto, Games>()
 				.Ignore(dest => dest.GameImages);
@@ -41,7 +41,7 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.Category, src => src.Category.Name)
 				.Map(dest => dest.Tags, src => src.GameTags.Select(gt => gt.Tag.Name).ToList());
 
-            config.NewConfig<Users, UserForReturnDto>()
+			config.NewConfig<Users, UserForReturnDto>()
 				.Map(dest => dest.Fullname, src => src.UserProfile.Fullname)
 				.Map(dest => dest.Avatar, src => src.UserProfile.Avatar)
 				.Map(dest => dest.Bio, src => src.UserProfile.Bio)
@@ -51,15 +51,16 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.BankAccountNumber, src => src.UserProfile.BankAccountNumber)
 				.Map(dest => dest.BankAccountName, src => src.UserProfile.BankAccountName)
 				.Map(dest => dest.Balance, src => src.Wallet.Balance)
-                .Map(dest => dest.BankInfo, src => src.UserProfile.Adapt<BankInfoForReturnDto>());
+				.Map(dest => dest.BankInfo, src => src.UserProfile.Adapt<BankInfoForReturnDto>());
 
 			config.NewConfig<Users, UserShortForReturnDto>()
 				.Map(dest => dest.Fullname, src => src.UserProfile.Fullname)
 				.Map(dest => dest.Avatar, src => src.UserProfile.Avatar)
 				.Map(dest => dest.BankAccountNumber, src => src.UserProfile.BankAccountNumber)
-				.Map(dest => dest.BankAccountName, src => src.UserProfile.BankAccountName);
+				.Map(dest => dest.BankAccountName, src => src.UserProfile.BankAccountName)
+				.Map(dest => dest.Balance, src => src.Wallet.Balance);
 
-            config.NewConfig<BanHistories, BanHistoryForReturnDto>()
+			config.NewConfig<BanHistories, BanHistoryForReturnDto>()
 				.Map(dest => dest.BannedUser, src => src.BannedUser)
 				.Map(dest => dest.BannedByUser, src => src.BannedByUser);
 
@@ -75,7 +76,7 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.Avatar, src => src.UserProfile.Avatar);
 
 
-            config.NewConfig<Reports, ReportForReturnDto>()
+			config.NewConfig<Reports, ReportForReturnDto>()
 				.Map(dest => dest.Id, src => src.Id)
 				.Map(dest => dest.Message, src => src.Message)
 				.Map(dest => dest.CreatedAt, src => src.CreatedAt)
@@ -91,13 +92,13 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.Id, src => src.Id)
 				.Map(dest => dest.Message, src => src.Message)
 				.Map(dest => dest.CreatedAt, src => src.CreatedAt)
-                .Map(dest => dest.UpdatedAt, src => src.UpdatedAt)
-                .Map(dest => dest.Status, src => src.Status)
+				.Map(dest => dest.UpdatedAt, src => src.UpdatedAt)
+				.Map(dest => dest.Status, src => src.Status)
 				.Map(dest => dest.ReviewMessage, src => src.ReviewMessage)
 				.Map(dest => dest.ReportReason, src => src.ReportReason)
 				.Map(dest => dest.ReportingUser, src => src.ReportingUser)
-                .Map(dest => dest.GameOwner, src => src.Game.Developer)
-                .Map(dest => dest.Game, src => src.Game);
+				.Map(dest => dest.GameOwner, src => src.Game.Developer)
+				.Map(dest => dest.Game, src => src.Game);
 
 			config.NewConfig<Reports, PostReportForReturnDto>()
 				.Map(dest => dest.Id, src => src.Id)
@@ -109,21 +110,21 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.ReportReason, src => src.ReportReason)
 				.Map(dest => dest.ReportingUser, src => src.ReportingUser)
 				.Map(dest => dest.Post, src => src.Post)
-                .Map(dest => dest.Game, src => src.Game);
+				.Map(dest => dest.Game, src => src.Game);
 
 			config.NewConfig<Reports, CommentReportForReturnDto>()
 				.Map(dest => dest.Id, src => src.Id)
 				.Map(dest => dest.Message, src => src.Message)
 				.Map(dest => dest.CreatedAt, src => src.CreatedAt)
-                .Map(dest => dest.UpdatedAt, src => src.UpdatedAt)
+				.Map(dest => dest.UpdatedAt, src => src.UpdatedAt)
 				.Map(dest => dest.Status, src => src.Status)
-                .Map(dest => dest.ReviewMessage, src => src.ReviewMessage)
+				.Map(dest => dest.ReviewMessage, src => src.ReviewMessage)
 				.Map(dest => dest.ReportReason, src => src.ReportReason)
 				.Map(dest => dest.ReportingUser, src => src.ReportingUser)
 				.Map(dest => dest.PostComment, src => src.PostComment)
 				.Map(dest => dest.Post, src => src.Post)
-                .Map(dest => dest.Game, src => src.Game);
+				.Map(dest => dest.Game, src => src.Game);
 
-        }
-    }
+		}
+	}
 }

@@ -7,8 +7,9 @@
 		public string? Email { get; init; }
 		public string? Fullname { get; init; }
 		public string? Avatar { get; init; }
-        public string? BankAccountNumber { get; init; }
-        public string? BankAccountName { get; init; }
+		public string? BankAccountNumber { get; init; }
+		public string? BankAccountName { get; init; }
+		public double Balance { get; init; }
 
-    }
+	}
 }

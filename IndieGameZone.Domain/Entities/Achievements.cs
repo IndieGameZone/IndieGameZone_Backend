@@ -6,9 +6,9 @@ namespace IndieGameZone.Domain.Entities
 	{
 		public Guid Id { get; set; }
 		public string Name { get; set; } = string.Empty;
+		public string Image { get; set; } = string.Empty;
 		public double ProgressLevel { get; set; }
 		public AchievementType Type { get; set; }
-		public double DiscountAward { get; set; }
 		public bool IsDeleted { get; set; }
 
 		//Navigation properties

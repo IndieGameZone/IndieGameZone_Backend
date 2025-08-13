@@ -5,6 +5,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Achievements
 	public class AchievementForUpdateDto
 	{
 		[Required]
-		public required string Name { get; init; }
+		public string Name { get; init; }
+		[Required]
+		public string Image { get; init; }
 	}
 }

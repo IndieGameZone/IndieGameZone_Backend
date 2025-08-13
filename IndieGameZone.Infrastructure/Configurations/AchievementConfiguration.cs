@@ -11,9 +11,9 @@ namespace IndieGameZone.Infrastructure.Configurations
 		{
 			builder.HasKey(a => a.Id);
 			builder.Property(a => a.Name);
+			builder.Property(a => a.Image);
 			builder.Property(a => a.ProgressLevel);
 			builder.Property(a => a.Type).HasConversion<string>().HasMaxLength(20);
-			builder.Property(a => a.DiscountAward);
 			builder.Property(a => a.IsDeleted);
 
 			builder.HasMany(a => a.UserAchievements)
@@ -28,7 +28,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "First Purchase",
 					ProgressLevel = 1,
 					Type = AchievementType.GamePurchase,
-					DiscountAward = 3
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/firstgame.png"
 				},
 				new Achievements
 				{
@@ -36,7 +36,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Buy 10 Games",
 					ProgressLevel = 10,
 					Type = AchievementType.GamePurchase,
-					DiscountAward = 5
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/10games.png"
 				},
 				new Achievements
 				{
@@ -44,7 +44,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Buy 50 Games",
 					ProgressLevel = 50,
 					Type = AchievementType.GamePurchase,
-					DiscountAward = 7
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/50games.png"
 				},
 
 				new Achievements
@@ -53,7 +53,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Make first Post",
 					ProgressLevel = 1,
 					Type = AchievementType.Post,
-					DiscountAward = 3
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/firstposts.png"
 				},
 				new Achievements
 				{
@@ -61,7 +61,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Make 10 Posts",
 					ProgressLevel = 10,
 					Type = AchievementType.Post,
-					DiscountAward = 5
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/10posts.png"
 				},
 				new Achievements
 				{
@@ -69,7 +69,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Make 50 Posts",
 					ProgressLevel = 50,
 					Type = AchievementType.Post,
-					DiscountAward = 7
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/50posts.png"
 				},
 
 				new Achievements
@@ -78,7 +78,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Comment first time",
 					ProgressLevel = 1,
 					Type = AchievementType.Comment,
-					DiscountAward = 3
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/firstcomment.png"
 				},
 				new Achievements
 				{
@@ -86,7 +86,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Comment 10 Times",
 					ProgressLevel = 10,
 					Type = AchievementType.Comment,
-					DiscountAward = 5
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/10comments.png"
 				},
 				new Achievements
 				{
@@ -94,7 +94,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Comment 50 Times",
 					ProgressLevel = 50,
 					Type = AchievementType.Comment,
-					DiscountAward = 7
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/50comments.png"
 				},
 
 				new Achievements
@@ -103,7 +103,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Like first Post",
 					ProgressLevel = 1,
 					Type = AchievementType.Like,
-					DiscountAward = 3
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/firstlike.png"
 				},
 				new Achievements
 				{
@@ -111,7 +111,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Like 10 Posts",
 					ProgressLevel = 10,
 					Type = AchievementType.Like,
-					DiscountAward = 5
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/10likes.png"
 				},
 				new Achievements
 				{
@@ -119,7 +119,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Like 50 Posts",
 					ProgressLevel = 50,
 					Type = AchievementType.Like,
-					DiscountAward = 7
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/50likes.png"
 				},
 
 				new Achievements
@@ -128,7 +128,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Follow 5 Developers",
 					ProgressLevel = 5,
 					Type = AchievementType.Follow,
-					DiscountAward = 3
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/5dev.png"
 				},
 				new Achievements
 				{
@@ -136,7 +136,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Follow 10 Developers",
 					ProgressLevel = 10,
 					Type = AchievementType.Follow,
-					DiscountAward = 5
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/10dev.png"
 				},
 				new Achievements
 				{
@@ -144,7 +144,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 					Name = "Follow 50 Developers",
 					ProgressLevel = 50,
 					Type = AchievementType.Follow,
-					DiscountAward = 7
+					Image = "https://indiegamezone.blob.core.windows.net/indiegamezone/50dev.png"
 				}
 
 			);

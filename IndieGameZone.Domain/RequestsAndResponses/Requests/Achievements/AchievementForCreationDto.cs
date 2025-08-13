@@ -6,5 +6,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Achievements
 	{
 		[Required]
 		public string Name { get; init; }
+		[Required]
+		public string Image { get; init; }
 	}
 }

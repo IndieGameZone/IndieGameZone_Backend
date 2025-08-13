@@ -58,7 +58,7 @@ namespace IndieGameZone.Application.Services
 			{
 				Id = Guid.NewGuid(),
 				Code = Guid.NewGuid().ToString(),
-				Percentage = achievement.DiscountAward,
+				//Percentage = achievement.DiscountAward,
 				IsUsed = false,
 				EndDate = DateOnly.FromDateTime(DateTime.Now.AddDays(7)),
 				UserId = userId

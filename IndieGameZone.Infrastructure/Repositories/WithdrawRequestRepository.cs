@@ -22,6 +22,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var withdrawRequests = FindAll(trackChange)
 				.Include(w => w.User).ThenInclude(u => u.UserProfile)
+				.Include(w => w.User).ThenInclude(u => u.Wallet)
 				.Sort();
 
 			return await PagedList<WithdrawRequests>.ToPagedList(withdrawRequests, withdrawRequestParameter.PageNumber, withdrawRequestParameter.PageSize, ct);
@@ -31,6 +32,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 			var withdrawRequests = FindByCondition(w => w.UserId == userId, trackChange)
 				.Include(w => w.User).ThenInclude(u => u.UserProfile)
+				.Include(w => w.User).ThenInclude(u => u.Wallet)
 				.Sort();
 			return await PagedList<WithdrawRequests>.ToPagedList(withdrawRequests, withdrawRequestParameter.PageNumber, withdrawRequestParameter.PageSize, ct);
 		}
