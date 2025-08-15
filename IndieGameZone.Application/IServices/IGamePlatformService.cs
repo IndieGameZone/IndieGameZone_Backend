@@ -9,5 +9,6 @@ namespace IndieGameZone.Application.IServices
 		Task UpdateGamePlatformActivationStatus(Guid gamePlatformId, bool isActive, CancellationToken ct = default);
 		Task UpdateGamePlatformById(Guid gamePlatformId, GamePlatformForUpdateDto gamePlatformForUpdateDto, CancellationToken ct = default);
 		Task DeleteGamePlatform(Guid gamePlatformId, CancellationToken ct = default);
+		Task<string> GetFilePassword(Guid userId, Guid gamePlatformId, CancellationToken ct = default);
 	}
 }

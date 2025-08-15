@@ -65,7 +65,7 @@ namespace IndieGameZone.Application.Services
 			postService = new Lazy<IPostService>(() => new PostService(repositoryManager, mapper, blobService, schedulerFactory, userManager, notificationHub));
 			postCommentService = new Lazy<IPostCommentService>(() => new PostCommentService(repositoryManager, mapper, schedulerFactory, notificationHub));
 			commercialPackageService = new Lazy<ICommercialPackageService>(() => new CommercialPackageService(repositoryManager, mapper));
-			gamePlatformService = new Lazy<IGamePlatformService>(() => new GamePlatformService(repositoryManager, mapper, blobService));
+			gamePlatformService = new Lazy<IGamePlatformService>(() => new GamePlatformService(repositoryManager, mapper, blobService, userManager));
 			postReactionService = new Lazy<IPostReactionService>(() => new PostReactionService(repositoryManager, notificationHub));
 			reportReasonService = new Lazy<IReportReasonService>(() => new ReportReasonService(repositoryManager, mapper));
 			userFollowService = new Lazy<IUserFollowService>(() => new UserFollowService(repositoryManager, notificationHub));

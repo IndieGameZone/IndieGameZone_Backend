@@ -5,6 +5,8 @@ using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.GamePlatforms;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Application.Services
 {
@@ -13,12 +15,21 @@ namespace IndieGameZone.Application.Services
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 		private readonly IBlobService blobService;
+		private readonly UserManager<Users> userManager;
 
-		public GamePlatformService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService)
+		public GamePlatformService(IRepositoryManager repositoryManager, IMapper mapper, IBlobService blobService, UserManager<Users> userManager)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.blobService = blobService;
+			this.userManager = userManager;
+		}
+
+		private async Task<bool> CheckGameOwnership(Guid userId, Guid gameId, CancellationToken ct = default)
+		{
+			var gameLibrary = await repositoryManager.LibraryRepository.GetLibraryByUserIdAndGameId(userId, gameId, false, ct);
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			return gameLibrary != null || userId == game.DeveloperId;
 		}
 
 		private async Task DeleteOldGamePlatform(Guid gameId, IEnumerable<string> newGamePlatformsFile, CancellationToken ct)
@@ -130,6 +141,25 @@ namespace IndieGameZone.Application.Services
 			await blobService.DeleteBlob(blobName, StorageContainer.STORAGE_CONTAINER);
 			repositoryManager.GamePlatformRepository.DeleteGamePlatform(gamePlatform);
 			await repositoryManager.SaveAsync(ct);
+		}
+
+		public async Task<string> GetFilePassword(Guid userId, Guid gamePlatformId, CancellationToken ct = default)
+		{
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId, ct);
+			if (user is null)
+			{
+				throw new NotFoundException($"User not found.");
+			}
+			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, false, ct);
+			if (gamePlatform is null)
+			{
+				throw new NotFoundException($"Game platform not found.");
+			}
+			if (!await CheckGameOwnership(userId, gamePlatform.GameId, ct))
+			{
+				throw new BadRequestException("You must own this game to see file password.");
+			}
+			return gamePlatform.FilePassword;
 		}
 	}
 }
