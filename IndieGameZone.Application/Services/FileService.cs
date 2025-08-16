@@ -60,28 +60,15 @@ namespace IndieGameZone.Application.Services
 			return new string(chars.ToArray());
 		}
 
-		public async Task<(string url, string password)> UploadScanFile(IFormFile file)
+		public async Task<string> UploadScanFile(IFormFile file)
 		{
 			CheckingFile(file);
 			ScanFile(file);
-			if (file.FileName.EndsWith(".rar") || file.FileName.EndsWith(".zip") || file.FileName.EndsWith(".exe"))
-			{
-				var password = GenerateRandomPassword(12);
-				var url = await blobService.UploadBlob(
-					$"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}",
-					StorageContainer.STORAGE_CONTAINER,
-					file,
-					password);
-				return (url, password);
-			}
-			else
-			{
-				var url = await blobService.UploadBlob(
+			var url = await blobService.UploadBlob(
 				$"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}",
 				StorageContainer.STORAGE_CONTAINER,
 				file);
-				return (url, "");
-			}
+			return url;
 		}
 	}
 }

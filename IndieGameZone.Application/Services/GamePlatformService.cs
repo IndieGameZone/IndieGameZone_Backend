@@ -6,7 +6,6 @@ using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.GamePlatforms;
 using MapsterMapper;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Application.Services
 {
@@ -141,25 +140,6 @@ namespace IndieGameZone.Application.Services
 			await blobService.DeleteBlob(blobName, StorageContainer.STORAGE_CONTAINER);
 			repositoryManager.GamePlatformRepository.DeleteGamePlatform(gamePlatform);
 			await repositoryManager.SaveAsync(ct);
-		}
-
-		public async Task<string> GetFilePassword(Guid userId, Guid gamePlatformId, CancellationToken ct = default)
-		{
-			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId, ct);
-			if (user is null)
-			{
-				throw new NotFoundException($"User not found.");
-			}
-			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, false, ct);
-			if (gamePlatform is null)
-			{
-				throw new NotFoundException($"Game platform not found.");
-			}
-			if (!await CheckGameOwnership(userId, gamePlatform.GameId, ct))
-			{
-				throw new BadRequestException("You must own this game to see file password.");
-			}
-			return gamePlatform.FilePassword;
 		}
 	}
 }

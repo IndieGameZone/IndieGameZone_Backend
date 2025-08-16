@@ -21,11 +21,7 @@ namespace IndieGameZone.API.Controllers
 		public async Task<IActionResult> UploadImage(IFormFile file)
 		{
 			var result = await fileService.UploadScanFile(file);
-			return Ok(new
-			{
-				Url = result.url,
-				Password = result.password
-			});
+			return Ok(result);
 		}
 	}
 }

@@ -56,13 +56,5 @@ namespace IndieGameZone.API.Controllers
 			await serviceManager.GamePlatformService.DeleteGamePlatform(gamePlatformId, ct);
 			return NoContent();
 		}
-
-		[HttpGet("users/{userId:guid}/game-platforms/{gamePlatformId:guid}/file-password")]
-		[Authorize]
-		public async Task<IActionResult> GetGamePlatformFilePassword([FromRoute] Guid userId, [FromRoute] Guid gamePlatformId, CancellationToken ct)
-		{
-			var filePassword = await serviceManager.GamePlatformService.GetFilePassword(userId, gamePlatformId, ct);
-			return Ok(filePassword);
-		}
 	}
 }

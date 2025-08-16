@@ -4,6 +4,6 @@ namespace IndieGameZone.Application.IServices
 {
 	public interface IFileService
 	{
-		Task<(string url, string password)> UploadScanFile(IFormFile file);
+		Task<string> UploadScanFile(IFormFile file);
 	}
 }

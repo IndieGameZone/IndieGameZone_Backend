@@ -8,7 +8,6 @@
 		public string Version { get; set; } = string.Empty;
 		public string DisplayName { get; set; } = string.Empty;
 		public string File { get; set; } = string.Empty;
-		public string FilePassword { get; set; } = string.Empty;
 		public double Size { get; set; }
 		public bool IsActive { get; set; }
 		public DateTime CreatedAt { get; set; }
