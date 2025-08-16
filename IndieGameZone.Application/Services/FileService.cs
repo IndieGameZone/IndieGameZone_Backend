@@ -6,6 +6,7 @@ using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using System.Security.Cryptography;
 
 namespace IndieGameZone.Application.Services
 {
@@ -49,14 +50,38 @@ namespace IndieGameZone.Application.Services
 			}
 		}
 
-		public async Task<string> UploadScanFile(IFormFile file)
+		private string GenerateRandomPassword(int length)
+		{
+			const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+";
+			using var rng = RandomNumberGenerator.Create();
+			var bytes = new byte[length];
+			rng.GetBytes(bytes);
+			var chars = bytes.Select(b => validChars[b % validChars.Length]);
+			return new string(chars.ToArray());
+		}
+
+		public async Task<(string url, string password)> UploadScanFile(IFormFile file)
 		{
 			CheckingFile(file);
 			ScanFile(file);
-			return await blobService.UploadBlob(
+			if (file.FileName.EndsWith(".rar") || file.FileName.EndsWith(".zip") || file.FileName.EndsWith(".exe"))
+			{
+				var password = GenerateRandomPassword(12);
+				var url = await blobService.UploadBlob(
+					$"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}",
+					StorageContainer.STORAGE_CONTAINER,
+					file,
+					password);
+				return (url, password);
+			}
+			else
+			{
+				var url = await blobService.UploadBlob(
 				$"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}",
 				StorageContainer.STORAGE_CONTAINER,
 				file);
+				return (url, "");
+			}
 		}
 	}
 }
