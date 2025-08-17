@@ -456,45 +456,81 @@ namespace IndieGameZone.Application.Services
 			return (dtoList, usersWithMetaData.MetaData);
 		}
 
-		public async Task SendResetPasswordToken(string email, CancellationToken ct = default)
-		{
-			var userEntity = await userManager.FindByEmailAsync(email);
-			if (userEntity is null) throw new UserNotFoundException();
+        public async Task SendResetPasswordToken(string email, CancellationToken ct = default)
+        {
+            var userEntity = await userManager.FindByEmailAsync(email);
+            if (userEntity is null) throw new UserNotFoundException();
 
-			var token = await userManager.GeneratePasswordResetTokenAsync(userEntity);
+            // Generate 6-digit OTP
+            var otp = new Random().Next(100000, 999999).ToString();
 
-			var mail = new Mail(userEntity.Email, "Reset password OTP", $@"
-    <div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center;'>
-        <div style='max-width: 600px; background: #ffffff; padding: 20px; border-radius: 8px; 
-                    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center;'>
-            <h2 style='color: #333;'>Reset Your Password</h2>
-            <p style='font-size: 16px; color: #555;'>We received a request to reset your password. Use the code below to complete the process:</p>
-            <p style='font-size: 24px; font-weight: bold; color: #ff6f61; margin: 20px 0;'>{token}</p>
-            <p style='font-size: 14px; color: #777;'>If you didn’t request a password reset, you can ignore this email.</p>
-            <p style='font-size: 14px; color: #777;'>For assistance, contact our support team at 
-                <a href='mailto:indiegamezonecompany@gmail.com' style='color: #ff6f61;'>indiegamezonecompany@gmail.com</a>
-            </p>
-            <p style='font-size: 12px; color: #777;'>&copy; 2025 IndieGameZone. All rights reserved.</p>
-        </div>
-    </div>");
-			emailSender.SendEmail(mail);
-		}
+            // Expire in 10 minutes
+            var expiry = DateTime.Now.AddMinutes(10);
 
-		public async Task ResetPassword(UserForResetPasswordDto dto, CancellationToken ct = default)
-		{
-			var user = await userManager.FindByEmailAsync(dto.Email);
-			if (user is null) throw new UserNotFoundException();
+            // Store OTP + expiry in Value (e.g., "123456|2025-08-17T07:10:00Z")
+            var tokenValue = $"{otp}|{expiry:o}";
 
-			var result = await userManager.ResetPasswordAsync(user, dto.OTP, dto.Password);
-			if (!result.Succeeded)
-			{
-				throw new RequestTokenBadRequest();
-			}
-			user.RefreshToken = null;
-			await userManager.UpdateAsync(user);
-		}
+            // Remove old OTP if any
+            await userManager.RemoveAuthenticationTokenAsync(userEntity, "ResetPassword", "OTP");
 
-		public async Task UpdatePassword(Guid userId, UserForUpdatePasswordDto userForUpdatePasswordDto, CancellationToken ct = default)
+            // Save in AspNetUserTokens
+            await userManager.SetAuthenticationTokenAsync(userEntity, "ResetPassword", "OTP", tokenValue);
+
+            // Send email
+            var mail = new Mail(userEntity.Email, "Reset password OTP", $@"
+<div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center;'>
+    <div style='max-width: 600px; background: #ffffff; padding: 20px; border-radius: 8px; 
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center;'>
+        <h2 style='color: #333;'>Reset Your Password</h2>
+        <p style='font-size: 16px; color: #555;'>Use the code below to reset your password:</p>
+        <p style='font-size: 28px; font-weight: bold; color: #ff6f61; margin: 20px 0;'>{otp}</p>
+        <p style='font-size: 14px; color: #777;'>This code will expire in 10 minutes.</p>
+    </div>
+</div>");
+            emailSender.SendEmail(mail);
+        }
+
+        public async Task ResetPassword(UserForResetPasswordDto dto, CancellationToken ct = default)
+        {
+            var user = await userManager.FindByEmailAsync(dto.Email);
+            if (user is null) throw new UserNotFoundException();
+
+            // Get stored token (OTP + expiry)
+            var storedValue = await userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "OTP");
+            if (string.IsNullOrEmpty(storedValue))
+                throw new RequestTokenBadRequest();
+
+            // Parse OTP and expiry
+            var parts = storedValue.Split('|');
+            if (parts.Length != 2)
+                throw new RequestTokenBadRequest();
+
+            var otp = parts[0];
+            if (!DateTime.TryParse(parts[1], null, System.Globalization.DateTimeStyles.RoundtripKind, out var expiry))
+                throw new RequestTokenBadRequest();
+
+            // Validate OTP + expiry
+            if (otp != dto.OTP || expiry < DateTime.Now)
+                throw new RequestTokenBadRequest();
+
+            // Reset password (remove old and set new)
+            var removeResult = await userManager.RemovePasswordAsync(user);
+            if (!removeResult.Succeeded)
+                throw new Exception("Failed to remove old password");
+
+            var addResult = await userManager.AddPasswordAsync(user, dto.Password);
+            if (!addResult.Succeeded)
+                throw new Exception("Failed to set new password");
+
+            // Clear OTP after success
+            await userManager.RemoveAuthenticationTokenAsync(user, "ResetPassword", "OTP");
+
+            // Invalidate refresh token
+            user.RefreshToken = null;
+            await userManager.UpdateAsync(user);
+        }
+
+        public async Task UpdatePassword(Guid userId, UserForUpdatePasswordDto userForUpdatePasswordDto, CancellationToken ct = default)
 		{
 			var userEntity = await userManager.Users
 			.FirstOrDefaultAsync(u => u.Id == userId, ct);
