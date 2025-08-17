@@ -49,6 +49,11 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<(IEnumerable<WishlistForReturnDto> wishlists, MetaData metaData)> GetWishlistsFromUserId(WishlistParameters wishlistParameters, Guid userId, CancellationToken ct = default)
 		{
+			var user = await userManager.FindByIdAsync(userId.ToString());
+			if (user is null)
+			{
+				throw new NotFoundException("User not found.");
+			}
 			var wishlistsWithMetaData = await repositoryManager.WishlistRepository.GetWishlistByUserId(wishlistParameters, userId, false, ct);
 			var wishlists = mapper.Map<IEnumerable<WishlistForReturnDto>>(wishlistsWithMetaData);
 			return (wishlists, wishlistsWithMetaData.MetaData);
@@ -56,6 +61,16 @@ namespace IndieGameZone.Application.Services
 
 		public async Task RemoveFromWishlist(Guid userId, Guid gameId, CancellationToken ct = default)
 		{
+			var user = await userManager.FindByIdAsync(userId.ToString());
+			if (user is null)
+			{
+				throw new NotFoundException("User not found.");
+			}
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game is null)
+			{
+				throw new NotFoundException("Game not found.");
+			}
 			var wishlistEntity = await repositoryManager.WishlistRepository.GetWishlistByUserIdAndGameId(userId, gameId, false, ct);
 			if (wishlistEntity is null)
 			{

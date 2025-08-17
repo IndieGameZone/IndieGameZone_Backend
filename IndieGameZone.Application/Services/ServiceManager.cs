@@ -69,7 +69,7 @@ namespace IndieGameZone.Application.Services
 			postReactionService = new Lazy<IPostReactionService>(() => new PostReactionService(repositoryManager, notificationHub));
 			reportReasonService = new Lazy<IReportReasonService>(() => new ReportReasonService(repositoryManager, mapper));
 			userFollowService = new Lazy<IUserFollowService>(() => new UserFollowService(repositoryManager, notificationHub));
-			reportService = new Lazy<IReportService>(() => new ReportService(repositoryManager, mapper, notificationHub));
+			reportService = new Lazy<IReportService>(() => new ReportService(repositoryManager, mapper, notificationHub, userManager));
 			notificationService = new Lazy<INotificationService>(() => new NotificationService(repositoryManager, mapper));
 			banHistoryService = new Lazy<IBanHistoryService>(() => new BanHistoryService(repositoryManager, mapper, userManager));
 			gameCensorLogService = new Lazy<IGameCensorLogService>(() => new GameCensorLogService(repositoryManager, mapper));

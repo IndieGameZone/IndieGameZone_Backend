@@ -10,7 +10,9 @@ using IndieGameZone.Domain.RequestsAndResponses.Requests.Reports;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Notifications;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Reports;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 
 namespace IndieGameZone.Application.Services
 {
@@ -19,18 +21,23 @@ namespace IndieGameZone.Application.Services
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 		private readonly IHubContext<NotificationHub, INotificationHub> notificationHub;
+		private readonly UserManager<Users> userManager;
 
-		public ReportService(IRepositoryManager repositoryManager, IMapper mapper, IHubContext<NotificationHub, INotificationHub> notificationHub)
+		public ReportService(IRepositoryManager repositoryManager, IMapper mapper, IHubContext<NotificationHub, INotificationHub> notificationHub, UserManager<Users> userManager)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.notificationHub = notificationHub;
+			this.userManager = userManager;
 		}
 
 		public async Task CreateCommentReport(Guid reportingUserId, ReportCommentForCreationDto reportForCreationDto, CancellationToken ct = default)
 		{
 			var comment = await repositoryManager.PostCommentRepository.GetCommentById(reportForCreationDto.CommentId, false, ct);
 			if (comment == null) throw new NotFoundException("Comment not found");
+
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == reportingUserId);
+			if (user == null) throw new NotFoundException("User not found");
 
 			var reportEntity = mapper.Map<Reports>(reportForCreationDto);
 			reportEntity.ReportingUserId = reportingUserId;
@@ -64,6 +71,9 @@ namespace IndieGameZone.Application.Services
 			var game = await repositoryManager.GameRepository.GetGameById(reportForCreationDto.GameId, false, ct);
 			if (game == null) throw new NotFoundException("Game not found");
 
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == reportingUserId);
+			if (user == null) throw new NotFoundException("User not found");
+
 			var reportEntity = mapper.Map<Reports>(reportForCreationDto);
 			reportEntity.ReportingUserId = reportingUserId;
 			reportEntity.Id = Guid.NewGuid();
@@ -95,6 +105,9 @@ namespace IndieGameZone.Application.Services
 		{
 			var post = await repositoryManager.PostRepository.GetPostById(reportForCreationDto.PostId, false, ct);
 			if (post == null) throw new NotFoundException("Post not found");
+
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == reportingUserId);
+			if (user == null) throw new NotFoundException("User not found");
 
 			var reportEntity = mapper.Map<Reports>(reportForCreationDto);
 			reportEntity.ReportingUserId = reportingUserId;
@@ -154,6 +167,8 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<(IEnumerable<object> reports, MetaData metaData)> GetReportsByReportedUserId(Guid reportedUserId, ReportParameters reportParameters, CancellationToken ct = default)
 		{
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == reportedUserId);
+			if (user == null) throw new NotFoundException("User not found");
 			var reportsWithMeta = await repositoryManager.ReportRepository.GetReportsByReportedUserId(reportedUserId, reportParameters, false, ct);
 			var mapped = reportsWithMeta.Select(report => report.ReportReason.Type switch
 			{
@@ -168,6 +183,8 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<(IEnumerable<object> reports, MetaData metaData)> GetReportsByReportingUserId(Guid reportingUserId, ReportParameters reportParameters, CancellationToken ct = default)
 		{
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == reportingUserId);
+			if (user == null) throw new NotFoundException("User not found");
 			var reportsWithMeta = await repositoryManager.ReportRepository.GetReportsByReportingUserId(reportingUserId, reportParameters, false, ct);
 			var mapped = reportsWithMeta.Select(report => report.ReportReason.Type switch
 			{

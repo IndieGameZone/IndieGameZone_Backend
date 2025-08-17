@@ -68,6 +68,11 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<string> GetSummaryReviewByGameId(Guid gameId, CancellationToken ct = default)
 		{
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null)
+			{
+				throw new NotFoundException("Game not found.");
+			}
 			var reviews = await repositoryManager.ReviewRepository.GetReviewsByGameId(gameId, false, ct);
 			if (reviews == null || !reviews.Any())
 			{
@@ -80,6 +85,9 @@ namespace IndieGameZone.Application.Services
 
 		public async Task UpdateReview(Guid userId, Guid id, ReviewForUpdateDto reviewForUpdateDto, CancellationToken ct = default)
 		{
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
+			if (user == null)
+				throw new NotFoundException("User not found");
 			var reviewEntity = await repositoryManager.ReviewRepository.GetReviewById(id, true, ct);
 			if (reviewEntity == null)
 			{
@@ -96,6 +104,11 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<IList<RatingStatistic>> GetReviewStatistic(Guid gameId, CancellationToken ct = default)
 		{
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null)
+			{
+				throw new NotFoundException("Game not found.");
+			}
 			var totalCount = await repositoryManager.ReviewRepository.GetReviewsByGameId(gameId, false).CountAsync();
 
 			var result = new List<RatingStatistic>();
@@ -113,6 +126,9 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<(IEnumerable<ReviewForReturnDto> reviews, MetaData metaData)> GetReviewsByUserId(Guid userId, ReviewParameters reviewParameters, CancellationToken ct = default)
 		{
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
+			if (user == null)
+				throw new NotFoundException("User not found");
 			var reviewsWithMetaData = await repositoryManager.ReviewRepository.GetReviewsByUserId(userId, reviewParameters, false, ct);
 			var reviews = mapper.Map<IEnumerable<ReviewForReturnDto>>(reviewsWithMetaData);
 			return (reviews, reviewsWithMetaData.MetaData);
@@ -121,6 +137,12 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<(IEnumerable<ReviewForReturnDto> reviews, MetaData metaData)> GetReviewsByUserIdAndGameId(Guid gameId, Guid userId, ReviewParameters reviewParameters, CancellationToken ct = default)
 		{
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
+			if (user == null)
+				throw new NotFoundException("User not found");
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null)
+				throw new NotFoundException("Game not found");
 			var reviewsWithMetaData = await repositoryManager.ReviewRepository.GetReviewsByUserIdAndGameId(userId, gameId, reviewParameters, false, ct);
 			var reviews = mapper.Map<IEnumerable<ReviewForReturnDto>>(reviewsWithMetaData);
 			return (reviews, reviewsWithMetaData.MetaData);

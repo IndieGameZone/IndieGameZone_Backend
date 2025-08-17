@@ -505,15 +505,14 @@ namespace IndieGameZone.Application.Services
 		public async Task<string> CreateTransactionForCommercialPurchase(Guid userId, Guid gameId, Guid commercialPackageId, TransactionForCommercialDto dto, CancellationToken ct = default)
 		{
 			// Validate user and wallet
-			var user = await userManager.Users
+			var user = await userManager.Users.AsNoTracking()
 				.Include(u => u.UserProfile).AsSplitQuery()
 				.Include(u => u.Wallet).AsSplitQuery()
 				.FirstOrDefaultAsync(u => u.Id == userId, ct);
 			if (user == null)
 				throw new NotFoundException("User not found");
 
-			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct)
-				?? throw new NotFoundException("User wallet not found");
+			var wallet = await repositoryManager.WalletRepository.GetWalletByUserId(userId, true, ct);
 
 			// Validate game ownership
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);

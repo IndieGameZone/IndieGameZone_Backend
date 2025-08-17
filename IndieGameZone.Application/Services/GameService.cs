@@ -510,6 +510,11 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<IEnumerable<GameForListReturnDto>> GetRecommendedGamesForUser(Guid userId, CancellationToken ct = default)
 		{
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(d => d.Id == userId);
+			if (user is null)
+			{
+				throw new NotFoundException($"User not found.");
+			}
 			await recombeeService.GetRecommendedGamesForUser(userId);
 			var gameRecommendations = await repositoryManager.GameRecommendationRepository.GetRecommendationsByUserId(userId, false, ct);
 			if (gameRecommendations is null || !gameRecommendations.Any())
