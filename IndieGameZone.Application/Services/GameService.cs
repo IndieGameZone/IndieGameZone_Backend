@@ -202,7 +202,7 @@ namespace IndieGameZone.Application.Services
 			gameEntity.DeveloperId = developerId;
 			gameEntity.CreatedAt = DateTime.Now;
 			gameEntity.NumberOfDownloads = 0;
-			gameEntity.CensorStatus = CensorStatus.PendingAIReview;
+			gameEntity.CensorStatus = game.Price == 0 ? CensorStatus.PendingAIReview : CensorStatus.PendingManualReview;
 
 			var gameImageEntities = new List<GameImages>();
 			foreach (var image in game.GameImages)
@@ -231,7 +231,7 @@ namespace IndieGameZone.Application.Services
 			{
 				Id = Guid.NewGuid(),
 				GameId = gameEntity.Id,
-				CensorStatus = CensorStatus.PendingAIReview,
+				CensorStatus = game.Price == 0 ? CensorStatus.PendingAIReview : CensorStatus.PendingManualReview,
 				CreatedAt = DateTime.Now
 			};
 			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
@@ -247,19 +247,22 @@ namespace IndieGameZone.Application.Services
 
 			await repositoryManager.SaveAsync(ct);
 
-			IJobDetail job = JobBuilder.Create<ValidateGameJob>()
+			if (game.Price == 0)
+			{
+				IJobDetail job = JobBuilder.Create<ValidateGameJob>()
 				.WithIdentity("GameJob", "GameGroup")
 				.UsingJobData("gameId", gameEntity.Id.ToString())
 				.Build();
 
-			ITrigger trigger = TriggerBuilder.Create()
-				.WithIdentity("GameTrigger", "GameGroup")
-				.StartNow()
-				.Build();
+				ITrigger trigger = TriggerBuilder.Create()
+					.WithIdentity("GameTrigger", "GameGroup")
+					.StartNow()
+					.Build();
 
-			var scheduler = await schedulerFactory.GetScheduler(ct);
+				var scheduler = await schedulerFactory.GetScheduler(ct);
 
-			await scheduler.ScheduleJob(job, trigger, ct);
+				await scheduler.ScheduleJob(job, trigger, ct);
+			}
 
 			return gameEntity.Id;
 		}
@@ -318,7 +321,7 @@ namespace IndieGameZone.Application.Services
 			}
 			mapper.Map(game, gameEntity);
 			gameEntity.UpdatedAt = DateTime.Now;
-			gameEntity.CensorStatus = CensorStatus.PendingAIReview;
+			gameEntity.CensorStatus = game.Price == 0 ? CensorStatus.PendingAIReview : CensorStatus.PendingManualReview;
 
 			//Handle Game Language
 			var gameLanguageEntitys = game.LanguageIds.Select(id => new GameLanguages { LanguageId = id, GameId = gameEntity.Id });
@@ -332,7 +335,7 @@ namespace IndieGameZone.Application.Services
 			{
 				Id = Guid.NewGuid(),
 				GameId = gameId,
-				CensorStatus = CensorStatus.PendingAIReview,
+				CensorStatus = game.Price == 0 ? CensorStatus.PendingAIReview : CensorStatus.PendingManualReview,
 				CreatedAt = DateTime.Now
 			};
 			repositoryManager.GameCensorLogRepository.CreateCensorLog(gameCensorLogs);
@@ -355,19 +358,22 @@ namespace IndieGameZone.Application.Services
 
 			dbTransaction.Commit();
 
-			IJobDetail job = JobBuilder.Create<ValidateGameJob>()
+			if (game.Price == 0)
+			{
+				IJobDetail job = JobBuilder.Create<ValidateGameJob>()
 				.WithIdentity("GameJob", "GameGroup")
 				.UsingJobData("gameId", gameEntity.Id.ToString())
 				.Build();
 
-			ITrigger trigger = TriggerBuilder.Create()
-				.WithIdentity("GameTrigger", "GameGroup")
-				.StartNow()
-				.Build();
+				ITrigger trigger = TriggerBuilder.Create()
+					.WithIdentity("GameTrigger", "GameGroup")
+					.StartNow()
+					.Build();
 
-			var scheduler = await schedulerFactory.GetScheduler(ct);
+				var scheduler = await schedulerFactory.GetScheduler(ct);
 
-			await scheduler.ScheduleJob(job, trigger, ct);
+				await scheduler.ScheduleJob(job, trigger, ct);
+			}
 		}
 
 		public async Task<(IEnumerable<GameForListReturnDto> games, MetaData metaData)> GetActiveGames(ActiveGameParameters activeGameParameters, CancellationToken ct = default)

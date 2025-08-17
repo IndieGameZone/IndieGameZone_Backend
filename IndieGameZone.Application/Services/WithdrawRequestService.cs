@@ -35,6 +35,20 @@ namespace IndieGameZone.Application.Services
 		public async Task CreateWithdrawRequest(Guid userId, WithdrawRequestForCreationDto withdrawRequestForCreationDto, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
+
+			var firsttGame = await repositoryManager.GameRepository.GetFirstCreatedgameByuserId(userId, false, ct);
+			var firstWithdrawRequest = await repositoryManager.WithdrawRequestRepository.GetFirstWithdrawRequestByUserId(userId, false, ct);
+			var daysSinceCreatedFirstGame = firsttGame != null ? (DateTime.Now - firsttGame.CreatedAt).Days : 0;
+			if (firstWithdrawRequest == null && (firsttGame == null || daysSinceCreatedFirstGame < 30))
+			{
+				throw new BadRequestException("You must upload at least one game and wait at least 30 days to make a withdraw request");
+			}
+			var daysSinceCreatedFirstWithdrawRequest = firstWithdrawRequest != null ? (DateTime.Now - firstWithdrawRequest.CreatedAt).Days : 0;
+			if (firstWithdrawRequest != null && daysSinceCreatedFirstWithdrawRequest < 30)
+			{
+				throw new BadRequestException("You can only make a withdraw request every 30 days");
+			}
+
 			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId);
 			if (user is null)
 			{

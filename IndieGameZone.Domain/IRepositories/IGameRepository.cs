@@ -1,7 +1,6 @@
 ﻿using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.RequestFeatures;
-using IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard;
 
 namespace IndieGameZone.Domain.IRepositories
 {
@@ -13,6 +12,7 @@ namespace IndieGameZone.Domain.IRepositories
 		Task<PagedList<Games>> GetGamesByDeveloperId(Guid developerId, GameParameters gameParameters, bool trackChange, CancellationToken ct = default);
 		Task<PagedList<Games>> GetActiveGamesByDeveloperId(Guid developerId, ActiveGameParameters activeGameParameters, bool trackChange, CancellationToken ct = default);
 		Task<Games?> GetGameById(Guid id, bool trackChange, CancellationToken ct = default);
+		Task<Games?> GetFirstCreatedgameByuserId(Guid userId, bool trackChange, CancellationToken ct = default);
 		Task<Games?> GetGameByIdWithActiveFile(Guid id, bool trackChange, CancellationToken ct = default);
 		void CreateGame(Games game);
 		void DeleteGame(Games game);
@@ -21,8 +21,8 @@ namespace IndieGameZone.Domain.IRepositories
 		Task<IEnumerable<Games>> GetTopDownloadedGames(int top, bool trackChange, CancellationToken ct = default);
 		Task<IEnumerable<(Games game, double averageRating)>> GetTopRatedGames(int top = 10, bool trackChange = false, CancellationToken ct = default);
 		Task<IEnumerable<Games>> GetRecentlyPublishedGames(int top = 10, bool trackChange = false, CancellationToken ct = default);
-        Task<IEnumerable<Games>> GetTodayHomepageBannerGamesAsync(bool trackChange, CancellationToken ct = default);
-        Task<IEnumerable<Games>> GetTodayCategoryBannerGamesAsync(bool trackChange, CancellationToken ct = default);
+		Task<IEnumerable<Games>> GetTodayHomepageBannerGamesAsync(bool trackChange, CancellationToken ct = default);
+		Task<IEnumerable<Games>> GetTodayCategoryBannerGamesAsync(bool trackChange, CancellationToken ct = default);
 
-    }
+	}
 }

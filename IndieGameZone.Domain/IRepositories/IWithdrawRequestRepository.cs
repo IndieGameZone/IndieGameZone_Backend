@@ -9,5 +9,6 @@ namespace IndieGameZone.Domain.IRepositories
 		Task<PagedList<WithdrawRequests>> GetWithdrawRequestsByUserId(Guid userId, WithdrawRequestParameter withdrawRequestParameter, bool trackChange, CancellationToken ct = default);
 		Task<PagedList<WithdrawRequests>> GetWithdrawRequests(WithdrawRequestParameter withdrawRequestParameter, bool trackChange, CancellationToken ct = default);
 		Task<WithdrawRequests?> GetWithdrawRequestById(Guid id, bool trackChange, CancellationToken ct = default);
+		Task<WithdrawRequests?> GetFirstWithdrawRequestByUserId(Guid userId, bool trackChange, CancellationToken ct = default);
 	}
 }

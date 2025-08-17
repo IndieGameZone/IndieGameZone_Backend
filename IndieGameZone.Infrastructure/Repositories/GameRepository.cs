@@ -187,57 +187,64 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.ToListAsync(ct);
 		}
 
-        public async Task<IEnumerable<Games>> GetTodayHomepageBannerGamesAsync(bool trackChange, CancellationToken ct = default)
-        {
-            var today = DateOnly.FromDateTime(DateTime.Now);
+		public async Task<IEnumerable<Games>> GetTodayHomepageBannerGamesAsync(bool trackChange, CancellationToken ct = default)
+		{
+			var today = DateOnly.FromDateTime(DateTime.Now);
 
-            var gameIds = await appDbContext.CommercialRegistrations
-                .Where(cr =>
-                    cr.CommercialPackage.Type == CommercialPackageType.HomepageBanner &&
-                    cr.Status == CommercialRegistrationStatus.Active && // ✅ only active
-                    cr.StartDate <= today &&
-                    today <= cr.EndDate)
-                .Select(cr => cr.GameId)
-                .ToListAsync(ct);
+			var gameIds = await appDbContext.CommercialRegistrations
+				.Where(cr =>
+					cr.CommercialPackage.Type == CommercialPackageType.HomepageBanner &&
+					cr.Status == CommercialRegistrationStatus.Active && // ✅ only active
+					cr.StartDate <= today &&
+					today <= cr.EndDate)
+				.Select(cr => cr.GameId)
+				.ToListAsync(ct);
 
-            return await FindByCondition(g =>
-                    gameIds.Contains(g.Id) &&
-                    g.Visibility == GameVisibility.Public &&
-                    g.CensorStatus == CensorStatus.Approved &&
-                    !g.IsDeleted,
-                    trackChange)
-                .Include(g => g.Category).AsSplitQuery()
-                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                .Include(g => g.Discounts).AsSplitQuery()
-                .Include(g => g.GameImages).AsSplitQuery()
-                .ToListAsync(ct);
-        }
+			return await FindByCondition(g =>
+					gameIds.Contains(g.Id) &&
+					g.Visibility == GameVisibility.Public &&
+					g.CensorStatus == CensorStatus.Approved &&
+					!g.IsDeleted,
+					trackChange)
+				.Include(g => g.Category).AsSplitQuery()
+				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+				.Include(g => g.Discounts).AsSplitQuery()
+				.Include(g => g.GameImages).AsSplitQuery()
+				.ToListAsync(ct);
+		}
 
-        public async Task<IEnumerable<Games>> GetTodayCategoryBannerGamesAsync(bool trackChange, CancellationToken ct = default)
-        {
-            var today = DateOnly.FromDateTime(DateTime.Now);
+		public async Task<IEnumerable<Games>> GetTodayCategoryBannerGamesAsync(bool trackChange, CancellationToken ct = default)
+		{
+			var today = DateOnly.FromDateTime(DateTime.Now);
 
-            var gameIds = await appDbContext.CommercialRegistrations
-                .Where(cr =>
-                    cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner &&
-                    cr.Status == CommercialRegistrationStatus.Active && // ✅ only active
-                    cr.StartDate <= today &&
-                    today <= cr.EndDate)
-                .Select(cr => cr.GameId)
-                .ToListAsync(ct);
+			var gameIds = await appDbContext.CommercialRegistrations
+				.Where(cr =>
+					cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner &&
+					cr.Status == CommercialRegistrationStatus.Active && // ✅ only active
+					cr.StartDate <= today &&
+					today <= cr.EndDate)
+				.Select(cr => cr.GameId)
+				.ToListAsync(ct);
 
-            return await FindByCondition(g =>
-                    gameIds.Contains(g.Id) &&
-                    g.Visibility == GameVisibility.Public &&
-                    !g.IsDeleted,
-                    trackChange)
-                .FilterByCensorStatus(CensorStatus.Approved)
-                .Include(g => g.Discounts).AsSplitQuery()
-                .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                .Include(g => g.Category).AsSplitQuery()
-                .Sort()
-                .ToListAsync(ct);
-        }
+			return await FindByCondition(g =>
+					gameIds.Contains(g.Id) &&
+					g.Visibility == GameVisibility.Public &&
+					!g.IsDeleted,
+					trackChange)
+				.FilterByCensorStatus(CensorStatus.Approved)
+				.Include(g => g.Discounts).AsSplitQuery()
+				.Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+				.Include(g => g.Category).AsSplitQuery()
+				.Sort()
+				.ToListAsync(ct);
+		}
 
-    }
+		public Task<Games?> GetFirstCreatedgameByuserId(Guid userId, bool trackChange, CancellationToken ct = default)
+		{
+			var game = FindByCondition(g => g.DeveloperId == userId && !g.IsDeleted, trackChange)
+				.OrderBy(g => g.CreatedAt)
+				.FirstOrDefaultAsync(ct);
+			return game;
+		}
+	}
 }

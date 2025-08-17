@@ -15,6 +15,6 @@
 		public virtual Users User { get; set; } = null!;
 		public virtual Games? Game { get; set; } = null!;
 		public virtual CommercialPackages? CommercialPackage { get; set; } = null!;
-		public virtual Transactions? Transaction { get; set; } = null!;
+		public virtual Transactions Transaction { get; set; } = null!;
 	}
 }

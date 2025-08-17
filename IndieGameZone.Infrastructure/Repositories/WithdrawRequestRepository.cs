@@ -15,6 +15,14 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void CreateWithdrawRequest(WithdrawRequests withdrawRequest) => Create(withdrawRequest);
 
+		public Task<WithdrawRequests?> GetFirstWithdrawRequestByUserId(Guid userId, bool trackChange, CancellationToken ct = default)
+		{
+			var oldestWithdrawRequest = FindByCondition(w => w.UserId == userId, trackChange)
+				.OrderBy(w => w.CreatedAt)
+				.FirstOrDefaultAsync(ct);
+			return oldestWithdrawRequest;
+		}
+
 		public async Task<WithdrawRequests?> GetWithdrawRequestById(Guid id, bool trackChange, CancellationToken ct = default) => await FindByCondition(w => w.Id == id, trackChange)
 			.FirstOrDefaultAsync(ct);
 

@@ -8,11 +8,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Reports
 		public string Message { get; init; }
 		[Required]
 		public Guid ReportReasonId { get; init; }
-        [Required]
-        public Guid GameId { get; init; }
-        [Required]
-        public Guid PostId { get; init; }
-        [Required]
+		[Required]
 		public Guid CommentId { get; init; }
 
 	}
