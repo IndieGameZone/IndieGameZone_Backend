@@ -55,12 +55,11 @@ namespace IndieGameZone.Application.Services
 			{
 				throw new NotFoundException($"Game not found.");
 			}
-			var gamePlatforms = mapper.Map<IEnumerable<GamePlatforms>>(gamePlatformForCreationDto);
-			foreach (var gamePlatformD in gamePlatforms)
+			var gamePlatforms = mapper.Map<ICollection<GamePlatforms>>(gamePlatformForCreationDto);
+			foreach (var gamePlatform in gamePlatforms)
 			{
-				var gamePlatform = new GamePlatforms();
 				gamePlatform.Id = Guid.NewGuid();
-				gamePlatform.GameId = gameId;
+				gamePlatform.GameId = game.Id;
 				var blobName = gamePlatform.File.Split('/').Last();
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.IsActive = true;

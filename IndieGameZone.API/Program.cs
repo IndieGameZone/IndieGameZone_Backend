@@ -49,16 +49,16 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<Faker>();
 builder.Services.Configure<FormOptions>(options =>
 {
-	options.MultipartBodyLengthLimit = 300 * 1024 * 1024; // 300MB
+	options.MultipartBodyLengthLimit = 512 * 1024 * 1024; // 300MB
 });
 builder.WebHost.ConfigureKestrel(options =>
 {
 	// Set max request size to 100 MB (or your desired limit)
-	options.Limits.MaxRequestBodySize = 300 * 1024 * 1024; // 300 MB
+	options.Limits.MaxRequestBodySize = 512 * 1024 * 1024; // 300 MB
 });
 builder.Services.Configure<IISServerOptions>(options =>
 {
-	options.MaxRequestBodySize = 100 * 1024 * 1024; // 100 MB
+	options.MaxRequestBodySize = 512 * 1024 * 1024; // 100 MB
 });
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 {
