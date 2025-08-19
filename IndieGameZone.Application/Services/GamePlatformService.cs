@@ -55,9 +55,8 @@ namespace IndieGameZone.Application.Services
 			{
 				throw new NotFoundException($"Game not found.");
 			}
-			var gamePlatforms = new List<GamePlatforms>();
-			var activationKeys = new List<ActivationKeys>();
-			foreach (var gamePlatformDto in gamePlatformForCreationDto)
+			var gamePlatforms = mapper.Map<IEnumerable<GamePlatforms>>(gamePlatformForCreationDto);
+			foreach (var gamePlatformD in gamePlatforms)
 			{
 				var gamePlatform = new GamePlatforms();
 				gamePlatform.Id = Guid.NewGuid();
@@ -66,20 +65,8 @@ namespace IndieGameZone.Application.Services
 				gamePlatform.Size = await blobService.GetBlobSize(blobName, StorageContainer.STORAGE_CONTAINER);
 				gamePlatform.IsActive = true;
 				gamePlatform.CreatedAt = DateTime.Now;
-
-				var activationKey = new ActivationKeys
-				{
-					Id = Guid.NewGuid(),
-					GamePlatformId = gamePlatform.Id,
-					Key = gamePlatformDto.ActivationKey,
-					IsUsed = false,
-					CreatedAt = DateTime.Now,
-				};
-				gamePlatforms.Add(gamePlatform);
-				activationKeys.Add(activationKey);
 			}
 			repositoryManager.GamePlatformRepository.CreateGamePlatform(gamePlatforms);
-			repositoryManager.ActivationKeyRepository.CreateRange(activationKeys);
 			await repositoryManager.SaveAsync(ct);
 		}
 

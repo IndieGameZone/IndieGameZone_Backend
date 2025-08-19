@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application.IServices;
+using IndieGameZone.Domain.RequestsAndResponses.Requests.ActivationKeys;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,6 +29,14 @@ namespace IndieGameZone.API.Controllers
 		{
 			var activationKeys = await serviceManager.ActivationKeyService.GetKeyByGamePlatformId(userId, gamePlatformId, ct);
 			return Ok(activationKeys);
+		}
+
+		[HttpPost("game-platforms/{gamePlatformId}/activation-keys")]
+		[Authorize]
+		public async Task<IActionResult> CreateActivationKeys([FromRoute] Guid userId, [FromRoute] Guid gamePlatformId, [FromBody] ActivationKeyForCreationDto activationKeyForCreationDto, CancellationToken ct = default)
+		{
+			await serviceManager.ActivationKeyService.CreateActivationKey(gamePlatformId, activationKeyForCreationDto, ct);
+			return StatusCode(201);
 		}
 	}
 }

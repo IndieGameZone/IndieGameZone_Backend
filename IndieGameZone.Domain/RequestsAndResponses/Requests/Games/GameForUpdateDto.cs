@@ -20,6 +20,8 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
 		[Required]
 		public bool AllowDonation { get; init; }
 		[Required]
+		public bool RequireActivationKey { get; init; }
+		[Required]
 		public GameStatus Status { get; init; }
 		[Required]
 		public GameVisibility Visibility { get; init; }

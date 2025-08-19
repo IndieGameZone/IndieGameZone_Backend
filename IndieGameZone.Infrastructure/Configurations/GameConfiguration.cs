@@ -16,6 +16,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(g => g.Description);
 			builder.Property(g => g.VersionDescription);
 			builder.Property(g => g.AllowDonation);
+			builder.Property(g => g.RequireActivationKey);
 			builder.Property(g => g.Status).HasConversion<string>().HasMaxLength(50);
 			builder.Property(g => g.Visibility).HasConversion<string>().HasMaxLength(50);
 			builder.Property(g => g.CensorStatus).HasConversion<string>().HasMaxLength(50);

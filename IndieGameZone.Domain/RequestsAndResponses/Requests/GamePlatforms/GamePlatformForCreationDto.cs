@@ -13,6 +13,5 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.GamePlatforms
 		public string Version { get; init; }
 		[Required]
 		public string DisplayName { get; init; }
-		public string? ActivationKey { get; init; }
 	}
 }

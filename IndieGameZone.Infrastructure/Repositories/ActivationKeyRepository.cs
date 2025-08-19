@@ -13,7 +13,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public Task<ActivationKeys?> GetByGamePlatformId(Guid gamePlatformId, bool trackChange, CancellationToken ct = default)
 		{
-			var activationKey = FindByCondition(x => x.GamePlatformId == gamePlatformId && !x.IsUsed, trackChange)
+			var activationKey = FindByCondition(x => x.GamePlatformId == gamePlatformId, trackChange)
 				.FirstOrDefaultAsync(ct);
 			return activationKey;
 		}

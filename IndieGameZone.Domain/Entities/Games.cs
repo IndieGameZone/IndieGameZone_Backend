@@ -13,6 +13,7 @@ namespace IndieGameZone.Domain.Entities
 		public string InstallInstruction { get; set; } = string.Empty;
 		public string Description { get; set; } = string.Empty;
 		public bool AllowDonation { get; set; }
+		public bool RequireActivationKey { get; set; }
 		public GameStatus Status { get; set; }
 		public GameVisibility Visibility { get; set; }
 		public CensorStatus CensorStatus { get; set; }
