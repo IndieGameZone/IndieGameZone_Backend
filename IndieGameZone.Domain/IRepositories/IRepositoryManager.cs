@@ -44,5 +44,6 @@ namespace IndieGameZone.Domain.IRepositories
 		IDownloadSlotRepository DownloadSlotRepository { get; }
 		IOrderRepository OrderRepository { get; }
 		IGamePriceLogRepository GamePriceLogRepository { get; }
+		IActivationKeyRepository ActivationKeyRepository { get; }
 	}
 }

@@ -32,5 +32,6 @@
 		IOrderService OrderService { get; }
 		IGamePriceLogService GamePriceLogService { get; }
 		IDownloadSlotService DownloadSlotService { get; }
+		IActivationKeyService ActivationKeyService { get; }
 	}
 }

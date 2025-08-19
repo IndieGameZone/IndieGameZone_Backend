@@ -15,5 +15,6 @@
 		// Navigation properties
 		public virtual Games Game { get; set; } = null!;
 		public virtual Platforms Platform { get; set; } = null!;
+		public virtual ICollection<ActivationKeys> ActivationKeys { get; set; } = new List<ActivationKeys>();
 	}
 }

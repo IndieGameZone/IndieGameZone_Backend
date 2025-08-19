@@ -54,6 +54,7 @@ namespace IndieGameZone.Infrastructure.Persistence
 		public DbSet<DownloadSlots> DownloadSlots { get; set; } = null!;
 		public DbSet<Orders> Orders { get; set; } = null!;
 		public DbSet<GamePriceLogs> GamePriceLogs { get; set; } = null!;
+		public DbSet<ActivationKeys> ActivationKeys { get; set; } = null!;
 
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -101,6 +102,7 @@ namespace IndieGameZone.Infrastructure.Persistence
 			modelBuilder.ApplyConfiguration(new DownloadSlotConfiguration());
 			modelBuilder.ApplyConfiguration(new OrderConfiguration());
 			modelBuilder.ApplyConfiguration(new GamePriceLogConfiguration());
+			modelBuilder.ApplyConfiguration(new ActivationKeyConfiguration());
 		}
 	}
 }
