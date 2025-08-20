@@ -79,7 +79,7 @@ namespace IndieGameZone.Application.Services
 			orderService = new Lazy<IOrderService>(() => new OrderService(repositoryManager, mapper));
 			gamePriceLogService = new Lazy<IGamePriceLogService>(() => new GamePriceLogService(repositoryManager, mapper));
 			downloadSlotService = new Lazy<IDownloadSlotService>(() => new DownloadSlotService(repositoryManager));
-			activationKeyService = new Lazy<IActivationKeyService>(() => new ActivationKeyService(repositoryManager, mapper));
+			activationKeyService = new Lazy<IActivationKeyService>(() => new ActivationKeyService(repositoryManager, mapper, userManager));
 		}
 
 		public ILanguageService LanguageService => languageService.Value;

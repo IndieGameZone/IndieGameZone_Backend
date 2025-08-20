@@ -1,9 +1,12 @@
 ﻿using IndieGameZone.Application.IServices;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.ActivationKeys;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System.Text;
 
 namespace IndieGameZone.Application.Services
@@ -12,15 +15,23 @@ namespace IndieGameZone.Application.Services
 	{
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
+		private readonly UserManager<Users> userManager;
 
-		public ActivationKeyService(IRepositoryManager repositoryManager, IMapper mapper)
+		public ActivationKeyService(IRepositoryManager repositoryManager, IMapper mapper, UserManager<Users> userManager)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
+			this.userManager = userManager;
 		}
 
 		private async Task<bool> CheckGameOwnership(Guid userId, Guid gameId, CancellationToken ct = default)
 		{
+			var roles = await userManager.GetRolesAsync(await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId, ct));
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (roles.Contains(RoleEnum.Admin.ToString()) || roles.Contains(RoleEnum.Moderator.ToString()) || game.DeveloperId == userId)
+			{
+				return true;
+			}
 			var gameLibrary = await repositoryManager.LibraryRepository.GetLibraryByUserIdAndGameId(userId, gameId, false, ct);
 			return gameLibrary != null;
 		}
