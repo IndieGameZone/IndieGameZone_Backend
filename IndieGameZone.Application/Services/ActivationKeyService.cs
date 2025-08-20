@@ -114,6 +114,7 @@ namespace IndieGameZone.Application.Services
 				Id = Guid.NewGuid(),
 				GameId = gameId,
 				IsUsed = false,
+				IsActive = true,
 				CreatedAt = DateTime.Now,
 				Key = GenerateRandomKey()
 			};
