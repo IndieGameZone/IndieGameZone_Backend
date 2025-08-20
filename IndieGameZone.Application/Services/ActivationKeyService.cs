@@ -84,6 +84,7 @@ namespace IndieGameZone.Application.Services
 				Id = Guid.NewGuid(),
 				GameId = gameId,
 				IsUsed = false,
+				IsActive = true,
 				CreatedAt = DateTime.Now,
 				Key = GenerateRandomKey()
 			};
@@ -99,24 +100,25 @@ namespace IndieGameZone.Application.Services
 				throw new BadRequestException("You must own this game to reset the activation key.");
 			}
 			var order = await repositoryManager.OrderRepository.GetOrderByGameAndUser(gameId, userId, true, ct);
-			if (order != null)
+			if (order == null || order.ActivationKey == null)
 			{
-				var oldKey = await repositoryManager.ActivationKeyRepository.GetByKey(order.ActivationKey.Key, true, ct);
-				if (oldKey != null)
-				{
-					oldKey.IsActive = false;
-				}
-				var keyEntity = new ActivationKeys()
-				{
-					Id = Guid.NewGuid(),
-					GameId = gameId,
-					IsUsed = false,
-					CreatedAt = DateTime.Now,
-					Key = GenerateRandomKey()
-				};
-				order.ActivationKey = keyEntity;
-				repositoryManager.ActivationKeyRepository.Create(keyEntity);
+				throw new BadRequestException("You must have an order with an activation key to reset it.");
 			}
+			var oldKey = await repositoryManager.ActivationKeyRepository.GetByKey(order.ActivationKey.Key, true, ct);
+			if (oldKey != null)
+			{
+				oldKey.IsActive = false;
+			}
+			var keyEntity = new ActivationKeys()
+			{
+				Id = Guid.NewGuid(),
+				GameId = gameId,
+				IsUsed = false,
+				CreatedAt = DateTime.Now,
+				Key = GenerateRandomKey()
+			};
+			order.ActivationKey = keyEntity;
+			repositoryManager.ActivationKeyRepository.Create(keyEntity);
 			await repositoryManager.SaveAsync(ct);
 			dbTransaction.Commit();
 		}

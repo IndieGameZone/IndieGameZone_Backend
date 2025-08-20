@@ -15,6 +15,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Orders
 		public GameForOrderReturnDto? Game { get; init; }
 		public CommercialPackageForOrderReturnDto? CommercialPackage { get; init; }
 		public TransactionForReturnDto Transaction { get; init; }
-		public ActivationKeyForReturnDto ActivationKey { get; init; }
+		public ActivationKeyForReturnDto? ActivationKey { get; init; }
 	}
 }
