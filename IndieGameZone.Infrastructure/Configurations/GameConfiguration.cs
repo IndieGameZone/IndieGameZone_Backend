@@ -30,6 +30,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(g => g.AverageSession);
 			builder.Property(a => a.IsDeleted);
 
+			builder.HasMany(gp => gp.ActivationKeys)
+				.WithOne(ak => ak.Game)
+				.HasForeignKey(gp => gp.GameId)
+				.OnDelete(DeleteBehavior.Cascade);
 			builder.HasMany(g => g.GameLanguages)
 				.WithOne(gl => gl.Game)
 				.HasForeignKey(gl => gl.GameId)

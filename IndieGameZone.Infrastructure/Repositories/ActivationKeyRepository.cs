@@ -11,10 +11,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 		{
 		}
 
-		public Task<ActivationKeys?> GetByGamePlatformId(Guid gamePlatformId, bool trackChange, CancellationToken ct = default)
+		public async Task<IEnumerable<ActivationKeys>> GetByGameId(Guid gameId, bool trackChange, CancellationToken ct = default)
 		{
-			var activationKey = FindByCondition(x => x.GamePlatformId == gamePlatformId, trackChange)
-				.FirstOrDefaultAsync(ct);
+			var activationKey = await FindByCondition(x => x.GameId == gameId && !x.IsUsed, trackChange)
+				.ToListAsync(ct);
 			return activationKey;
 		}
 

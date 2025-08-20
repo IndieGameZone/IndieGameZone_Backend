@@ -1,12 +1,12 @@
-﻿using IndieGameZone.Domain.RequestsAndResponses.Requests.ActivationKeys;
-using IndieGameZone.Domain.RequestsAndResponses.Responses.ActivationKeys;
+﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.ActivationKeys;
 
 namespace IndieGameZone.Application.IServices
 {
 	public interface IActivationKeyService
 	{
-		Task<bool> ValidateActivationKey(string activationKey, CancellationToken ct = default);
-		Task<ActivationKeyForReturnDto> GetKeyByGamePlatformId(Guid userId, Guid gamePlatformId, CancellationToken ct = default);
-		Task CreateActivationKey(Guid gamePlatformId, ActivationKeyForCreationDto activationKeyForCreationDto, CancellationToken ct = default);
+		Task ValidateActivationKey(Guid gameId, string activationKey, CancellationToken ct = default);
+		Task<IEnumerable<ActivationKeyForReturnDto>> GetKeyByGameId(Guid userId, Guid gameId, CancellationToken ct = default);
+		Task CreateActivationKey(Guid gameId, CancellationToken ct = default);
+		Task ResetActivationKey(Guid userId, Guid gameId, CancellationToken ct = default);
 	}
 }

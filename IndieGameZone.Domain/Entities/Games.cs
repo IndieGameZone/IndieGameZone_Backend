@@ -30,6 +30,7 @@ namespace IndieGameZone.Domain.Entities
 
 
 		// Navigation properties
+		public virtual ICollection<ActivationKeys> ActivationKeys { get; set; } = null!;
 		public virtual ICollection<GameLanguages> GameLanguages { get; set; } = new List<GameLanguages>();
 		public virtual ICollection<GameImages> GameImages { get; set; } = new List<GameImages>();
 		public virtual ICollection<GameTags> GameTags { get; set; } = new List<GameTags>();

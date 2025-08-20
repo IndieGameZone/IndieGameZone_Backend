@@ -23,10 +23,6 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithMany(p => p.GamePlatforms)
 				.HasForeignKey(gp => gp.PlatformId)
 				.OnDelete(DeleteBehavior.Restrict);
-			builder.HasOne(gp => gp.ActivationKey)
-				.WithOne(ak => ak.GamePlatform)
-				.HasForeignKey<ActivationKeys>(gp => gp.GamePlatformId)
-				.OnDelete(DeleteBehavior.Cascade);
 			builder.HasData(
 				// The Deadseat
 				new GamePlatforms

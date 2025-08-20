@@ -6,9 +6,9 @@
 		public string Key { get; set; } = string.Empty;
 		public bool IsUsed { get; set; }
 		public DateTime CreatedAt { get; set; }
-		public Guid GamePlatformId { get; set; }
+		public Guid GameId { get; set; }
 
 		// Navigation properties
-		public GamePlatforms GamePlatform { get; set; }
+		public Games Game { get; set; }
 	}
 }

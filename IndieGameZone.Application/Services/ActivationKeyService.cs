@@ -2,9 +2,9 @@
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
-using IndieGameZone.Domain.RequestsAndResponses.Requests.ActivationKeys;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.ActivationKeys;
 using MapsterMapper;
+using System.Text;
 
 namespace IndieGameZone.Application.Services
 {
@@ -25,38 +25,72 @@ namespace IndieGameZone.Application.Services
 			return gameLibrary != null;
 		}
 
-		public async Task<ActivationKeyForReturnDto> GetKeyByGamePlatformId(Guid userId, Guid gamePlatformId, CancellationToken ct = default)
+		private string GenerateRandomKey()
 		{
-			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, false, ct);
-			if (!await CheckGameOwnership(userId, gamePlatform.GameId, ct))
+			Random random = new Random();
+			string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+			var sb = new StringBuilder();
+
+			for (int g = 0; g < 5; g++)
+			{
+				if (g > 0) sb.Append('-');
+
+				for (int i = 0; i < 5; i++)
+				{
+					sb.Append(chars[random.Next(chars.Length)]);
+				}
+			}
+
+			return sb.ToString();
+		}
+
+		public async Task<IEnumerable<ActivationKeyForReturnDto>> GetKeyByGameId(Guid userId, Guid gameId, CancellationToken ct = default)
+		{
+			if (!await CheckGameOwnership(userId, gameId, ct))
 			{
 				throw new BadRequestException("You must own this game to see the activation key.");
 			}
-			var key = await repositoryManager.ActivationKeyRepository.GetByGamePlatformId(gamePlatformId, false, ct);
-			if (key == null) throw new NotFoundException("Key not found");
-			return mapper.Map<ActivationKeyForReturnDto>(key);
+			var key = await repositoryManager.ActivationKeyRepository.GetByGameId(gameId, false, ct);
+			return mapper.Map<IEnumerable<ActivationKeyForReturnDto>>(key);
 		}
 
-		public async Task<bool> ValidateActivationKey(string activationKey, CancellationToken ct = default)
+		public async Task ValidateActivationKey(Guid gameId, string activationKey, CancellationToken ct = default)
 		{
 			var key = await repositoryManager.ActivationKeyRepository.GetByKey(activationKey, false, ct);
 			if (key == null) throw new NotFoundException("Key not found");
+			if (key.GameId != gameId) throw new BadRequestException("Key does not belong to this game");
 			if (key.IsUsed) throw new BadRequestException("Key already used");
-			return true;
 		}
 
-		public async Task CreateActivationKey(Guid gamePlatformId, ActivationKeyForCreationDto activationKeyForCreationDto, CancellationToken ct = default)
+		public async Task CreateActivationKey(Guid gameId, CancellationToken ct = default)
 		{
-			var key = await repositoryManager.ActivationKeyRepository.GetByGamePlatformId(gamePlatformId, false, ct);
-			if (key != null)
+			var keyEntity = new ActivationKeys()
 			{
-				throw new BadRequestException("Activation key already exists for this game platform. If you want to change, please reset key");
+				Id = Guid.NewGuid(),
+				GameId = gameId,
+				IsUsed = false,
+				CreatedAt = DateTime.Now,
+				Key = GenerateRandomKey()
+			};
+			repositoryManager.ActivationKeyRepository.Create(keyEntity);
+			await repositoryManager.SaveAsync(ct);
+		}
+
+		public async Task ResetActivationKey(Guid userId, Guid gameId, CancellationToken ct = default)
+		{
+			if (!await CheckGameOwnership(userId, gameId, ct))
+			{
+				throw new BadRequestException("You must own this game to reset the activation key.");
 			}
-			var keyEntity = mapper.Map<ActivationKeys>(activationKeyForCreationDto);
-			keyEntity.Id = Guid.NewGuid();
-			keyEntity.GamePlatformId = gamePlatformId;
-			keyEntity.IsUsed = false;
-			keyEntity.CreatedAt = DateTime.Now;
+			var keyEntity = new ActivationKeys()
+			{
+				Id = Guid.NewGuid(),
+				GameId = gameId,
+				IsUsed = false,
+				CreatedAt = DateTime.Now,
+				Key = GenerateRandomKey()
+			};
 			repositoryManager.ActivationKeyRepository.Create(keyEntity);
 			await repositoryManager.SaveAsync(ct);
 		}

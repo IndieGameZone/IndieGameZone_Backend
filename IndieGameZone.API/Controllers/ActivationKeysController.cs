@@ -1,5 +1,5 @@
 ﻿using IndieGameZone.Application.IServices;
-using IndieGameZone.Domain.RequestsAndResponses.Requests.ActivationKeys;
+using IndieGameZone.Domain.Constants;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,27 +16,35 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
-		[HttpPut("activation-keys/{activationKey}/activation")]
-		public async Task<IActionResult> ActivateKey([FromRoute] string activationKey, CancellationToken ct = default)
+		[HttpPut("games/{gameId:guid}/activation-keys/{activationKey}/activation")]
+		public async Task<IActionResult> ActivateKey([FromRoute] Guid gameId, [FromRoute] string activationKey, CancellationToken ct = default)
 		{
-			await serviceManager.ActivationKeyService.ValidateActivationKey(activationKey, ct);
+			await serviceManager.ActivationKeyService.ValidateActivationKey(gameId, activationKey, ct);
 			return NoContent();
 		}
 
-		[HttpGet("users/{userId}/game-platforms/{gamePlatformId}/activation-keys")]
+		[HttpGet("users/{userId:guid}/games/{gameId:guid}/activation-keys")]
 		[Authorize]
-		public async Task<IActionResult> GetActivationKeys([FromRoute] Guid userId, [FromRoute] Guid gamePlatformId, CancellationToken ct = default)
+		public async Task<IActionResult> GetActivationKeys([FromRoute] Guid userId, [FromRoute] Guid gameId, CancellationToken ct = default)
 		{
-			var activationKeys = await serviceManager.ActivationKeyService.GetKeyByGamePlatformId(userId, gamePlatformId, ct);
+			var activationKeys = await serviceManager.ActivationKeyService.GetKeyByGameId(userId, gameId, ct);
 			return Ok(activationKeys);
 		}
 
-		[HttpPost("game-platforms/{gamePlatformId}/activation-keys")]
-		[Authorize]
-		public async Task<IActionResult> CreateActivationKeys([FromRoute] Guid userId, [FromRoute] Guid gamePlatformId, [FromBody] ActivationKeyForCreationDto activationKeyForCreationDto, CancellationToken ct = default)
+		[HttpPost("games/{gameId:guid}/activation-keys")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
+		public async Task<IActionResult> CreateActivationKeys([FromRoute] Guid gameId, CancellationToken ct = default)
 		{
-			await serviceManager.ActivationKeyService.CreateActivationKey(gamePlatformId, activationKeyForCreationDto, ct);
+			await serviceManager.ActivationKeyService.CreateActivationKey(gameId, ct);
 			return StatusCode(201);
+		}
+
+		[HttpPut("users/{userId:guid}/games/{gameId:guid}/activation-keys/reset")]
+		[Authorize]
+		public async Task<IActionResult> ResetActivationKey([FromRoute] Guid userId, [FromRoute] Guid gameId, CancellationToken ct = default)
+		{
+			await serviceManager.ActivationKeyService.ResetActivationKey(userId, gameId, ct);
+			return NoContent();
 		}
 	}
 }

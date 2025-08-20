@@ -15,6 +15,6 @@
 		// Navigation properties
 		public virtual Games Game { get; set; } = null!;
 		public virtual Platforms Platform { get; set; } = null!;
-		public virtual ActivationKeys? ActivationKey { get; set; } = null!;
+
 	}
 }
