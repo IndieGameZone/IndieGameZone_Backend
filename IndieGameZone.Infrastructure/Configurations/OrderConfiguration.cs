@@ -30,6 +30,10 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithOne(t => t.Order)
 				.HasForeignKey<Transactions>(o => o.OrderId)
 				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne(o => o.ActivationKey)
+				.WithOne(ak => ak.Order)
+				.HasForeignKey<Orders>(o => o.ActivationKeyId)
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

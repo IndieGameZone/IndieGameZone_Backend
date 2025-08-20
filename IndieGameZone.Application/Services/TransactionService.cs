@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Net.payOS;
 using Net.payOS.Types;
+using System.Text;
 
 namespace IndieGameZone.Application.Services
 {
@@ -36,6 +37,26 @@ namespace IndieGameZone.Application.Services
 			this.recombeeService = recombeeService;
 			this.userManager = userManager;
 			this.notificationHub = notificationHub;
+		}
+
+		private string GenerateRandomKey()
+		{
+			Random random = new Random();
+			string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+			var sb = new StringBuilder();
+
+			for (int g = 0; g < 5; g++)
+			{
+				if (g > 0) sb.Append('-');
+
+				for (int i = 0; i < 5; i++)
+				{
+					sb.Append(chars[random.Next(chars.Length)]);
+				}
+			}
+
+			return sb.ToString();
 		}
 
 		private async Task<string> GetPayOSPaymentLink(Transactions transaction, TransactionType transactionType)
@@ -176,8 +197,23 @@ namespace IndieGameZone.Application.Services
 				Amount = gamePriceAfterDiscount,
 				UserId = userId,
 				GameId = gameId,
-				CreatedAt = DateTime.Now
+				CreatedAt = DateTime.Now,
 			};
+
+			if (transactionForGameCreation.PaymentMethod == PaymentMethod.Wallet && game.RequireActivationKey)
+			{
+				var key = new ActivationKeys
+				{
+					Id = Guid.NewGuid(),
+					Key = GenerateRandomKey(),
+					IsUsed = false,
+					IsActive = true,
+					CreatedAt = DateTime.Now,
+					GameId = gameId,
+				};
+				order.ActivationKeyId = key.Id;
+				repositoryManager.ActivationKeyRepository.Create(key);
+			}
 
 			var transactionEntity = new Transactions()
 			{
@@ -355,8 +391,9 @@ namespace IndieGameZone.Application.Services
 
 		public async Task IPNAsync(WebhookData webhookData, bool isSuccess, CancellationToken ct = default)
 		{
+			var dbTransaction = await repositoryManager.BeginTransaction(ct);
 			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(webhookData.orderCode, true, ct);
-			var order = await repositoryManager.OrderRepository.GetOrderById((Guid)transaction.OrderId, false, ct);
+			var order = await repositoryManager.OrderRepository.GetOrderById((Guid)transaction.OrderId, true, ct);
 
 			if (isSuccess)
 			{
@@ -411,6 +448,21 @@ namespace IndieGameZone.Application.Services
 					var developerId = transaction.Game.DeveloperId;
 					var devWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
 					var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
+
+					if (game.RequireActivationKey)
+					{
+						var key = new ActivationKeys
+						{
+							Id = Guid.NewGuid(),
+							Key = GenerateRandomKey(),
+							IsUsed = false,
+							IsActive = true,
+							CreatedAt = DateTime.Now,
+							GameId = game.Id,
+						};
+						order.ActivationKeyId = key.Id;
+						repositoryManager.ActivationKeyRepository.Create(key);
+					}
 
 					// Addgame to library
 					var libraryEntity = new Libraries
@@ -500,6 +552,7 @@ namespace IndieGameZone.Application.Services
 			}
 
 			await repositoryManager.SaveAsync(ct);
+			dbTransaction.Commit();
 		}
 
 		public async Task<string> CreateTransactionForCommercialPurchase(Guid userId, Guid gameId, Guid commercialPackageId, TransactionForCommercialDto dto, CancellationToken ct = default)

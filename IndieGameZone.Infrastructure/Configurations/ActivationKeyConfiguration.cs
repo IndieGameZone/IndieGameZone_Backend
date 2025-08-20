@@ -12,6 +12,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 			builder.Property(x => x.Key);
 			builder.HasIndex(x => x.Key);
 			builder.Property(x => x.IsUsed);
+			builder.Property(x => x.IsActive);
 			builder.Property(x => x.CreatedAt);
 
 

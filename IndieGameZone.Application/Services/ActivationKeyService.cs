@@ -68,10 +68,13 @@ namespace IndieGameZone.Application.Services
 
 		public async Task ValidateActivationKey(Guid gameId, string activationKey, CancellationToken ct = default)
 		{
-			var key = await repositoryManager.ActivationKeyRepository.GetByKey(activationKey, false, ct);
+			var key = await repositoryManager.ActivationKeyRepository.GetByKey(activationKey, true, ct);
 			if (key == null) throw new NotFoundException("Key not found");
 			if (key.GameId != gameId) throw new BadRequestException("Key does not belong to this game");
+			if (!key.IsActive) throw new BadRequestException("Key has been deactivated");
 			if (key.IsUsed) throw new BadRequestException("Key already used");
+			key.IsUsed = true;
+			await repositoryManager.SaveAsync(ct);
 		}
 
 		public async Task CreateActivationKey(Guid gameId, CancellationToken ct = default)
@@ -90,20 +93,32 @@ namespace IndieGameZone.Application.Services
 
 		public async Task ResetActivationKey(Guid userId, Guid gameId, CancellationToken ct = default)
 		{
+			var dbTransaction = await repositoryManager.BeginTransaction(ct);
 			if (!await CheckGameOwnership(userId, gameId, ct))
 			{
 				throw new BadRequestException("You must own this game to reset the activation key.");
 			}
-			var keyEntity = new ActivationKeys()
+			var order = await repositoryManager.OrderRepository.GetOrderByGameAndUser(gameId, userId, true, ct);
+			if (order != null)
 			{
-				Id = Guid.NewGuid(),
-				GameId = gameId,
-				IsUsed = false,
-				CreatedAt = DateTime.Now,
-				Key = GenerateRandomKey()
-			};
-			repositoryManager.ActivationKeyRepository.Create(keyEntity);
+				var oldKey = await repositoryManager.ActivationKeyRepository.GetByKey(order.ActivationKey.Key, true, ct);
+				if (oldKey != null)
+				{
+					oldKey.IsActive = false;
+				}
+				var keyEntity = new ActivationKeys()
+				{
+					Id = Guid.NewGuid(),
+					GameId = gameId,
+					IsUsed = false,
+					CreatedAt = DateTime.Now,
+					Key = GenerateRandomKey()
+				};
+				order.ActivationKey = keyEntity;
+				repositoryManager.ActivationKeyRepository.Create(keyEntity);
+			}
 			await repositoryManager.SaveAsync(ct);
+			dbTransaction.Commit();
 		}
 	}
 }
