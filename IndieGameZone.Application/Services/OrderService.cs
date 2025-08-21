@@ -23,7 +23,9 @@ namespace IndieGameZone.Application.Services
 			var orders = await repositoryManager.OrderRepository.GetOrderById(orderId, false, ct);
 			if (orders is null)
 				throw new NotFoundException("Order not found");
-			return mapper.Map<OrderForReturnDto>(orders);
+			var orderForReturnDto = mapper.Map<OrderForReturnDto>(orders);
+			orderForReturnDto.Discount = (orderForReturnDto.Game.Price - orderForReturnDto.Amount) / orderForReturnDto.Game.Price * 100;
+			return orderForReturnDto;
 		}
 
 		public async Task<(IEnumerable<OrderForReturnDto> orders, MetaData metaData)> GetOrdersByUserId(Guid userId, OrderParameters orderParameters, CancellationToken ct = default)

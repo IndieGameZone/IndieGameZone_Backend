@@ -107,7 +107,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<PagedList<Games>> GetGames(GameParameters gameParameters, bool trackChange, CancellationToken ct = default)
 		{
-			var gameEntities = FindByCondition(g => !g.IsDeleted, trackChange)
+			var gameEntities = FindByCondition(g => !g.IsDeleted && g.Visibility != GameVisibility.Draft, trackChange)
 				.FilterByCensorStatus(gameParameters.CensorStatus)
 				.Search(gameParameters.SearchTerm)
 				.Include(x => x.Discounts).AsSplitQuery()

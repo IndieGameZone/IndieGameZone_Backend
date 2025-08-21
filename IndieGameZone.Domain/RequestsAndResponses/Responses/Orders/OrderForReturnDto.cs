@@ -12,6 +12,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Orders
 		public DateOnly? CommercialRegistrationStartDate { get; init; }
 		public DateOnly? CommercialRegistrationEndDate { get; init; }
 		public DateTime CreatedAt { get; init; }
+		public double Discount { get; set; }
 		public GameForOrderReturnDto? Game { get; init; }
 		public CommercialPackageForOrderReturnDto? CommercialPackage { get; init; }
 		public TransactionForReturnDto Transaction { get; init; }

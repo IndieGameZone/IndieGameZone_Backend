@@ -17,6 +17,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public string VideoLink { get; init; }
 		public string VersionDescription { get; init; }
 		public bool AllowDonation { get; set; }
+		public bool RequireActivationKey { get; init; }
 		public string ShortDescription { get; init; }
 		public string Description { get; init; }
 		public double Price { get; init; }
