@@ -46,7 +46,10 @@ namespace IndieGameZone.Application.Services
 				StorageContainer.STORAGE_CONTAINER,
 				file);
 			}
-			var cloudmersiveConfiguration = new Configuration();
+			var cloudmersiveConfiguration = new Configuration()
+			{
+				Timeout = TimeSpan.FromMinutes(10)
+			};
 			cloudmersiveConfiguration.AddApiKey("Apikey", configuration.GetSection("CloudmersiveAPIKey").Value);
 			var apiInstance = new ScanApi(cloudmersiveConfiguration);
 
