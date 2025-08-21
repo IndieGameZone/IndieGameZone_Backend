@@ -6,7 +6,6 @@ using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
-using System.Security.Cryptography;
 
 namespace IndieGameZone.Application.Services
 {
@@ -33,7 +32,7 @@ namespace IndieGameZone.Application.Services
 				throw new BadRequestException("File type is not supported. Only .jpg, .png, .rar, .zip, .exe and .webp files are allowed.");
 			}
 		}
-		private void ScanFile(IFormFile file)
+		private async Task ScanFile(IFormFile file)
 		{
 			if (file.FileName.EndsWith(".jpg") || file.FileName.EndsWith(".png") || file.FileName.EndsWith(".webp")) return;
 			var cloudmersiveConfiguration = new Configuration();
@@ -42,7 +41,7 @@ namespace IndieGameZone.Application.Services
 
 			using (var stream = file.OpenReadStream())
 			{
-				VirusScanResult result = apiInstance.ScanFile(stream);
+				VirusScanResult result = await apiInstance.ScanFileAsync(stream);
 				if (!result.CleanResult)
 				{
 					throw new BadRequestException("File scan failed. Please ensure the file is safe and appropriate.");
@@ -50,25 +49,14 @@ namespace IndieGameZone.Application.Services
 			}
 		}
 
-		private string GenerateRandomPassword(int length)
-		{
-			const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+";
-			using var rng = RandomNumberGenerator.Create();
-			var bytes = new byte[length];
-			rng.GetBytes(bytes);
-			var chars = bytes.Select(b => validChars[b % validChars.Length]);
-			return new string(chars.ToArray());
-		}
-
 		public async Task<string> UploadScanFile(IFormFile file)
 		{
 			CheckingFile(file);
-			ScanFile(file);
-			var url = await blobService.UploadBlob(
+			await ScanFile(file);
+			return await blobService.UploadBlob(
 				$"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}",
 				StorageContainer.STORAGE_CONTAINER,
 				file);
-			return url;
 		}
 	}
 }
