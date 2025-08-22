@@ -37,6 +37,11 @@ namespace IndieGameZone.Infrastructure.Configurations
 				.WithMany(c => c.Reports)
 				.HasForeignKey(r => r.CommentId)
 				.OnDelete(DeleteBehavior.Restrict);
-		}
+            builder.HasOne(r => r.Review)
+                .WithMany(c => c.Reports)
+                .HasForeignKey(r => r.ReviewId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+        }
 	}
 }

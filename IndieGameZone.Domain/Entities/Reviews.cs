@@ -12,5 +12,6 @@
 		//Navigation properties
 		public Users User { get; set; } = null!;
 		public Games Game { get; set; } = null!;
-	}
+        public ICollection<Reports> Reports { get; set; } = new List<Reports>();
+    }
 }

@@ -15,13 +15,15 @@ namespace IndieGameZone.Domain.Entities
 		public Guid ReportReasonId { get; set; }
 		public Guid? GameId { get; set; }
 		public Guid? CommentId { get; set; }
+        public Guid? ReviewId { get; set; }
 
-		//Navigation properties
-		public virtual Users ReportingUser { get; set; } = null!;
+        //Navigation properties
+        public virtual Users ReportingUser { get; set; } = null!;
 		public virtual ReportReasons ReportReason { get; set; } = null!;
 		public virtual Posts Post { get; set; } = null!;
 		public virtual Games Game { get; set; } = null!;
 		public virtual PostComments PostComment { get; set; } = null!;
+        public virtual Reviews Review { get; set; } = null!;
 
-	}
+    }
 }
