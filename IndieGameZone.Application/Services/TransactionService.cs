@@ -197,6 +197,7 @@ namespace IndieGameZone.Application.Services
 				Amount = gamePriceAfterDiscount,
 				UserId = userId,
 				GameId = gameId,
+				DiscountId = discount?.Id,
 				CreatedAt = DateTime.Now,
 			};
 
@@ -222,7 +223,9 @@ namespace IndieGameZone.Application.Services
 				PurchaseUserId = userId,
 				GameId = gameId,
 				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+				InitialBalance = transactionForGameCreation.PaymentMethod == PaymentMethod.PayOS ? 0 : wallet.Balance,
 				Amount = gamePriceAfterDiscount,
+				FinalBalance = transactionForGameCreation.PaymentMethod == PaymentMethod.PayOS ? 0 : wallet.Balance - gamePriceAfterDiscount,
 				Description = $"Purchase game",
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.PurchaseGame,
@@ -655,7 +658,9 @@ namespace IndieGameZone.Application.Services
 			{
 				Id = Guid.NewGuid(),
 				OrderCode = await GenerateUniqueOrderCodeAsync(ct),
+				InitialBalance = dto.PaymentMethod == PaymentMethod.PayOS ? 0 : wallet.Balance,
 				Amount = package.Price,
+				FinalBalance = dto.PaymentMethod == PaymentMethod.PayOS ? 0 : wallet.Balance - package.Price,
 				Description = $"Purchase commercial",
 				Status = dto.PaymentMethod == PaymentMethod.PayOS ? TransactionStatus.Pending : TransactionStatus.Success,
 				Type = TransactionType.PurchaseCommercialPackage,

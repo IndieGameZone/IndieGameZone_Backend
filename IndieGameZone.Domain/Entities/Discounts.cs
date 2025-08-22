@@ -9,5 +9,6 @@
 
 		//Navigation property
 		public Games Game { get; set; } = null!;
+		public ICollection<Orders> Orders { get; set; } = new List<Orders>();
 	}
 }

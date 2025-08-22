@@ -24,7 +24,6 @@ namespace IndieGameZone.Application.Services
 			if (orders is null)
 				throw new NotFoundException("Order not found");
 			var orderForReturnDto = mapper.Map<OrderForReturnDto>(orders);
-			orderForReturnDto.Discount = (orderForReturnDto.Game.Price - orderForReturnDto.Amount) / orderForReturnDto.Game.Price * 100;
 			return orderForReturnDto;
 		}
 

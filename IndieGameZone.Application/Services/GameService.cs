@@ -131,7 +131,7 @@ namespace IndieGameZone.Application.Services
 			gameEntity.IsDeleted = true;
 			await repositoryManager.SaveAsync(ct);
 
-			await recombeeService.RemoveGameFromRecombee(gameId);
+			await recombeeService.DeactiveGameFromRecombee(gameId);
 		}
 
 		private async Task DeleteOldContentBeforeUpdate(Guid gameId, CancellationToken ct = default)
@@ -247,6 +247,8 @@ namespace IndieGameZone.Application.Services
 
 			await repositoryManager.SaveAsync(ct);
 
+			await recombeeService.PushGameToRecombee(gameEntity.Id);
+
 			if (game.Price == 0)
 			{
 				IJobDetail job = JobBuilder.Create<ValidateGameJob>()
@@ -354,7 +356,7 @@ namespace IndieGameZone.Application.Services
 
 			await repositoryManager.SaveAsync(ct);
 
-			await UpdateCommercialRegistrationStatusBasedOnGameAsync(gameEntity.Id, ct);
+			//await UpdateCommercialRegistrationStatusBasedOnGameAsync(gameEntity.Id, ct);
 
 			dbTransaction.Commit();
 
@@ -442,14 +444,14 @@ namespace IndieGameZone.Application.Services
 
 			if (gameEntity.Visibility == GameVisibility.Public && gameEntity.CensorStatus == CensorStatus.Approved)
 			{
-				await recombeeService.PushGameToRecombee(gameId);
+				await recombeeService.ActiveGameFromRecombee(gameId);
 			}
 			else
 			{
-				await recombeeService.RemoveGameFromRecombee(gameId);
+				await recombeeService.DeactiveGameFromRecombee(gameId);
 			}
 
-			await UpdateCommercialRegistrationStatusBasedOnGameAsync(gameId, ct);
+			//await UpdateCommercialRegistrationStatusBasedOnGameAsync(gameId, ct);
 		}
 
 		public async Task<string> IncreaseNumberOfDownload(Guid userId, Guid gamePlatformId, CancellationToken ct = default)

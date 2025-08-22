@@ -22,6 +22,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			.Include(x => x.CommercialPackage)
 			.Include(x => x.Transaction)
 			.Include(x => x.ActivationKey)
+			.Include(x => x.Discount)
 			.FirstOrDefaultAsync(ct);
 
 		public async Task<PagedList<Orders>> GetOrdersByUserId(Guid userId, OrderParameters orderParameters, bool trackChange, CancellationToken ct = default)

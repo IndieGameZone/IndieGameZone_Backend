@@ -31,6 +31,14 @@ namespace IndieGameZone.Application.Services
 			this.userManager = userManager;
 		}
 
+		public async Task ActiveGameFromRecombee(Guid gameId)
+		{
+			await client.SendAsync(new SetItemValues(gameId.ToString(), new Dictionary<string, object>
+			{
+				{"IsActive", true}
+			}));
+		}
+
 		public async Task AddProperty()
 		{
 			await client.SendAsync(new AddItemProperty("Name", "string"));
@@ -39,12 +47,13 @@ namespace IndieGameZone.Application.Services
 			await client.SendAsync(new AddItemProperty("Price", "double"));
 			await client.SendAsync(new AddItemProperty("Category", "string"));
 			await client.SendAsync(new AddItemProperty("Tags", "set"));
+			await client.SendAsync(new AddItemProperty("IsActive", "boolean"));
 		}
 
 		public async Task GetRecommendedGamesForUser(Guid userId)
 		{
 			repositoryManager.GameRecommendationRepository.RemoveRecommendations(await repositoryManager.GameRecommendationRepository.GetRecommendationsByUserId(userId, false));
-			RecommendationResponse result = await client.SendAsync(new RecommendItemsToUser(userId.ToString(), 5));
+			RecommendationResponse result = await client.SendAsync(new RecommendItemsToUser(userId.ToString(), 6, filter: "\'IsActive\' == true"));
 			var gameRecommendations = result.Recomms.Select(r => new GameRecommendations() { UserId = userId, GameId = Guid.Parse(r.Id) });
 			repositoryManager.GameRecommendationRepository.AddRecommendations(gameRecommendations);
 			await repositoryManager.SaveAsync();
@@ -66,7 +75,8 @@ namespace IndieGameZone.Application.Services
 						{ "ShortDescription", game.ShortDescription },
 						{ "Price", game.Price },
 						{ "Category", game.Category },
-						{ "Tags", game.Tags }
+						{ "Tags", game.Tags },
+						{ "IsActive", true   }
 					},
 					cascadeCreate: true);
 				await client.SendAsync(item);
@@ -86,7 +96,8 @@ namespace IndieGameZone.Application.Services
 					{ "ShortDescription", game.ShortDescription },
 					{ "Price", game.Price },
 					{ "Category", game.Category },
-					{ "Tags", game.Tags }
+					{ "Tags", game.Tags },
+					{ "IsActive", false   }
 				},
 				cascadeCreate: true);
 			await client.SendAsync(item);
@@ -106,9 +117,12 @@ namespace IndieGameZone.Application.Services
 			await client.SendAsync(new AddUser(userId.ToString()));
 		}
 
-		public async Task RemoveGameFromRecombee(Guid gameId)
+		public async Task DeactiveGameFromRecombee(Guid gameId)
 		{
-			await client.SendAsync(new DeleteItem(gameId.ToString()));
+			await client.SendAsync(new SetItemValues(gameId.ToString(), new Dictionary<string, object>
+			{
+				{"IsActive", false}
+			}));
 		}
 
 		public async Task SendBookmarkEvent(Guid userId, Guid gameId)

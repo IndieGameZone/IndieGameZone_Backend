@@ -6,7 +6,9 @@ namespace IndieGameZone.Domain.Entities
 	{
 		public Guid Id { get; set; }
 		public long? OrderCode { get; set; }
+		public double InitialBalance { get; set; }
 		public double Amount { get; set; }
+		public double FinalBalance { get; set; }
 		public string Description { get; set; } = string.Empty;
 		public PaymentMethod PaymentMethod { get; set; }
 		public TransactionStatus Status { get; set; }

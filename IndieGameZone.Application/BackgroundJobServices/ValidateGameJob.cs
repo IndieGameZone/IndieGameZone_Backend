@@ -100,11 +100,11 @@ namespace IndieGameZone.Application.BackgroundJobServices
 
 			if (game.Visibility == GameVisibility.Public)
 			{
-				await recombeeService.PushGameToRecombee(game.Id);
+				await recombeeService.ActiveGameFromRecombee(game.Id);
 			}
 			else
 			{
-				await recombeeService.RemoveGameFromRecombee(game.Id);
+				await recombeeService.DeactiveGameFromRecombee(game.Id);
 			}
 		}
 	}
