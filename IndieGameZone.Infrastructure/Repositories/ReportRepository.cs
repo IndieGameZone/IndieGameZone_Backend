@@ -33,6 +33,8 @@ namespace IndieGameZone.Infrastructure.Repositories
                 .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
                 .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
                 .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                .Include(r => r.Review).ThenInclude(rv => rv.Game).AsSplitQuery()
                 .FirstOrDefaultAsync(ct);
         }
 
@@ -57,8 +59,9 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
 				.Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
 				.Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-
-				.Sort();
+                .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                .Include(r => r.Review).ThenInclude(rv => rv.Game).AsSplitQuery()
+                .Sort();
 
             return await PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
 		}
@@ -81,6 +84,8 @@ namespace IndieGameZone.Infrastructure.Repositories
                     .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
                     .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
                     .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                    .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                    .Include(r => r.Review).ThenInclude(rv => rv.Game).AsSplitQuery()
                     .Where(r => r.Game != null && r.Game.DeveloperId == reportedUserId)
                     .Sort();
 
@@ -105,6 +110,8 @@ namespace IndieGameZone.Infrastructure.Repositories
                     .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
                     .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
                     .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                    .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                    .Include(r => r.Review).ThenInclude(rv => rv.Game).AsSplitQuery()
                     .Sort();
 
             return PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);

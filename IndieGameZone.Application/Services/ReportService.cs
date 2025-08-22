@@ -189,7 +189,8 @@ namespace IndieGameZone.Application.Services
 				ReportReasonTypeEnum.Game => mapper.Map<GameReportForReturnDto>(report),
 				ReportReasonTypeEnum.Post => mapper.Map<PostReportForReturnDto>(report),
 				ReportReasonTypeEnum.Comment => mapper.Map<CommentReportForReturnDto>(report),
-				_ => mapper.Map<ReportForReturnDto>(report)
+                ReportReasonTypeEnum.Review => mapper.Map<ReviewReportForReturnDto>(report),
+                _ => mapper.Map<ReportForReturnDto>(report)
 			};
 		}
 
@@ -201,7 +202,8 @@ namespace IndieGameZone.Application.Services
 				ReportReasonTypeEnum.Game => (object)mapper.Map<GameReportForReturnDto>(report),
 				ReportReasonTypeEnum.Post => mapper.Map<PostReportForReturnDto>(report),
 				ReportReasonTypeEnum.Comment => mapper.Map<CommentReportForReturnDto>(report),
-				_ => mapper.Map<ReportForReturnDto>(report)
+                ReportReasonTypeEnum.Review => mapper.Map<ReviewReportForReturnDto>(report),
+                _ => mapper.Map<ReportForReturnDto>(report)
 			});
 
 			return (mapped, reportsWithMeta.MetaData);
@@ -217,7 +219,8 @@ namespace IndieGameZone.Application.Services
 				ReportReasonTypeEnum.Game => (object)mapper.Map<GameReportForReturnDto>(report),
 				ReportReasonTypeEnum.Post => mapper.Map<PostReportForReturnDto>(report),
 				ReportReasonTypeEnum.Comment => mapper.Map<CommentReportForReturnDto>(report),
-				_ => mapper.Map<ReportForReturnDto>(report)
+                ReportReasonTypeEnum.Review => mapper.Map<ReviewReportForReturnDto>(report),
+                _ => mapper.Map<ReportForReturnDto>(report)
 			});
 
 			return (mapped, reportsWithMeta.MetaData);
@@ -233,7 +236,8 @@ namespace IndieGameZone.Application.Services
 				ReportReasonTypeEnum.Game => (object)mapper.Map<GameReportForReturnDto>(report),
 				ReportReasonTypeEnum.Post => mapper.Map<PostReportForReturnDto>(report),
 				ReportReasonTypeEnum.Comment => mapper.Map<CommentReportForReturnDto>(report),
-				_ => mapper.Map<ReportForReturnDto>(report)
+                ReportReasonTypeEnum.Review => mapper.Map<ReviewReportForReturnDto>(report),
+                _ => mapper.Map<ReportForReturnDto>(report)
 			});
 
 			return (mapped, reportsWithMeta.MetaData);

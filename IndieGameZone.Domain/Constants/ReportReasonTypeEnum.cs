@@ -5,5 +5,6 @@
 		Game,
 		Post,
 		Comment,
-	}
+        Review
+    }
 }
