@@ -8,7 +8,9 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Transactions
 	{
 		public Guid Id { get; init; }
 		public long OrderCode { get; init; }
+		public double InitialBalance { get; init; }
 		public double Amount { get; init; }
+		public double FinalBalance { get; init; }
 		public string Description { get; init; }
 		public TransactionStatus Status { get; init; }
 		public TransactionType Type { get; init; }
