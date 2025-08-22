@@ -10,6 +10,7 @@ namespace IndieGameZone.Domain.Constants
     {
         UserReport,
         PostReport,
-        GameReport
+        GameReport,
+        ReviewReport
     }
 }

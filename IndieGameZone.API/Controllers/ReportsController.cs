@@ -79,7 +79,16 @@ namespace IndieGameZone.API.Controllers
 			return NoContent();
 		}
 
-		[HttpPatch("reports/{id:guid}/resolve-status")]
+        [HttpPost("users/{userId:guid}/review-reports")]
+        [Authorize]
+        public async Task<IActionResult> CreateReviewReport([FromRoute] Guid userId, [FromBody] ReportReviewForCreationDto reportForCreationDto, CancellationToken ct)
+        {
+            await serviceManager.ReportService.CreateReviewReport(userId, reportForCreationDto, ct);
+            return NoContent();
+        }
+
+
+        [HttpPatch("reports/{id:guid}/resolve-status")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)}")]
 		public async Task<IActionResult> UpdateResolveStatus([FromRoute] Guid id,[Required] ReportStatus updatedStatus, [FromBody] ReportForUpdateStatusDto? dto, CancellationToken ct)
 		{
@@ -88,3 +97,4 @@ namespace IndieGameZone.API.Controllers
 		}
 	}
 }
+    

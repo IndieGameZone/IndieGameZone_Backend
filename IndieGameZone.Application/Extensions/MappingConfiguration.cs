@@ -125,6 +125,18 @@ namespace IndieGameZone.Application.Extensions
 				.Map(dest => dest.Post, src => src.Post)
 				.Map(dest => dest.Game, src => src.Game);
 
-		}
+            //config.NewConfig<Reports, ReviewReportForReturnDto>()
+            //    .Map(dest => dest.Id, src => src.Id)
+            //    .Map(dest => dest.Message, src => src.Message)
+            //    .Map(dest => dest.CreatedAt, src => src.CreatedAt)
+            //    .Map(dest => dest.UpdatedAt, src => src.UpdatedAt)
+            //    .Map(dest => dest.Status, src => src.Status)
+            //    .Map(dest => dest.ReviewMessage, src => src.ReviewMessage)
+            //    .Map(dest => dest.ReportReason, src => src.ReportReason)
+            //    .Map(dest => dest.ReportingUser, src => src.ReportingUser)
+            //    .Map(dest => dest.Game, src => src.Game)
+            //    .Map(dest => dest.Review, src => src.Review);
+
+        }
 	}
 }

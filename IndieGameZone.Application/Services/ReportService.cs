@@ -136,7 +136,49 @@ namespace IndieGameZone.Application.Services
 			await repositoryManager.SaveAsync(ct);
 		}
 
-		public async Task<object> GetReportById(Guid id, CancellationToken ct = default)
+        public async Task CreateReviewReport(Guid reportingUserId, ReportReviewForCreationDto reportForCreationDto, CancellationToken ct = default)
+        {
+            // 1. Validate that the review exists
+            var review = await repositoryManager.ReviewRepository.GetReviewById(reportForCreationDto.ReviewId, false, ct);
+            if (review == null) throw new NotFoundException("Review not found");
+
+            // 2. Validate that the reporting user exists
+            var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == reportingUserId, ct);
+            if (user == null) throw new NotFoundException("User not found");
+
+            // 3. Map and create report entity
+            var reportEntity = mapper.Map<Reports>(reportForCreationDto);
+            reportEntity.ReportingUserId = reportingUserId;
+            reportEntity.Id = Guid.NewGuid();
+            reportEntity.CreatedAt = DateTime.Now;
+
+            repositoryManager.ReportRepository.CreateReport(reportEntity);
+
+            // 4. Notify the review owner
+            var notification = new Notifications
+            {
+                Id = Guid.NewGuid(),
+                UserId = review.UserId,
+                Message = "Your review has been reported",
+                CreatedAt = DateTime.Now,
+                IsRead = false
+            };
+            repositoryManager.NotificationRepository.CreateNotification(notification);
+
+            await notificationHub.Clients.User(review.UserId.ToString()).SendNotification(new NotificationForReturnDto
+            {
+                Id = notification.Id,
+                Message = notification.Message,
+                CreatedAt = notification.CreatedAt,
+                IsRead = notification.IsRead,
+                ReadAt = notification.ReadAt
+            });
+
+            // 5. Save changes
+            await repositoryManager.SaveAsync(ct);
+        }
+
+        public async Task<object> GetReportById(Guid id, CancellationToken ct = default)
 		{
 			var report = await repositoryManager.ReportRepository.GetReportById(id, false, ct);
 			if (report == null)
