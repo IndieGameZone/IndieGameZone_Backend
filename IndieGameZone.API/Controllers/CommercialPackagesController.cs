@@ -79,41 +79,49 @@ namespace IndieGameZone.API.Controllers
 			return Ok(pagedResult.commercialRegistrations);
 		}
 
-        [HttpGet("{id:guid}/unavailable-dates")]
-        public async Task<IActionResult> GetUnavailableDates([FromRoute] Guid id, [FromQuery, Required] Guid gameId, CancellationToken ct)
-        {
-            var jwt = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
-            var handler = new JwtSecurityTokenHandler();
-            var token = handler.ReadJwtToken(jwt);
-            var userIdString = token.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
+		[HttpGet("{id:guid}/unavailable-dates")]
+		public async Task<IActionResult> GetUnavailableDates([FromRoute] Guid id, [FromQuery, Required] Guid gameId, CancellationToken ct)
+		{
+			var jwt = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+			var handler = new JwtSecurityTokenHandler();
+			var token = handler.ReadJwtToken(jwt);
+			var userIdString = token.Claims.First(claim => claim.Type == ClaimTypes.NameIdentifier).Value;
 
-            if (!Guid.TryParse(userIdString, out var userId))
-            {
-                return BadRequest("Invalid user ID in token.");
-            }
+			if (!Guid.TryParse(userIdString, out var userId))
+			{
+				return BadRequest("Invalid user ID in token.");
+			}
 
-            var unavailableDates = await serviceManager.CommercialPackageService
-                .GetUnavailableDatesAsync(id, gameId, userId, ct);
+			var unavailableDates = await serviceManager.CommercialPackageService
+				.GetUnavailableDatesAsync(id, gameId, userId, ct);
 
-            return Ok(unavailableDates);
-        }
+			return Ok(unavailableDates);
+		}
 
-        [HttpDelete("registrations/{registrationId:guid}")]
-        [Authorize]
-        public async Task<IActionResult> CancelCommercialRegistration([FromRoute] Guid registrationId, CancellationToken ct)
-        {
-            var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
-            var developer = await serviceManager.UserService.GetUserByToken(token, ct);
-            if (developer == null)
-            {
-                return Unauthorized("Invalid or expired token.");
-            }
-            
+		[HttpDelete("registrations/{registrationId:guid}")]
+		[Authorize]
+		public async Task<IActionResult> CancelCommercialRegistration([FromRoute] Guid registrationId, CancellationToken ct)
+		{
+			var token = HttpContext.Request.Headers["Authorization"].ToString().Split(" ")[1];
+			var developer = await serviceManager.UserService.GetUserByToken(token, ct);
+			if (developer == null)
+			{
+				return Unauthorized("Invalid or expired token.");
+			}
+
 			await serviceManager.CommercialPackageService
-                .CancelCommercialRegistrationAsync(registrationId, developer.Id, ct);
+				.CancelCommercialRegistrationAsync(registrationId, developer.Id, ct);
 
-            return NoContent();
-        }
+			return NoContent();
+		}
 
-    }
+		[HttpGet("backgroundjob-settings")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
+		public async Task<IActionResult> GetBackgroundJobSettings([FromForm] double minute)
+		{
+			await serviceManager.CommercialPackageService.SetBackgroundJob(minute, CancellationToken.None);
+			return Ok("Background job settings successfully.");
+		}
+
+	}
 }

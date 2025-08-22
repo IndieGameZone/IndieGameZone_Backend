@@ -1,24 +1,20 @@
 ﻿using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.CommercialPackages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IndieGameZone.Application.IServices
 {
-    public interface ICommercialPackageService
-    {
-        Task CreateCommercialPackage(CommercialPackageForCreationDto commercialPackageForCreationDto, CancellationToken ct = default);
-        Task UpdateCommercialPackage(Guid id, CommercialPackageForUpdateDto commercialPackageForUpdateDto, CancellationToken ct = default);
-        Task DeleteCommercialPackage(Guid id, CancellationToken ct = default);
-        Task<CommercialPackageForReturnDto> GetCommercialPackageById(Guid id, CancellationToken ct = default);
-        Task<(IEnumerable<CommercialPackageForReturnDto> commercialPackages, MetaData metaData)> GetCommercialPackages(CommercialPackageParameters commercialPackagesParameters, CancellationToken ct = default);
-        Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetFilteredCommercialRegistrations(Guid? userId, Guid? gameId, Guid? commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default);
-        Task<List<DateOnly>> GetUnavailableDatesAsync(Guid packageId, Guid gameId, Guid userId, CancellationToken ct);
-        Task<int> RunStatusUpdateAsync(CancellationToken ct = default);
-        Task CancelCommercialRegistrationAsync(Guid registrationId, Guid developerId, CancellationToken ct);
-    }
+	public interface ICommercialPackageService
+	{
+		Task CreateCommercialPackage(CommercialPackageForCreationDto commercialPackageForCreationDto, CancellationToken ct = default);
+		Task UpdateCommercialPackage(Guid id, CommercialPackageForUpdateDto commercialPackageForUpdateDto, CancellationToken ct = default);
+		Task DeleteCommercialPackage(Guid id, CancellationToken ct = default);
+		Task<CommercialPackageForReturnDto> GetCommercialPackageById(Guid id, CancellationToken ct = default);
+		Task<(IEnumerable<CommercialPackageForReturnDto> commercialPackages, MetaData metaData)> GetCommercialPackages(CommercialPackageParameters commercialPackagesParameters, CancellationToken ct = default);
+		Task<(IEnumerable<CommercialRegistrationForReturnDto> commercialRegistrations, MetaData metaData)> GetFilteredCommercialRegistrations(Guid? userId, Guid? gameId, Guid? commercialPackageId, CommercialRegistrationParameters commercialRegistrationParameters, CancellationToken ct = default);
+		Task<List<DateOnly>> GetUnavailableDatesAsync(Guid packageId, Guid gameId, Guid userId, CancellationToken ct);
+		Task<int> RunStatusUpdateAsync(CancellationToken ct = default);
+		Task CancelCommercialRegistrationAsync(Guid registrationId, Guid developerId, CancellationToken ct);
+		Task SetBackgroundJob(double minute, CancellationToken ct = default);
+	}
 }

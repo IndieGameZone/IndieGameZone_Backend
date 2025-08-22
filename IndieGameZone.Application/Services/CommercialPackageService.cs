@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Application.IServices;
+﻿using IndieGameZone.Application.BackgroundJobServices;
+using IndieGameZone.Application.IServices;
 using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.Exceptions;
@@ -7,6 +8,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.CommercialPackages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages;
 using MapsterMapper;
+using Quartz;
 
 namespace IndieGameZone.Application.Services
 {
@@ -14,12 +16,14 @@ namespace IndieGameZone.Application.Services
 	{
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
+		private readonly ISchedulerFactory schedulerFactory;
 
-        public CommercialPackageService(IRepositoryManager repositoryManager, IMapper mapper)
+		public CommercialPackageService(IRepositoryManager repositoryManager, IMapper mapper, ISchedulerFactory schedulerFactory)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
-        }
+			this.schedulerFactory = schedulerFactory;
+		}
 		public async Task CreateCommercialPackage(CommercialPackageForCreationDto commercialPackageForCreationDto, CancellationToken ct = default)
 		{
 			var commercialPackageEntity = mapper.Map<CommercialPackages>(commercialPackageForCreationDto);
@@ -211,193 +215,210 @@ namespace IndieGameZone.Application.Services
 				.ToList();
 		}
 
-        public async Task<int> RunStatusUpdateAsync(CancellationToken ct = default)
-        {
-            var localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
-                TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
+		public async Task<int> RunStatusUpdateAsync(CancellationToken ct = default)
+		{
+			var localTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow,
+				TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time"));
 
-            var today = DateOnly.FromDateTime(localTime);
+			var today = DateOnly.FromDateTime(localTime);
 
-            var registrations = await repositoryManager.CommercialRegistrationRepository
-                .GetRegistrationsForStatusUpdate(today, ct);
+			var registrations = await repositoryManager.CommercialRegistrationRepository
+				.GetRegistrationsForStatusUpdate(today, ct);
 
-            int updatedCount = 0;
+			int updatedCount = 0;
 
-            foreach (var reg in registrations)
-            {
-                switch (reg.Status)
-                {
-                    case CommercialRegistrationStatus.Pending:
-                        if (reg.EndDate.HasValue && reg.EndDate.Value <= today)
-                        {
-                            reg.Status = CommercialRegistrationStatus.Expired;
-                            updatedCount++;
-                        }
-                        else if (reg.StartDate == today)
-                        {
-                            if (reg.Game.Visibility == GameVisibility.Public)
-                            {
-                                reg.Status = CommercialRegistrationStatus.Active;
-                            }
-                            else
-                            {
-                                reg.Status = CommercialRegistrationStatus.Failed;
-                            }
-                            updatedCount++;
-                        }
-                        break;
+			foreach (var reg in registrations)
+			{
+				switch (reg.Status)
+				{
+					case CommercialRegistrationStatus.Pending:
+						if (reg.EndDate.HasValue && reg.EndDate.Value <= today)
+						{
+							reg.Status = CommercialRegistrationStatus.Expired;
+							updatedCount++;
+						}
+						else if (reg.StartDate == today)
+						{
+							if (reg.Game.Visibility == GameVisibility.Public)
+							{
+								reg.Status = CommercialRegistrationStatus.Active;
+							}
+							else
+							{
+								reg.Status = CommercialRegistrationStatus.Failed;
+							}
+							updatedCount++;
+						}
+						break;
 
-                    case CommercialRegistrationStatus.Active:
-                        if (reg.EndDate.HasValue && reg.EndDate.Value <= today)
-                        {
-                            reg.Status = CommercialRegistrationStatus.Expired;
-                            updatedCount++;
-                        }
-                        break;
+					case CommercialRegistrationStatus.Active:
+						if (reg.EndDate.HasValue && reg.EndDate.Value <= today)
+						{
+							reg.Status = CommercialRegistrationStatus.Expired;
+							updatedCount++;
+						}
+						break;
 
-                    case CommercialRegistrationStatus.Failed:
-                        if (reg.StartDate <= today && (!reg.EndDate.HasValue || today <= reg.EndDate.Value))
-                        {
-                            if (reg.Game.Visibility == GameVisibility.Public && reg.Game.CensorStatus == CensorStatus.Approved)
-                            {
-                                reg.Status = CommercialRegistrationStatus.Active;
-                                updatedCount++;
-                            }
-                        }
-                        break;
-                }
-            }
+					case CommercialRegistrationStatus.Failed:
+						if (reg.StartDate <= today && (!reg.EndDate.HasValue || today <= reg.EndDate.Value))
+						{
+							if (reg.Game.Visibility == GameVisibility.Public && reg.Game.CensorStatus == CensorStatus.Approved)
+							{
+								reg.Status = CommercialRegistrationStatus.Active;
+								updatedCount++;
+							}
+						}
+						break;
+				}
+			}
 
-            if (updatedCount > 0)
-            {
-                await repositoryManager.SaveAsync(ct);
-            }
+			if (updatedCount > 0)
+			{
+				await repositoryManager.SaveAsync(ct);
+			}
 
-            return updatedCount;
-        }
+			return updatedCount;
+		}
 
-        public async Task CancelCommercialRegistrationAsync(Guid registrationId, Guid developerId, CancellationToken ct)
-        {
-            var registration = await repositoryManager
-                .CommercialRegistrationRepository
-                .GetCommercialRegistrationById(registrationId, trackChange: true, ct);
+		public async Task CancelCommercialRegistrationAsync(Guid registrationId, Guid developerId, CancellationToken ct)
+		{
+			var registration = await repositoryManager
+				.CommercialRegistrationRepository
+				.GetCommercialRegistrationById(registrationId, trackChange: true, ct);
 
-            if (registration == null)
-                throw new NotFoundException($"Commercial registration not found.");
+			if (registration == null)
+				throw new NotFoundException($"Commercial registration not found.");
 
-            if (registration.Game.DeveloperId != developerId)
-                throw new ForbiddenException($"You can only cancel your own registration.");
+			if (registration.Game.DeveloperId != developerId)
+				throw new ForbiddenException($"You can only cancel your own registration.");
 
-            var package = registration.CommercialPackage;
-            if (package == null)
-                throw new NotFoundException($"Commercial package not found.");
+			var package = registration.CommercialPackage;
+			if (package == null)
+				throw new NotFoundException($"Commercial package not found.");
 
-            var game = await repositoryManager
-                .GameRepository
-                .GetGameById(registration.GameId, trackChange: false, ct);
+			var game = await repositoryManager
+				.GameRepository
+				.GetGameById(registration.GameId, trackChange: false, ct);
 
-            if (game == null)
-                throw new NotFoundException($"Game associated with registration not found.");
+			if (game == null)
+				throw new NotFoundException($"Game associated with registration not found.");
 
-            var wallet = await repositoryManager
-                .WalletRepository
-                .GetWalletByUserId(developerId, trackChange: true, ct);
+			var wallet = await repositoryManager
+				.WalletRepository
+				.GetWalletByUserId(developerId, trackChange: true, ct);
 
-            if (wallet == null)
-                throw new NotFoundException($"Wallet not found.");
+			if (wallet == null)
+				throw new NotFoundException($"Wallet not found.");
 
-            var now = DateTime.Now;
-            var startDate = registration.StartDate.ToDateTime(TimeOnly.MinValue);
+			var now = DateTime.Now;
+			var startDate = registration.StartDate.ToDateTime(TimeOnly.MinValue);
 
-            // Compose DateTime thresholds for refund policy
-            var dayBeforeStart = startDate.AddDays(-1);
+			// Compose DateTime thresholds for refund policy
+			var dayBeforeStart = startDate.AddDays(-1);
 
-            var fullRefundCutoff = dayBeforeStart;
-            var fiftyPercentCutoff = dayBeforeStart.AddHours(12);    // 12:00 noon
-            var thirtyPercentCutoff = dayBeforeStart.AddHours(18);   // 18:00 (6 PM)
-            var noRefundCutoff = startDate;                          // 00:00 of StartDate
+			var fullRefundCutoff = dayBeforeStart;
+			var fiftyPercentCutoff = dayBeforeStart.AddHours(12);    // 12:00 noon
+			var thirtyPercentCutoff = dayBeforeStart.AddHours(18);   // 18:00 (6 PM)
+			var noRefundCutoff = startDate;                          // 00:00 of StartDate
 
-            double refundPercent;
+			double refundPercent;
 
-            if (now < fullRefundCutoff)
-            {
-                refundPercent = 0.7;
-            }
-            else if (now >= fullRefundCutoff && now < fiftyPercentCutoff)
-            {
-                refundPercent = 0.5;
-            }
-            else if (now >= fiftyPercentCutoff && now < thirtyPercentCutoff)
-            {
-                refundPercent = 0.3;
-            }
-            else if (now >= thirtyPercentCutoff && now < noRefundCutoff)
-            {
-                refundPercent = 0;
-            }
-            else
-            {
-                throw new BadRequestException("You can no longer cancel this registration.");
-            }
+			if (now < fullRefundCutoff)
+			{
+				refundPercent = 0.7;
+			}
+			else if (now >= fullRefundCutoff && now < fiftyPercentCutoff)
+			{
+				refundPercent = 0.5;
+			}
+			else if (now >= fiftyPercentCutoff && now < thirtyPercentCutoff)
+			{
+				refundPercent = 0.3;
+			}
+			else if (now >= thirtyPercentCutoff && now < noRefundCutoff)
+			{
+				refundPercent = 0;
+			}
+			else
+			{
+				throw new BadRequestException("You can no longer cancel this registration.");
+			}
 
-            decimal refundAmount = (decimal)(package.Price * refundPercent);
+			decimal refundAmount = (decimal)(package.Price * refundPercent);
 
-            // If refund > 0, get admin wallet and transfer funds
-            if (refundAmount > 0)
-            {
-                var adminId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"); // hardcoded admin ID
-                var adminWallet = await repositoryManager
-                    .WalletRepository
-                    .GetWalletByUserId(adminId, trackChange: true, ct);
+			// If refund > 0, get admin wallet and transfer funds
+			if (refundAmount > 0)
+			{
+				var adminId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"); // hardcoded admin ID
+				var adminWallet = await repositoryManager
+					.WalletRepository
+					.GetWalletByUserId(adminId, trackChange: true, ct);
 
-                if (adminWallet == null)
-                    throw new NotFoundException("Admin wallet not found.");
+				if (adminWallet == null)
+					throw new NotFoundException("Admin wallet not found.");
 
-                if (adminWallet.Balance < (double)refundAmount)
-                    throw new BadRequestException("Admin does not have enough funds to process the refund.");
+				if (adminWallet.Balance < (double)refundAmount)
+					throw new BadRequestException("Admin does not have enough funds to process the refund.");
 
-                // Transfer from admin to developer
-                adminWallet.Balance -= (double)refundAmount;
-                wallet.Balance += (double)refundAmount;
-            }
+				// Transfer from admin to developer
+				adminWallet.Balance -= (double)refundAmount;
+				wallet.Balance += (double)refundAmount;
+			}
 
-            // Always log the transaction
-            repositoryManager.TransactionRepository.CreateTransaction(new Transactions
-            {
-                Id = Guid.NewGuid(),
-                UserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
-                PurchaseUserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
-                OrderCode = null,
-                Amount = (double)refundAmount,
-                Description = $"Refund {refundPercent*100}% user {developerId} for cancelling commercial registration {registration.CommercialPackage.Name}",
-                CreatedAt = DateTime.Now,
-                Type = TransactionType.Refund,
-                Status = TransactionStatus.Success,
-                PaymentMethod = PaymentMethod.Wallet,
-                GameId = game.Id
-
-            });
-            repositoryManager.TransactionRepository.CreateTransaction(new Transactions
-            {
-                Id = Guid.NewGuid(),
-                UserId = developerId,
+			// Always log the transaction
+			repositoryManager.TransactionRepository.CreateTransaction(new Transactions
+			{
+				Id = Guid.NewGuid(),
+				UserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
 				PurchaseUserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
-                OrderCode = null,
-                Amount = (double)refundAmount, 
-                Description = $"Refund {refundPercent * 100}% for cancelling commercial registration {registration.CommercialPackage.Name}",
-                CreatedAt = DateTime.Now,
+				OrderCode = null,
+				Amount = (double)refundAmount,
+				Description = $"Refund {refundPercent * 100}% user {developerId} for cancelling commercial registration {registration.CommercialPackage.Name}",
+				CreatedAt = DateTime.Now,
+				Type = TransactionType.Refund,
+				Status = TransactionStatus.Success,
+				PaymentMethod = PaymentMethod.Wallet,
+				GameId = game.Id
+
+			});
+			repositoryManager.TransactionRepository.CreateTransaction(new Transactions
+			{
+				Id = Guid.NewGuid(),
+				UserId = developerId,
+				PurchaseUserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
+				OrderCode = null,
+				Amount = (double)refundAmount,
+				Description = $"Refund {refundPercent * 100}% for cancelling commercial registration {registration.CommercialPackage.Name}",
+				CreatedAt = DateTime.Now,
 				Type = TransactionType.RefundRevenue,
-                Status = TransactionStatus.Success,
-                PaymentMethod = PaymentMethod.Wallet,
-                GameId = game.Id
+				Status = TransactionStatus.Success,
+				PaymentMethod = PaymentMethod.Wallet,
+				GameId = game.Id
 
-            });
+			});
 
-            // Always update registration status
-            registration.Status = CommercialRegistrationStatus.Cancelled;
+			// Always update registration status
+			registration.Status = CommercialRegistrationStatus.Cancelled;
 
-            await repositoryManager.SaveAsync(ct);
-        }
+			await repositoryManager.SaveAsync(ct);
+		}
 
-    }
+		public async Task SetBackgroundJob(double minute, CancellationToken ct = default)
+		{
+			IJobDetail job = JobBuilder.Create<UpdateCommercialRegistrationStatusJob>()
+				.WithIdentity("CommercialRegistrationJob", "CommercialRegistrationGroup")
+				.Build();
+
+			var time = DateTimeOffset.Now.AddMinutes(minute);
+
+			ITrigger trigger = TriggerBuilder.Create()
+				.WithIdentity("CommercialRegistrationTrigger", "CommercialRegistrationGroup")
+				.StartAt(time)
+				.Build();
+
+			var scheduler = await schedulerFactory.GetScheduler(ct);
+
+			await scheduler.ScheduleJob(job, trigger, ct);
+		}
+	}
 }
