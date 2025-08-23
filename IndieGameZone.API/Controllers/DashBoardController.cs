@@ -143,5 +143,13 @@ namespace IndieGameZone.API.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("players/new/monthly-stats")]
+        public async Task<ActionResult<IEnumerable<NewPlayersByMonthForReturnDto>>> GetNewPlayersByMonth([FromQuery][Required] int year, CancellationToken ct = default)
+        {
+            var result = await serviceManager.UserService.GetNewPlayersByMonthAsync(year, ct);
+            return Ok(result);
+        }
+
     }
 }

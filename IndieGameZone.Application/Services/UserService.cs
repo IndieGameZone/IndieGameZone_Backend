@@ -8,6 +8,7 @@ using IndieGameZone.Domain.Exceptions;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Users;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 using IndieGameZone.Domain.Utils;
 using MapsterMapper;
@@ -809,5 +810,36 @@ namespace IndieGameZone.Application.Services
 			await repositoryManager.SaveAsync(ct);
 		}
 
-	}
+        public async Task<IEnumerable<NewPlayersByMonthForReturnDto>> GetNewPlayersByMonthAsync(int year, CancellationToken ct = default)
+        {
+            // Get all users registered in the given year
+            var users = await userManager.Users
+                .Where(u => u.JoinedDate.Year == year)
+                .ToListAsync(ct);
+
+            // Group by month
+            var grouped = users
+                .GroupBy(u => u.JoinedDate.Month)
+                .Select(g => new NewPlayersByMonthForReturnDto
+                {
+                    Month = g.Key,
+                    Count = g.Count()
+                })
+                .ToList();
+
+            // Ensure all 12 months are present
+            var fullReport = Enumerable.Range(1, 12)
+                .Select(month => grouped.FirstOrDefault(x => x.Month == month)
+                    ?? new NewPlayersByMonthForReturnDto
+                    {
+                        Month = month,
+                        Count = 0
+                    })
+                .OrderBy(r => r.Month)
+                .ToList();
+
+            return fullReport;
+        }
+
+    }
 }

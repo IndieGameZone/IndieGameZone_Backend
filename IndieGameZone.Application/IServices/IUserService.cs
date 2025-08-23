@@ -2,6 +2,7 @@
 using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Users;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 using IndieGameZone.Domain.Utils;
 using System;
@@ -33,6 +34,7 @@ namespace IndieGameZone.Application.IServices
         Task UpdateUsername(Guid userId, string newUsername, CancellationToken ct = default);
         Task PingAsync(string jwt, CancellationToken ct = default);
         Task UpdateBankInfoAsync(Guid userId, UserForUpdateBankInfoDto dto, CancellationToken ct);
+        Task<IEnumerable<NewPlayersByMonthForReturnDto>> GetNewPlayersByMonthAsync(int year, CancellationToken ct = default);
 
     }
 }
