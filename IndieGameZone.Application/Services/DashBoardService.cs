@@ -145,6 +145,12 @@ namespace IndieGameZone.Application.Services
 
         }
 
+        public async Task<IEnumerable<CommercialRevenueByDayForReturnDto>> GetCommercialPackageRevenueByMonthAsync(int year, int month, CancellationToken ct = default)
+        {
+            return await repositoryManager.TransactionRepository
+                .GetCommercialPackageRevenueByMonthAsync(year, month, ct);
+        }
+
         public async Task<DeveloperDashboardSummaryForReturnDto> GetDeveloperDashboardAsync(Guid developerId, CancellationToken ct = default)
         {
             // 1. Total revenue (all time)

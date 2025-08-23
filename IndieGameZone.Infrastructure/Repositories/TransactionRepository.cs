@@ -6,6 +6,7 @@ using IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard;
 using IndieGameZone.Infrastructure.Extensions;
 using IndieGameZone.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace IndieGameZone.Infrastructure.Repositories
 {
@@ -432,6 +433,41 @@ namespace IndieGameZone.Infrastructure.Repositories
                         Revenue = 0,
                         Donation = 0,
                         DownloadCount = 0
+                    })
+                .OrderBy(r => r.Day)
+                .ToList();
+
+            return fullReport;
+        }
+
+        public async Task<IEnumerable<CommercialRevenueByDayForReturnDto>> GetCommercialPackageRevenueByMonthAsync(int year, int month, CancellationToken ct = default)
+        {
+            var transactions = await FindAll(false)
+                .Where(t =>
+                    t.Type == TransactionType.PurchaseCommercialPackageRevenue &&
+                    t.Status == TransactionStatus.Success &&
+                    t.CreatedAt.Year == year &&
+                    t.CreatedAt.Month == month)
+                .ToListAsync(ct);
+
+            // Group by day
+            var groupedByDay = transactions
+                .GroupBy(t => t.CreatedAt.Day)
+                .Select(g => new CommercialRevenueByDayForReturnDto
+                {
+                    Day = g.Key,
+                    Revenue = g.Sum(t => t.Amount)
+                })
+                .ToList();
+
+            // Ensure all days are present
+            var daysInMonth = DateTime.DaysInMonth(year, month);
+            var fullReport = Enumerable.Range(1, daysInMonth)
+                .Select(day => groupedByDay.FirstOrDefault(d => d.Day == day)
+                    ?? new CommercialRevenueByDayForReturnDto
+                    {
+                        Day = day,
+                        Revenue = 0
                     })
                 .OrderBy(r => r.Day)
                 .ToList();
