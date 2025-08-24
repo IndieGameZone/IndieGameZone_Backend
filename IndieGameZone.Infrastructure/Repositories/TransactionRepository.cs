@@ -440,23 +440,29 @@ namespace IndieGameZone.Infrastructure.Repositories
             return fullReport;
         }
 
-        public async Task<IEnumerable<CommercialRevenueByDayForReturnDto>> GetCommercialPackageRevenueByMonthAsync(int year, int month, CancellationToken ct = default)
+        public async Task<IEnumerable<AdminRevenueByDayForReturnDto>> GetAdminRevenueByMonthAsync(int year, int month, CancellationToken ct = default)
         {
             var transactions = await FindAll(false)
-                .Where(t =>
-                    t.Type == TransactionType.PurchaseCommercialPackageRevenue &&
-                    t.Status == TransactionStatus.Success &&
-                    t.CreatedAt.Year == year &&
-                    t.CreatedAt.Month == month)
-                .ToListAsync(ct);
+            .Where(t =>
+                (t.Type == TransactionType.PurchaseCommercialPackageRevenue ||
+                 t.Type == TransactionType.PurchaseGameRevenue) &&
+                t.Status == TransactionStatus.Success &&
+                t.CreatedAt.Year == year &&
+                t.CreatedAt.Month == month)
+            .ToListAsync(ct);
 
             // Group by day
             var groupedByDay = transactions
                 .GroupBy(t => t.CreatedAt.Day)
-                .Select(g => new CommercialRevenueByDayForReturnDto
+                .Select(g => new AdminRevenueByDayForReturnDto
                 {
                     Day = g.Key,
-                    Revenue = g.Sum(t => t.Amount)
+                    CommercialRevenue = g
+                        .Where(t => t.Type == TransactionType.PurchaseCommercialPackageRevenue)
+                        .Sum(t => t.Amount),
+                    GameRevenue = g
+                        .Where(t => t.Type == TransactionType.PurchaseGameRevenue)
+                        .Sum(t => t.Amount)
                 })
                 .ToList();
 
@@ -464,10 +470,11 @@ namespace IndieGameZone.Infrastructure.Repositories
             var daysInMonth = DateTime.DaysInMonth(year, month);
             var fullReport = Enumerable.Range(1, daysInMonth)
                 .Select(day => groupedByDay.FirstOrDefault(d => d.Day == day)
-                    ?? new CommercialRevenueByDayForReturnDto
+                    ?? new AdminRevenueByDayForReturnDto
                     {
                         Day = day,
-                        Revenue = 0
+                        CommercialRevenue = 0,
+                        GameRevenue = 0
                     })
                 .OrderBy(r => r.Day)
                 .ToList();

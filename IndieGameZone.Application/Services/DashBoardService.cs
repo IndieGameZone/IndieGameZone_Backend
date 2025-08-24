@@ -145,10 +145,10 @@ namespace IndieGameZone.Application.Services
 
         }
 
-        public async Task<IEnumerable<CommercialRevenueByDayForReturnDto>> GetCommercialPackageRevenueByMonthAsync(int year, int month, CancellationToken ct = default)
+        public async Task<IEnumerable<AdminRevenueByDayForReturnDto>> GetAdminRevenueByMonthAsync(int year, int month, CancellationToken ct = default)
         {
             return await repositoryManager.TransactionRepository
-                .GetCommercialPackageRevenueByMonthAsync(year, month, ct);
+                .GetAdminRevenueByMonthAsync(year, month, ct);
         }
 
         public async Task<DeveloperDashboardSummaryForReturnDto> GetDeveloperDashboardAsync(Guid developerId, CancellationToken ct = default)

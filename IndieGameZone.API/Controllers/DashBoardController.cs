@@ -92,11 +92,11 @@ namespace IndieGameZone.API.Controllers
             return Ok(total);
         }
 
-        [HttpGet("revenue/commercial-packages/monthly-stats")]
-        public async Task<ActionResult<IEnumerable<CommercialRevenueByDayForReturnDto>>> GetCommercialPackageRevenueByMonth([FromQuery][Required] int year, [FromQuery][Required] int month, CancellationToken ct = default)
+        [HttpGet("admin/revenue/monthly-stats")]
+        public async Task<ActionResult<IEnumerable<AdminRevenueByDayForReturnDto>>> GetAdminRevenueByMonth([FromQuery][Required] int year, [FromQuery][Required] int month, CancellationToken ct = default)
         {
             var result = await serviceManager.DashBoardService
-                .GetCommercialPackageRevenueByMonthAsync(year, month, ct);
+                .GetAdminRevenueByMonthAsync(year, month, ct);
 
             return Ok(result);
         }

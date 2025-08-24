@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard
 {
-    public class CommercialRevenueByDayForReturnDto
+    public class AdminRevenueByDayForReturnDto
     {
         public int Day { get; set; }
-        public double Revenue { get; set; }
+        public double CommercialRevenue { get; set; }
+        public double GameRevenue { get; set; }
+
     }
 }
