@@ -18,7 +18,7 @@ namespace IndieGameZone.API.Controllers
 
 		[HttpPost("files")]
 		[Authorize]
-		public async Task<IActionResult> UploadImage(IFormFile file, CancellationToken ct)
+		public async Task<IActionResult> UploadFile(IFormFile file, CancellationToken ct)
 		{
 			var result = await fileService.UploadScanFile(file);
 			return Ok(result);
