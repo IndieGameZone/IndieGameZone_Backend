@@ -58,6 +58,10 @@ namespace IndieGameZone.Application.Services
 
 		public async Task<IEnumerable<ActivationKeyForReturnDto>> GetKeyByGameId(Guid userId, Guid gameId, CancellationToken ct = default)
 		{
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null) throw new NotFoundException("Game not found");
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId, ct);
+			if (user == null) throw new NotFoundException("User not found");
 			if (!await CheckGameOwnership(userId, gameId, ct))
 			{
 				throw new BadRequestException("You must own this game to see the activation key.");
@@ -68,6 +72,8 @@ namespace IndieGameZone.Application.Services
 
 		public async Task ValidateActivationKey(Guid gameId, string activationKey, CancellationToken ct = default)
 		{
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null) throw new NotFoundException("Game not found");
 			var key = await repositoryManager.ActivationKeyRepository.GetByKey(activationKey, true, ct);
 			if (key == null) throw new NotFoundException("Key not found");
 			if (key.GameId != gameId) throw new BadRequestException("Key does not belong to this game");
@@ -79,6 +85,8 @@ namespace IndieGameZone.Application.Services
 
 		public async Task CreateActivationKey(Guid gameId, CancellationToken ct = default)
 		{
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null) throw new NotFoundException("Game not found");
 			var keyEntity = new ActivationKeys()
 			{
 				Id = Guid.NewGuid(),
@@ -95,6 +103,10 @@ namespace IndieGameZone.Application.Services
 		public async Task ResetActivationKey(Guid userId, Guid gameId, CancellationToken ct = default)
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null) throw new NotFoundException("Game not found");
+			var user = await userManager.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == userId, ct);
+			if (user == null) throw new NotFoundException("User not found");
 			if (!await CheckGameOwnership(userId, gameId, ct))
 			{
 				throw new BadRequestException("You must own this game to reset the activation key.");
