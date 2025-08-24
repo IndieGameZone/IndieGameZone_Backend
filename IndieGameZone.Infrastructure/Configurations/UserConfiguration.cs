@@ -15,6 +15,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 		}
 		public void Configure(EntityTypeBuilder<Users> builder)
 		{
+			builder.ToTable("Users");
 			builder.Property(u => u.IsActive);
 			builder.Property(u => u.JoinedDate);
 			builder.Property(u => u.LastLogin);

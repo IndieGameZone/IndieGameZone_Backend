@@ -8,6 +8,7 @@ namespace IndieGameZone.Infrastructure.Configurations
 	{
 		public void Configure(EntityTypeBuilder<IdentityUserRole<Guid>> builder)
 		{
+			builder.ToTable("UserRoles");
 			builder.HasData(
 				new IdentityUserRole<Guid>
 				{

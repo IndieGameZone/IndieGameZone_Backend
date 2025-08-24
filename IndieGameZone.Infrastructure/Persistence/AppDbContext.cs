@@ -60,6 +60,8 @@ namespace IndieGameZone.Infrastructure.Persistence
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
+			modelBuilder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
+			modelBuilder.Entity<IdentityUserToken<Guid>>().ToTable("UserTokens");
 			modelBuilder.Ignore<IdentityUserClaim<Guid>>();
 			modelBuilder.Ignore<IdentityRoleClaim<Guid>>();
 			modelBuilder.ApplyConfiguration(new AchievementConfiguration());
