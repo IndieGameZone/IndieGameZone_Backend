@@ -37,7 +37,7 @@ namespace IndieGameZone.Infrastructure.Persistence
 		public DbSet<Posts> Posts { get; set; } = null!;
 		public DbSet<PostTags> PostTags { get; set; } = null!;
 		public DbSet<Reports> Reports { get; set; } = null!;
-		public DbSet<ReportReasons> ReportTypes { get; set; } = null!;
+		public DbSet<ReportReasons> ReportReasons { get; set; } = null!;
 		public DbSet<Reviews> Reviews { get; set; } = null!;
 		public DbSet<Roles> Roles { get; set; } = null!;
 		public DbSet<Tags> Tags { get; set; } = null!;
