@@ -26,7 +26,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Games
 		[Required]
 		public GameVisibility Visibility { get; init; }
 		[Required]
-		[Range(0, double.MaxValue, ErrorMessage = "Amount must be atleast 0.")]
+		[Range(0, double.MaxValue, ErrorMessage = "Price must be atleast 0.")]
 		public double Price { get; init; }
 		[Required]
 		public double AverageSession { get; set; }
