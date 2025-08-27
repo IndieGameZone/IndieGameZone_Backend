@@ -125,6 +125,7 @@ namespace IndieGameZone.Application.Services
 			}
 			gamePlatform.Version = gamePlatformForUpdateDto.Version;
 			gamePlatform.DisplayName = gamePlatformForUpdateDto.DisplayName;
+			gamePlatform.PlatformId = gamePlatformForUpdateDto.PlatformId;
 
 			await repositoryManager.SaveAsync(ct);
 		}
