@@ -8,6 +8,7 @@ using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.CommercialPackages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages;
 using MapsterMapper;
+using Microsoft.AspNetCore.Identity;
 using Quartz;
 
 namespace IndieGameZone.Application.Services
@@ -17,13 +18,15 @@ namespace IndieGameZone.Application.Services
 		private readonly IRepositoryManager repositoryManager;
 		private readonly IMapper mapper;
 		private readonly ISchedulerFactory schedulerFactory;
+        private readonly UserManager<Users> userManager;
 
-		public CommercialPackageService(IRepositoryManager repositoryManager, IMapper mapper, ISchedulerFactory schedulerFactory)
+        public CommercialPackageService(IRepositoryManager repositoryManager, IMapper mapper, ISchedulerFactory schedulerFactory, UserManager<Users> userManager)
 		{
 			this.repositoryManager = repositoryManager;
 			this.mapper = mapper;
 			this.schedulerFactory = schedulerFactory;
-		}
+            this.userManager = userManager;
+        }
 		public async Task CreateCommercialPackage(CommercialPackageForCreationDto commercialPackageForCreationDto, CancellationToken ct = default)
 		{
 			var commercialPackageEntity = mapper.Map<CommercialPackages>(commercialPackageForCreationDto);
@@ -282,7 +285,12 @@ namespace IndieGameZone.Application.Services
 
 		public async Task CancelCommercialRegistrationAsync(Guid registrationId, Guid developerId, CancellationToken ct)
 		{
-			var registration = await repositoryManager
+            var developer = await userManager.FindByIdAsync(developerId.ToString());
+
+            if (developer == null)
+                throw new NotFoundException("Developer not found.");
+
+            var registration = await repositoryManager
 				.CommercialRegistrationRepository
 				.GetCommercialRegistrationById(registrationId, trackChange: true, ct);
 
@@ -373,7 +381,7 @@ namespace IndieGameZone.Application.Services
 				PurchaseUserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
 				OrderCode = null,
 				Amount = (double)refundAmount,
-				Description = $"Refund {refundPercent * 100}% user {developerId} for cancelling commercial registration {registration.CommercialPackage.Name}",
+				Description = $"Refund {refundPercent * 100}% user {developer.UserName} for cancelling commercial registration {registration.CommercialPackage.Name}",
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.Refund,
 				Status = TransactionStatus.Success,
