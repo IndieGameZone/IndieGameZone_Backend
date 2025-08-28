@@ -354,20 +354,20 @@ namespace IndieGameZone.Application.Services
 
 			decimal refundAmount = (decimal)(package.Price * refundPercent);
 
-			// If refund > 0, get admin wallet and transfer funds
-			if (refundAmount > 0)
+            var adminId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"); // hardcoded admin ID
+            var adminWallet = await repositoryManager
+                .WalletRepository
+                .GetWalletByUserId(adminId, trackChange: true, ct);
+
+            if (adminWallet == null)
+                throw new NotFoundException("Admin wallet not found.");
+
+            if (adminWallet.Balance < (double)refundAmount)
+                throw new BadRequestException("Admin does not have enough funds to process the refund.");
+
+            // If refund > 0, get admin wallet and transfer funds
+            if (refundAmount > 0)
 			{
-				var adminId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"); // hardcoded admin ID
-				var adminWallet = await repositoryManager
-					.WalletRepository
-					.GetWalletByUserId(adminId, trackChange: true, ct);
-
-				if (adminWallet == null)
-					throw new NotFoundException("Admin wallet not found.");
-
-				if (adminWallet.Balance < (double)refundAmount)
-					throw new BadRequestException("Admin does not have enough funds to process the refund.");
-
 				// Transfer from admin to developer
 				adminWallet.Balance -= (double)refundAmount;
 				wallet.Balance += (double)refundAmount;
@@ -380,8 +380,10 @@ namespace IndieGameZone.Application.Services
 				UserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
 				PurchaseUserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
 				OrderCode = null,
-				Amount = (double)refundAmount,
-				Description = $"Refund {refundPercent * 100}% user {developer.UserName} for cancelling commercial registration {registration.CommercialPackage.Name}",
+                InitialBalance = adminWallet.Balance + (double)refundAmount,
+                Amount = (double)refundAmount,
+                FinalBalance = adminWallet.Balance,
+                Description = $"Refund {refundPercent * 100}% user {developer.UserName} for cancelling commercial registration {registration.CommercialPackage.Name}",
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.Refund,
 				Status = TransactionStatus.Success,
@@ -395,8 +397,10 @@ namespace IndieGameZone.Application.Services
 				UserId = developerId,
 				PurchaseUserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"),
 				OrderCode = null,
-				Amount = (double)refundAmount,
-				Description = $"Refund {refundPercent * 100}% for cancelling commercial registration {registration.CommercialPackage.Name}",
+                InitialBalance = wallet.Balance - (double)refundAmount,
+                Amount = (double)refundAmount,
+                FinalBalance = wallet.Balance,
+                Description = $"Refund {refundPercent * 100}% for cancelling commercial registration {registration.CommercialPackage.Name}",
 				CreatedAt = DateTime.Now,
 				Type = TransactionType.RefundRevenue,
 				Status = TransactionStatus.Success,
