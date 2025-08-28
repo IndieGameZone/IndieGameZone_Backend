@@ -432,5 +432,40 @@ namespace IndieGameZone.Application.Services
 
 			await scheduler.ScheduleJob(job, trigger, ct);
 		}
-	}
+
+        public async Task ActivateCommercialRegistrationAsync(Guid registrationId, CancellationToken ct)
+		{
+            var registration = await repositoryManager
+                .CommercialRegistrationRepository
+                .GetCommercialRegistrationById(registrationId, trackChange: true, ct);
+
+            if (registration == null)
+                throw new NotFoundException($"Commercial registration not found.");
+
+			if (registration.Status != CommercialRegistrationStatus.Pending)
+			{
+                throw new BadRequestException("You cannot activate registration that not of status type pending");
+            }
+
+            if (registration.Game.Visibility != GameVisibility.Public || registration.Game.CensorStatus != CensorStatus.Approved)
+            {
+                throw new BadRequestException("You can only activate registration for game that is public and approved");
+            }
+
+            var package = registration.CommercialPackage;
+            if (package == null)
+                throw new NotFoundException($"Commercial package not found.");
+
+            var game = await repositoryManager
+                .GameRepository
+                .GetGameById(registration.GameId, trackChange: false, ct);
+
+            if (game == null)
+                throw new NotFoundException($"Game associated with registration not found.");
+
+            registration.Status = CommercialRegistrationStatus.Active;
+            await repositoryManager.SaveAsync(ct);
+        }
+
+    }
 }

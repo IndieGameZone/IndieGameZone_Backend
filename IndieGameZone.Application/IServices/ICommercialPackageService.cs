@@ -16,5 +16,7 @@ namespace IndieGameZone.Application.IServices
 		Task<int> RunStatusUpdateAsync(CancellationToken ct = default);
 		Task CancelCommercialRegistrationAsync(Guid registrationId, Guid developerId, CancellationToken ct);
 		Task SetBackgroundJob(double minute, CancellationToken ct = default);
-	}
+		Task ActivateCommercialRegistrationAsync(Guid registrationId, CancellationToken ct);
+
+    }
 }

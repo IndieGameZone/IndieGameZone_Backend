@@ -123,5 +123,14 @@ namespace IndieGameZone.API.Controllers
 			return Ok("Background job settings successfully.");
 		}
 
-	}
+
+        [HttpPatch("registrations/activate/{registrationId:guid}")]
+        [Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
+        public async Task<IActionResult> ActivateCommercialRegistration([FromRoute] Guid registrationId, CancellationToken ct)
+        {
+
+            await serviceManager.CommercialPackageService.ActivateCommercialRegistrationAsync(registrationId, ct);
+            return NoContent();
+        }
+    }
 }
