@@ -37,14 +37,14 @@ namespace IndieGameZone.Application.Services
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
 
 			var firsttGame = await repositoryManager.GameRepository.GetFirstCreatedgameByuserId(userId, false, ct);
-			var firstWithdrawRequest = await repositoryManager.WithdrawRequestRepository.GetFirstWithdrawRequestByUserId(userId, false, ct);
+			var latestApproveWithdrawRequest = await repositoryManager.WithdrawRequestRepository.GetLatestApprovedWithdrawRequestByUserId(userId, false, ct);
 			var daysSinceCreatedFirstGame = firsttGame != null ? (DateTime.Now - firsttGame.CreatedAt).Days : 0;
-			if (firstWithdrawRequest == null && (firsttGame == null || daysSinceCreatedFirstGame < 30))
+			if (latestApproveWithdrawRequest == null && (firsttGame == null || daysSinceCreatedFirstGame < 30))
 			{
 				throw new BadRequestException("You must upload at least one game and wait at least 30 days to make a withdraw request");
 			}
-			var daysSinceCreatedFirstWithdrawRequest = firstWithdrawRequest != null ? (DateTime.Now - firstWithdrawRequest.CreatedAt).Days : 0;
-			if (firstWithdrawRequest != null && daysSinceCreatedFirstWithdrawRequest < 30)
+			var daysSinceLatestApprovedWithdrawRequest = latestApproveWithdrawRequest != null ? (DateTime.Now - latestApproveWithdrawRequest.CreatedAt).Days : 0;
+			if (latestApproveWithdrawRequest != null && daysSinceLatestApprovedWithdrawRequest < 30)
 			{
 				throw new BadRequestException("You can only make a withdraw request every 30 days");
 			}
