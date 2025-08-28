@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Infrastructure.Extensions;
@@ -34,87 +35,236 @@ namespace IndieGameZone.Infrastructure.Repositories
                 .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
                 .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
                 .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                .Include(r => r.Review).ThenInclude(rv => rv.Game).AsSplitQuery()
                 .FirstOrDefaultAsync(ct);
         }
 
-		public async Task<PagedList<Reports>> GetReports(ReportParameters reportParameters, bool trackChange, CancellationToken ct = default)
-		{
-            var reports = FindAll(trackChange)
-				.Include(r => r.ReportingUser).ThenInclude(ru => ru.UserProfile).AsSplitQuery()
-				.Include(r => r.ReportReason).AsSplitQuery()
-				.Include(r => r.Post).ThenInclude(p => p.PostComments).AsSplitQuery()
-                .Include(r => r.Post).ThenInclude(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Developer).AsSplitQuery()
-                .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Reviews).AsSplitQuery()
-                .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Discounts).AsSplitQuery()
-                .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Category).AsSplitQuery()
-                .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+        public async Task<PagedList<Reports>> GetReports(
+    ReportParameters reportParameters, bool trackChange, CancellationToken ct = default)
+        {
+            IQueryable<Reports> query = FindAll(trackChange);
 
-                .Include(r => r.PostComment).ThenInclude(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                
-                // Game + its nested relationships
-                .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
-				.Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
-				.Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
-				.Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                .Include(r => r.Review).ThenInclude(rv => rv.Game).AsSplitQuery()
-                .Sort();
+            switch (reportParameters.ReportType)
+            {
+                case ReportReasonTypeEnum.Game:
+                    query = query
+                        .Where(r => r.ReportReason.Type == ReportReasonTypeEnum.Game)
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile)
+                        .Include(r => r.ReportReason)
+                        .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery();
+                    break;
 
-            return await PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
-		}
+                case ReportReasonTypeEnum.Post:
+                    query = query
+                        .Where(r => r.ReportReason.Type == ReportReasonTypeEnum.Post)
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile)
+                        .Include(r => r.ReportReason)
+                        .Include(r => r.Post).ThenInclude(p => p.PostComments).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Developer).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Reviews).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Discounts).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Category).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery();
+                    break;
 
-		public Task<PagedList<Reports>> GetReportsByReportedUserId(Guid reportedUserId, ReportParameters reportParameters, bool trackChange, CancellationToken ct = default)
-		{
-            var reports = FindAll(trackChange)
-                    .Include(r => r.ReportingUser).ThenInclude(ru => ru.UserProfile).AsSplitQuery()
-                    .Include(r => r.ReportReason).AsSplitQuery()
-    				.Include(r => r.Post).ThenInclude(p => p.PostComments).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Developer).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Reviews).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Discounts).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Category).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                    .Include(r => r.PostComment).ThenInclude(pc => pc.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                    .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                    .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
-                    .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
-                    .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
-                    .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                    .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                    .Include(r => r.Review).ThenInclude(rv => rv.Game).AsSplitQuery()
-                    .Where(r => r.Game != null && r.Game.DeveloperId == reportedUserId)
-                    .Sort();
+                case ReportReasonTypeEnum.Comment:
+                    query = query
+                        .Where(r => r.ReportReason.Type == ReportReasonTypeEnum.Comment)
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile)
+                        .Include(r => r.ReportReason)
+                        .Include(r => r.Post).ThenInclude(p => p.PostComments).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Developer).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Reviews).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Discounts).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Category).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                        .Include(r => r.PostComment).ThenInclude(pc => pc.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery();
+                    break;
 
-            return PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
-		}
+                case ReportReasonTypeEnum.Review:
+                    query = query
+                        .Where(r => r.ReportReason.Type == ReportReasonTypeEnum.Review)
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile)
+                        .Include(r => r.ReportReason)
+                        .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                        .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery();
+                    break;
 
-		public Task<PagedList<Reports>> GetReportsByReportingUserId(Guid reportingUserId, ReportParameters reportParameters, bool trackChange, CancellationToken ct = default)
-		{
-            var reports = FindByCondition(r => r.ReportingUserId.Equals(reportingUserId), trackChange)
-                    .Include(r => r.ReportingUser).ThenInclude(ru => ru.UserProfile).AsSplitQuery()
-                    .Include(r => r.ReportReason).AsSplitQuery()
-    				.Include(r => r.Post).ThenInclude(p => p.PostComments).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Developer).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Reviews).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Discounts).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.Category).AsSplitQuery()
-                    .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                    .Include(r => r.PostComment).ThenInclude(pc => pc.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                    .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                    .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
-                    .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
-                    .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
-                    .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                    .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                    .Include(r => r.Review).ThenInclude(rv => rv.Game).AsSplitQuery()
-                    .Sort();
+                default:
+                    // fallback – minimal data
+                    query = query
+                        .Where(r => r.ReportReason.Type == reportParameters.ReportType)
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile)
+                        .Include(r => r.ReportReason);
+                    break;
+            }
 
-            return PagedList<Reports>.ToPagedList(reports, reportParameters.PageNumber, reportParameters.PageSize, ct);
-		}
-	}
+            query = query.Sort();
+
+            return await PagedList<Reports>.ToPagedList(
+                query,
+                reportParameters.PageNumber,
+                reportParameters.PageSize,
+                ct
+            );
+        }
+
+        public async Task<PagedList<Reports>> GetReportsByReportedUserId(
+    Guid reportedUserId,
+    ReportParameters reportParameters,
+    bool trackChange,
+    CancellationToken ct = default)
+        {
+            IQueryable<Reports> query = FindAll(trackChange);
+
+            switch (reportParameters.ReportType)
+            {
+                case ReportReasonTypeEnum.Game:
+                    query = query
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.ReportReason).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                        .Where(r => r.Game != null && r.Game.DeveloperId == reportedUserId);
+                    break;
+
+                case ReportReasonTypeEnum.Post:
+                    query = query
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.ReportReason).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.PostComments).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(g => g.Developer).AsSplitQuery()
+                        .Where(r => r.Post != null && r.Post.UserId == reportedUserId);
+                    break;
+
+                case ReportReasonTypeEnum.Comment:
+                    query = query
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.ReportReason).AsSplitQuery()
+                        .Include(r => r.PostComment).ThenInclude(pc => pc.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(g => g.Developer).AsSplitQuery()
+                        .Where(r => r.PostComment != null && r.PostComment.UserId == reportedUserId);
+                    break;
+
+                case ReportReasonTypeEnum.Review:
+                    query = query
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.ReportReason).AsSplitQuery()
+                        .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Developer).AsSplitQuery()
+                        .Where(r => r.Review != null && r.Review.UserId == reportedUserId);
+                    break;
+
+                default:
+                    query = query
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.ReportReason).AsSplitQuery();
+                    break;
+            }
+
+            query = query.Sort();
+
+            return await PagedList<Reports>.ToPagedList(
+                query,
+                reportParameters.PageNumber,
+                reportParameters.PageSize,
+                ct
+            );
+        }
+
+        public async Task<PagedList<Reports>> GetReportsByReportingUserId(
+    Guid reportingUserId,
+    ReportParameters reportParameters,
+    bool trackChange,
+    CancellationToken ct = default)
+        {
+            IQueryable<Reports> query = FindByCondition(r => r.ReportingUserId == reportingUserId, trackChange);
+
+            switch (reportParameters.ReportType)
+            {
+                case ReportReasonTypeEnum.Game:
+                    query = query
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.ReportReason).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                        .Where(r => r.Game != null);
+                    break;
+
+                case ReportReasonTypeEnum.Post:
+                    query = query
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.ReportReason).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.PostComments).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(g => g.Developer).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
+                        .Where(r => r.Post != null);
+                    break;
+
+                case ReportReasonTypeEnum.Comment:
+                    query = query
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.ReportReason).AsSplitQuery()
+                        .Include(r => r.PostComment).ThenInclude(pc => pc.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(g => g.Developer).AsSplitQuery()
+                        .Where(r => r.PostComment != null);
+                    break;
+
+                case ReportReasonTypeEnum.Review:
+                    query = query
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.ReportReason).AsSplitQuery()
+                        .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Developer).AsSplitQuery()
+                        .Where(r => r.Review != null);
+                    break;
+
+                default:
+                    query = query
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.ReportReason).AsSplitQuery();
+                    break;
+            }
+
+            query = query.Sort();
+
+            return await PagedList<Reports>.ToPagedList(
+                query,
+                reportParameters.PageNumber,
+                reportParameters.PageSize,
+                ct
+            );
+        }
+    }
 }
+
