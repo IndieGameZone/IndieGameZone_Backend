@@ -20,6 +20,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			var wishlistEntities = FindByCondition(w => w.UserId == userId, trackChange)
 				.Include(x => x.Game).ThenInclude(x => x.GameTags).ThenInclude(x => x.Tag).AsSplitQuery()
 				.Include(x => x.Game).ThenInclude(x => x.Category).AsSplitQuery()
+				.Include(x => x.Game).ThenInclude(x => x.Reviews).AsSplitQuery()
 				.Sort();
 			return await PagedList<Wishlists>.ToPagedList(wishlistEntities, wishlistParameters.PageNumber, wishlistParameters.PageSize, ct);
 		}

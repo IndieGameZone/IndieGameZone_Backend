@@ -4,7 +4,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Wishlists
 {
 	public class WishlistForReturnDto
 	{
-		public virtual GameForRecommendationDto Game { get; init; }
+		public virtual GameForListReturnDto Game { get; init; }
 		public DateTime AddedAt { get; init; }
 	}
 }
