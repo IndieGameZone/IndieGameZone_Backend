@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.Entities;
+﻿using IndieGameZone.Domain.Constants;
+using IndieGameZone.Domain.Entities;
 using IndieGameZone.Domain.IRepositories;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Infrastructure.Extensions;
@@ -15,10 +16,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public void CreateWithdrawRequest(WithdrawRequests withdrawRequest) => Create(withdrawRequest);
 
-		public Task<WithdrawRequests?> GetFirstWithdrawRequestByUserId(Guid userId, bool trackChange, CancellationToken ct = default)
+		public Task<WithdrawRequests?> GetLatestApprovedWithdrawRequestByUserId(Guid userId, bool trackChange, CancellationToken ct = default)
 		{
-			var oldestWithdrawRequest = FindByCondition(w => w.UserId == userId, trackChange)
-				.OrderBy(w => w.CreatedAt)
+			var oldestWithdrawRequest = FindByCondition(w => w.UserId == userId && w.Status == WithdrawTransferStatus.Approved, trackChange)
+				.OrderByDescending(w => w.CreatedAt)
 				.FirstOrDefaultAsync(ct);
 			return oldestWithdrawRequest;
 		}
