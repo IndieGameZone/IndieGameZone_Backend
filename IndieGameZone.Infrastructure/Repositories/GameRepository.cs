@@ -194,8 +194,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			var gameIds = await appDbContext.CommercialRegistrations
 				.Where(cr =>
 					cr.CommercialPackage.Type == CommercialPackageType.HomepageBanner &&
-					cr.Status == CommercialRegistrationStatus.Active && // ✅ only active
-					cr.StartDate <= today &&
+					cr.Status == CommercialRegistrationStatus.Active &&
 					today <= cr.EndDate)
 				.Select(cr => cr.GameId)
 				.ToListAsync(ct);
@@ -221,7 +220,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Where(cr =>
 					cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner &&
 					cr.Status == CommercialRegistrationStatus.Active && // ✅ only active
-					cr.StartDate <= today &&
 					today <= cr.EndDate)
 				.Select(cr => cr.GameId)
 				.ToListAsync(ct);
