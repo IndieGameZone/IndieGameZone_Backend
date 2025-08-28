@@ -36,6 +36,7 @@ namespace IndieGameZone.Infrastructure.Repositories
         public async Task<IEnumerable<(Games game, int purchaseCount)>> GetTopSellingGames(int top = 10, CancellationToken ct = default)
         {
             var topGames = await AppDbContext.Libraries
+                .Where(l => l.Game.Price > 0)
                 .GroupBy(l => l.GameId)
                 .Select(g => new
                 {
@@ -49,7 +50,10 @@ namespace IndieGameZone.Infrastructure.Repositories
             var gameIds = topGames.Select(g => g.GameId).ToList();
 
             var games = await AppDbContext.Games
-                .Where(g => gameIds.Contains(g.Id) && g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved)
+                .Where(g => gameIds.Contains(g.Id) &&
+                            g.Visibility == GameVisibility.Public &&
+                            g.CensorStatus == CensorStatus.Approved &&
+                            g.Price > 0)
                 .Include(g => g.Category).AsSplitQuery()
                 .Include(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
                 .ToListAsync(ct);
