@@ -442,14 +442,16 @@ namespace IndieGameZone.Infrastructure.Repositories
 
         public async Task<IEnumerable<AdminRevenueByDayForReturnDto>> GetAdminRevenueByMonthAsync(int year, int month, CancellationToken ct = default)
         {
+            var targetUserId = Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8");
+
             var transactions = await FindAll(false)
-            .Where(t =>
-                (t.Type == TransactionType.PurchaseCommercialPackageRevenue ||
-                 t.Type == TransactionType.PurchaseGameRevenue) &&
-                t.Status == TransactionStatus.Success &&
-                t.CreatedAt.Year == year &&
-                t.CreatedAt.Month == month)
-            .ToListAsync(ct);
+                .Where(t =>
+                    (t.Type == TransactionType.PurchaseCommercialPackageRevenue ||
+                     (t.Type == TransactionType.PurchaseGameRevenue && t.UserId == targetUserId)) && // ✅ filter only for game revenue
+                    t.Status == TransactionStatus.Success &&
+                    t.CreatedAt.Year == year &&
+                    t.CreatedAt.Month == month)
+                .ToListAsync(ct);
 
             // Group by day
             var groupedByDay = transactions
