@@ -108,22 +108,28 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 			return await registrations.ToListAsync(ct);
 		}
+        public Task<CommercialRegistrations?> GetCategoryCommercialRegistrationByGameId(
+    Guid gameId,
+    bool trackChange,
+    CancellationToken ct = default)
+        {
+            var now = DateTime.Now;
 
-		public Task<CommercialRegistrations?> GetCategoryCommercialRegistrationByGameId(Guid gameId, bool trackChange, CancellationToken ct = default)
-		{
-			var now = DateTime.Now;
             var registration = FindByCondition(
-				r => r.GameId == gameId && r.StartDate <= DateOnly.FromDateTime(now) && DateOnly.FromDateTime(now) <= r.EndDate,
-				trackChange)
-				.Include(r => r.CommercialPackage)
-	            .Include(r => r.Game)
-					.ThenInclude(g => g.Developer)
-						.ThenInclude(d => d.UserProfile)
+                    r => r.GameId == gameId
+                         && DateOnly.FromDateTime(now) <= r.EndDate
+                         && r.Status == CommercialRegistrationStatus.Active, 
+                    trackChange)
+                .Include(r => r.CommercialPackage)
+                .Include(r => r.Game)
+                    .ThenInclude(g => g.Developer)
+                        .ThenInclude(d => d.UserProfile)
                 .Where(r => r.CommercialPackage.Type == CommercialPackageType.CategoryBanner)
-	            .AsSplitQuery()
+                .AsSplitQuery()
                 .FirstOrDefaultAsync(ct);
-			return registration;
-		}
+
+            return registration;
+        }
 
         public async Task<List<CommercialRegistrations>> GetRegistrationsForStatusUpdate(DateOnly today, CancellationToken ct = default)
         {
