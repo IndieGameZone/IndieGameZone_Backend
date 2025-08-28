@@ -150,7 +150,7 @@ namespace IndieGameZone.Infrastructure.Repositories
             // Total refunds
             var totalRefundRevenue = await FindAll(false)
                 .Where(t =>
-                    t.Type == TransactionType.RefundRevenue &&
+                    t.Type == TransactionType.ReceiveCommercialRefundPackage &&
                     t.Status == TransactionStatus.Success &&
                     t.CreatedAt >= rangeStart &&
                     t.CreatedAt <= now)

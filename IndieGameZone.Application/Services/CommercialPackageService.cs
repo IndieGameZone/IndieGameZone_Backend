@@ -385,7 +385,7 @@ namespace IndieGameZone.Application.Services
                 FinalBalance = adminWallet.Balance,
                 Description = $"Refund {refundPercent * 100}% user {developer.UserName} for cancelling commercial registration {registration.CommercialPackage.Name}",
 				CreatedAt = DateTime.Now,
-				Type = TransactionType.Refund,
+				Type = TransactionType.RefundCommercialPackage,
 				Status = TransactionStatus.Success,
 				PaymentMethod = PaymentMethod.Wallet,
 				GameId = game.Id
@@ -402,7 +402,7 @@ namespace IndieGameZone.Application.Services
                 FinalBalance = wallet.Balance,
                 Description = $"Refund {refundPercent * 100}% for cancelling commercial registration {registration.CommercialPackage.Name}",
 				CreatedAt = DateTime.Now,
-				Type = TransactionType.RefundRevenue,
+				Type = TransactionType.ReceiveCommercialRefundPackage,
 				Status = TransactionStatus.Success,
 				PaymentMethod = PaymentMethod.Wallet,
 				GameId = game.Id

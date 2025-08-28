@@ -10,7 +10,8 @@
 		PurchaseGameRevenue,
 		PurchaseCommercialPackageRevenue,
 		DonationRevenue,
-        Refund,
-		RefundRevenue
+        ReceiveCommercialRefundPackage,
+        RefundCommercialPackage
+
     }
 }
