@@ -135,5 +135,15 @@ namespace IndieGameZone.Application.Services
 			await repositoryManager.SaveAsync(ct);
 			dbTransaction.Commit();
 		}
+
+		public async Task ValidateUsedActivationKey(Guid gameId, string activationKey, CancellationToken ct = default)
+		{
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null) throw new NotFoundException("Game not found");
+			var key = await repositoryManager.ActivationKeyRepository.GetByKey(activationKey, true, ct);
+			if (key == null) throw new NotFoundException("Key not found");
+			if (key.GameId != gameId) throw new BadRequestException("Key does not belong to this game");
+			if (!key.IsActive) throw new BadRequestException("Key has been deactivated");
+		}
 	}
 }

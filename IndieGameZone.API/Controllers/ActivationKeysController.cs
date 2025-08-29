@@ -23,6 +23,13 @@ namespace IndieGameZone.API.Controllers
 			return NoContent();
 		}
 
+		[HttpPut("games/{gameId:guid}/activation-used-keys/{activationKey}/activation")]
+		public async Task<IActionResult> ActivateUsedKey([FromRoute] Guid gameId, [FromRoute] string activationKey, CancellationToken ct = default)
+		{
+			await serviceManager.ActivationKeyService.ValidateUsedActivationKey(gameId, activationKey, ct);
+			return NoContent();
+		}
+
 		[HttpGet("users/{userId:guid}/games/{gameId:guid}/activation-keys")]
 		[Authorize]
 		public async Task<IActionResult> GetActivationKeys([FromRoute] Guid userId, [FromRoute] Guid gameId, CancellationToken ct = default)
