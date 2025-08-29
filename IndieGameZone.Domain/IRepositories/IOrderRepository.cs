@@ -9,5 +9,6 @@ namespace IndieGameZone.Domain.IRepositories
 		Task<Orders?> GetOrderById(Guid id, bool trackChange, CancellationToken ct = default);
 		Task<Orders?> GetOrderByGameAndUser(Guid gameId, Guid userId, bool trackChange, CancellationToken ct = default);
 		Task<PagedList<Orders>> GetOrdersByUserId(Guid userId, OrderParameters orderParameters, bool trackChange, CancellationToken ct = default);
+		Task<PagedList<Orders>> GetOrders(OrderParameters orderParameters, bool trackChange, CancellationToken ct = default);
 	}
 }

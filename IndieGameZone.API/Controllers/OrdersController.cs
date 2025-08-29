@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application.IServices;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,15 @@ namespace IndieGameZone.API.Controllers
 		{
 			var order = await serviceManager.OrderService.GetOrderById(orderId, ct);
 			return Ok(order);
+		}
+
+		[HttpGet("orders")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
+		public async Task<IActionResult> GetOrders([FromQuery] OrderParameters orderParameters, CancellationToken ct = default)
+		{
+			var pagedResult = await serviceManager.OrderService.GetOrders(orderParameters, ct);
+			Response.Headers.Append("X-Pagination", JsonSerializer.Serialize(pagedResult.metaData));
+			return Ok(pagedResult.orders);
 		}
 	}
 }

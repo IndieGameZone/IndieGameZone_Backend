@@ -27,6 +27,13 @@ namespace IndieGameZone.Application.Services
 			return orderForReturnDto;
 		}
 
+		public async Task<(IEnumerable<OrderForReturnDto> orders, MetaData metaData)> GetOrders(OrderParameters orderParameters, CancellationToken ct = default)
+		{
+			var ordersWithMetaData = await repositoryManager.OrderRepository.GetOrders(orderParameters, false, ct);
+			var orders = mapper.Map<IEnumerable<OrderForReturnDto>>(ordersWithMetaData);
+			return (orders, ordersWithMetaData.MetaData);
+		}
+
 		public async Task<(IEnumerable<OrderForReturnDto> orders, MetaData metaData)> GetOrdersByUserId(Guid userId, OrderParameters orderParameters, CancellationToken ct = default)
 		{
 			var ordersWithMetaData = await repositoryManager.OrderRepository.GetOrdersByUserId(userId, orderParameters, false, ct);

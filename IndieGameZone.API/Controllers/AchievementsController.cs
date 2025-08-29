@@ -1,4 +1,5 @@
 ﻿using IndieGameZone.Application.IServices;
+using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestFeatures;
 using IndieGameZone.Domain.RequestsAndResponses.Requests.Achievements;
 using Microsoft.AspNetCore.Authorization;
@@ -54,6 +55,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPost("achievements")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> CreateAchievement([FromBody] AchievementForCreationDto achievementForCreationDto, CancellationToken ct)
 		{
 			await serviceManager.AchievementService.CreateAchievement(achievementForCreationDto, ct);
@@ -61,6 +63,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpPut("achievements/{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> UpdateAchievement([FromRoute] Guid id, [FromBody] AchievementForUpdateDto achievementForUpdateDto, CancellationToken ct)
 		{
 			await serviceManager.AchievementService.UpdateAchievement(id, achievementForUpdateDto, ct);
@@ -68,6 +71,7 @@ namespace IndieGameZone.API.Controllers
 		}
 
 		[HttpDelete("achievements/{id:guid}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Admin)}")]
 		public async Task<IActionResult> DeleteAchievement([FromRoute] Guid id, CancellationToken ct)
 		{
 			await serviceManager.AchievementService.DeleteAchievement(id, ct);

@@ -25,6 +25,16 @@ namespace IndieGameZone.Infrastructure.Repositories
 			.Include(x => x.Discount)
 			.FirstOrDefaultAsync(ct);
 
+		public async Task<PagedList<Orders>> GetOrders(OrderParameters orderParameters, bool trackChange, CancellationToken ct = default)
+		{
+			var orders = FindAll(trackChange)
+				.Include(x => x.Game)
+				.Include(x => x.CommercialPackage)
+				.Include(x => x.Transaction)
+				.Sort();
+			return await PagedList<Orders>.ToPagedList(orders, orderParameters.PageNumber, orderParameters.PageSize, ct);
+		}
+
 		public async Task<PagedList<Orders>> GetOrdersByUserId(Guid userId, OrderParameters orderParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var orders = FindByCondition(x => x.UserId == userId, trackChange)
