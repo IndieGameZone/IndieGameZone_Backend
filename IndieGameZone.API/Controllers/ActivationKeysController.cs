@@ -42,8 +42,8 @@ namespace IndieGameZone.API.Controllers
 		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
 		public async Task<IActionResult> CreateActivationKeys([FromRoute] Guid gameId, CancellationToken ct = default)
 		{
-			await serviceManager.ActivationKeyService.CreateActivationKey(gameId, ct);
-			return StatusCode(201);
+			var key = await serviceManager.ActivationKeyService.CreateActivationKey(gameId, ct);
+			return StatusCode(201, key);
 		}
 
 		[HttpPut("users/{userId:guid}/games/{gameId:guid}/activation-keys/reset")]

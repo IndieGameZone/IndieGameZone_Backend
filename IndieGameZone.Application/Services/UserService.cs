@@ -457,28 +457,28 @@ namespace IndieGameZone.Application.Services
 			return (dtoList, usersWithMetaData.MetaData);
 		}
 
-        public async Task SendResetPasswordToken(string email, CancellationToken ct = default)
-        {
-            var userEntity = await userManager.FindByEmailAsync(email);
-            if (userEntity is null) throw new UserNotFoundException();
+		public async Task SendResetPasswordToken(string email, CancellationToken ct = default)
+		{
+			var userEntity = await userManager.FindByEmailAsync(email);
+			if (userEntity is null) throw new UserNotFoundException();
 
-            // Generate 6-digit OTP
-            var otp = new Random().Next(100000, 999999).ToString();
+			// Generate 6-digit OTP
+			var otp = new Random().Next(100000, 999999).ToString();
 
-            // Expire in 10 minutes
-            var expiry = DateTime.Now.AddMinutes(10);
+			// Expire in 10 minutes
+			var expiry = DateTime.Now.AddMinutes(10);
 
-            // Store OTP + expiry in Value (e.g., "123456|2025-08-17T07:10:00Z")
-            var tokenValue = $"{otp}|{expiry:o}";
+			// Store OTP + expiry in Value (e.g., "123456|2025-08-17T07:10:00Z")
+			var tokenValue = $"{otp}|{expiry:o}";
 
-            // Remove old OTP if any
-            await userManager.RemoveAuthenticationTokenAsync(userEntity, "ResetPassword", "OTP");
+			// Remove old OTP if any
+			await userManager.RemoveAuthenticationTokenAsync(userEntity, "ResetPassword", "OTP");
 
-            // Save in AspNetUserTokens
-            await userManager.SetAuthenticationTokenAsync(userEntity, "ResetPassword", "OTP", tokenValue);
+			// Save in AspNetUserTokens
+			await userManager.SetAuthenticationTokenAsync(userEntity, "ResetPassword", "OTP", tokenValue);
 
-            // Send email
-            var mail = new Mail(userEntity.Email, "Reset password OTP", $@"
+			// Send email
+			var mail = new Mail(userEntity.Email, "Reset password OTP", $@"
 <div style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; text-align: center;'>
     <div style='max-width: 600px; background: #ffffff; padding: 20px; border-radius: 8px; 
                 box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: center;'>
@@ -488,50 +488,50 @@ namespace IndieGameZone.Application.Services
         <p style='font-size: 14px; color: #777;'>This code will expire in 10 minutes.</p>
     </div>
 </div>");
-            emailSender.SendEmail(mail);
-        }
+			emailSender.SendEmail(mail);
+		}
 
-        public async Task ResetPassword(UserForResetPasswordDto dto, CancellationToken ct = default)
-        {
-            var user = await userManager.FindByEmailAsync(dto.Email);
-            if (user is null) throw new UserNotFoundException();
+		public async Task ResetPassword(UserForResetPasswordDto dto, CancellationToken ct = default)
+		{
+			var user = await userManager.FindByEmailAsync(dto.Email);
+			if (user is null) throw new UserNotFoundException();
 
-            // Get stored token (OTP + expiry)
-            var storedValue = await userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "OTP");
-            if (string.IsNullOrEmpty(storedValue))
-                throw new RequestTokenBadRequest();
+			// Get stored token (OTP + expiry)
+			var storedValue = await userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "OTP");
+			if (string.IsNullOrEmpty(storedValue))
+				throw new RequestTokenBadRequest();
 
-            // Parse OTP and expiry
-            var parts = storedValue.Split('|');
-            if (parts.Length != 2)
-                throw new RequestTokenBadRequest();
+			// Parse OTP and expiry
+			var parts = storedValue.Split('|');
+			if (parts.Length != 2)
+				throw new RequestTokenBadRequest();
 
-            var otp = parts[0];
-            if (!DateTime.TryParse(parts[1], null, System.Globalization.DateTimeStyles.RoundtripKind, out var expiry))
-                throw new RequestTokenBadRequest();
+			var otp = parts[0];
+			if (!DateTime.TryParse(parts[1], null, System.Globalization.DateTimeStyles.RoundtripKind, out var expiry))
+				throw new RequestTokenBadRequest();
 
-            // Validate OTP + expiry
-            if (otp != dto.OTP || expiry < DateTime.Now)
-                throw new RequestTokenBadRequest();
+			// Validate OTP + expiry
+			if (otp != dto.OTP || expiry < DateTime.Now)
+				throw new RequestTokenBadRequest();
 
-            // Reset password (remove old and set new)
-            var removeResult = await userManager.RemovePasswordAsync(user);
-            if (!removeResult.Succeeded)
-                throw new Exception("Failed to remove old password");
+			// Reset password (remove old and set new)
+			var removeResult = await userManager.RemovePasswordAsync(user);
+			if (!removeResult.Succeeded)
+				throw new Exception("Failed to remove old password");
 
-            var addResult = await userManager.AddPasswordAsync(user, dto.Password);
-            if (!addResult.Succeeded)
-                throw new Exception("Failed to set new password");
+			var addResult = await userManager.AddPasswordAsync(user, dto.Password);
+			if (!addResult.Succeeded)
+				throw new Exception("Failed to set new password");
 
-            // Clear OTP after success
-            await userManager.RemoveAuthenticationTokenAsync(user, "ResetPassword", "OTP");
+			// Clear OTP after success
+			await userManager.RemoveAuthenticationTokenAsync(user, "ResetPassword", "OTP");
 
-            // Invalidate refresh token
-            user.RefreshToken = null;
-            await userManager.UpdateAsync(user);
-        }
+			// Invalidate refresh token
+			user.RefreshToken = null;
+			await userManager.UpdateAsync(user);
+		}
 
-        public async Task UpdatePassword(Guid userId, UserForUpdatePasswordDto userForUpdatePasswordDto, CancellationToken ct = default)
+		public async Task UpdatePassword(Guid userId, UserForUpdatePasswordDto userForUpdatePasswordDto, CancellationToken ct = default)
 		{
 			var userEntity = await userManager.Users
 			.FirstOrDefaultAsync(u => u.Id == userId, ct);
@@ -677,6 +677,8 @@ namespace IndieGameZone.Application.Services
 
 				await repositoryManager.SaveAsync(ct);
 
+				await recombeeService.PushUserToRecombee(user.Id);
+
 				SendWelcomeEmailAsync(email, name);
 			}
 
@@ -810,36 +812,36 @@ namespace IndieGameZone.Application.Services
 			await repositoryManager.SaveAsync(ct);
 		}
 
-        public async Task<IEnumerable<NewPlayersByMonthForReturnDto>> GetNewPlayersByMonthAsync(int year, CancellationToken ct = default)
-        {
-            // Get all users registered in the given year
-            var users = await userManager.Users
-                .Where(u => u.JoinedDate.Year == year)
-                .ToListAsync(ct);
+		public async Task<IEnumerable<NewPlayersByMonthForReturnDto>> GetNewPlayersByMonthAsync(int year, CancellationToken ct = default)
+		{
+			// Get all users registered in the given year
+			var users = await userManager.Users
+				.Where(u => u.JoinedDate.Year == year)
+				.ToListAsync(ct);
 
-            // Group by month
-            var grouped = users
-                .GroupBy(u => u.JoinedDate.Month)
-                .Select(g => new NewPlayersByMonthForReturnDto
-                {
-                    Month = g.Key,
-                    Count = g.Count()
-                })
-                .ToList();
+			// Group by month
+			var grouped = users
+				.GroupBy(u => u.JoinedDate.Month)
+				.Select(g => new NewPlayersByMonthForReturnDto
+				{
+					Month = g.Key,
+					Count = g.Count()
+				})
+				.ToList();
 
-            // Ensure all 12 months are present
-            var fullReport = Enumerable.Range(1, 12)
-                .Select(month => grouped.FirstOrDefault(x => x.Month == month)
-                    ?? new NewPlayersByMonthForReturnDto
-                    {
-                        Month = month,
-                        Count = 0
-                    })
-                .OrderBy(r => r.Month)
-                .ToList();
+			// Ensure all 12 months are present
+			var fullReport = Enumerable.Range(1, 12)
+				.Select(month => grouped.FirstOrDefault(x => x.Month == month)
+					?? new NewPlayersByMonthForReturnDto
+					{
+						Month = month,
+						Count = 0
+					})
+				.OrderBy(r => r.Month)
+				.ToList();
 
-            return fullReport;
-        }
+			return fullReport;
+		}
 
-    }
+	}
 }
