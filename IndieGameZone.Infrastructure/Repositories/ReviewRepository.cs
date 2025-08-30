@@ -45,6 +45,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			var reviewEntities = FindByCondition(r => r.UserId.Equals(userId), trackChange)
 				.FIlterByRating(reviewParameters.Rating)
 				.Include(r => r.User).ThenInclude(u => u.UserProfile)
+				.Include(r => r.Game)
 				.Sort();
 
 			return await PagedList<Reviews>.ToPagedList(reviewEntities, reviewParameters.PageNumber, reviewParameters.PageSize, ct);

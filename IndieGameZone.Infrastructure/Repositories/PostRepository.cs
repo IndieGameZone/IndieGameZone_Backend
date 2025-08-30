@@ -41,6 +41,19 @@ namespace IndieGameZone.Infrastructure.Repositories
 			.Include(p => p.Game).AsSplitQuery()
 			.FirstOrDefaultAsync(ct);
 
+		public async Task<PagedList<Posts>> GetPosts(PostParameters postParameters, bool trackChange, CancellationToken ct = default)
+		{
+			var posts = FindAll(trackChange)
+				.Include(p => p.PostTags).ThenInclude(p => p.Tag).AsSplitQuery()
+				.Include(p => p.PostImages).AsSplitQuery()
+				.Include(p => p.PostReactions).AsSplitQuery()
+				.Include(p => p.PostComments).ThenInclude(pc => pc.User).AsSplitQuery()
+				.Include(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+				.Include(p => p.Game).AsSplitQuery()
+				.Sort();
+			return await PagedList<Posts>.ToPagedList(posts, postParameters.PageNumber, postParameters.PageSize, ct);
+		}
+
 		public async Task<PagedList<Posts>> GetPostsByGameId(Guid gameId, PostParameters postParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var posts = FindByCondition(p => p.GameId.Equals(gameId) && p.Status == PostStatus.Approved, trackChange)
@@ -55,7 +68,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return await PagedList<Posts>.ToPagedList(posts, postParameters.PageNumber, postParameters.PageSize, ct);
 		}
 
-		public Task<PagedList<Posts>> GetPostsByUserId(Guid userId, PostParameters postParameters, bool trackChange, CancellationToken ct = default)
+		public async Task<PagedList<Posts>> GetPostsByUserId(Guid userId, PostParameters postParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var posts = FindByCondition(p => p.UserId.Equals(userId), trackChange)
 				.Include(p => p.PostTags).ThenInclude(p => p.Tag).AsSplitQuery()
@@ -65,7 +78,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(p => p.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
 				.Include(p => p.Game).AsSplitQuery()
 				.Sort();
-			return PagedList<Posts>.ToPagedList(posts, postParameters.PageNumber, postParameters.PageSize, ct);
+			return await PagedList<Posts>.ToPagedList(posts, postParameters.PageNumber, postParameters.PageSize, ct);
 		}
 
 		public IQueryable<Posts> GetPostsByUserId(Guid userId, bool trackChange = false, CancellationToken ct = default) => FindByCondition(p => p.UserId.Equals(userId), trackChange);

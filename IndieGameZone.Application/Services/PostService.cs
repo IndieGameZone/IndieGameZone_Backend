@@ -302,5 +302,12 @@ namespace IndieGameZone.Application.Services
 			var posts = mapper.Map<IEnumerable<PostForReturnDto>>(postWithMetaData);
 			return (posts, postWithMetaData.MetaData);
 		}
+
+		public async Task<(IEnumerable<PostForReturnDto> posts, MetaData metaData)> GetPosts(PostParameters postParameters, CancellationToken ct = default)
+		{
+			var postWithMetaData = await repositoryManager.PostRepository.GetPosts(postParameters, false, ct);
+			var posts = mapper.Map<IEnumerable<PostForReturnDto>>(postWithMetaData);
+			return (posts, postWithMetaData.MetaData);
+		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
+﻿using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Reviews
 {
@@ -9,5 +10,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Reviews
 		public string Comment { get; init; }
 		public DateTime CreatedAt { get; init; }
 		public UserShortForReturnDto User { get; init; }
+		public GameForRecommendationDto Game { get; set; } = null!;
 	}
 }
