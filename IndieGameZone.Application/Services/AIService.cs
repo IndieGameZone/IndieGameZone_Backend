@@ -52,7 +52,7 @@ namespace IndieGameZone.Application.Services
 		{
 			var combineText = string.Join(" ", text);
 			ChatClient client = new(model: "gpt-4o-mini", apiKey: configuration.GetSection("OpenAIKey").Value);
-			string prompt = $"You are a helpful assistant that summarizes game reviews. Please provide a concise summary of the overall sentiment and key points from the following reviews.\n{combineText}";
+			string prompt = $"You are a helpful assistant that summarizes game reviews. Please provide a concise summary of the overall reivews. Give me summary of good reviews and bad revirws.\n{combineText}";
 			ChatCompletion completion = client.CompleteChat(prompt);
 			return completion.Content[0].Text;
 		}
