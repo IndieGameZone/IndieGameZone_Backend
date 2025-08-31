@@ -8,6 +8,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.DashBoard
 {
     public class DashboardSummaryForReturnDto
     {
+        public double AdminBankBalance { get; set; }
         public int OnlineUserCount { get; set; }
         public int TotalUserCount { get; set; }
         public double GamePurchaseRevenueByDeveloper { get; set; }

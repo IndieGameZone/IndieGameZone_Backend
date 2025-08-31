@@ -136,14 +136,6 @@ namespace IndieGameZone.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("admin-bank-balance")]
-        public async Task<ActionResult<double>> GetAdminBankBalance(CancellationToken ct)
-        {
-            var result = await serviceManager.DashBoardService.GetAdminBankBalanceAsync(ct);
-
-            return Ok(result);
-        }
-
         [HttpGet("players/new/monthly-stats")]
         public async Task<ActionResult<IEnumerable<NewPlayersByMonthForReturnDto>>> GetNewPlayersByMonth([FromQuery][Required] int year, CancellationToken ct = default)
         {
