@@ -83,7 +83,7 @@ namespace IndieGameZone.Application.Services
 			await repositoryManager.SaveAsync(ct);
 		}
 
-		public async Task<ActivationKeyForReturnDto> CreateActivationKey(Guid gameId, CancellationToken ct = default)
+		public async Task<ActivationKeyForReturnDto> CreateActivationKeyForModerator(Guid gameId, CancellationToken ct = default)
 		{
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
 			if (game == null) throw new NotFoundException("Game not found");
@@ -147,6 +147,25 @@ namespace IndieGameZone.Application.Services
 			if (key.GameId != gameId) return false;
 			if (!key.IsActive) return false;
 			return true;
+		}
+
+		public async Task<ActivationKeyForReturnDto> CreateActivationKeyForDev(Guid gameId, CancellationToken ct = default)
+		{
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null) throw new NotFoundException("Game not found");
+			var keyEntity = new ActivationKeys()
+			{
+				Id = Guid.NewGuid(),
+				GameId = gameId,
+				IsUsed = false,
+				IsActive = true,
+				IsCreatedByDev = true,
+				CreatedAt = DateTime.Now,
+				Key = GenerateRandomKey()
+			};
+			await repositoryManager.ActivationKeyRepository.CreateForDev(keyEntity);
+			await repositoryManager.SaveAsync(ct);
+			return mapper.Map<ActivationKeyForReturnDto>(keyEntity);
 		}
 	}
 }

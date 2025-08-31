@@ -14,6 +14,14 @@ namespace IndieGameZone.Infrastructure.Repositories
 			this.appDbContext = appDbContext;
 		}
 
+		public async Task CreateForDev(ActivationKeys activationKey)
+		{
+			await appDbContext.ActivationKeys
+				.Where(x => x.GameId == activationKey.GameId && x.IsActive && x.IsCreatedByDev)
+				.ExecuteUpdateAsync(x => x.SetProperty(y => y.IsActive, y => false));
+			Create(activationKey);
+		}
+
 		public async Task CreateForModerator(ActivationKeys activationKey)
 		{
 			await appDbContext.ActivationKeys

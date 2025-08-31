@@ -7,6 +7,7 @@
 		public bool IsUsed { get; set; }
 		public bool IsActive { get; set; }
 		public bool IsCreatedByModerator { get; set; }
+		public bool IsCreatedByDev { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public Guid GameId { get; set; }
 
