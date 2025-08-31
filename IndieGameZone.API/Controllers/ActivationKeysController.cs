@@ -23,20 +23,20 @@ namespace IndieGameZone.API.Controllers
 			return NoContent();
 		}
 
-		[HttpPut("games/{gameId:guid}/activation-used-keys/{activationKey}/activation")]
+		[HttpGet("games/{gameId:guid}/activation-keys/{activationKey}/status")]
 		public async Task<IActionResult> ActivateUsedKey([FromRoute] Guid gameId, [FromRoute] string activationKey, CancellationToken ct = default)
 		{
-			await serviceManager.ActivationKeyService.ValidateUsedActivationKey(gameId, activationKey, ct);
-			return NoContent();
+			var result = await serviceManager.ActivationKeyService.ValidateUsedActivationKey(gameId, activationKey, ct);
+			return Ok(result);
 		}
 
-		[HttpGet("users/{userId:guid}/games/{gameId:guid}/activation-keys")]
-		[Authorize]
-		public async Task<IActionResult> GetActivationKeys([FromRoute] Guid userId, [FromRoute] Guid gameId, CancellationToken ct = default)
-		{
-			var activationKeys = await serviceManager.ActivationKeyService.GetKeyByGameId(userId, gameId, ct);
-			return Ok(activationKeys);
-		}
+		//[HttpGet("users/{userId:guid}/games/{gameId:guid}/activation-keys")]
+		//[Authorize]
+		//public async Task<IActionResult> GetActivationKeys([FromRoute] Guid userId, [FromRoute] Guid gameId, CancellationToken ct = default)
+		//{
+		//	var activationKeys = await serviceManager.ActivationKeyService.GetKeyByGameId(userId, gameId, ct);
+		//	return Ok(activationKeys);
+		//}
 
 		[HttpPost("games/{gameId:guid}/activation-keys")]
 		[Authorize(Roles = $"{nameof(RoleEnum.Admin)},{nameof(RoleEnum.Moderator)},{nameof(RoleEnum.Developer)}")]
@@ -52,6 +52,14 @@ namespace IndieGameZone.API.Controllers
 		{
 			await serviceManager.ActivationKeyService.ResetActivationKey(userId, gameId, ct);
 			return NoContent();
+		}
+
+		[HttpPut("games/{gameId:guid}/activation-keys/{activationKey}/moderator-reset")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Moderator)}")]
+		public async Task<IActionResult> ResetActivationKeyForModerator([FromRoute] Guid gameId, [FromRoute] string activationKey, CancellationToken ct = default)
+		{
+			var newActivationkey = await serviceManager.ActivationKeyService.ResetActivationKeyForModerator(gameId, activationKey, ct);
+			return Ok(newActivationkey);
 		}
 	}
 }

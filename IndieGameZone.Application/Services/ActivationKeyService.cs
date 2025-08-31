@@ -137,14 +137,40 @@ namespace IndieGameZone.Application.Services
 			dbTransaction.Commit();
 		}
 
-		public async Task ValidateUsedActivationKey(Guid gameId, string activationKey, CancellationToken ct = default)
+		public async Task<bool> ValidateUsedActivationKey(Guid gameId, string activationKey, CancellationToken ct = default)
 		{
+			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
+			if (game == null) return false;
+			var key = await repositoryManager.ActivationKeyRepository.GetByKey(activationKey, true, ct);
+			if (key == null) return false;
+			if (key.GameId != gameId) return false;
+			if (!key.IsActive) return false;
+			return true;
+		}
+
+		public async Task<ActivationKeyForReturnDto> ResetActivationKeyForModerator(Guid gameId, string activationKey, CancellationToken ct = default)
+		{
+			var dbTransaction = await repositoryManager.BeginTransaction(ct);
 			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
 			if (game == null) throw new NotFoundException("Game not found");
 			var key = await repositoryManager.ActivationKeyRepository.GetByKey(activationKey, true, ct);
 			if (key == null) throw new NotFoundException("Key not found");
 			if (key.GameId != gameId) throw new BadRequestException("Key does not belong to this game");
-			if (!key.IsActive) throw new BadRequestException("Key has been deactivated");
+			key.IsActive = false;
+
+			var keyEntity = new ActivationKeys()
+			{
+				Id = Guid.NewGuid(),
+				GameId = gameId,
+				IsUsed = false,
+				IsActive = true,
+				CreatedAt = DateTime.Now,
+				Key = GenerateRandomKey()
+			};
+			repositoryManager.ActivationKeyRepository.Create(keyEntity);
+			await repositoryManager.SaveAsync(ct);
+			dbTransaction.Commit();
+			return mapper.Map<ActivationKeyForReturnDto>(keyEntity);
 		}
 	}
 }
