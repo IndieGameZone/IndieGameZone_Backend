@@ -87,6 +87,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.GameImages).AsSplitQuery()
 				.Include(x => x.Discounts).AsSplitQuery()
 				.Include(x => x.Reviews).AsSplitQuery()
+				.Include(x => x.Discounts).Where(x => x.Discounts.All(d => DateOnly.FromDateTime(DateTime.Now) <= d.EndDate)).AsSplitQuery()
 				.FirstOrDefaultAsync(ct);
 		}
 

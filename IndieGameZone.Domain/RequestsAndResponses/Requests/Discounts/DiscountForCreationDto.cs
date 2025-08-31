@@ -7,8 +7,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Requests.Discounts
 		[Required]
 		public double Percentage { get; init; }
 		[Required]
-		public DateOnly StartDate { get; init; }
-		[Required]
 		public DateOnly EndDate { get; init; }
 	}
 }

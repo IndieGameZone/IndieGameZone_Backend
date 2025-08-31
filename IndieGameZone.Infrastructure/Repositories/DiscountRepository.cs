@@ -16,5 +16,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<Discounts?> GetActiveDiscountByGameId(Guid gameId, bool trackChange, CancellationToken ct = default) => await
 			FindByCondition(d => d.GameId == gameId && DateOnly.FromDateTime(DateTime.Now) <= d.EndDate, trackChange)
 			.FirstOrDefaultAsync(ct);
+
+		public async Task<Discounts?> GetLatestDiscountByGameId(Guid gameId, bool trackChange, CancellationToken ct = default) => await
+			FindByCondition(d => d.GameId == gameId, trackChange)
+			.OrderByDescending(d => d.EndDate)
+			.FirstOrDefaultAsync(ct);
 	}
 }

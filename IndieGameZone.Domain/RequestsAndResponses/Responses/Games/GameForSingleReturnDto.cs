@@ -1,6 +1,7 @@
 ﻿using IndieGameZone.Domain.Constants;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.AgeRestrictions;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Categories;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Discounts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.GameImages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.GameLanguages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.GamePlatforms;
@@ -29,7 +30,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public double NumberOfDownloads { get; set; }
 		public double AverageRating { get; init; }
 		public double NumberOfReviews { get; init; }
-		public double Discount { get; init; }
 		public virtual ICollection<GameTagForReturnDto> GameTags { get; init; }
 		public virtual CategoryForReturnDto Category { get; init; }
 		public DateTime CreatedAt { get; init; }
@@ -42,5 +42,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public virtual ICollection<GameImageForReturnDto> GameImages { get; init; }
 		public virtual UserShortForReturnDto Developer { get; init; }
 		public virtual UserShortForReturnDto? Moderator { get; init; }
+		public virtual ICollection<DiscountForReturnDto> Discounts { get; init; }
 	}
 }

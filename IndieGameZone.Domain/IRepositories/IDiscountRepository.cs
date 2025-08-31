@@ -6,5 +6,6 @@ namespace IndieGameZone.Domain.IRepositories
 	{
 		void CreateDiscount(Discounts discount);
 		Task<Discounts?> GetActiveDiscountByGameId(Guid gameId, bool trackChange, CancellationToken ct = default);
+		Task<Discounts?> GetLatestDiscountByGameId(Guid gameId, bool trackChange, CancellationToken ct = default);
 	}
 }
