@@ -30,7 +30,6 @@ namespace IndieGameZone.Infrastructure.Repositories
                 .Include(r => r.Post).ThenInclude(p => p.Game).ThenInclude(u => u.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
                 .Include(r => r.PostComment).ThenInclude(pc => pc.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
                 .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
                 .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
                 .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
                 .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
@@ -99,14 +98,13 @@ namespace IndieGameZone.Infrastructure.Repositories
                 case ReportReasonTypeEnum.Review:
                     query = query
                         .Where(r => r.ReportReason.Type == ReportReasonTypeEnum.Review)
-                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile)
-                        .Include(r => r.ReportReason)
-                        .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                        .Include(r => r.Game).ThenInclude(g => g.Reviews).AsSplitQuery()
-                        .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
-                        .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
-                        .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
-                        .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery();
+                        .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.ReportReason).AsSplitQuery()
+                        .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Review.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Review.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                        .Include(r => r.Review.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                        .Include(r => r.Review.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery();
                     break;
 
                 default:
@@ -174,7 +172,10 @@ namespace IndieGameZone.Infrastructure.Repositories
                         .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
                         .Include(r => r.ReportReason).AsSplitQuery()
                         .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                        .Include(r => r.Game).ThenInclude(g => g.Developer).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
                         .Where(r => r.Review != null && r.Review.UserId == reportedUserId);
                     break;
 
@@ -245,7 +246,10 @@ namespace IndieGameZone.Infrastructure.Repositories
                         .Include(r => r.ReportingUser).ThenInclude(u => u.UserProfile).AsSplitQuery()
                         .Include(r => r.ReportReason).AsSplitQuery()
                         .Include(r => r.Review).ThenInclude(rv => rv.User).ThenInclude(u => u.UserProfile).AsSplitQuery()
-                        .Include(r => r.Game).ThenInclude(g => g.Developer).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Developer).ThenInclude(u => u.UserProfile).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Discounts).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.Category).AsSplitQuery()
+                        .Include(r => r.Game).ThenInclude(g => g.GameTags).ThenInclude(gt => gt.Tag).AsSplitQuery()
                         .Where(r => r.Review != null);
                     break;
 
