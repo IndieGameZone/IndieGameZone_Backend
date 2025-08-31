@@ -6,6 +6,7 @@
 		public string Key { get; set; } = string.Empty;
 		public bool IsUsed { get; set; }
 		public bool IsActive { get; set; }
+		public bool IsCreatedByModerator { get; set; }
 		public DateTime CreatedAt { get; set; }
 		public Guid GameId { get; set; }
 

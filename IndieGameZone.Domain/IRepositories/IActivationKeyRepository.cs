@@ -4,6 +4,7 @@ namespace IndieGameZone.Domain.IRepositories
 {
 	public interface IActivationKeyRepository
 	{
+		Task CreateForModerator(ActivationKeys activationKey);
 		void Create(ActivationKeys activationKey);
 		void CreateRange(IEnumerable<ActivationKeys> activationKeys);
 		Task<ActivationKeys?> GetByKey(string key, bool trackChange, CancellationToken ct = default);

@@ -93,10 +93,11 @@ namespace IndieGameZone.Application.Services
 				GameId = gameId,
 				IsUsed = false,
 				IsActive = true,
+				IsCreatedByModerator = true,
 				CreatedAt = DateTime.Now,
 				Key = GenerateRandomKey()
 			};
-			repositoryManager.ActivationKeyRepository.Create(keyEntity);
+			await repositoryManager.ActivationKeyRepository.CreateForModerator(keyEntity);
 			await repositoryManager.SaveAsync(ct);
 			return mapper.Map<ActivationKeyForReturnDto>(keyEntity);
 		}
@@ -146,31 +147,6 @@ namespace IndieGameZone.Application.Services
 			if (key.GameId != gameId) return false;
 			if (!key.IsActive) return false;
 			return true;
-		}
-
-		public async Task<ActivationKeyForReturnDto> ResetActivationKeyForModerator(Guid gameId, string activationKey, CancellationToken ct = default)
-		{
-			var dbTransaction = await repositoryManager.BeginTransaction(ct);
-			var game = await repositoryManager.GameRepository.GetGameById(gameId, false, ct);
-			if (game == null) throw new NotFoundException("Game not found");
-			var key = await repositoryManager.ActivationKeyRepository.GetByKey(activationKey, true, ct);
-			if (key == null) throw new NotFoundException("Key not found");
-			if (key.GameId != gameId) throw new BadRequestException("Key does not belong to this game");
-			key.IsActive = false;
-
-			var keyEntity = new ActivationKeys()
-			{
-				Id = Guid.NewGuid(),
-				GameId = gameId,
-				IsUsed = false,
-				IsActive = true,
-				CreatedAt = DateTime.Now,
-				Key = GenerateRandomKey()
-			};
-			repositoryManager.ActivationKeyRepository.Create(keyEntity);
-			await repositoryManager.SaveAsync(ct);
-			dbTransaction.Commit();
-			return mapper.Map<ActivationKeyForReturnDto>(keyEntity);
 		}
 	}
 }

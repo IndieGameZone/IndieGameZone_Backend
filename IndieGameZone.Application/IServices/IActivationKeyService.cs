@@ -9,6 +9,5 @@ namespace IndieGameZone.Application.IServices
 		Task<IEnumerable<ActivationKeyForReturnDto>> GetKeyByGameId(Guid userId, Guid gameId, CancellationToken ct = default);
 		Task<ActivationKeyForReturnDto> CreateActivationKey(Guid gameId, CancellationToken ct = default);
 		Task ResetActivationKey(Guid userId, Guid gameId, CancellationToken ct = default);
-		Task<ActivationKeyForReturnDto> ResetActivationKeyForModerator(Guid gameId, string activationKey, CancellationToken ct = default);
 	}
 }
