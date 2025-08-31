@@ -843,5 +843,12 @@ namespace IndieGameZone.Application.Services
 			return fullReport;
 		}
 
+		public async Task<(int numberOfPost, int numberOfFollower, int numberOfFollowee)> GetUserSocialStats(Guid userId, CancellationToken ct = default)
+		{
+			var numberOfPost = await repositoryManager.PostRepository.GetPostsByUserId(userId, false, ct).CountAsync(ct);
+			var numberOfFollower = await repositoryManager.UserFollowRepository.GetFollowersByUserId(userId, false, ct).CountAsync(ct);
+			var numberOfFollowee = await repositoryManager.UserFollowRepository.GetFolloweesByUserId(userId, false, ct).CountAsync(ct);
+			return (numberOfPost, numberOfFollower, numberOfFollowee);
+		}
 	}
 }

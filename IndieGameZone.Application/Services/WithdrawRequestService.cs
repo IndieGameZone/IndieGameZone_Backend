@@ -110,7 +110,9 @@ namespace IndieGameZone.Application.Services
 				{
 					Id = Guid.NewGuid(),
 					OrderCode = null,
+					InitialBalance = wallet.Balance,
 					Amount = withdrawRequest.Amount,
+					FinalBalance = wallet.Balance - withdrawRequest.Amount,
 					Description = "Withdraw money",
 					Status = TransactionStatus.Success,
 					Type = TransactionType.Withdraw,

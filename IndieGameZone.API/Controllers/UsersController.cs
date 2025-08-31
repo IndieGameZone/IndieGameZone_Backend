@@ -86,21 +86,32 @@ namespace IndieGameZone.API.Controllers
 			return NoContent();
 		}
 
-        [HttpPatch("{userId:guid}/bank-info")]
-        [Authorize]
-        public async Task<IActionResult> UpdateBankInfo(
+		[HttpPatch("{userId:guid}/bank-info")]
+		[Authorize]
+		public async Task<IActionResult> UpdateBankInfo(
 			[FromRoute] Guid userId,
 			[FromBody] UserForUpdateBankInfoDto dto,
 			CancellationToken ct)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
-            await serviceManager.UserService.UpdateBankInfoAsync(userId, dto, ct);
-            return NoContent();
-        }
+			await serviceManager.UserService.UpdateBankInfoAsync(userId, dto, ct);
+			return NoContent();
+		}
 
-    }
+		[HttpGet("{userId:guid}/social-stats")]
+		public async Task<IActionResult> GetUserSocialStats([FromRoute] Guid userId, CancellationToken ct)
+		{
+			var result = await serviceManager.UserService.GetUserSocialStats(userId, ct);
+			return Ok(new
+			{
+				NumberOfPost = result.numberOfPost,
+				NumberOfFollower = result.numberOfFollower,
+				NumberOfFollowee = result.numberOfFollowee
+			});
+		}
+	}
 }

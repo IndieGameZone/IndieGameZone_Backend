@@ -71,14 +71,14 @@ namespace IndieGameZone.Application.Services
 			}
 		}
 
-		public Task<int> GetNumberOfFollowee(Guid userId, CancellationToken ct = default)
+		public async Task<int> GetNumberOfFollowee(Guid userId, CancellationToken ct = default)
 		{
-			return repositoryManager.UserFollowRepository.GetFolloweesByUserId(userId, false, ct).CountAsync(ct);
+			return await repositoryManager.UserFollowRepository.GetFolloweesByUserId(userId, false, ct).CountAsync(ct);
 		}
 
-		public Task<int> GetNumberOfFollower(Guid userId, CancellationToken ct = default)
+		public async Task<int> GetNumberOfFollower(Guid userId, CancellationToken ct = default)
 		{
-			return repositoryManager.UserFollowRepository.GetFollowersByUserId(userId, false, ct).CountAsync(ct);
+			return await repositoryManager.UserFollowRepository.GetFollowersByUserId(userId, false, ct).CountAsync(ct);
 		}
 
 		public async Task<bool> IsFollowing(Guid followedUserId, Guid followingUserId, CancellationToken ct = default)
