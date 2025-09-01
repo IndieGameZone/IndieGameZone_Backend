@@ -121,7 +121,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		}
 
-		public IQueryable<Games> GetGames(bool trackChange) => FindByCondition(g => !g.IsDeleted, trackChange);
+		public IQueryable<Games> GetGames(bool trackChange) => FindByCondition(g => !g.IsDeleted && g.Visibility != GameVisibility.Draft, trackChange);
 
 		public IQueryable<Games> GetGamesBasedOnCensorStatus(CensorStatus censorStatus, bool trackChange) =>
 			FindByCondition(g => g.CensorStatus == censorStatus && !g.IsDeleted && g.Visibility != GameVisibility.Draft, trackChange);

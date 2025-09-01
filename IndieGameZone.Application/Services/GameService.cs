@@ -459,7 +459,7 @@ namespace IndieGameZone.Application.Services
 			var gamePlatform = await repositoryManager.GamePlatformRepository.GetGamePlatformsById(gamePlatformId, false, ct);
 			var game = await repositoryManager.GameRepository.GetGameById(gamePlatform.GameId, true, ct);
 			var roles = await userManager.GetRolesAsync(await userManager.FindByIdAsync(userId.ToString()));
-			if (roles.Contains(RoleEnum.Player.ToString()) || userId != game.DeveloperId)
+			if (roles.Contains(RoleEnum.Player.ToString()) || (roles.Contains(RoleEnum.Developer.ToString()) && userId != game.DeveloperId))
 			{
 				var downlaodSlot = new DownloadSlots
 				{
