@@ -81,6 +81,6 @@ namespace IndieGameZone.Infrastructure.Repositories
 			return await PagedList<Posts>.ToPagedList(posts, postParameters.PageNumber, postParameters.PageSize, ct);
 		}
 
-		public IQueryable<Posts> GetPostsByUserId(Guid userId, bool trackChange = false, CancellationToken ct = default) => FindByCondition(p => p.UserId.Equals(userId), trackChange);
+		public IQueryable<Posts> GetPostsByUserId(Guid userId, bool trackChange = false, CancellationToken ct = default) => FindByCondition(p => p.UserId.Equals(userId) && p.Status == PostStatus.Approved, trackChange);
 	}
 }
