@@ -77,7 +77,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 
 		public async Task<Games?> GetGameById(Guid id, bool trackChange, CancellationToken ct = default)
 		{
-			return await FindByCondition(x => x.Id.Equals(id) && !x.IsDeleted, trackChange)
+			return await FindByCondition(x => x.Id.Equals(id), trackChange)
 				.Include(x => x.Category).AsSplitQuery()
 				.Include(x => x.AgeRestriction).AsSplitQuery()
 				.Include(x => x.Developer).ThenInclude(x => x.UserProfile).AsSplitQuery()
