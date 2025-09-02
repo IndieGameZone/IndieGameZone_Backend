@@ -36,6 +36,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public DateTime? CensoredAt { get; init; }
 		public DateTime? UpdatedAt { get; init; }
 		public string? CensorReason { get; init; }
+		public bool IsDeleted { get; init; }
 		public virtual AgeRestrictionForReturnDto AgeRestriction { get; init; }
 		public virtual ICollection<GamePlatformWithoutFileForReturnDto> GamePlatforms { get; init; }
 		public virtual ICollection<GameLanguageForReturnDto> GameLanguages { get; init; }

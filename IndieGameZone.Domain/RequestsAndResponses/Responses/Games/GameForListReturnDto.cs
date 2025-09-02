@@ -21,6 +21,7 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Games
 		public double NumberOfReviews { get; init; }
 		public double Discount { get; init; }
 		public bool HasCommercial { get; set; }
+		public bool IsDeleted { get; init; }
 		public virtual ICollection<GameTagForReturnDto> GameTags { get; init; }
 		public virtual CategoryForReturnDto Category { get; init; }
 	}
