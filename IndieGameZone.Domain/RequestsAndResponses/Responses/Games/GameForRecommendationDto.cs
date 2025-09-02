@@ -8,6 +8,7 @@
 		public string ShortDescription { get; set; }
 		public double Price { get; set; }
 		public string Category { get; set; }
+		public bool IsDeleted { get; set; }
 		public ICollection<string> Tags { get; set; } = new List<string>();
 	}
 }

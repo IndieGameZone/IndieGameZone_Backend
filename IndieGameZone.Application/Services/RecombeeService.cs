@@ -53,7 +53,7 @@ namespace IndieGameZone.Application.Services
 		public async Task GetRecommendedGamesForUser(Guid userId)
 		{
 			repositoryManager.GameRecommendationRepository.RemoveRecommendations(await repositoryManager.GameRecommendationRepository.GetRecommendationsByUserId(userId, false));
-			RecommendationResponse result = await client.SendAsync(new RecommendItemsToUser(userId.ToString(), 6, filter: "\'IsActive\' == true"));
+			RecommendationResponse result = await client.SendAsync(new RecommendItemsToUser(userId.ToString(), 6, filter: "\'IsActive\' == true", cascadeCreate: true));
 			var gameRecommendations = result.Recomms.Select(r => new GameRecommendations() { UserId = userId, GameId = Guid.Parse(r.Id) });
 			repositoryManager.GameRecommendationRepository.AddRecommendations(gameRecommendations);
 			await repositoryManager.SaveAsync();
@@ -76,7 +76,7 @@ namespace IndieGameZone.Application.Services
 						{ "Price", game.Price },
 						{ "Category", game.Category },
 						{ "Tags", game.Tags },
-						{ "IsActive", true   }
+						{ "IsActive", !game.IsDeleted   }
 					},
 					cascadeCreate: true);
 				await client.SendAsync(item);
