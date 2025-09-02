@@ -23,6 +23,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 			.Include(x => x.Transaction)
 			.Include(x => x.ActivationKey)
 			.Include(x => x.Discount)
+			.Include(x => x.User).ThenInclude(x => x.UserProfile)
 			.FirstOrDefaultAsync(ct);
 
 		public async Task<PagedList<Orders>> GetOrders(OrderParameters orderParameters, bool trackChange, CancellationToken ct = default)
@@ -31,6 +32,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.Game)
 				.Include(x => x.CommercialPackage)
 				.Include(x => x.Transaction)
+				.Include(x => x.User).ThenInclude(x => x.UserProfile)
 				.Sort();
 			return await PagedList<Orders>.ToPagedList(orders, orderParameters.PageNumber, orderParameters.PageSize, ct);
 		}
@@ -42,6 +44,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.Include(x => x.CommercialPackage)
 				.Include(x => x.Transaction)
 				.Include(x => x.ActivationKey)
+				.Include(x => x.User).ThenInclude(x => x.UserProfile)
 				.Sort();
 
 			return await PagedList<Orders>.ToPagedList(orders, orderParameters.PageNumber, orderParameters.PageSize, ct);

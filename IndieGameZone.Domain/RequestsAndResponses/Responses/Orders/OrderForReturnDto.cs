@@ -3,6 +3,7 @@ using IndieGameZone.Domain.RequestsAndResponses.Responses.CommercialPackages;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Discounts;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Games;
 using IndieGameZone.Domain.RequestsAndResponses.Responses.Transactions;
+using IndieGameZone.Domain.RequestsAndResponses.Responses.Users;
 
 namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Orders
 {
@@ -18,5 +19,6 @@ namespace IndieGameZone.Domain.RequestsAndResponses.Responses.Orders
 		public TransactionForReturnDto Transaction { get; init; }
 		public ActivationKeyForReturnDto? ActivationKey { get; init; }
 		public DiscountForReturnDto? Discount { get; init; }
+		public UserShortForReturnDto User { get; set; } = null!;
 	}
 }
