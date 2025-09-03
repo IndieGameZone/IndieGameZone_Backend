@@ -17,7 +17,7 @@ namespace IndieGameZone.API.Controllers
 			this.serviceManager = serviceManager;
 		}
 
-		[Authorize(Roles = $"{nameof(RoleEnum.Player)}")]
+		[Authorize(Roles = $"{nameof(RoleEnum.Developer)}")]
 		[HttpPost("games/{gameId:guid}/discounts")]
 		public async Task<IActionResult> CreateDiscount(Guid gameId, [FromBody] DiscountForCreationDto createDiscountDto, CancellationToken ct)
 		{

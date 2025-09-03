@@ -55,8 +55,12 @@ namespace IndieGameZone.Application.Extensions
 			config.NewConfig<Users, UserShortForReturnDto>()
 				.Map(dest => dest.Fullname, src => src.UserProfile.Fullname)
 				.Map(dest => dest.Avatar, src => src.UserProfile.Avatar)
+				.Map(dest => dest.BankName, src => src.UserProfile.BankName)
 				.Map(dest => dest.BankAccountNumber, src => src.UserProfile.BankAccountNumber)
 				.Map(dest => dest.BankAccountName, src => src.UserProfile.BankAccountName)
+				.Map(dest => dest.BankCode, src => src.UserProfile.BankCode)
+				.Map(dest => dest.BankBin, src => src.UserProfile.BankBin)
+				.Map(dest => dest.BankShortName, src => src.UserProfile.BankShortName)
 				.Map(dest => dest.Balance, src => src.Wallet.Balance);
 
 			config.NewConfig<BanHistories, BanHistoryForReturnDto>()
