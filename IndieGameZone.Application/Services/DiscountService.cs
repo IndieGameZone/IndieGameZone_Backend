@@ -25,12 +25,14 @@ namespace IndieGameZone.Application.Services
 				throw new BadRequestException("An active discount already exists for this game.");
 			}
 			var latestDiscount = await repositoryManager.DiscountRepository.GetLatestDiscountByGameId(gameId, false, ct);
-			int daysSinceLatestDiscount = DateOnly.FromDateTime(DateTime.Now).DayNumber - latestDiscount.EndDate.DayNumber;
-			if (daysSinceLatestDiscount < 30)
+			if (latestDiscount != null)
 			{
-				throw new BadRequestException("A new discount can only be created 30 days after the end of the last discount.");
+				int daysSinceLatestDiscount = DateOnly.FromDateTime(DateTime.Now).DayNumber - latestDiscount.EndDate.DayNumber;
+				if (daysSinceLatestDiscount < 30)
+				{
+					throw new BadRequestException("A new discount can only be created 30 days after the end of the last discount.");
+				}
 			}
-
 			var discountEntity = mapper.Map<Discounts>(discountForCreationDto);
 			discountEntity.Id = Guid.NewGuid();
 			discountEntity.GameId = gameId;

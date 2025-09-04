@@ -31,10 +31,10 @@ namespace IndieGameZone.Infrastructure.Repositories
 				.AsNoTracking();
 
 			var gameEntities = FindByCondition(g => g.Visibility == GameVisibility.Public && g.CensorStatus == CensorStatus.Approved && !g.IsDeleted, trackChange)
+				.Sort(activeGameParameters.SortBy, activeGameParameters.SortDescending, commercialGameId)
 				.Search(activeGameParameters.SearchTerm)
 				.FilterByPrice(activeGameParameters.Price)
 				.FilterByHasDiscount(activeGameParameters.HasDiscount, activeDiscounts)
-				.Sort(activeGameParameters.SortBy, activeGameParameters.SortDescending, commercialGameId)
 				.Include(x => x.Discounts).AsSplitQuery()
 				.Include(x => x.GameTags).ThenInclude(x => x.Tag).FilterByTags(activeGameParameters.Tags).AsSplitQuery()
 				.Include(x => x.GamePlatforms).FilterByPlatform(activeGameParameters.Platforms).AsSplitQuery()

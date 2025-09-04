@@ -404,7 +404,6 @@ namespace IndieGameZone.Application.Services
 		{
 			var dbTransaction = await repositoryManager.BeginTransaction(ct);
 			var transaction = await repositoryManager.TransactionRepository.GetTransactionById(webhookData.orderCode, true, ct);
-			var order = await repositoryManager.OrderRepository.GetOrderById((Guid)transaction.OrderId, true, ct);
 
 			if (isSuccess)
 			{
@@ -432,7 +431,7 @@ namespace IndieGameZone.Application.Services
 				else if (transaction.Type == TransactionType.Donation)
 				{
 					var game = await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId!, false, ct);
-					var developerId = transaction.Game.DeveloperId;
+					var developerId = game.DeveloperId;
 					var developerWallet = await repositoryManager.WalletRepository.GetWalletByUserId(developerId, true, ct);
 
 					var transactionEntityForDeveloper = new Transactions()
@@ -454,6 +453,7 @@ namespace IndieGameZone.Application.Services
 				}
 				else if (transaction.Type == TransactionType.PurchaseGame)
 				{
+					var order = await repositoryManager.OrderRepository.GetOrderById((Guid)transaction.OrderId, true, ct);
 					var game = await repositoryManager.GameRepository.GetGameById((Guid)transaction.GameId!, false, ct);
 					var gamePriceAfterDiscount = await GetGamePriceAfterApplyingCoupon(game, ct);
 					var developerId = transaction.Game.DeveloperId;
@@ -525,6 +525,7 @@ namespace IndieGameZone.Application.Services
 				}
 				else if (transaction.Type == TransactionType.PurchaseCommercialPackage)
 				{
+					var order = await repositoryManager.OrderRepository.GetOrderById((Guid)transaction.OrderId, true, ct);
 					var adminWallet = await repositoryManager.WalletRepository.GetWalletByUserId(Guid.Parse("e5d8947f-6794-42b6-ba67-201f366128b8"), true, ct);
 					var commercialRegistration = new CommercialRegistrations()
 					{
