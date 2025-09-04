@@ -24,7 +24,7 @@ namespace IndieGameZone.Infrastructure.Repositories
 		public async Task<PagedList<Games>> GetActiveGames(ActiveGameParameters activeGameParameters, bool trackChange, CancellationToken ct = default)
 		{
 			var commercialGameId = await appDbContext.CommercialRegistrations
-				.Where(cr => cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner && cr.StartDate <= DateOnly.FromDateTime(DateTime.Now) && DateOnly.FromDateTime(DateTime.Now) <= cr.EndDate)
+				.Where(cr => cr.CommercialPackage.Type == CommercialPackageType.CategoryBanner && cr.Status == CommercialRegistrationStatus.Active)
 				.Select(cr => cr.GameId).ToListAsync();
 
 			var activeDiscounts = appDbContext.Discounts.Where(d => DateOnly.FromDateTime(DateTime.Now) <= d.EndDate)
